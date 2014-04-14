@@ -1,0 +1,74 @@
+.glyphicon {
+	font-family:'Glyphicons Halflings'!important;
+}
+.console-container {
+	position: relative;
+	width: 100%;
+	padding: 0 10px 10px 0;
+}
+.cdbt-title {
+	font-size: 18px;
+	font-weight: 700;
+	margin-bottom: 1em;
+}
+.console-menu {
+	width: 100%;
+	margin-top: 20px;
+	margin-bottom: 1em;
+}
+.console-container .alert, .console-container .center-block, .console-container .nav {
+	width: 99%;
+}
+.console-container .table {
+	margin-bottom: 0;
+}
+.console-container .table>thead>tr>th, .console-container .table>tbody>tr>th, .console-container .table>tfoot>tr>th {
+	background-color: #f0f0f0;
+}
+.console-container .table>thead>tr>th {
+	text-align: center;
+}
+.current-table-schema {
+	overflow: auto;
+	width: 100%;
+}
+.current-table-schema table {
+	width: 200%;
+}
+.current-table-schema th.cell-logical_name {
+	width: 132px!important;
+}
+.current-table-schema th.cell-type_format {
+	width: 132px!important;
+}
+.on-bottom-margin {
+	margin-bottom: 20px;
+}
+.under-line {
+	border-bottom: solid 1px #dddddd;
+}
+.console-container .tab-header {
+	margin-top: 15px;
+}
+.console-container .tab-pane h3 {
+	margin-left: .3em;
+	font-size: 16px;
+	font-weight: 700;
+}
+.console-container .dashboard-title {
+	font-size: 16px;
+	font-weight: 700;
+}
+.console-container .tab-pane .control-label {
+	font-size: 14px;
+	font-weight: 500;
+	text-align: left;
+}
+select#cdbt_db_engine {
+	width: 100px;
+	height: 34px;
+}
+.console-container footer .modal-kicker {
+	position: absolute;
+	display: none;
+}
