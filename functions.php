@@ -316,6 +316,39 @@ function create_button($btn_type='button', $btn_value, $btn_id=null, $btn_class=
 }
 
 /**
+ * compare the variable
+ * @param mixed(string|int|boolean) $var
+ * @param mixed(string|int|boolean) $compare
+ * @return boolean
+ */
+function compare_var($var, $compare=null) {
+	return $var === $compare ? true : false;
+}
+
+/**
+ * return boolean
+ * @param string $string
+ * @return boolean
+ */
+function get_boolean($string) {
+	if (is_bool($string)) {
+		return $string;
+	} else if (function_exists('boolval')) {
+		return boolval($string);
+	} else {
+		if (empty($string)) {
+			return false;
+		} else if (is_string($string)) {
+			return ($string == 'false' || $string == '0') ? false : true;
+		} else if (is_int($string)) {
+			return $string == 0 ? false : true;
+		} else {
+			return false;
+		}
+	}
+}
+
+/**
  * return translated strings
  * @param string $string
  * @return string

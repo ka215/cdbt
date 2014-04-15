@@ -288,7 +288,7 @@ class CustomDatabaseTables {
 				$template_name = 'cdbt-edit.php';
 				break;
 			case 'admin':
-				$template_name = 'cdbt-admin.php';
+				$template_name = 'cdbt-admin-controller.php';
 				break;
 			default:
 				$template_name = 'cdbt-index.php';
@@ -676,7 +676,9 @@ class CustomDatabaseTables {
 	 */
 	function insert_data($table_name, $data, $table_schema=null) {
 		global $wpdb;
+		unset($data['ID']);
 		$data['created'] = date('Y-m-d H:i:s', time());
+		unset($data['updated']);
 		if (!empty($table_schema)) {
 			$format = array();
 			foreach ($data as $column_name => $value) {
@@ -848,6 +850,21 @@ var_dump($matches);
 			$result = array(false, '');
 		}
 		return $result;
+	}
+
+	/**
+	 * compare to reservation table names
+	 * @param string $table_name
+	 * @return boolean
+	 */
+	function compare_reservation_tables($table_name) {
+		global $wpdb;
+		$naked_table_name = preg_replace('/^'. $wpdb->prefix .'(.*)$/iU', '$1', $table_name);
+		$reservation_names = array(
+			'commentmeta', 'comments', 'links', 'options', 'postmeta', 'posts', 'term_relationships', 'term_taxonomy', 'terms', 'usermeta', 'users', 
+			'blogs', 'blog_versions', 'registration_log', 'signups', 'site', 'sitecategories', 'sitemeta', 
+		);
+		return in_array($naked_table_name, $reservation_names);
 	}
 
 /**

@@ -52,99 +52,125 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					}
 					break;
 				case 'create-table':
-					// create new table.
-					if (isset($naked_table_name) && !empty($naked_table_name)) {
-						if ($use_wp_prefix_for_newtable == 'true') {
-							$create_full_table_name = $wpdb->prefix . trim($naked_table_name);
-						} else {
-							$create_full_table_name = trim($naked_table_name);
-						}
-					} else {
-						$message = __('Table name is empty.', self::DOMAIN);
-						$msg_type = 'warning';
-					}
-					if (isset($create_full_table_name) && !empty($create_full_table_name)) {
-var_dump($create_full_table_name);
-						if (preg_match('/^([a-zA-Z0-9_\-])?$/', $create_full_table_name, $matches)) {
-var_dump($matches);
-							if ($create_full_table_name == $wpdb->prefix) {
-								$message = __('Table name is invalid. Table name of the only prefix is not allowed.', self::DOMAIN);
-								$msg_type = 'warning';
+					$inherit_values = array(
+						'section' => $section, 
+						'naked_table_name' => $naked_table_name, 
+						'use_wp_prefix_for_newtable' => $use_wp_prefix_for_newtable, 
+						'table_comment' => $table_comment, 
+						'db_engine' => $db_engine, 
+						'create_table_sql' => $create_table_sql, 
+						'show_max_records' => $show_max_records, 
+						'view_role' => $view_role, 
+						'input_role' => $input_role, 
+						'edit_role' => $edit_role, 
+						'admin_role' => $admin_role, 
+					);
+var_dump($inherit_values);
+					if (isset($section) && $section == 'confirm') {
+						// validation to create new table.
+						if (isset($naked_table_name) && !empty($naked_table_name)) {
+							if ($use_wp_prefix_for_newtable == 'true') {
+								$create_full_table_name = $wpdb->prefix . trim($naked_table_name);
+							} else {
+								$create_full_table_name = trim($naked_table_name);
 							}
-							if (strlen($create_full_table_name) > 64) {
-								$message = __('Table name is invalid. Maximum string length of the table name is 64 bytes.', self::DOMAIN);
-								$msg_type = 'warning';
-							}
 						} else {
-							$message = __('Table name is invalid. Characters that can not be used in table name is included.', self::DOMAIN);
+							$message = __('Table name is empty.', self::DOMAIN);
 							$msg_type = 'warning';
 						}
-					}
-					if ($msg_type != 'warning') 
-						break;
-					if (isset($create_table_sql) && !empty($create_table_sql)) {
-						// sql to create table will validate here.
-						$create_table_sql = stripcslashes($create_table_sql);
-					} else {
-						$message = __('SQL to create table is empty.', self::DOMAIN);
-						$msg_type = 'warning';
-					}
-					if ($msg_type != 'warning') 
-						break;
-					if (isset($create_full_table_name) && !empty($create_full_table_name)) {
-						$this->current_table = $create_full_table_name;
-						
-						if (!$this->check_table_exists()) {
-							$new_table = array(
-								'table_name' => $create_full_table_name, 
-								'table_type' => 'enable_table', 
-								'sql' => "CREATE TABLE `$create_full_table_name` (
-									`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."',
-									$create_table_sql
-									`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."',
-									`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."',
-									PRIMARY KEY (`ID`)
-									) ENGINE=%s DEFAULT CHARSET=%s COMMENT='$table_comment' AUTO_INCREMENT=1 ;", 
-								'db_engine' => $db_engine, 
-								'show_max_records' => intval($show_max_records), 
-								'roles' => array(
-									'view_role' => $view_role, 
-									'input_role' => $input_role, 
-									'edit_role' => $edit_role, 
-									'admin_role' => $admin_role, 
-								), 
-								'display_format' => array(
-									// {column_name} => array('(require|optional)', '(show|hide|none)', '{display_item_name}', '{default_value}', '(string|integer|float|date|binary)')
-									'ID' => array('require', 'none', '', '', 'integer'), 
-									'created' => array('require', 'none', '', '', 'date'), 
-									'updated' => array('require', 'none', '', '', 'date'), 
-								),
-							);
-							$is_exists_table = false;
-							for ($i=1; $i<count($this->options['tables']); $i++) {
-								if ($this->options['tables'][$i]['table_name'] == $create_full_table_name) {
-									$this->options['tables'][$i] = $new_table;
-									$is_exists_table = true;
-									break;
+						if (isset($create_full_table_name) && !empty($create_full_table_name)) {
+							if (preg_match('/^([a-zA-Z0-9_\-]+)$/', $naked_table_name, $matches)) {
+								if ($this->compare_reservation_tables($matches[1])) {
+									$message = __('Table name is invalid. Table name is not allowed that use reserved name on WordPress.', self::DOMAIN);
+									$msg_type = 'warning';
 								}
+								if ($create_full_table_name == $wpdb->prefix) {
+									$message = __('Table name is invalid. Table name of the only prefix is not allowed.', self::DOMAIN);
+									$msg_type = 'warning';
+								}
+								if (strlen($create_full_table_name) > 64) {
+									$message = __('Table name is invalid. Maximum string length of the table name is 64 bytes.', self::DOMAIN);
+									$msg_type = 'warning';
+								}
+								
+							} else {
+								$message = __('Table name is invalid. Characters that can not be used in table name is included.', self::DOMAIN);
+								$msg_type = 'warning';
 							}
-							if (!$is_exists_table) 
-								$this->options['tables'][] = $new_table;
-							if (update_option(self::DOMAIN, $this->options)) {
+						}
+						if ($msg_type == 'warning') 
+							break;
+						if (isset($create_table_sql) && !empty($create_table_sql)) {
+							// sql to create table will validate here.
+							$create_table_sql = stripcslashes($create_table_sql);
+						} else {
+							$message = __('SQL to create table is empty.', self::DOMAIN);
+							$msg_type = 'warning';
+						}
+						if ($msg_type != 'warning') {
+							$inherit_values['section'] = 'run';
+						}
+						break;
+					} else if (isset($section) && $section == 'run') {
+						// run the create table.
+						if (isset($create_full_table_name) && !empty($create_full_table_name)) {
+							$this->current_table = $create_full_table_name;
+							
+							if (!$this->check_table_exists()) {
+								$new_table = array(
+									'table_name' => $create_full_table_name, 
+									'table_type' => 'enable_table', 
+									'sql' => "CREATE TABLE `$create_full_table_name` (
+										`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."',
+										$create_table_sql
+										`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."',
+										`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."',
+										PRIMARY KEY (`ID`)
+										) ENGINE=%s DEFAULT CHARSET=%s COMMENT='$table_comment' AUTO_INCREMENT=1 ;", 
+									'db_engine' => $db_engine, 
+									'show_max_records' => intval($show_max_records), 
+									'roles' => array(
+										'view_role' => $view_role, 
+										'input_role' => $input_role, 
+										'edit_role' => $edit_role, 
+										'admin_role' => $admin_role, 
+									), 
+									'display_format' => array(
+										// {column_name} => array('(require|optional)', '(show|hide|none)', '{display_item_name}', '{default_value}', '(string|integer|float|date|binary)')
+										'ID' => array('require', 'none', '', '', 'integer'), 
+										'created' => array('require', 'none', '', '', 'date'), 
+										'updated' => array('require', 'none', '', '', 'date'), 
+									),
+								);
+								$is_exists_table = false;
+								for ($i=1; $i<count($this->options['tables']); $i++) {
+									if ($this->options['tables'][$i]['table_name'] == $create_full_table_name) {
+										$this->options['tables'][$i] = $new_table;
+										$is_exists_table = true;
+										break;
+									}
+								}
+								if (!$is_exists_table) 
+									$this->options['tables'][] = $new_table;
+								if (update_option(self::DOMAIN, $this->options)) {
 //var_dump($this->current_table);
 //var_dump($this->options);
-								list($result, $message) = $this->create_table();
-								$msg_type = ($result) ? 'success' : 'warning';
+									list($result, $message) = $this->create_table();
+									$msg_type = ($result) ? 'success' : 'warning';
+								} else {
+									$message = __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN);
+									$msg_type = 'warning';
+								}
 							} else {
-								$message = __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN);
+								$message = __('This table is already created.', self::DOMAIN);
 								$msg_type = 'warning';
 							}
 						} else {
-							$message = __('This table is already created.', self::DOMAIN);
+							$message = __('Table name is empty. Table name of the only prefix is not allowed.', self::DOMAIN);
 							$msg_type = 'warning';
 						}
 					} else {
-						$message = __('Table name is empty. Table name of the only prefix is not allowed.', self::DOMAIN);
+						$message = __('Is invalid call to create table.', self::DOMAIN);
 						$msg_type = 'warning';
 					}
 					break;
@@ -219,10 +245,11 @@ var_dump($matches);
 	$nav_tabs_html = '<ul class="nav nav-tabs">%s</ul><!-- /.nav-tabs -->';
 	$tabs_content_html = '<div class="tab-content">%s</div><!-- /.tab-content -->';
 	$nav_tabs_list = $tabs_content = null;
+	$inherit_values = empty($inherit_values) ? null : $inherit_values;
 	foreach ($tabs as $tab_name => $active) {
 		$nav_active_class = ($active) ? ' class="active"' : '';
 		$nav_tabs_list .= '<li'. $nav_active_class. '><a href="#cdbt-'. $tab_name. '" data-toggle="tab">'. translate_tab_name($tab_name) .'</a></li>';
-		$tabs_content .= '<div class="tab-pane'. ($active ? ' active' : '') .'" id="cdbt-'. $tab_name .'">'. create_tab_content($tab_name, $_cdbt_token) .'</div>';
+		$tabs_content .= '<div class="tab-pane'. ($active ? ' active' : '') .'" id="cdbt-'. $tab_name .'">'. create_tab_content($tab_name, $_cdbt_token, $inherit_values) .'</div>';
 	}
 	$contents_html = sprintf($nav_tabs_html.$information_html.$tabs_content_html, $nav_tabs_list, $tabs_content);
 	$information_html = '';
@@ -239,7 +266,7 @@ printf($admin_html, $information_html, $contents_html);
 create_console_footer();
 
 
-function create_tab_content($tab_name, $nonce) {
+function create_tab_content($tab_name, $nonce, $inherit_values=null) {
 	global $wpdb, $cdbt;
 	$cdbt_options = get_option(PLUGIN_SLUG);
 	$controller_table = $cdbt_options['tables'][0]['table_name'];
@@ -314,6 +341,10 @@ EOH;
 		$timezone_label = __('Database Timezone', PLUGIN_SLUG);
 		$timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
 		// values
+		if (is_array($inherit_values) && !empty($inherit_values)) {
+			foreach ($inherit_values as $k => $v) { ${$k} = $v; }
+		}
+		$section = (isset($section) && !empty($section) && $section == 'run') ? 'run' : 'confirm';
 		$naked_table_name = (isset($naked_table_name) && !empty($naked_table_name)) ? $naked_table_name : '';
 		if (isset($use_wp_prefix_for_newtable) && !empty($use_wp_prefix_for_newtable)) {
 			$create_table_checkbox_attr = $use_wp_prefix_for_newtable ? ' checked="checked"' : '';
@@ -368,6 +399,7 @@ EOH;
 	<input type="hidden" name="mode" value="admin">
 	<input type="hidden" name="action" value="create">
 	<input type="hidden" name="handle" value="create-table">
+	<input type="hidden" name="section" value="$section">
 	$nonce_field
 	<div class="form-group">
 		<label for="cdbt_table_name" class="col-sm-2 control-label">$table_name_label</label>
