@@ -106,3 +106,10 @@ select#cdbt_db_engine {
 .binary-file {
 	font-size: .86em;
 }
+.text-collapse {
+	cursor: pointer;
+}
+.text-collapse:hover {
+	color: #2a6496;
+	text-decoration: underline;
+}

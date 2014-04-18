@@ -233,12 +233,9 @@ jQuery(document).ready(function($){
 		}
 	});
 	
-	$('#choise-current-table1').on('click', function() {
-		alert('!');
-		$('.current-exists-tables input[name="choise-current-table"]').each(function() {
-			if (!$(this).is(':checked')) 
-				console.info($(this).parents('label').attr('class'));
-		});
+	$('.text-collapse').on('click', function(){
+		var current_display_content = $(this).html();
+		$(this).html($(this).attr('full-content')).attr('full-content', current_display_content);
 	});
 	
 	

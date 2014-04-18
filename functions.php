@@ -5,37 +5,48 @@
 
 /**
  * Create pagination
- * @param int $page
+ * @param int $page_num
  * @param int $per_page
  * @param int $total_data
  * @param string $mode (optional) default 'list'
  * @return string
  */
-function create_pagination($page, $per_page, $total_data, $mode='list') {
+function create_pagination($page_num, $per_page, $total_data, $mode='list') {
 	$max_pages = ceil($total_data / $per_page);
-	$pagination_base = '<div class="text-center"><ul class="pagination pagination-sm">%s</ul>%s</div>';
-	$disabled_class = ' class="disabled"';
+	$pagination_base = '<div class="text-center"><ul class="pagination pagination-sm">%s</ul>%s%s</div>';
 	$active_class = ' class="active"';
 	$pagination_left = '<li%s>%s&laquo;%s</li>';
 	$pagination_right = '<li%s>%s&raquo;%s</li>';
-	$pagination_html = null;
-	$pagination_html .= ($page == 1) ? sprintf($pagination_left, $disabled_class, '<span>', '</span>') : sprintf($pagination_left, '', '<a href="#" data-page="1">', '</a>');
+	
+	$pagination_html = ($page_num == 1) ? sprintf($pagination_left, disabled($page_num, 1, false), '<span>', '</span>') : sprintf($pagination_left, '', '<a href="#" data-page="1">', '</a>');
 	for ($i = 1; $i <= $max_pages; $i++) {
 		$pagination_inner = '<li%s>%s'. $i .'%s</li>';
-		$pagination_html .= ($page == $i) ? sprintf($pagination_inner, $active_class, '<span>', ' <span class="sr-only">(current)</span></span>') : sprintf($pagination_inner, '', '<a href="#" data-page="'.$i.'">', '</a>');
+		$pagination_html .= ($page_num == $i) ? sprintf($pagination_inner, $active_class, '<span>', ' <span class="sr-only">(current)</span></span>') : sprintf($pagination_inner, '', '<a href="#" data-page="'.$i.'">', '</a>');
 	}
-	$pagination_html .= ($page == $max_pages) ? sprintf($pagination_right, $disabled_class, '<span>', '</span>') : sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
+	$pagination_html .= ($page_num == $max_pages) ? sprintf($pagination_right, disabled($page_num, $max_pages, false), '<span>', '</span>') : sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
+	
+	$page_slug = PLUGIN_SLUG;
+	$nonce_field = wp_nonce_field(PLUGIN_SLUG .'_'. $mode, '_cdbt_token', false, false);
+	$pagination_form = <<<EOH
+<form method="get" class="change-page" role="form">
+	<input type="hidden" name="page" value="$page_slug">
+	<input type="hidden" name="mode" value="$mode">
+	<input type="hidden" name="page_num" value="$page_num">
+	<input type="hidden" name="per_page" value="$per_page">
+	$nonce_field
+</form>
+EOH;
 	$pagination_script = <<<EOS
 <script>
 jQuery(document).ready(function(){
 	jQuery('.pagination a').on('click', function(){
-		jQuery('.change-page').children('input[name="page"]').val(jQuery(this).attr('data-page'));
+		jQuery('.change-page').children('input[name="page_num"]').val(jQuery(this).attr('data-page'));
 		jQuery('.change-page').submit();
 	});
 });
 </script>
 EOS;
-	return sprintf($pagination_base, $pagination_html, $pagination_script);
+	return sprintf($pagination_base, $pagination_html, $pagination_form, $pagination_script);
 }
 
 /**
@@ -317,6 +328,32 @@ function create_button($btn_type='button', $btn_value, $btn_id=null, $btn_class=
 	}
 	$btn_content = sprintf($base_btn_content, $btn_type, $attr_id, $btn_class, $btn_action, $btn_display);
 	return $btn_content;
+}
+
+/**
+ * truncate strings by specific length
+ * @param string $string
+ * @param int $length default 40
+ * @param string $suffix (optional) default '...'
+ * @param boolean $collapse (optional) default false
+ * @return string
+ */
+function str_truncate($string, $length=40, $suffix='...', $collapse=false) {
+	if (mb_check_encoding($string, 'utf-8') && function_exists('mb_strwidth') && function_exists('mb_strimwidth')) {
+		if (mb_strwidth($string) > (int)$length*2) {
+			$truncated_str = mb_strimwidth(strip_tags($string), 0, (int)$length*2, $suffix, 'utf-8');
+		}
+	} else if (strlen($string) > (int)$length) {
+		$truncated_str = substr(strip_tags($string), 0, $length) . $suffix;
+	}
+	if (isset($truncated_str) && !empty($truncated_str)) {
+		if ($collapse) {
+			$truncated_str = '<p class="text-collapse" full-content="'. esc_html($string) .'">'. $truncated_str .' <b class="caret"></b></p>';
+		}
+	} else {
+		$truncated_str = esc_html($string);
+	}
+	return $truncated_str;
 }
 
 /**

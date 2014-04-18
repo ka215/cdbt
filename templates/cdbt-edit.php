@@ -6,7 +6,6 @@ if (is_admin() && !check_admin_referer(self::DOMAIN .'_edit', '_cdbt_token'))
 
 foreach ($_REQUEST as $k => $v) {
 	${$k} = $v;
-//var_dump($k .' = "'. $v .'"');
 }
 if (!isset($mode)) 
 	$mode = 'edit';
@@ -67,10 +66,22 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		if (isset($action) && $action == 'search') {
 			if (isset($search_key) && !empty($search_key)) {
 				$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit, $offset);
+				if (count($data) == $limit) {
+					$total_data = count($this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by));
+				} else {
+					$total_data = count($data);
+				}
 			}
 		} else {
 			// $order_by['name'] = 'ASC';
 			$data = $this->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
+			$total_data = $this->get_data($table_name, 'COUNT(*)');
+			foreach (array_shift($total_data) as $key => $val) {
+				if ($key == 'COUNT(*)') {
+					$total_data = intval($val);
+					break;
+				}
+			}
 		}
 		$is_controller = true;
 		$is_checkbox_controller = true;
@@ -143,7 +154,7 @@ NAV;
 							if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
 						}
 					}
-					$val = ($is_binary) ? '<a href="#" class="binary-file" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : $val;
+					$val = ($is_binary) ? '<a href="#" class="binary-file" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
 					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {
@@ -158,24 +169,7 @@ NAV;
 				$list_num++;
 			}
 			
-			$total_data = $this->get_data($table_name, 'COUNT(*)');
-			foreach (array_shift($total_data) as $val) {
-				$total_data = intval($val);
-				break;
-			}
-			if ($total_data > $per_page) {
-				$pagination = $this->create_pagination(intval($page_num), intval($per_page), $total_data, $mode);
-			} else {
-				$pagination = null;
-			}
-			$pagination .= <<<EOH
-<form method="post" class="change-page" role="form">
-	<input type="hidden" name="mode" value="$mode" />
-	<input type="hidden" name="page" value="$page_num" />
-	<input type="hidden" name="per_page" value="$per_page" />
-	$nonce_field
-</form>
-EOH;
+			$pagination = ($total_data > $per_page) ? create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
 			$pagination = (($mode == 'edit') ? '</form>' : '') . $pagination;
 			printf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination);
 		} else {
