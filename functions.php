@@ -160,11 +160,14 @@ function create_console_menu($nonce) {
 /**
  * output console's footer buttons and defined modal
  * @param string $message default null
+ * @param boolean $run default false
+ * @param string $run_label default null
  * @return void
  */
-function create_console_footer($message=null) {
+function create_console_footer($message=null, $run=false, $run_label=null) {
 	if (!empty($message)) {
-		$modal_kicker = sprintf('<div class="modal-kicker">%s</div>', str_replace("\n", '<br />', strip_tags($message)));
+		$is_run = get_boolean($run) ? 'show-run' : '';
+		$modal_kicker = sprintf('<div class="modal-kicker %s" data-run-label="%s">%s</div>', $is_run, $run_label, str_replace("\n", '<br />', strip_tags($message)));
 	} else {
 		$modal_kicker = '';
 	}
@@ -275,6 +278,7 @@ function create_form($table_name, $column_name, $column_schema, $value) {
 			// text field
 			$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
 			$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
+			$input_type = (preg_match('/(int|numeric)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
 			$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
 			$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
 			$input_form .= '</div></div>';

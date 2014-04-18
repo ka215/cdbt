@@ -126,4 +126,6 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 <?php
 }
 
+$info_msg = empty($info_msg) ? null : $info_msg;
+
 create_console_footer($info_msg);

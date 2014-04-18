@@ -109,7 +109,15 @@ NAV;
 					// strlen('a:*:{s:11:"origin_file";') = 24
 					$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) ? true : false;
 					$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
-					$val = ($is_binary) ? '<a href="#"><span class="glyphicon glyphicon-paperclip"></span></a>' : $val;
+					if ($is_binary) {
+						eval('$tmp = array(' . trim(preg_replace('/(a:\d+:{|(|;)s:\d+:|(|;)i:|"$)/', ",", substr($val, 0, strpos($val, 'bin_data'))), ',,') . ');');
+						foreach ($tmp as $i => $val) {
+							if ($val == 'origin_file') $origin_file = $tmp[intval($i)+1];
+							if ($val == 'mine_type') $mine_type = $tmp[intval($i)+1];
+							if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
+						}
+					}
+					$val = ($is_binary) ? '<a href="#" class="binary-file" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : $val;
 					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {

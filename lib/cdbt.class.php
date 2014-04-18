@@ -163,6 +163,7 @@ class CustomDatabaseTables {
 			'use_wp_prefix' => true, 
 			'charset' => DB_CHARSET, 
 			'timezone' => $default_timezone, 
+			'cleaning_options' => true, 
 			'tables' => array(
 				array(
 					'table_name' => $wpdb->prefix . 'cdbt_controller', 
@@ -398,23 +399,23 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Create table
+	 * @param array
 	 * @return array
 	 */
-	function create_table() {
+	function create_table($table_data) {
 		global $wpdb;
 		if (!$this->check_table_exists()) {
 			// if not exists table, create table.
-			//$is_controller_table = false;
-			foreach ($this->options['tables'] as $table_info) {
-				if ($table_info['table_name'] == $this->current_table) {
-					$create_sql = stripcslashes($wpdb->prepare($table_info['sql'], $table_info['db_engine'], $this->options['charset']));
-					break;
-				}
-			}
+			$create_sql = $wpdb->prepare($table_data['sql'], $table_data['db_engine'], $this->options['charset']);
 			if (isset($create_sql) && !empty($create_sql)) {
 				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 				dbDelta($create_sql);
-				$result = array(true, __('New table was created.', self::DOMAIN));
+				if (!empty($wpdb->last_error) && !$this->check_table_exists()) {
+					$result = array(false, __('Failed to create table.', self::DOMAIN));
+				} else {
+					$result = array(true, __('New table was created.', self::DOMAIN));
+					$wpdb->flush();
+				}
 			} else {
 				$result = array(false, __('Create table sql is none.', self::DOMAIN));
 			}
@@ -598,7 +599,7 @@ class CustomDatabaseTables {
 			$limit_clause = "LIMIT ";
 			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
 		}
-		$search_key = preg_replace('/[\s　]+/', ' ', trim($search_key), 'UTF-8');
+		$search_key = preg_replace('/[\s　]+/', ' ', trim($search_key), -1);
 		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
 		if (!empty($keywords)) {
 			$union_clauses = array();

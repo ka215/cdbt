@@ -31,7 +31,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	$list_html = '<h3 class="dashboard-title">%s</h3>%s<table id="'. $table_name .'" class="table table-bordered table-striped table-hover">%s%s</table>%s';
 	list($result, $value) = $this->get_table_comment($table_name);
 	if ($result) {
-		$title = sprintf(__('edit data in %s table (table comment: %s)', self::DOMAIN), $table_name, $value); // can do %2$s %1$s
+		$title = sprintf(__('edit data in %s table (table comment: %s)', self::DOMAIN), $table_name, $value);
 	} else {
 		$title = sprintf(__('edit data in %s table', self::DOMAIN), $table_name);
 	}
@@ -77,6 +77,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$is_display_list_num = false;
 		
 		if ($is_controller) {
+			$page_slug = self::DOMAIN;
 			$controller_block_base = '<form method="post" class="controller-form" role="form">%s';
 			$controller_block_base .= ($mode == 'list') ? '</form>' : '';
 			$controller_block_title = __('Cosole', self::DOMAIN);
@@ -88,6 +89,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 		<span class="navbar-brand">$controller_block_title</span>
+		<input type="hidden" name="page" value="$page_slug" />
 		<input type="hidden" name="mode" value="$mode" />
 		<input type="hidden" name="action" value="" />
 		<input type="hidden" name="ID" value="" />
@@ -133,7 +135,15 @@ NAV;
 					// strlen('a:*:{s:11:"origin_file";') = 24
 					$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) ? true : false;
 					$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
-					$val = ($is_binary) ? '<a href="#"><span class="glyphicon glyphicon-paperclip"></span></a>' : $val;
+					if ($is_binary) {
+						eval('$tmp = array(' . trim(preg_replace('/(a:\d+:{|(|;)s:\d+:|(|;)i:|"$)/', ",", substr($val, 0, strpos($val, 'bin_data'))), ',,') . ');');
+						foreach ($tmp as $i => $val) {
+							if ($val == 'origin_file') $origin_file = $tmp[intval($i)+1];
+							if ($val == 'mine_type') $mine_type = $tmp[intval($i)+1];
+							if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
+						}
+					}
+					$val = ($is_binary) ? '<a href="#" class="binary-file" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : $val;
 					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {

@@ -72,3 +72,37 @@ select#cdbt_db_engine {
 	position: absolute;
 	display: none;
 }
+.sql-editor {
+	margin: 1em 1em;
+	text-align: right;
+}
+.sql-editor .active {
+	color: #468847;
+	background-color: #dff0d8!important;
+	border-color: #3c763d;
+}
+.view_role-helper, .input_role-helper, .edit_role-helper, .admin_role-helper {
+	clear: both;
+	padding: .3em;
+	color: #3a87ad;
+}
+.current-exists-tables td {
+	padding: auto auto;
+	line-height: 51px;
+	text-align: center;
+	vertical-align: middle;
+}
+.current-exists-tables td:nth-child(1), .current-exists-tables td:nth-child(3) {
+	text-align: right;
+}
+.current-exists-tables td:nth-child(2) {
+	text-align: left;
+}
+.current-exists-tables td button.active[id$="choise-current-table"] {
+	color: #468847;
+	background-color: #dff0d8!important;
+	border-color: #3c763d;
+}
+.binary-file {
+	font-size: .86em;
+}

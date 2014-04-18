@@ -58,6 +58,9 @@ jQuery(document).ready(function($){
 		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
 		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
 		$('.controller-form input[name="_cdbt_token"]').val($(this).attr('data-token'));
+		$('.controller-form input[name="_wp_http_referer"]').remove();
+		$('.controller-form input[name="search_key"]').remove();
+		$('.controller-form').attr('method', 'get');
 		$('.controller-form').submit();
 	});
 	
@@ -85,7 +88,12 @@ jQuery(document).ready(function($){
 	
 	$('footer').children('div').each(function(){
 		if ($(this).hasClass('modal-kicker')) {
-			show_modal('<?php _e('Please comfirm', PLUGIN_SLUG); ?>', $(this).html(), '');
+			if ($(this).hasClass('show-run')) {
+				var run_process = ($(this).attr('data-run-label') == '') ? '<?php _e('Yes, run', PLUGIN_SLUG); ?>' : $(this).attr('data-run-label');
+			} else {
+				var run_process = '';
+			}
+			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', $(this).html(), run_process);
 			$('.modal.confirmation').modal('show');
 			$(this).remove();
 		}
@@ -98,17 +106,37 @@ jQuery(document).ready(function($){
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
 			modal_obj.find('.run-process').click(function(){
-				$('.controller-form').submit();
+				$('form[role="form"]').each(function(){
+					if ($(this).hasClass('controller-form')) {
+						$('.controller-form').submit();
+					} else {
+						if ($(this).parents('.tab-pane').hasClass('active')) {
+							$(this).children('input[name="section"]').val('run');
+							$(this).submit();
+						}
+					}
+				});
 			});
 		} else {
 			modal_obj.find('.run-process').parent('button').hide();
 		}
 	}
 	
-	function set_current_table_name() {
+	function ime_mode_inactive(event, targetObj) {
+		if ($('body').hasClass('locale-ja')) {
+			if (event == 'focus' || event == 'click') {
+				targetObj.attr('type', 'tel').css('ime-mode', 'disabled');
+			} else if (event == 'blur') {
+				targetObj.attr('type', 'text');
+			}
+		}
+	}
+	
+	function set_current_table_name(e) {
+		ime_mode_inactive(e.type, $('#cdbt_naked_table_name'));
 		$('code').each(function(){
 			if ($(this).hasClass('simulate_table_name')) {
-				var table_name = $('#cdbt_table_name').val();
+				var table_name = $('#cdbt_naked_table_name').val();
 				if ($('#cdbt_use_wp_prefix_for_newtable').is(':checked')) 
 					table_name = $('#cdbt_use_wp_prefix_for_newtable').attr('data-prefix') + table_name;
 				$(this).text(table_name);
@@ -116,8 +144,27 @@ jQuery(document).ready(function($){
 		});
 	}
 	
-	$('#cdbt_table_name').on('focus blur', set_current_table_name);
+	$('#cdbt_naked_table_name').on('click focus blur', set_current_table_name);
 	$('#cdbt_use_wp_prefix_for_newtable').on('click blur', set_current_table_name);
+	
+	$('.sql-editor a').on('click', function() {
+		if ($(this).attr('id') == 'sql-statements-mode') {
+			$('#sql-statements-mode').addClass('active');
+			$('#sql-table-creator').removeClass('active');
+		} else {
+			$('#sql-statements-mode').removeClass('active');
+			$('#sql-table-creator').addClass('active');
+		}
+	});
+	
+	$('div[data-toggle="buttons"] > label').hover(function() {
+		var target_class = '.' + $(this).children('input').attr('name') + '-helper';
+		var tips_content = $(this).children('input').attr('data-helper-tips');
+		$(target_class).html('<span class="glyphicon glyphicon-exclamation-sign"></span> ' + tips_content);
+	}, function(){
+		var target_class = '.' + $(this).children('input').attr('name') + '-helper';
+		$(target_class).html('&nbsp;');
+	});
 	
 	$('#cdbt_create_table_submit').on('click', function() {
 		if ($('#cdbt_use_wp_prefix_for_newtable').is(':checked')) {
@@ -125,15 +172,19 @@ jQuery(document).ready(function($){
 		} else {
 			$('#cdbt_create_table input[name="use_wp_prefix_for_newtable"]').val('false');
 		}
+		$('div[data-toggle="buttons"] > label').each(function() {
+			if ($(this).hasClass('active')) {
+				$(this).children('input').prop('checked', 'checked');
+			} else {
+				$(this).children('input').removeAttr('checked');
+			}
+		});
 		$('#cdbt_create_table').submit();
 	});
 	
 	$('#cdbt_general_setting_save').on('click', function() {
-		if ($('#cdbt_use_wp_prefix').is(':checked')) {
-			$('#cdbt_general_setting input[name="use_wp_prefix"]').val('true');
-		} else {
-			$('#cdbt_general_setting input[name="use_wp_prefix"]').val('false');
-		}
+		$('#cdbt_general_setting input[name="use_wp_prefix"]').val( $('#cdbt_use_wp_prefix').is(':checked') ? 'true' : 'false' );
+		$('#cdbt_general_setting input[name="cleaning_options"]').val( $('#cdbt_cleaning_options').is(':checked') ? 'true' : 'false' );
 		$('#cdbt_general_setting').submit();
 	});
 	
@@ -156,6 +207,16 @@ jQuery(document).ready(function($){
 		if (parse_str[0] == $(this).attr('data-table')) {
 			$('#cdbt_managed_tables input[name="handle"]').val(parse_str[1]);
 			$('#cdbt_managed_tables input[name="target_table"]').val($(this).attr('data-table'));
+			if (parse_str[1] == 'truncate-table') {
+				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');
+				$('.modal.confirmation').modal('show');
+			}
+			if (parse_str[1] == 'drop-table') {
+				var msg = '<?php _e('Will delete a "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');
+				$('.modal.confirmation').modal('show');
+			}
 			if (parse_str[1] == 'choise-current-table') {
 				selected_id = $(this).attr('id');
 				$('.current-exists-tables button[id$="choise-current-table"]').each(function() {
@@ -165,8 +226,8 @@ jQuery(document).ready(function($){
 						$(this).button('reset');
 					}
 				});
+				$('#cdbt_managed_tables').submit();
 			}
-			$('#cdbt_managed_tables').submit();
 		} else {
 			return false;
 		}

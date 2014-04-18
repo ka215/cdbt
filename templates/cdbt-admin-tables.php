@@ -1,6 +1,7 @@
 <?php
 // tables tab display setting
 $tab_name_label = translate_tab_name($tab_name);
+$target_table = isset($target_table) ? $target_table : '';
 $refresh_button_label = __('Reflesh Table List', PLUGIN_SLUG);
 $current_table = get_option(PLUGIN_SLUG . '_current_table', $cdbt_options['tables'][0]['table_name']);
 if (count($cdbt_options['tables']) > 1) {
@@ -79,7 +80,7 @@ if (count($cdbt_options['tables']) > 1) {
 		<input type="hidden" name="action" value="tables">
 		<input type="hidden" name="handle" value="reflesh">
 		<input type="hidden" name="section" value="confirm">
-		<input type="hidden" name="target_table" value="">
+		<input type="hidden" name="target_table" value="$target_table">
 		$nonce_field
 		<div class="form-group">
 			<button type="button" class="btn btn-default pull-right on-bottom-margin" id="reflesh-table-list">$refresh_button_label</button>

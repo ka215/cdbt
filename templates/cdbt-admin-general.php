@@ -5,6 +5,7 @@ $change_charset = false;
 $charset_disabled = disabled($change_charset, false, false);
 $change_timezone = false;
 $timezone_disabled = disabled($change_timezone, false, false);
+$cleaning_options = checked($cdbt_options['cleaning_options'], true, false);
 
 // inherit values
 //var_dump($inherit_values);
@@ -17,6 +18,7 @@ $charset_label = __('Table Charset', PLUGIN_SLUG);
 $charset_placeholder = __('Table Charset', PLUGIN_SLUG);
 $timezone_label = __('Database Timezone', PLUGIN_SLUG);
 $timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
+$helper_msg2 = __('Can clean the setting by delete the setting of the table that does not exist in database when save this general setting.', PLUGIN_SLUG);
 
 $content_html = <<<EOH
 <h3><span class="glyphicon glyphicon-wrench"></span> $tab_name_label</h3>
@@ -45,6 +47,16 @@ $content_html = <<<EOH
 		<label for="cdbt_table_name" class="col-sm-2 control-label">$timezone_label</label>
 		<div class="col-sm-2">
 			<input type="text" class="form-control" name="timezone" id="cdbt_timezone" placeholder="$timezone_placeholder" value="{$cdbt_options['timezone']}"$timezone_disabled>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-9">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="cdbt_cleaning_options" value="1"$cleaning_options> $helper_msg2
+					<input type="hidden" name="cleaning_options" value="true">
+				</label>
+			</div>
 		</div>
 	</div>
 	<div class="form-group">

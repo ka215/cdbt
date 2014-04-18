@@ -8,11 +8,11 @@ if (is_array($inherit_values) && !empty($inherit_values)) {
 $section = (isset($section) && !empty($section) && $section == 'run') ? 'run' : 'confirm';
 $naked_table_name = (isset($naked_table_name) && !empty($naked_table_name)) ? $naked_table_name : '';
 if (isset($use_wp_prefix_for_newtable) && !empty($use_wp_prefix_for_newtable)) {
-	$create_table_checkbox_attr = checked((bool)$use_wp_prefix_for_newtable, true, false);
-	$use_wp_prefix_for_newtable = (bool)$use_wp_prefix_for_newtable;
+	$create_table_checkbox_attr = checked(get_boolean($use_wp_prefix_for_newtable), true, false);
+	$use_wp_prefix_for_newtable = get_boolean($use_wp_prefix_for_newtable);
 } else {
-	$create_table_checkbox_attr = checked((bool)$cdbt_options['use_wp_prefix'], true, false);
-	$use_wp_prefix_for_newtable = (bool)$cdbt_options['use_wp_prefix'];
+	$create_table_checkbox_attr = checked(get_boolean($cdbt_options['use_wp_prefix']), true, false);
+	$use_wp_prefix_for_newtable = get_boolean($cdbt_options['use_wp_prefix']);
 }
 $table_comment = (isset($table_comment) && !empty($table_comment)) ? $table_comment : '';
 
@@ -34,6 +34,7 @@ $table_comment_placeholder = __('Enter Table Comment', PLUGIN_SLUG);
 $helper_msg4 = __('Table comment is used for display name as logical name of table.', PLUGIN_SLUG);
 $db_engine_label = __('Database Engine', PLUGIN_SLUG);
 $sql_label = __('Create Table SQL', PLUGIN_SLUG);
+$create_table_sql_placeholder = __('Enter SQL Statements to create table', PLUGIN_SLUG);
 $show_max_records_label = __('Show Max Records', PLUGIN_SLUG);
 $show_max_records_placeholder = __('Enter Integer', PLUGIN_SLUG);
 $show_max_records_unit = __('records', PLUGIN_SLUG);
@@ -41,10 +42,10 @@ $helper_msg5 = __('The maximum number of records to be displayed on one page.', 
 $timezone_label = __('Database Timezone', PLUGIN_SLUG);
 $timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
 $roles = array(
-	'view_role' => array(__('User Role for View', PLUGIN_SLUG), '1'), 
-	'input_role' => array(__('User Role for Input', PLUGIN_SLUG), '5'), 
-	'edit_role' => array(__('User Role for Edit', PLUGIN_SLUG), '7'), 
-	'admin_role' => array(__('User Role for Admin', PLUGIN_SLUG), '9'), 
+	'view_role' => array(__('User Role for View', PLUGIN_SLUG), (isset($view_role) && !empty($view_role) ? $view_role : '1')), 
+	'input_role' => array(__('User Role for Input', PLUGIN_SLUG), (isset($input_role) && !empty($input_role) ? $input_role : '5')), 
+	'edit_role' => array(__('User Role for Edit', PLUGIN_SLUG), (isset($edit_role) && !empty($edit_role) ? $edit_role : '7')), 
+	'admin_role' => array(__('User Role for Admin', PLUGIN_SLUG), (isset($admin_role) && !empty($admin_role) ? $admin_role : '9')), 
 );
 $cap_levels = array(
 	'1' => __('All users &mdash; If you grant privileges to all users, including subscribers.', PLUGIN_SLUG), 
@@ -60,13 +61,22 @@ foreach ($roles as $param_name => $param_value) {
 	list($label_title, $default_level) = $param_value;
 	$user_role_forms .= '<div class="form-group">';
 	$user_role_forms .= '<label for="'. $param_name . $default_level .'" class="col-sm-2 control-label">'. $label_title .'</label>';
-	$user_role_forms .= '<div class="col-sm-9">';
+//	$user_role_forms .= '<div class="col-sm-9">';
+	$user_role_forms .= '<div class="col-sm-9 btn-group" data-toggle="buttons">';
 	foreach ($cap_levels as $level => $description) {
 		$checked = checked($default_level, $level, false);
-		$user_role_forms .= '<div class="radio"><label>';
-		$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'"'. $checked .'>' . $description;
-		$user_role_forms .= '</label></div>';
+//		$user_role_forms .= '<div class="radio"><label>';
+//		$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'"'. $checked .'>' . $description;
+//		$user_role_forms .= '</label></div>';
+		$tmp_arr = explode('&mdash;', $description);
+		$role_name = $tmp_arr[0];
+		$helper_tips = (count($tmp_arr) > 1) ? $tmp_arr[1] : '';
+		$class_active = (!empty($checked)) ? 'active' : '';
+		$user_role_forms .= '<label class="btn btn-default '. $class_active .'">';
+		$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'" data-helper-tips="'. $helper_tips .'"'. $checked .'>' . $role_name;
+		$user_role_forms .= '</label>';
 	}
+	$user_role_forms .= '<p class="'. $param_name .'-helper help-block">&nbsp;</p>';
 	$user_role_forms .= '</div>';
 	$user_role_forms .= '</div>';
 }
@@ -80,13 +90,13 @@ $content_html = <<<EOH
 	<input type="hidden" name="section" value="$section">
 	$nonce_field
 	<div class="form-group">
-		<label for="cdbt_table_name" class="col-sm-2 control-label">$table_name_label</label>
+		<label for="cdbt_naked_table_name" class="col-sm-2 control-label">$table_name_label</label>
 		<div class="col-sm-3">
-			<input type="text" class="form-control" name="naked_table_name" id="cdbt_table_name" placeholder="$table_name_placeholder" value="$naked_table_name">
+			<input type="text" class="form-control" name="naked_table_name" id="cdbt_naked_table_name" placeholder="$table_name_placeholder" value="$naked_table_name" required>
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-9">
+		<div class="col-sm-offset-2 col-sm-8">
 			<div class="checkbox">
 				<label>
 					<input type="checkbox" id="cdbt_use_wp_prefix_for_newtable" value="1" data-prefix="{$wpdb->prefix}"$create_table_checkbox_attr> $helper_msg1
@@ -96,7 +106,7 @@ $content_html = <<<EOH
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-9">
+		<div class="col-sm-offset-2 col-sm-8">
 			<p class="help-block">$helper_msg2 <code class="simulate_table_name"></code></p>
 			<p class="help-block"><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> 
 				$helper_msg3</p></p>
@@ -120,15 +130,20 @@ $content_html = <<<EOH
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="cdbt_table_name" class="col-sm-2 control-label">$sql_label</label>
+		<label for="cdbt_table_name" class="col-sm-2 control-label">$sql_label
+			<div class="sql-editor btn-group-vertical">
+				<a href="#cdbt_create_table_sql" id="sql-statements-mode" class="btn btn-default btn-sm active">Statements Mode</a>
+				<a href="#cdbt_create_table_sql" id="sql-table-creator" class="btn btn-default btn-sm" data-toggle="modal" data-target=".mysql-table-creator">Table Creator</a>
+			</div>
+		</label>
 		<div class="col-sm-8">
-			<textarea class="form-control" name="create_table_sql" id="cdbt_create_table_sql" rows="20">$create_table_sql</textarea>
+			<textarea class="form-control" name="create_table_sql" id="cdbt_create_table_sql" cols="20" rows="15" placeholder="$create_table_sql_placeholder" wrap="hard" required>$create_table_sql</textarea>
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="gh_max_records" class="col-sm-2 control-label">$show_max_records_label</label>
+		<label for="cdbt_max_records" class="col-sm-2 control-label">$show_max_records_label</label>
 		<div class="col-sm-1">
-			<input type="text" class="form-control" name="show_max_records" id="gh_show_max_records" placeholder="$show_max_records_placeholder" value="$show_max_records">
+			<input type="number" class="form-control" name="show_max_records" id="cdbt_show_max_records" placeholder="$show_max_records_placeholder" value="$show_max_records" min="1">
 		</div>
 		<p class="help-block">$show_max_records_unit</p>
 		<div class="col-sm-offset-2 col-sm-9">

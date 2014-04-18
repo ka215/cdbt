@@ -3,7 +3,7 @@
   Plugin Name: Custom Database Tables
   Plugin URI: http://www.ka2.org/
   Description: This plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.
-  Version: 0.3.2
+  Version: 0.3.3
   Author: Katsuhiko Maeno
   Author URI: http://www.ka2.org
   Copyright: 2014 monauralsound (email : ka2@ka2.org)
@@ -11,7 +11,7 @@
   Text Domain: custom-database-tables
   Domain Path: /langs
 */
-define('PLUGIN_VERSION', '0.3.2');
+define('PLUGIN_VERSION', '0.3.3');
 define('PLUGIN_SLUG', 'custom-database-tables');
 
 define('DS', DIRECTORY_SEPARATOR);
