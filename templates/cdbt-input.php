@@ -34,15 +34,13 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	}
 	foreach ($_FILES as $k => $v) {
 		if ($v['size'] > 0) {
-			$fh = fopen($v['tmp_name'], 'rb');
-			$bin_data = fread($fh, filesize($v['tmp_name']));
-			fclose($fh);
+			$bin_data = file_get_contents($v['tmp_name']);
 			${$k} = serialize(array(
 				'origin_file' => rawurlencode($v['name']), 
 				'mine_type' => $v['type'], 
 				'file_size' => $v['size'], 
-				'bin_data' => addslashes($bin_data), 
-				'hash' => md5(addslashes($bin_data))
+				'bin_data' => $bin_data, 
+				'hash' => md5($bin_data), 
 			));
 		} else {
 			if (!empty($origin_bin_data)) 

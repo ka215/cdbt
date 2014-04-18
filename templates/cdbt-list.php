@@ -119,6 +119,8 @@ NAV;
 				$list_rows .= ($is_display_list_num) ? '<td>'. $list_num .'</td>' : '';
 				$is_include_binary_file = false;
 				foreach ($record as $key => $val) {
+					if (strtoupper($key) == 'ID') 
+						$data_id = intval($val);
 					// strlen('a:*:{s:11:"origin_file";') = 24
 					$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) ? true : false;
 					$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
@@ -130,7 +132,7 @@ NAV;
 							if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
 						}
 					}
-					$val = ($is_binary) ? '<a href="#" class="binary-file" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
+					$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
 					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {

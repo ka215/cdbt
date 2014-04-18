@@ -67,7 +67,14 @@ jQuery(document).ready(function($){
 	$('.download-binary').on('click', function(){
 		var btn = $(this);
 		btn.addClass('btn-primary').button('loading');
-		$.post().always(function(){
+		$.ajax({
+			type: 'POST', 
+			url: "<?php echo plugins_url(PLUGIN_SLUG) . '/lib/ajax.php'; ?>", 
+			data: { mode: $(this).attr('data-action'), id: $(this).attr('data-id'), token: '<?php echo wp_create_nonce(PLUGIN_SLUG . '_ajax'); ?>' }
+		}).done(function(res){
+			show_modal('<?php _e('Download binary files', PLUGIN_SLUG); ?>', res, '');
+			$('.modal.confirmation').modal('show');
+		}).always(function(){
 			btn.removeClass('btn-primary').button('reset');
 		});
 	});
@@ -236,6 +243,17 @@ jQuery(document).ready(function($){
 	$('.text-collapse').on('click', function(){
 		var current_display_content = $(this).html();
 		$(this).html($(this).attr('full-content')).attr('full-content', current_display_content);
+	});
+	
+	$('.binary-file').on('click', function(){
+		if ($(this).text().indexOf('image/') > 0) {
+			var img = '<img src="<?php echo plugins_url(PLUGIN_SLUG) . '/lib/media.php'; ?>?id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&token=<?php echo wp_create_nonce(PLUGIN_SLUG . '_media'); ?>" width="100%" class="img-thumbnail">';
+			show_modal('<?php _e('Stored image', PLUGIN_SLUG); ?>', img, '');
+			$('.modal.confirmation').modal('show');
+		} else {
+			show_modal('<?php _e('Stored binary file', PLUGIN_SLUG); ?>', decodeURI($(this).attr('data-origin-file')), '');
+			$('.modal.confirmation').modal('show');
+		}
 	});
 	
 	
