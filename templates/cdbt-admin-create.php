@@ -16,7 +16,7 @@ if (isset($use_wp_prefix_for_newtable) && !empty($use_wp_prefix_for_newtable)) {
 }
 $table_comment = (isset($table_comment) && !empty($table_comment)) ? $table_comment : '';
 
-$db_engine = (!isset($db_engine) || empty($db_engine)) ? $controller_table['db_engine'] : $db_engine;
+$db_engine = (!isset($db_engine) || empty($db_engine)) ? $cdbt_options['tables'][0]['db_engine'] : $db_engine;
 $db_engine_options = sprintf('<option value="InnoDB"%s>InnoDB</option><option value="MyISAM"%s>MyISAM</option>', selected($db_engine, 'InnoDB', false), selected($db_engine, 'MyISAM', false));
 $create_table_sql = (isset($create_table_sql) && !empty($create_table_sql)) ? $create_table_sql : '';
 $show_max_records = (isset($show_max_records) && !empty($show_max_records) && intval($show_max_records) > 0) ? intval($show_max_records) : intval(get_option('posts_per_page', 10));

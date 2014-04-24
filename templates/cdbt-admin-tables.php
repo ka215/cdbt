@@ -38,11 +38,14 @@ if (count($cdbt_options['tables']) > 1) {
 				continue;
 			$cdbt->current_table = $load_table_name;
 			if ($cdbt->check_table_exists()) {
-				$total = (array)array_shift($cdbt->get_data($load_table_name, 'COUNT(*)'));
+				$res = $cdbt->get_data($load_table_name, 'COUNT(*)');
+				foreach (array_shift($res) as $val) {
+					$total = intval($val);
+				}
 				$is_current = ($current_table && $current_table == $load_table_name) ? true : false;
 				$table_rows .= '<tr><td>'. $index_num .'</td>';
 				$table_rows .= '<td>'. $load_table_name .'</td>';
-				$table_rows .= '<td>'. array_shift($total) .'</td>';
+				$table_rows .= '<td>'. $total .'</td>';
 				foreach ($enable_handle as $handle_name => $handle_info) {
 					$add_attr = (!$handle_info['enable']) ? ' disabled="disabled"' : '';
 					$add_class = '';
