@@ -95,6 +95,27 @@ function check_current_table_role($mode) {
 }
 
 /**
+ * check the table whether current table valid
+ * @return boolean
+ */
+function check_current_table_valid() {
+	$cdbt_option = get_option(PLUGIN_SLUG);
+	$current_table = get_option(PLUGIN_SLUG . '_current_table');
+	if (!$current_table || !$cdbt_option) 
+		return false;
+	$is_enable_table = false;
+	foreach ($cdbt_option['tables'] as $table) {
+		if ($table['table_name'] == $current_table) {
+			if ($table['table_type'] == 'enable_table') {
+				$is_enable_table = true;
+				break;
+			}
+		}
+	}
+	return $is_enable_table;
+}
+
+/**
  * output console's header menu area
  * @param string $nonce
  * @return void
@@ -363,7 +384,11 @@ function str_truncate($string, $length=40, $suffix='...', $collapse=false) {
  * @return boolean
  */
 function compare_var($var, $compare=null) {
-	return $var === $compare ? true : false;
+	if ((string)$var === (string)$compare) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /**

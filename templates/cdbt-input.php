@@ -30,7 +30,11 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			} else {
 				$info_msg = __('No data applicable.', self::DOMAIN);
 			}
+		} else {
+			$action = 'confirm';
 		}
+	} else {
+		$action = (!isset($action) || empty($action)) ? '' : $action;
 	}
 	foreach ($_FILES as $k => $v) {
 		if ($v['size'] > 0) {
@@ -51,7 +55,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$form_html = '<div>%s<form method="post" id="'. $table_name .'" enctype="multipart/form-data" role="form">';
 		$form_html .= ($is_update_mode) ? '<input type="hidden" name="ID" value="'. $ID .'" />' : '';
 		$form_html .= '<input type="hidden" name="mode" value="input" />';
-		$form_html .= '<input type="hidden" name="action" value="" />';
+		$form_html .= '<input type="hidden" name="action" value="'. $action .'" />';
 		$form_html .= wp_nonce_field(self::DOMAIN .'_'. $mode, '_cdbt_token', true, false);
 		$form_html .= '%s</form></div>';
 		$form_objects = array();
@@ -75,7 +79,8 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 					if ($action == 'confirm') 
 						$update_id = $this->update_data($table_name, $ID, $post_values, $table_schema);
 				} else {
-					$insert_id = $this->insert_data($table_name, $post_values, $table_schema);
+					if ($action == 'confirm') 
+						$insert_id = $this->insert_data($table_name, $post_values, $table_schema);
 				}
 			} else {
 				$err_list = null;

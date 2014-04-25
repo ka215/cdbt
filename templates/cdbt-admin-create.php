@@ -16,7 +16,7 @@ if (isset($use_wp_prefix_for_newtable) && !empty($use_wp_prefix_for_newtable)) {
 }
 $table_comment = (isset($table_comment) && !empty($table_comment)) ? $table_comment : '';
 
-$db_engine = (!isset($db_engine) || empty($db_engine)) ? $cdbt_options['tables'][0]['db_engine'] : $db_engine;
+$db_engine = (!isset($db_engine) || empty($db_engine)) ? 'InnoDB' : $db_engine;
 $db_engine_options = sprintf('<option value="InnoDB"%s>InnoDB</option><option value="MyISAM"%s>MyISAM</option>', selected($db_engine, 'InnoDB', false), selected($db_engine, 'MyISAM', false));
 $create_table_sql = (isset($create_table_sql) && !empty($create_table_sql)) ? $create_table_sql : '';
 $show_max_records = (isset($show_max_records) && !empty($show_max_records) && intval($show_max_records) > 0) ? intval($show_max_records) : intval(get_option('posts_per_page', 10));
@@ -34,11 +34,14 @@ $table_comment_placeholder = __('Enter Table Comment', PLUGIN_SLUG);
 $helper_msg4 = __('Table comment is used for display name as logical name of table.', PLUGIN_SLUG);
 $db_engine_label = __('Database Engine', PLUGIN_SLUG);
 $sql_label = __('Create Table SQL', PLUGIN_SLUG);
+$edit_sql_mode1 = __('Statements Mode', PLUGIN_SLUG);
+$edit_sql_mode2 = __('Table Creator', PLUGIN_SLUG);
 $create_table_sql_placeholder = __('Enter SQL Statements to create table', PLUGIN_SLUG);
+$helper_msg5 = __('ID field of primary key for autoincrement type will be automatically inserted at the beginning. Then, the fields of update date and registration date and time will be added automatically to the end. Please do not include the entry of the field for those if you want to write SQL directly create the table.', PLUGIN_SLUG);
 $show_max_records_label = __('Show Max Records', PLUGIN_SLUG);
 $show_max_records_placeholder = __('Enter Integer', PLUGIN_SLUG);
 $show_max_records_unit = __('records', PLUGIN_SLUG);
-$helper_msg5 = __('The maximum number of records to be displayed on one page.', PLUGIN_SLUG);
+$helper_msg6 = __('The maximum number of records to be displayed on one page.', PLUGIN_SLUG);
 $timezone_label = __('Database Timezone', PLUGIN_SLUG);
 $timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
 $roles = array(
@@ -117,7 +120,7 @@ $content_html = <<<EOH
 		<div class="col-sm-3">
 			<input type="text" class="form-control" name="table_comment" id="cdbt_table_comment" placeholder="$table_comment_placeholder" value="$table_comment">
 		</div>
-		<div class="col-sm-offset-2 col-sm-9">
+		<div class="col-sm-offset-2 col-sm-8">
 			<p class="help-block">$helper_msg4</p>
 		</div>
 	</div>
@@ -132,12 +135,15 @@ $content_html = <<<EOH
 	<div class="form-group">
 		<label for="cdbt_table_name" class="col-sm-2 control-label">$sql_label
 			<div class="sql-editor btn-group-vertical">
-				<a href="#cdbt_create_table_sql" id="sql-statements-mode" class="btn btn-default btn-sm active">Statements Mode</a>
-				<a href="#cdbt_create_table_sql" id="sql-table-creator" class="btn btn-default btn-sm" data-toggle="modal" data-target=".mysql-table-creator">Table Creator</a>
+				<a href="#cdbt_create_table_sql" id="sql-statements-mode" class="btn btn-default btn-sm active">$edit_sql_mode1</a>
+				<a href="#cdbt_create_table_sql" id="sql-table-creator" class="btn btn-default btn-sm" data-toggle="modal" data-target=".mysql-table-creator">$edit_sql_mode2</a>
 			</div>
 		</label>
 		<div class="col-sm-8">
 			<textarea class="form-control" name="create_table_sql" id="cdbt_create_table_sql" cols="20" rows="15" placeholder="$create_table_sql_placeholder" wrap="hard" required>$create_table_sql</textarea>
+		</div>
+		<div class="col-sm-offset-2 col-sm-8">
+			<p class="help-block">$helper_msg5</p>
 		</div>
 	</div>
 	<div class="form-group">
@@ -146,13 +152,13 @@ $content_html = <<<EOH
 			<input type="number" class="form-control" name="show_max_records" id="cdbt_show_max_records" placeholder="$show_max_records_placeholder" value="$show_max_records" min="1">
 		</div>
 		<p class="help-block">$show_max_records_unit</p>
-		<div class="col-sm-offset-2 col-sm-9">
-			<p class="help-block">$helper_msg5</p>
+		<div class="col-sm-offset-2 col-sm-8">
+			<p class="help-block">$helper_msg6</p>
 		</div>
 	</div>
 	$user_role_forms
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-9">
+		<div class="col-sm-offset-2 col-sm-8">
 			<button type="button" id="cdbt_create_table_submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> $submit_label</button>
 		</div>
 	</div>

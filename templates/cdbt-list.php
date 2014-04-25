@@ -18,9 +18,11 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	
 	$page_num = (!isset($page_num) || empty($page_num)) ? 1 : intval($page_num);
 	if (!isset($per_page) || empty($per_page)) {
-		for ($i=0; $i<count($this->options['tables']); $i++) {
-			if ($this->options['tables'][$i]['table_name'] == $this->current_table) 
-				$data = intval($this->options['tables'][$i]['show_max_records']);
+		foreach ($this->options['tables'] as $i => $table) {
+			if ($table['table_name'] == $this->current_table) {
+				$data = intval($table['show_max_records']);
+				break;
+			}
 		}
 		$per_page = (!empty($data) && $data > 0) ? $data : intval(get_option('posts_per_page', 10));
 	} else {
@@ -108,7 +110,7 @@ NAV;
 					$list_index_row .= ($is_display_list_num) ? '<th>'. __('No.', self::DOMAIN) .'</th>' : '';
 					foreach ($record as $key => $val) {
 						if (array_key_exists($key, $table_schema)) 
-							$key = $table_schema[$key]['logical_name'];
+							$key = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
 						$list_index_row .= '<th>'. $key .'</th>';
 					}
 					$list_index_row .= ($mode == 'edit') ? '<th>'. __('Controll', self::DOMAIN) .'</th>' : '';

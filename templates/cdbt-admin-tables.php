@@ -5,14 +5,15 @@ $target_table = isset($target_table) ? $target_table : '';
 $refresh_button_label = __('Reflesh Table List', PLUGIN_SLUG);
 $current_table = get_option(PLUGIN_SLUG . '_current_table', $cdbt_options['tables'][0]['table_name']);
 if (count($cdbt_options['tables']) > 1) {
-	for ($i=1; $i<count($cdbt_options['tables']); $i++) {
-		if (!empty($cdbt_options['tables'][$i]['table_name'])) 
-			$load_tables[] = $cdbt_options['tables'][$i]['table_name'];
+	foreach ($cdbt_options['tables'] as $i => $table) {
+		if ($table['table_type'] == 'enable_table') 
+			$load_tables[] = $table['table_name'];
 	}
 	$index_label = array(
 		__('No.', PLUGIN_SLUG), 
 		__('Table Name', PLUGIN_SLUG), 
 		__('Total Records', PLUGIN_SLUG), 
+		__('Data Import', PLUGIN_SLUG), 
 		__('Data Export', PLUGIN_SLUG), 
 		__('Change Table Schema', PLUGIN_SLUG), 
 		__('Truncate table', PLUGIN_SLUG), 
@@ -24,6 +25,7 @@ if (count($cdbt_options['tables']) > 1) {
 		$thead_th .= '<th>'. $th_text .'</th>';
 	}
 	$enable_handle = array(
+		'data-import' => array('enable' => false, 'label' => __('Data Import', PLUGIN_SLUG)), 
 		'data-export' => array('enable' => false, 'label' => __('Data Export', PLUGIN_SLUG)), 
 		'alter-table' => array('enable' => false, 'label' => __('Alter table', PLUGIN_SLUG)), 
 		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', PLUGIN_SLUG)), 
@@ -86,7 +88,7 @@ if (count($cdbt_options['tables']) > 1) {
 		<input type="hidden" name="target_table" value="$target_table">
 		$nonce_field
 		<div class="form-group">
-			<button type="button" class="btn btn-default pull-right on-bottom-margin" id="reflesh-table-list">$refresh_button_label</button>
+			<button type="button" class="btn btn-info pull-right on-bottom-margin" id="reflesh-table-list">$refresh_button_label</button>
 		</div>
 	</form>
 </div>

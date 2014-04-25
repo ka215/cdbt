@@ -776,55 +776,88 @@ class CustomDatabaseTables {
 			if (empty($data)) 
 				return array(false, __('empty', self::DOMAIN));
 		}
-		if (preg_match('/^((|tiny|small|medium|big)int|float|doubleprecision|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
-			if (strtolower($column_schema['type_format']) != 'tinyint(1)') {
-				if (!preg_match('/^[0-9]+$/i', $data)) 
-					return array(false, __('not integer', self::DOMAIN));
+		if (!empty($data)) {
+			if (preg_match('/^((|tiny|small|medium|big)int|float|doubleprecision|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
+				if (strtolower($column_schema['type_format']) != 'tinyint(1)') {
+					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean))$/i', strtolower($column_schema['type']))) {
+						$data = intval($data);
+						if (!is_int($data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					} else {
+						$data = floatval($data);
+						if (!preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					}
+				} else {
+					$data = intval($data);
+					if (!preg_match('/^(\-|)[0-9]+$/', $data)) 
+						return array(false, __('not integer', self::DOMAIN));
+				}
+				if ($column_schema['unsigned']) {
+					if ($data < 0) 
+						return array(false, __('not a positive number', self::DOMAIN));
+				}
 			}
-		}
-		if (preg_match('/^((|var|national|n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
-			if (!is_string($data)) 
-				return array(false, __('invalid strings', self::DOMAIN));
-		}
-		if (preg_match('/^(enum|set)(.*?)$/i', strtolower($column_schema['type_format']), $matches)) {
-			$eval_string = '$items = array' . $matches[2] . ';';
-			eval($eval_string);
-			if (!empty($data)) {
-				if (!is_array($data)) 
-					$data = explode(',', $data);
-				foreach ($data as $tmp) {
-					if (!in_array($tmp, $items)) {
-						return array(false, __('invalid value', self::DOMAIN));
+			if (preg_match('/^((|var|national|n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
+				if (!is_string($data)) 
+					return array(false, __('invalid strings', self::DOMAIN));
+			}
+			if (preg_match('/^(enum|set)(.*?)$/i', strtolower($column_schema['type_format']), $matches)) {
+				$eval_string = '$items = array' . $matches[2] . ';';
+				eval($eval_string);
+				if (!empty($data)) {
+					if (!is_array($data)) 
+						$data = explode(',', $data);
+					foreach ($data as $tmp) {
+						if (!in_array($tmp, $items)) {
+							return array(false, __('invalid value', self::DOMAIN));
+						}
 					}
 				}
 			}
-		}
-		if (preg_match('/^(datetime|timestamp)$/i', strtolower($column_schema['type']))) {
-			if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})$/i', $data)) 
-				return array(false, __('invalid format', self::DOMAIN));
-		}
-		if (strtolower($column_schema['type']) == 'date') {
-			if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/i', $data)) 
-				return array(false, __('invalid format', self::DOMAIN));
-		}
-		if (strtolower($column_schema['type']) == 'time') {
-			if (!preg_match('/^(\d{2}):(\d{2}):(\d{2})$/i', $data)) 
-				return array(false, __('invalid format', self::DOMAIN));
-		}
-		if (strtolower($column_schema['type']) == 'year') {
-			if (!preg_match('/^(\d{4})$/i', $data)) 
-				return array(false, __('invalid format', self::DOMAIN));
-		}
-		if (is_array($data)) {
-			foreach ($data as $value) {
-				if (mb_strlen((string)$value) > $column_schema['octet_length']) {
+			$reg_date = '([1-9][0-9]{3})\D?(0[1-9]{1}|1[0-2]{1})\D?(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})\D?';
+			$reg_time = '(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?';
+			$reg_year = '([1-9][0-9]{3})\D?';
+			if (preg_match('/^(datetime|timestamp)$/i', strtolower($column_schema['type']))) {
+				if (!preg_match('/^'. $reg_date . $reg_time .'$/', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'date') {
+				if (!preg_match('/^'. $reg_date .'$/', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'time') {
+				if (!preg_match('/^'. $reg_time .'$/i', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'year') {
+				if (!preg_match('/^'. $reg_year .'$/i', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (is_array($data)) {
+				foreach ($data as $value) {
+					if (function_exists('mb_strlen')) {
+						$length = mb_strlen((string)$value);
+					} else {
+						$length = strlen((string)$value);
+					}
+					if ($length > intval($column_schema['max_length'])) {
+						return array(false, __('max length over', self::DOMAIN));
+					}
+				}
+			} else if (!preg_match('/^(datetime|timestamp|date|time|year)$/i', strtolower($column_schema['type']))) {
+				if (function_exists('mb_strlen')) {
+					$length = mb_strlen((string)$data);
+				} else {
+					$length = strlen((string)$data);
+				}
+				if ($length > intval($column_schema['max_length'])) {
 					return array(false, __('max length over', self::DOMAIN));
 				}
 			}
 		} else {
-			if (mb_strlen((string)$data) > $column_schema['octet_length']) {
-				return array(false, __('max length over', self::DOMAIN));
-			}
+			if ($column_schema['not_null'])
+				return array(false, __('empty', self::DOMAIN));
 		}
 		return array(true, '');
 	}

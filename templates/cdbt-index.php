@@ -46,8 +46,10 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			if (preg_match($exclude_items_reg, $key)) 
 				continue;
 			$val = preg_replace('/(,|\s)/', '$1<wbr>', $val);
-			if (preg_match($boolean_items_reg, $key))
+			if (preg_match($boolean_items_reg, $key)) 
 				$val = (bool)$val ? '<span class="label label-info">'. __('true', self::DOMAIN) .'</span>' : '<span class="label label-default">'. __('false', self::DOMAIN) .'</span>';
+			if ($key == 'logical_name' && empty($val)) 
+				$val = $col_name;
 			$schm_rows .= '<td>'. $val .'</td>';
 		}
 		$schm_rows .= '</tr>';

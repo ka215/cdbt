@@ -104,8 +104,10 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 							if (compare_var(empty($inherit_values['create_table_sql']), true)) {
 								$msg = array('warning', __('Create Table SQL is empty.', self::DOMAIN));
 							} else {
+								$sql_str = stripcslashes(strip_tags($inherit_values['create_table_sql']));
 								// sql validate
-//var_dump($inherit_values['create_table_sql']);
+								$inherit_values['create_table_sql'] = $sql_str;
+var_dump($inherit_values['create_table_sql']);
 							}
 							if (empty($msg)) {
 								if (compare_var(empty($inherit_values['show_max_records']), true)) {
@@ -132,7 +134,8 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$prev_current_table = $this->current_table;
 					$this->current_table = (get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
 					if (!$this->check_table_exists()) {
-						$esc_table_comment = stripcslashes($inherit_values['table_comment']);
+						$esc_table_comment = stripcslashes(strip_tags($inherit_values['table_comment']));
+						$inherit_values['create_table_sql'] = stripcslashes(strip_tags($inherit_values['create_table_sql']));
 						$new_table = array(
 							'table_name' => $this->current_table, 
 							'table_type' => 'enable_table', 
@@ -182,6 +185,10 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 		case 'tables': 
 			$prev_current_table = $this->current_table;
 			$target_table = $inherit_values['target_table'];
+			if ($handle == 'data-import') {
+				// is not implemented in this version.
+				
+			}
 			if ($handle == 'data-export') {
 				// is not implemented in this version.
 				
@@ -196,11 +203,11 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if ($this->current_table != $this->options['tables'][0]['table_name']) {
+					if (check_current_table_valid()) {
 						list($result, $message) = $this->truncate_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 					} else {
-						$msg = array('warning', __('You can not handle to truncate controller table.', self::DOMAIN));
+						$msg = array('warning', __('You can not handle to truncate this table.', self::DOMAIN));
 					}
 					$this->current_table = $prev_current_table;
 				} else {
@@ -213,12 +220,12 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will delete a "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if ($this->current_table != $this->options['tables'][0]['table_name']) {
+					if (check_current_table_valid()) {
 						list($result, $message) = $this->drop_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 						if ($result) {
-							for($i=0; $i<count($this->options['tables']); $i++) {
-								if (compare_var($this->options['tables'][$i]['table_name'], $target_table)) {
+							foreach ($this->options['tables'] as $i => $table) {
+								if (compare_var($table['table_name'], $target_table)) {
 									unset($this->options['tables'][$i]);
 								}
 							}
@@ -238,20 +245,18 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				}
 			}
 			if ($handle == 'choise-current-table') {
-				$is_usable_table = false;
-				for ($i=1; $i<count($this->options['tables']); $i++) {
-					if (compare_var($this->options['tables'][$i]['table_name'], $target_table)) {
-						if ($this->options['tables'][$i]['table_type'] == 'enable_table') 
-							$is_usable_table = true;
-						break;
-					}
-				}
-				if ($is_usable_table) {
-					$this->current_table = $target_table;
+				$prev_current_table = get_option(self::DOMAIN . '_current_table');
+				$this->current_table = $target_table;
+				update_option(self::DOMAIN . '_current_table', $this->current_table);
+				if (check_current_table_valid()) {
 					update_option(self::DOMAIN . '_current_table', $target_table);
 					$message = sprintf(__('The %s&apos;s table was chosen as the current table.', self::DOMAIN), $target_table);
 					$msg_type = 'success';
 				} else {
+					if ($prev_current_table) {
+						$this->current_table = $prev_current_table;
+						update_option(self::DOMAIN . '_current_table', $prev_current_table);
+					}
 					$message = sprintf(__('Did not choose the %s&apos;s table.', self::DOMAIN), $target_table);
 					$msg_type = 'warning';
 				}
