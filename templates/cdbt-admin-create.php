@@ -62,26 +62,26 @@ $cap_levels = array(
 $user_role_forms = null;
 foreach ($roles as $param_name => $param_value) {
 	list($label_title, $default_level) = $param_value;
-	$user_role_forms .= '<div class="form-group">';
-	$user_role_forms .= '<label for="'. $param_name . $default_level .'" class="col-sm-2 control-label">'. $label_title .'</label>';
-//	$user_role_forms .= '<div class="col-sm-9">';
-	$user_role_forms .= '<div class="col-sm-9 btn-group" data-toggle="buttons">';
-	foreach ($cap_levels as $level => $description) {
-		$checked = checked($default_level, $level, false);
-//		$user_role_forms .= '<div class="radio"><label>';
-//		$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'"'. $checked .'>' . $description;
-//		$user_role_forms .= '</label></div>';
-		$tmp_arr = explode('&mdash;', $description);
-		$role_name = $tmp_arr[0];
-		$helper_tips = (count($tmp_arr) > 1) ? $tmp_arr[1] : '';
-		$class_active = (!empty($checked)) ? 'active' : '';
-		$user_role_forms .= '<label class="btn btn-default '. $class_active .'">';
-		$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'" data-helper-tips="'. $helper_tips .'"'. $checked .'>' . $role_name;
-		$user_role_forms .= '</label>';
+	if (compare_var($param_name, 'admin_role')) {
+		$user_role_forms .= '<input type="hidden" name="'. $param_name .'" id="'. $param_name .'" value="'. $default_level .'">';
+	} else {
+		$user_role_forms .= '<div class="form-group">';
+		$user_role_forms .= '<label for="'. $param_name . $default_level .'" class="col-sm-2 control-label">'. $label_title .'</label>';
+		$user_role_forms .= '<div class="col-sm-9 btn-group" data-toggle="buttons">';
+		foreach ($cap_levels as $level => $description) {
+			$checked = checked($default_level, $level, false);
+			$tmp_arr = explode('&mdash;', $description);
+			$role_name = $tmp_arr[0];
+			$helper_tips = (count($tmp_arr) > 1) ? $tmp_arr[1] : '';
+			$class_active = (!empty($checked)) ? 'active' : '';
+			$user_role_forms .= '<label class="btn btn-default '. $class_active .'">';
+			$user_role_forms .= '<input type="radio" name="'. $param_name .'" id="'. $param_name . $level .'" value="'. $level .'" data-helper-tips="'. $helper_tips .'"'. $checked .'>' . $role_name;
+			$user_role_forms .= '</label>';
+		}
+		$user_role_forms .= '<p class="'. $param_name .'-helper help-block">&nbsp;</p>';
+		$user_role_forms .= '</div>';
+		$user_role_forms .= '</div>';
 	}
-	$user_role_forms .= '<p class="'. $param_name .'-helper help-block">&nbsp;</p>';
-	$user_role_forms .= '</div>';
-	$user_role_forms .= '</div>';
 }
 
 $content_html = <<<EOH

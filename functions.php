@@ -67,7 +67,7 @@ function current_user_level() {
 		if (array_key_exists('administrator', $user_cap) && $user_cap['administrator']) 
 			$level = 9;
 	} else {
-		$level = 0;
+		$level = 1;
 	}
 	return $level;
 }
@@ -75,11 +75,16 @@ function current_user_level() {
 /**
  * check role if current login user can use current table 
  * @param string $mode
+ * @param string $table (optional) default null
  * @return boolean
  */
-function check_current_table_role($mode) {
+function check_current_table_role($mode, $table=null) {
 	$cdbt_option = get_option(PLUGIN_SLUG);
-	$current_table = get_option(PLUGIN_SLUG . '_current_table');
+	if (empty($table)) {
+		$current_table = get_option(PLUGIN_SLUG . '_current_table');
+	} else {
+		$current_table = $table;
+	}
 	if (!$current_table || !$cdbt_option) 
 		return false;
 	$is_enable_mode = false;

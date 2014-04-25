@@ -123,7 +123,6 @@ class CustomDatabaseTables {
 		$this->current_table = get_option(self::DOMAIN . '_current_table', '');
 		
 //		add_action('wp_enqueue_scripts', array($this, 'load_common_assets'));
-//		add_action('widget_init', array($this, 'register_widgets'));
 		add_filter('plugin_action_links', array($this, 'add_action_links'), 10, 2);
 		add_action('admin_menu', array($this, 'create_admin'));
 		
@@ -349,23 +348,27 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Check table exists
+	 * @param string $table_name (optional) default $this->current_table
 	 * @return string
 	 */
-	function check_table_exists() {
+	function check_table_exists($table_name=null) {
 		global $wpdb;
-		$is_tbl_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->current_table));
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		$is_tbl_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name));
 		return $is_tbl_exists;
 	}
 	
 	/**
 	 * Truncate table
+	 * @param string $table_name (optional) default $this->current_table
 	 * @return array
 	 */
-	function truncate_table() {
+	function truncate_table($table_name=null) {
 		global $wpdb;
-		if ($this->check_table_exists()) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if ($this->check_table_exists($table_name)) {
 			// if exists table, truncate table.
-			$e = $wpdb->query("TRUNCATE TABLE `". $this->current_table ."`");
+			$e = $wpdb->query("TRUNCATE TABLE `". $table_name ."`");
 			if ($e) {
 				$result = array(true, __('Completed to truncate table.', self::DOMAIN));
 			} else {
@@ -379,13 +382,15 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Drop table
+	 * @param string $table_name (optional) default $this->current_table
 	 * @return array
 	 */
-	function drop_table() {
+	function drop_table($table_name=null) {
 		global $wpdb;
-		if ($this->check_table_exists()) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if ($this->check_table_exists($table_name)) {
 			// if exists table, drop table.
-			$e = $wpdb->query("DROP TABLE `". $this->current_table . "`");
+			$e = $wpdb->query("DROP TABLE `". $table_name . "`");
 			if ($e) {
 				$result = array(true, __('Completed to drop table.', self::DOMAIN));
 			} else {
@@ -399,7 +404,7 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Create table
-	 * @param array
+	 * @param array $table_data
 	 * @return array
 	 */
 	function create_table($table_data) {
@@ -427,12 +432,13 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Get table schema
-	 * @param string $table_name (must containing prefix of table) default 'cdbt_sample'
+	 * @param string $table_name (optional) default $this->current_table
 	 * @return array
 	 */
-	function get_table_schema() {
+	function get_table_schema($table_name=null) {
 		global $wpdb;
-		if ($this->check_table_exists()) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if ($this->check_table_exists($table_name)) {
 			$sql = $wpdb->prepare("SELECT 
 				COLUMN_NAME,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE,
 				CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,
@@ -440,7 +446,7 @@ class CustomDatabaseTables {
 				COLUMN_TYPE,COLUMN_KEY,EXTRA,COLUMN_COMMENT 
 				FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s 
 				ORDER BY ORDINAL_POSITION", 
-				DB_NAME, $this->current_table
+				DB_NAME, $table_name
 			);
 			$table_schema = array();
 			foreach ($wpdb->get_results($sql) as $column_schema) {
@@ -479,7 +485,7 @@ class CustomDatabaseTables {
 					$table_schema[$column_schema->COLUMN_NAME]['max_length'] = $string_length;
 				}
 			}
-			$result = array(true, $this->current_table, $table_schema);
+			$result = array(true, $table_name, $table_schema);
 		} else {
 			$result = array(false, __('table is not exists', self::DOMAIN));
 		}
@@ -488,12 +494,13 @@ class CustomDatabaseTables {
 	
 	/**
 	 * get table comment
-	 * @param string $table_name (must containing prefix of table)
+	 * @param string $table_name (optional) default $this->current_table
 	 * @return array
 	 */
-	function get_table_comment($table_name) {
+	function get_table_comment($table_name=null) {
 		global $wpdb;
-		if ($this->check_table_exists()) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if ($this->check_table_exists($table_name)) {
 			$sql = $wpdb->prepare("SHOW TABLE STATUS LIKE '%s'", $table_name);
 			foreach ($wpdb->get_results($sql) as $data) {
 				if (!empty($data->Comment)) {

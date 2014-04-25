@@ -20,6 +20,7 @@ define('PLUGIN_LIB_DIR', PLUGIN_DIR . DS . 'lib');
 define('PLUGIN_TMPL_DIR', PLUGIN_DIR . DS . 'templates');
 
 require_once PLUGIN_LIB_DIR . DS . 'cdbt.class.php';
+require_once PLUGIN_LIB_DIR . DS . 'shortcodes.php';
 require_once PLUGIN_DIR . DS . 'functions.php';
 
 global $cdbt;
