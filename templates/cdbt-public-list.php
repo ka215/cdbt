@@ -5,26 +5,38 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 	foreach ($_REQUEST as $k => $v) {
 		${$k} = $v;
 	}
+	if (!empty($options)) {
+		$is_display_title = isset($options['display_title']) ? $options['display_title'] : false;
+		$is_display_search = isset($options['display_search']) ? $options['display_search'] : false;
+		$is_display_list_num = isset($options['display_list_num']) ? $options['display_list_num'] : true;
+		$exclude_cols = isset($options['exclude_cols']) ? (array)$options['exclude_cols'] : array();
+		$add_class = isset($options['add_class']) ? $options['add_class'] : '';
+	} else {
+		$is_display_title = $is_display_search = false;
+		$is_display_list_num = true;
+		$exclude_cols = array();
+		$add_class = '';
+	}
 	
 	list($result, $table_name, $table_schema) = $cdbt->get_table_schema($table);
 	if ($result && !empty($table_name) && !empty($table_schema)) {
 		
 		$page_num = (!isset($page_num) || empty($page_num)) ? 1 : intval($page_num);
 		if (!isset($per_page) || empty($per_page)) {
-			foreach ($cdbt->options['tables'] as $i => $table) {
-				if ($table['table_name'] == $cdbt->current_table) {
-					$data = intval($table['show_max_records']);
+			foreach ($cdbt->options['tables'] as $i => $table_opt) {
+				if ($table_opt['table_name'] == $table_name) {
+					$max_records = intval($table_opt['show_max_records']);
 					break;
 				}
 			}
-			$per_page = (!empty($data) && $data > 0) ? $data : intval(get_option('posts_per_page', 10));
+			$per_page = (!empty($max_records) && $max_records > 0) ? $max_records : intval(get_option('posts_per_page', 10));
 		} else {
 			$per_page = intval($per_page);
 		}
-		if (!empty($options) && isset($options['display_title']) && $options['display_title']) {
-			$list_html = '<h3 class="dashboard-title">%s</h3>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover">%s%s</table></div>%s';
+		if ($is_display_title) {
+			$list_html = '<h3 class="dashboard-title">%s</h3>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover '. $add_class .'">%s%s</table></div>%s';
 		} else {
-			$list_html = '<span class="sr-only">%s</span>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover" style="overflow-x: auto;">%s%s</table></div>%s';
+			$list_html = '<span class="sr-only">%s</span>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover '. $add_class .'" style="overflow-x: auto;">%s%s</table></div>%s';
 		}
 		list($result, $value) = $cdbt->get_table_comment($table_name);
 		if ($result) {
@@ -39,11 +51,11 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 			
 			$limit = $per_page;
 			$offset = ($page_num - 1) * $limit;
-			$view_cols = null; // array('ID', 'code_number', 'name', 'bin_data', 'created', 'updated'); // This value is null when all columns display.
-			$order_by = null; // null eq array('created' => 'DESC')
+			$view_cols = null; // If this value is null, will be all columns display.
+			$order_by = null; // If this value is null, set the array('created' => 'DESC')
 			if (isset($action) && $action == 'search') {
 				if (isset($search_key) && !empty($search_key)) {
-					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit, $offset);
+					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit);
 					if (count($data) == $limit) {
 						$total_data = count($cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by));
 					} else {
@@ -62,15 +74,8 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 					}
 				}
 			}
-			if (!empty($options) && isset($options['display_title']) && $options['display_search']) {
-				$is_controller = true;
-			} else {
-				$is_controller = false;
-			}
-			$is_checkbox_controller = false;
-			$is_display_list_num = true;
 			
-			if ($is_controller) {
+			if ($is_display_search) {
 				$page_slug = PLUGIN_SLUG;
 				$controller_block_base = '<form method="post" class="controller-form" role="form">%s</form>';
 				$controller_block_title = __('Cosole', PLUGIN_SLUG);
@@ -114,18 +119,19 @@ NAV;
 				foreach ($data as $record) {
 					if ($list_num == (1 + (($page_num - 1) * $per_page))) {
 						$list_index_row = '<thead><tr>';
-						$list_index_row .= ($is_checkbox_controller) ? '<th><input type="checkbox" id="all_checkbox_controller" /></th>' : '';
 						$list_index_row .= ($is_display_list_num) ? '<th>'. __('No.', PLUGIN_SLUG) .'</th>' : '';
 						foreach ($record as $key => $val) {
-							if (array_key_exists($key, $table_schema)) 
-								$key = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
-							$list_index_row .= '<th>'. $key .'</th>';
+							if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
+								continue;
+							} else {
+								if (array_key_exists($key, $table_schema)) 
+									$key = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
+								$list_index_row .= '<th>'. $key .'</th>';
+							}
 						}
-						$list_index_row .= ($mode == 'edit') ? '<th>'. __('Controll', PLUGIN_SLUG) .'</th>' : '';
 						$list_index_row .= '</tr></thead>';
 					}
 					$list_rows .= '<tr>';
-					$list_rows .= ($is_checkbox_controller) ? '<th><input type="checkbox" id="checkbox_controller_'. $list_num .'" class="inherit_checkbox" value="'. $record->ID .'" /></th>' : '';
 					$list_rows .= ($is_display_list_num) ? '<td>'. $list_num .'</td>' : '';
 					$is_include_binary_file = false;
 					foreach ($record as $key => $val) {
@@ -143,22 +149,17 @@ NAV;
 							}
 						}
 						$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
-						$list_rows .= '<td>'. $val .'</td>';
-					}
-					if ($mode == 'edit') {
-						$list_rows .= '<td><div class="btn-group-vertical">';
-						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm edit-row" data-id="'. $record->ID .'" data-mode="input" data-action="update"><span class="glyphicon glyphicon-edit"></span> '. __('Edit', PLUGIN_SLUG) .'</button>';
-						if ($is_include_binary_file) 
-							$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm download-binary" data-id="'. $record->ID .'" data-mode="edit" data-action="download"><span class="glyphicon glyphicon-download"></span> '. __('Download', PLUGIN_SLUG) .'</button>';
-						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm delete-row" data-id="'. $record->ID .'" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation"><span class="glyphicon glyphicon-trash"></span> '. __('Delete', PLUGIN_SLUG) .'</button>';
-						$list_rows .= '</div></td>';
+						if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
+							continue;
+						} else {
+							$list_rows .= '<td>'. $val .'</td>';
+						}
 					}
 					$list_rows .= '</tr>';
 					$list_num++;
 				}
 				
 				$pagination = ($total_data > $per_page) ? create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
-				$pagination = (($mode == 'edit') ? '</form>' : '') . $pagination;
 				$display_html = sprintf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination);
 			} else {
 				if (isset($action) && $action == 'search') {
@@ -173,8 +174,6 @@ NAV;
 	} else {
 		$display_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', PLUGIN_SLUG) .'</div>';
 	}
-	
-	//create_console_footer();
 	
 	return $display_html;
 }

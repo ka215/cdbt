@@ -63,11 +63,11 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		
 		$limit = $per_page;
 		$offset = ($page_num - 1) * $limit;
-		$view_cols = null; // array('ID', 'code_number', 'name', 'bin_data', 'created', 'updated'); // This value is null when all columns display.
-		$order_by = null; // null eq array('created' => 'DESC')
+		$view_cols = null; // If this value is null, will be all columns display.
+		$order_by = null; // If this value is null, set the array('created' => 'DESC')
 		if (isset($action) && $action == 'search') {
 			if (isset($search_key) && !empty($search_key)) {
-				$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit, $offset);
+				$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit);
 				if (count($data) == $limit) {
 					$total_data = count($this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by));
 				} else {

@@ -10,6 +10,9 @@ function display_view_table($atts, $content=''){
 		'bootstrap_style' => true, 
 		'display_title' => true, 
 		'display_search' => true, 
+		'display_list_num' => true, 
+		'exclude_cols' => '', // a column name or Comma-separated columns name
+		'add_class' => '', 
 	), $atts));
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
@@ -24,6 +27,9 @@ function display_view_table($atts, $content=''){
 	$options = array(
 		'display_title' => get_boolean($display_title), 
 		'display_search' => get_boolean($display_search), 
+		'display_list_num' => get_boolean($display_list_num), 
+		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
+		'add_class' => $add_class, 
 	);
 	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-list.php';
 	$mode = 'list';
