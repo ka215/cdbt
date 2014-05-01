@@ -113,3 +113,86 @@ select#cdbt_db_engine {
 	color: #2a6496;
 	text-decoration: underline;
 }
+
+/* table creator style */
+.mysql-table-creator {
+	
+}
+.mysql-table-creator .modal-lg {
+	width: 960px;
+	min-height: 100%;
+	top: 100px;
+}
+.mysql-table-creator .modal-body {
+	padding: 0 2px;
+}
+.mysql-table-creator ul li {
+	clear: both;
+	margin-top: 0;
+	margin-bottom: 0;
+	width: 932px;
+	height: 2.4em;
+	padding-top: 3px;
+}
+.mysql-table-creator ul li.index-row {
+	height: 1.8em;
+}
+.mysql-table-creator ul li label {
+	display: block;
+	float: left;
+	margin-right: 2px;
+	width: 82px;
+	text-align: center;
+	cursor: default;
+}
+.mysql-table-creator ul li.tbl_cols {
+	background-color: #f4f4f4;
+	line-height: 1.4em;
+	border-bottom: dotted 1px #ddd;
+	vertical-align: middle;
+}
+.mysql-table-creator ul li.tbl_cols.preset {
+	background-color: #fff;
+}
+.mysql-table-creator ul li.tbl_cols.addnew {
+	background-color: #ffffee;
+}
+.mysql-table-creator ul li.tbl_cols.addnew:hover {
+	background-color: #ffffcc;
+}
+.mysql-table-creator ul li.index-row label {
+	background: #f1f1f1;
+	border: solid 1px #ddd;
+	font-size: .86em;
+	font-weight: 400;
+	color: #666;
+	overflow: hidden;
+}
+.mysql-table-creator ul li.index-row label.null, .mysql-table-creator ul li label.delete-row, .mysql-table-creator ul li label.add-row {
+	background: transparent;
+	border: none;
+	line-height: 1.4em;
+	width: 41px;
+	vertical-align: middle;
+}
+.mysql-table-creator ul li label.handler {
+	margin-top: 4px;
+	width: 41px;
+	line-height: 1.4em;
+	cursor: move;
+	vertical-align: middle;
+}
+.mysql-table-creator ul li label.delete-row .btn-sm, .mysql-table-creator ul li label.add-row .btn-sm {
+	margin-top: 5px;
+	padding: 2.5px 7.5px;
+	font-size: 10px;
+}
+.mysql-table-creator ul li label>input, .mysql-table-creator ul li label>select {
+	max-width: 82px;
+	font-size: .86em;
+	font-weight: 300;
+}
+.mysql-table-creator input[disabled="disabled"], .mysql-table-creator select[disabled="disabled"] {
+	background-color: #fafafa;
+	color: #888;
+}

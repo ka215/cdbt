@@ -38,6 +38,9 @@ $edit_sql_mode1 = __('Statements Mode', PLUGIN_SLUG);
 $edit_sql_mode2 = __('Table Creator', PLUGIN_SLUG);
 $create_table_sql_placeholder = __('Enter SQL Statements to create table', PLUGIN_SLUG);
 $helper_msg5 = __('ID field of primary key for autoincrement type will be automatically inserted at the beginning. Then, the fields of update date and registration date and time will be added automatically to the end. Please do not include the entry of the field for those if you want to write SQL directly create the table.', PLUGIN_SLUG);
+$example_sql_label = __('Example of SQL statements: ', PLUGIN_SLUG);
+$example_col_comment1 = __('Account Name', PLUGIN_SLUG);
+$example_col_comment2 = __('Gender', PLUGIN_SLUG);
 $show_max_records_label = __('Show Max Records', PLUGIN_SLUG);
 $show_max_records_placeholder = __('Enter Integer', PLUGIN_SLUG);
 $show_max_records_unit = __('records', PLUGIN_SLUG);
@@ -144,6 +147,7 @@ $content_html = <<<EOH
 		</div>
 		<div class="col-sm-offset-2 col-sm-8">
 			<p class="help-block">$helper_msg5</p>
+			<p class="help-block">$example_sql_label <code class="exsample_sql">`account_name` varchar(64) NOT NULL COMMENT '$example_col_comment1', `gender` enum('female','male') DEFAULT NULL COMMENT '$example_col_comment2', </code></p>
 		</div>
 	</div>
 	<div class="form-group">
