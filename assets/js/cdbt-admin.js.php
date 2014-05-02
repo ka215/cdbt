@@ -256,5 +256,70 @@ jQuery(document).ready(function($){
 		}
 	});
 	
+	// table creator
+	$('#col_add_preset').on('click', function(){
+		var new_row = $('li.preset').clone();
+		var add_num = $('#sortable').children('li').length;
+		new_row.removeClass('preset').addClass('addnew');
+		new_row.children('label').each(function(){
+			if ($(this).hasClass('handler')) {
+				$(this).addClass('row-index-num').html('');
+			} else {
+				$(this).children().attr('name', $(this).children().attr('name')+add_num);
+			}
+			if ($(this).hasClass('add-row')) {
+				$(this).removeClass('add-row').addClass('delete-row');
+				$(this).html('<button type="button" name="col_delete_'+add_num+'" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button>');
+			}
+		});
+		$('li.preset').children('label').each(function(){
+			$(this).children('input[type="checkbox"]').removeAttr('checked');
+			$(this).children('input[type!="checkbox"]').val('');
+			$(this).children('select').children().each(function(){
+				$(this).removeAttr('selected');
+			});
+		});
+		new_row.insertAfter('li.preset');
+		renumber_row_index();
+	});
+	
+	$('.tbl_cols select').on('change', function(){
+		$(this).children(':selected').attr('selected', 'selected');
+	});
+	
+	$(document).on('click', 'button[name^="col_delete_"]', function(){
+		$(this).parent().parent('li.addnew').fadeOut('fast').remove();
+		renumber_row_index();
+	});
+	
+	function renumber_row_index(){
+		var i = 0;
+		$('#sortable').children('li').each(function(){
+			if (!$(this).hasClass('preset')) {
+				$(this).children('label.handler').html(i);
+				i++;
+			}
+		});
+	}
+	
+	$('#set-sql').on('click', function(){
+		renumber_row_index();
+		var sql = '';
+		$('#sortable').children('li').each(function(){
+			if ($(this).hasClass('addnew')) {
+				$(this).children('label').each(function(){
+					sql += $(this).children().val();
+				});
+				sql += ", \n";
+			}
+		});
+		$('#cdbt_create_table_sql').val(sql);
+	});
+	
+	$('.mysql-table-creator').on('hidden.bs.modal', function(e){
+		$('#sql-statements-mode').addClass('active');
+		$('#sql-table-creator').removeClass('active');
+	});
+	
 	
 });

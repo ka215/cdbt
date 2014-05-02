@@ -314,7 +314,11 @@ class CustomDatabaseTables {
 	function admin_assets(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
 			wp_enqueue_style('cdbt_common_style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, $this->version, 'all');
+			wp_enqueue_style('jquery_ui_style', $this->dir_url . '/assets/css/jquery-ui-1.10.4.custom.min.css', false, '1.10.4', 'all');
 			wp_enqueue_style('cdbt_admin_style', $this->dir_url . '/assets/css/cdbt-admin.css', false, $this->version, 'all');
+			//wp_deregister_script('jquery');
+			//wp_enqueue_script('jquery', $this->dir_url . '/assets/js/jquery-1.10.2.js', array(), '1.10.2');
+			wp_enqueue_script('jquery_ui', $this->dir_url . '/assets/js/jquery-ui-1.10.4.custom.min.js', array('jquery'), '1.10.4', false);
 			wp_enqueue_script('cdbt_common_script', $this->dir_url . '/assets/js/scripts.min.js', null, null, false);
 			wp_enqueue_script('cdbt_admin_script', $this->dir_url . '/assets/js/cdbt-admin.js.php', null, $this->version, true);
 		}

@@ -115,8 +115,9 @@ select#cdbt_db_engine {
 }
 
 /* table creator style */
-.mysql-table-creator {
-	
+.mysql-table-creator p.description-tips {
+	width: 900px;
+	margin: .4em auto;
 }
 .mysql-table-creator .modal-lg {
 	width: 960px;
@@ -126,13 +127,17 @@ select#cdbt_db_engine {
 .mysql-table-creator .modal-body {
 	padding: 0 2px;
 }
-.mysql-table-creator ul li {
+.mysql-table-creator ul li, .ui-state-highlight {
 	clear: both;
 	margin-top: 0;
 	margin-bottom: 0;
 	width: 932px;
 	height: 2.4em;
 	padding-top: 3px;
+}
+.ui-state-highlight {
+	background: #f1f1f1;
+	border: dashed 2.5px #d0d0d0;
 }
 .mysql-table-creator ul li.index-row {
 	height: 1.8em;
@@ -188,7 +193,7 @@ select#cdbt_db_engine {
 	font-size: 10px;
 }
 .mysql-table-creator ul li label>input, .mysql-table-creator ul li label>select {
-	max-width: 82px;
+	max-width: 100%; /* 82px */
 	font-size: .86em;
 	font-weight: 300;
 }
@@ -196,3 +201,11 @@ select#cdbt_db_engine {
 	background-color: #fafafa;
 	color: #888;
 }
+.num-disabled {
+	color: #888;
+	cursor: default;
+}
+.mysql-table-creator ul li label.w-xl { width: 123px; }
+.mysql-table-creator ul li label.w-lg { width: 102px; }
+.mysql-table-creator ul li label.w-sm { width: 62px; }
+.mysql-table-creator ul li label.w-xs { width: 41px; }
