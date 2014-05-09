@@ -454,8 +454,8 @@ class CustomDatabaseTables {
 			);
 			$table_schema = array();
 			foreach ($wpdb->get_results($sql) as $column_schema) {
-				$is_int_column = (preg_match('/^((|tiny|small|medium|big)int|float|doubleprecision|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
-				$is_chr_column = (preg_match('/^((|var|national|n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
+				$is_int_column = (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
+				$is_chr_column = (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
 				$is_date_column = (preg_match('/^(date(|time)|time(|stamp)|year)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
 				$table_schema[$column_schema->COLUMN_NAME] = array(
 					'logical_name' => $column_schema->COLUMN_COMMENT, 
@@ -620,13 +620,13 @@ class CustomDatabaseTables {
 					$target_columns = array();
 					foreach ($table_schema as $column_name => $column_info) {
 						if (is_float($value)) {
-							if (preg_match('/^(float|doubleprecision|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
+							if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
 								$target_columns[] = $column_name;
 						} else if (is_int($value)) {
 							if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'])) 
 								$target_columns[] = $column_name;
 						}
-						if (preg_match('/^((|var|national|n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
+						if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
 							$target_columns[] = $column_name;
 					}
 				}
@@ -698,7 +698,7 @@ class CustomDatabaseTables {
 					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+$/', $value)) {
 						// is integer format
 						$format[] = '%d';
-					} else if (preg_match('/^(float|doubleprecision|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
+					} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
 						// is double format
 						$format[] = '%f';
 					} else {
@@ -741,7 +741,7 @@ class CustomDatabaseTables {
 						// is integer format
 						$data[$column_name] = (int)$value;
 						$format[] = '%d';
-					} else if (preg_match('/^(float|doubleprecision|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
+					} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
 						// is double format
 						$data[$column_name] = (float)$value;
 						$format[] = '%f';
@@ -788,7 +788,7 @@ class CustomDatabaseTables {
 				return array(false, __('empty', self::DOMAIN));
 		}
 		if (!empty($data)) {
-			if (preg_match('/^((|tiny|small|medium|big)int|float|doubleprecision|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
+			if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
 				if (strtolower($column_schema['type_format']) != 'tinyint(1)') {
 					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean))$/i', strtolower($column_schema['type']))) {
 						$data = intval($data);
@@ -809,7 +809,7 @@ class CustomDatabaseTables {
 						return array(false, __('not a positive number', self::DOMAIN));
 				}
 			}
-			if (preg_match('/^((|var|national|n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
+			if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
 				if (!is_string($data)) 
 					return array(false, __('invalid strings', self::DOMAIN));
 			}
