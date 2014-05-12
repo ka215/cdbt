@@ -375,11 +375,13 @@ jQuery(document).ready(function($){
 						}
 					}
 				}
-				col_sql = '`'+elms['col_name']+'` '+typeformat+' '+elms['not_null'].toUpperCase();
-				if (elms['default_val'] != '') 
-					col_sql += " DEFAULT '"+elms['default_val']+"'";
+				col_sql = '`'+elms['col_name']+'` '+typeformat;
 				if (elms['attribute'] != '') 
 					col_sql += ' '+elms['attribute'].toUpperCase();
+				if (elms['not_null'] != '') 
+					col_sql += ' '+elms['not_null'].toUpperCase();
+				if (elms['default_val'] != '') 
+					col_sql += " DEFAULT '"+elms['default_val']+"'";
 				if (elms['auto_inc'] != '') 
 					col_sql += ' '+elms['auto_inc'].toUpperCase();
 				if (elms['key'] != '') 
