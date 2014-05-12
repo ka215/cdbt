@@ -37,9 +37,9 @@ $preset_col_type = array(
 	'smallint' => 6, // = smallint(6)
 	'mediumint' => 9, // = mediumint(9)
 	'bigint' => 20, // = bigint(20)
-	'float' => array(), // or null
-	'double' => array(), // or null // = double precision = real
-	'decimal' => array(), // = decimal(10,0) = numeric = fixed
+	'float' => 'Array', // or null
+	'double' => 'Array', // or null // = double precision = real
+	'decimal' => 'Array', // = decimal(10,0) = numeric = fixed
 	'bool' => 1, // = tinyint(1) = boolean
 	'bit' => 1,
 	'varchar' => 'int', // = varchar(*)  *0-65535 int unit is bytes
@@ -54,8 +54,8 @@ $preset_col_type = array(
 	'longblob' => null, 
 	'binary' => 1, // = binary(*)  *0-255 int unit is bytes
 	'varbinary' => 'int', // = varbinary(*)  *0-65535 int unit is bytes
-	'enum' => array(), 
-	'set' => array(), 
+	'enum' => 'Array', 
+	'set' => 'Array', 
 	'date' => null, 
 	'datetime' => null, 
 	'time' => null, 
