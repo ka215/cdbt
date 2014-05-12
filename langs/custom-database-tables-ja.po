@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 1.0\n"
-"POT-Creation-Date: 2014-05-02 19:58+0900\n"
-"PO-Revision-Date: 2014-05-02 20:05+0900\n"
+"POT-Creation-Date: 2014-05-12 18:21+0900\n"
+"PO-Revision-Date: 2014-05-12 18:22+0900\n"
 "Last-Translator: katsuhiko maeno <maenok@isao.co.jp>\n"
 "Language-Team: Katsuhiko Maeno <ka2@ka2.org>\n"
 "Language: ja_JP\n"
@@ -95,6 +95,21 @@ msgstr "格納画像"
 msgid "Stored binary file"
 msgstr "格納されているバイナリファイル"
 
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:316
+msgid "Candidate of choice"
+msgstr "選択肢候補"
+
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:318
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:320
+msgid "Total number of digits, Number of decimal places"
+msgstr "全桁数, 小数点下桁数"
+
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:323
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:325
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:14
+msgid "integer"
+msgstr "整数値"
+
 #: ../../custom-database-tables/functions.php:135
 msgid "Home position"
 msgstr "ダッシュボード"
@@ -162,7 +177,8 @@ msgid "not_null"
 msgstr "NULL不可"
 
 #: ../../custom-database-tables/functions.php:450
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:18
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:15
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:27
 msgid "default"
 msgstr "デフォルト値"
 
@@ -183,12 +199,12 @@ msgid "column_key"
 msgstr "カラムキー"
 
 #: ../../custom-database-tables/functions.php:455
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:19
 msgid "unsigned"
 msgstr "UNSIGNED属性"
 
 #: ../../custom-database-tables/functions.php:456
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:22
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:16
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:31
 msgid "extra"
 msgstr "その他"
 
@@ -207,6 +223,7 @@ msgstr "バイナリデータがありません。"
 
 #: ../../custom-database-tables/lib/cdbt.class.php:171
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:143
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:18
 msgid "ID"
 msgstr "ID"
 
@@ -248,11 +265,13 @@ msgstr "管理権者"
 
 #: ../../custom-database-tables/lib/cdbt.class.php:180
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:145
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:19
 msgid "Created Date"
 msgstr "登録日時"
 
 #: ../../custom-database-tables/lib/cdbt.class.php:181
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:146
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:20
 msgid "Updated Date"
 msgstr "更新日時"
 
@@ -676,33 +695,39 @@ msgstr ""
 msgid "Set SQL Statements"
 msgstr "SQL文をセットする"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:14
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:13
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:23
 msgid "column name"
 msgstr "カラム名"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:15
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:17
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:32
+msgid "comment"
+msgstr "コメント"
+
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:24
 msgid "type format"
 msgstr "データ型"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:16
-msgid "max length"
-msgstr "最大文字数"
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:25
+msgid "length"
+msgstr "文字列長"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:17
-msgid "notnull"
-msgstr "NULL不可"
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:26
+msgid "not null"
+msgstr "空不可"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:20
-msgid "autoincrement"
-msgstr "オートインクリメント"
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:28
+msgid "attribute"
+msgstr "属性"
 
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:21
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:29
+msgid "autoinc."
+msgstr "自動採番"
+
+#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:30
 msgid "key"
 msgstr "カラムキー"
-
-#: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:23
-msgid "comment"
-msgstr "コメント"
 
 #: ../../custom-database-tables/templates/cdbt-admin-tables.php:5
 msgid "Reflesh Table List"
@@ -961,6 +986,9 @@ msgstr "%2$sテーブル（テーブル名：%1$s）"
 #, php-format
 msgid "%s table"
 msgstr "%sテーブル"
+
+#~ msgid "max length"
+#~ msgstr "最大文字数"
 
 #~ msgid "SQL to create table is empty."
 #~ msgstr "テーブル作成SQLが定義されていません。"

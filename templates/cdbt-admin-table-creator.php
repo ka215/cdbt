@@ -11,6 +11,7 @@ $cancel_close_btn_label = __('Cancel', PLUGIN_SLUG);
 $set_sql_btn_label = __('Set SQL Statements', PLUGIN_SLUG);
 
 $placeholder_column_name = __('column name', PLUGIN_SLUG);
+$placeholder_length = __('integer', PLUGIN_SLUG);
 $placeholder_default = __('default', PLUGIN_SLUG);
 $placeholder_extra = __('extra', PLUGIN_SLUG);
 $placeholder_comment = __('comment', PLUGIN_SLUG);
@@ -21,11 +22,11 @@ $value_updated = __('Updated Date', PLUGIN_SLUG);
 $index_row = sprintf('<li class="index-row"><label class="null"></label><label class="w-xl">%s</label><label>%s</label><label class="w-sm">%s</label><label class="w-xs">%s</label><label>%s</label><label>%s</label><label class="w-xs">%s</label><label>%s</label><label class="w-lg">%s</label><label class="w-xl">%s</label><label class="null"></label></li>', 
 	__('column name', PLUGIN_SLUG), 
 	__('type format', PLUGIN_SLUG), 
-	__('display length', PLUGIN_SLUG), 
+	__('length', PLUGIN_SLUG), 
 	__('not null', PLUGIN_SLUG), 
 	__('default', PLUGIN_SLUG), 
 	__('attribute', PLUGIN_SLUG), 
-	__('autoincrement', PLUGIN_SLUG), 
+	__('autoinc.', PLUGIN_SLUG), 
 	__('key', PLUGIN_SLUG), 
 	__('extra', PLUGIN_SLUG), 
 	__('comment', PLUGIN_SLUG));
@@ -70,7 +71,7 @@ $row = <<<EOH
 	<label class="handler row-index-num num-disabled">1</label>
 	<label class="w-xl"><input type="text" name="col_name_pk" value="$value_primary_key" disabled="disabled"></label>
 	<label><select name="col_type_pk" disabled="disabled"><option value="int" selected="selected">int</option><option value="timestamp">timestamp</option></select></label>
-	<label class="w-sm"><input type="number" name="col_maxlength_pk" value="11" disabled="disabled"></label>
+	<label class="w-sm"><input type="text" name="col_length_pk" value="11" disabled="disabled"></label>
 	<label class="w-xs"><input type="checkbox" name="col_notnull_pk" value="1" checked="checked" disabled="disabled"></label>
 	<label><input type="text" name="col_default_pk" value="" disabled="disabled"></label>
 	<label><select name="col_attribute_pk" disabled="disabled"><option value=""></option><option value="unsigned" selected="selected">unsigned</option><option value="zerofill">zerofill</option></select></label>
@@ -82,9 +83,9 @@ $row = <<<EOH
 </li>
 <li class="ui-state-default tbl_cols preset">
 	<label class="handler"><span class="glyphicon glyphicon-edit"></span></label>
-	<label class="w-xl"><input type="text" name="col_name_" value="" placeholder=""></label>
+	<label class="w-xl"><input type="text" name="col_name_" value="" placeholder="$placeholder_column_name"></label>
 	<label><select name="col_type_">$col_type_options</select></label>
-	<label class="w-sm"><input type="number" name="col_maxlength_" value="" placeholder="$placeholder_column_name"></label>
+	<label class="w-sm"><input type="text" name="col_length_" value="" placeholder="$placeholder_length"></label>
 	<label class="w-xs"><input type="checkbox" name="col_notnull_" value="1"></label>
 	<label><input type="text" name="col_default_" value="" placeholder="$placeholder_default"></label>
 	<label><select name="col_attribute_"><option value=""></option><option value="unsigned">unsigned</option><option value="zerofill">zerofill</option></select></label>
@@ -94,25 +95,11 @@ $row = <<<EOH
 	<label class="w-xl"><input type="text" name="col_comment_" value="" placeholder="$placeholder_comment"></label>
 	<label class="add-row"><button type="button" name="col_add_preset" id="col_add_preset" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span></button></label>
 </li>
-<!--<li class="ui-state-default tbl_cols addnew">
-	<label class="handler row-index-num">2</label>
-	<label class="w-xl"><input type="text" name="col_name_2" value=""></label>
-	<label><select name="col_type_2"><option value="int">int</option><option value="varchar">varchar</option><option value="text">text</option><option value="datetime">datetime</option><option value="timestamp">timestamp</option></select></label>
-	<label class="w-sm"><input type="number" name="col_maxlength_2" min="1" value=""></label>
-	<label class="w-xs"><input type="checkbox" name="col_notnull_2" value="1"></label>
-	<label><input type="text" name="col_default_2" value=""></label>
-	<label><select name="col_attribute_2"><option value=""></option><option value="unsigned">unsigned</option><option value="zerofill">zerofill</option></select></label>
-	<label class="w-xs"><input type="checkbox" name="col_autoinc_2" value="1"></label>
-	<label><select name="col_key_2"><option value=""></option><option value="unique key">unique key</option><option value="index key">index key</option></select></label>
-	<label class="w-lg"><input type="text" name="col_extra_2" value=""></label>
-	<label class="w-xl"><input type="text" name="col_comment_2" value=""></label>
-	<label class="delete-row"><button type="button" name="col_delete_2" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span></button></label>
-</li>-->
 <li class="ui-state-default ui-state-disabled tbl_cols">
 	<label class="handler row-index-num num-disabled">3</label>
 	<label class="w-xl"><input type="text" name="col_name_cd" value="created" disabled="disabled"></label>
 	<label><select name="col_type_cd" disabled="disabled"><option value="datetime" selected="selected">datetime</option><option value="timestamp">timestamp</option></select></label>
-	<label class="w-sm"><input type="number" name="col_maxlength_cd" value="" disabled="disabled"></label>
+	<label class="w-sm"><input type="text" name="col_length_cd" value="" disabled="disabled"></label>
 	<label class="w-xs"><input type="checkbox" name="col_notnull_cd" value="1" checked="checked" disabled="disabled"></label>
 	<label><input type="text" name="col_default_cd" value="0000-00-00 00:00:00" disabled="disabled"></label>
 	<label><select name="col_attribute_cd" disabled="disabled"><option value="" selected="selected"></option><option value="unsigned">unsigned</option><option value="zerofill">zerofill</option></select></label>
@@ -126,7 +113,7 @@ $row = <<<EOH
 	<label class="handler row-index-num num-disabled">4</label>
 	<label class="w-xl"><input type="text" name="col_name_ud" value="updated" disabled="disabled"></label>
 	<label><select name="col_type_ud" disabled="disabled"><option value="timestamp" selected="selected">timestamp</option></select></label>
-	<label class="w-sm"><input type="number" name="col_maxlength_ud" value="" disabled="disabled"></label>
+	<label class="w-sm"><input type="text" name="col_length_ud" value="" disabled="disabled"></label>
 	<label class="w-xs"><input type="checkbox" name="col_notnull_ud" value="1" checked="checked" disabled="disabled"></label>
 	<label><input type="text" name="col_default_ud" value="CURRENT_TIMESTAMP" disabled="disabled"></label>
 	<label><select name="col_attribute_ud" disabled="disabled"><option value="" selected="selected"></option><option value="unsigned">unsigned</option><option value="zerofill">zerofill</option></select></label>

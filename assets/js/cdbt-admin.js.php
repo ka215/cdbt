@@ -302,17 +302,96 @@ jQuery(document).ready(function($){
 		});
 	}
 	
+	$(document).on('change', 'select[name^="col_type_"]', function(){
+		var parse_str = $(this).attr('name').split('_');
+		var target_obj = $('input[name="col_length_'+parse_str[2]+'"]');
+		var type_val = $(this).children(':selected').val();
+		if (type_val == '') {
+			target_obj.val('').attr('placeholder', '-').attr('disabled', 'disabled');
+		} else {
+			target_obj.removeAttr('disabled');
+			if (type_val == 'Array') {
+				var type_format = $(this).children(':selected').text();
+				if (type_format == 'enum' || type_format == 'set') {
+					target_obj.val('').attr('placeholder', '<?php _e('Candidate of choice', PLUGIN_SLUG); ?>');
+				} else if (type_format == 'decimal') {
+					target_obj.val('10,0').attr('placeholder', '<?php _e('Total number of digits, Number of decimal places', PLUGIN_SLUG); ?>');
+				} else {
+					target_obj.val('').attr('placeholder', '<?php _e('Total number of digits, Number of decimal places', PLUGIN_SLUG); ?>');
+				}
+			} else if (type_val == 'int') {
+				target_obj.val('').attr('placeholder', '<?php _e('integer', PLUGIN_SLUG); ?>');
+			} else {
+				target_obj.val(type_val).attr('placeholder', '<?php _e('integer', PLUGIN_SLUG); ?>');
+			}
+		}
+	});
+	
 	$('#set-sql').on('click', function(){
 		renumber_row_index();
 		var sql = '';
-		$('#sortable').children('li').each(function(){
-			if ($(this).hasClass('addnew')) {
-				$(this).children('label').each(function(){
-					sql += $(this).children().val();
-				});
-				sql += ", \n";
+		var cols = new Array();
+		$('#sortable').children('li.addnew').each(function(){
+			var elms = new Array();
+			elms['index'] = $(this).children('.handler').text();
+			var obj = $(this).children().children();
+			obj.map(function(){
+				if ($(this).attr('name').indexOf('col_name_') == 0) 
+					elms['col_name'] = $(this).val();
+				if ($(this).attr('name').indexOf('col_type_') == 0) {
+					elms['type'] = $(this).children(':selected').text();
+					elms['type_val'] = $(this).children(':selected').val();
+				}
+				if ($(this).attr('name').indexOf('col_length_') == 0) 
+					elms['type_length'] = parseInt($(this).val(), 10) || '';
+				if ($(this).attr('name').indexOf('col_notnull_') == 0) 
+					elms['not_null'] = $(this).prop('checked') ? 'NOT NULL' : '';
+				if ($(this).attr('name').indexOf('col_default_') == 0) 
+					elms['default_val'] = $(this).val();
+				if ($(this).attr('name').indexOf('col_attribute_') == 0) 
+					elms['attribute'] = $(this).children(':selected').val();
+				if ($(this).attr('name').indexOf('col_autoinc_') == 0) 
+					elms['auto_inc'] = $(this).prop('checked') ? 'AUTOINCREMENT' : '';
+				if ($(this).attr('name').indexOf('col_key_') == 0) 
+					elms['key'] = $(this).children(':selected').val();
+				if ($(this).attr('name').indexOf('col_extra_') == 0) 
+					elms['extra'] = $(this).val();
+				if ($(this).attr('name').indexOf('col_comment_') == 0) 
+					elms['comment'] = $(this).val();
+			});
+			if (elms['col_name']) {
+				var typeformat = elms['type'];
+				if (elms['type_val'] != '') {
+					if (elms['type_val'] == 'int') {
+						typeformat += '('+elms['type_length']+')';
+					} else if (elms['type_val'] == 'Array') {
+						typeformat += '('+elms['default_val']+')';
+						elms['default_val'] = '';
+					} else {
+						if (elms['type_length'] != '') {
+							typeformat += '('+elms['type_length']+')';
+						} else {
+							typeformat += '('+elms['type_val']+')';
+						}
+					}
+				}
+				col_sql = '`'+elms['col_name']+'` '+typeformat+' '+elms['not_null'].toUpperCase();
+				if (elms['default_val'] != '') 
+					col_sql += " DEFAULT '"+elms['default_val']+"'";
+				if (elms['attribute'] != '') 
+					col_sql += ' '+elms['attribute'].toUpperCase();
+				if (elms['auto_inc'] != '') 
+					col_sql += ' '+elms['auto_inc'].toUpperCase();
+				if (elms['key'] != '') 
+					col_sql += ' '+elms['key'].toUpperCase();
+				if (elms['extra'] != '') 
+					col_sql += ' '+elms['extra'].toUpperCase();
+				if (elms['comment'] != '') 
+					col_sql += " COMMENT '"+elms['comment']+"'";
+				cols.push(col_sql);
 			}
 		});
+		sql = cols.join(", \n") + ", \n";
 		$('#cdbt_create_table_sql').val(sql);
 	});
 	

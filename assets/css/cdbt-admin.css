@@ -166,11 +166,13 @@ select#cdbt_db_engine {
 	background-color: #ffffcc;
 }
 .mysql-table-creator ul li.index-row label {
+	max-height: 1.5em;
 	background: #f1f1f1;
 	border: solid 1px #ddd;
-	font-size: .86em;
+	font-size: .80em;
 	font-weight: 400;
 	color: #666;
+	white-space: nowrap;
 	overflow: hidden;
 }
 .mysql-table-creator ul li.index-row label.null, .mysql-table-creator ul li label.delete-row, .mysql-table-creator ul li label.add-row {
