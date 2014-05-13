@@ -18,7 +18,7 @@ $table_comment = (isset($table_comment) && !empty($table_comment)) ? $table_comm
 
 $db_engine = (!isset($db_engine) || empty($db_engine)) ? 'InnoDB' : $db_engine;
 $db_engine_options = sprintf('<option value="InnoDB"%s>InnoDB</option><option value="MyISAM"%s>MyISAM</option>', selected($db_engine, 'InnoDB', false), selected($db_engine, 'MyISAM', false));
-$create_table_sql = (isset($create_table_sql) && !empty($create_table_sql)) ? $create_table_sql : '';
+$create_table_sql = (isset($create_table_sql) && !empty($create_table_sql)) ? stripcslashes($create_table_sql) : '';
 $show_max_records = (isset($show_max_records) && !empty($show_max_records) && intval($show_max_records) > 0) ? intval($show_max_records) : intval(get_option('posts_per_page', 10));
 
 // translate text

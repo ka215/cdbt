@@ -302,35 +302,62 @@ jQuery(document).ready(function($){
 		});
 	}
 	
+	function controll_col_attribute(index, mode) {
+		var attr_obj = $('select[name="col_attribute_'+index+'"]');
+		attr_obj.children('option').each(function(){
+			if (mode == 'none') {
+				$(this).attr('disabled', 'disabled');
+			} else if (mode == 'numgrp' || mode == 'bingrp') {
+				if ($(this).hasClass(mode)) {
+					$(this).removeAttr('disabled');
+				} else {
+					$(this).attr('disabled', 'disabled');
+				}
+			} else {
+				$(this).removeAttr('disabled');
+			}
+		});
+	}
+	
 	$(document).on('change', 'select[name^="col_type_"]', function(){
 		var parse_str = $(this).attr('name').split('_');
 		var target_obj = $('input[name="col_length_'+parse_str[2]+'"]');
+		var type_format = $(this).children(':selected').text();
 		var type_val = $(this).children(':selected').val();
 		if (type_val == '') {
 			target_obj.val('').attr('placeholder', '-').attr('disabled', 'disabled');
 		} else {
 			target_obj.removeAttr('disabled');
 			if (type_val == 'Array') {
-				var type_format = $(this).children(':selected').text();
 				if (type_format == 'enum' || type_format == 'set') {
-					target_obj.val('').attr('placeholder', '<?php _e('Candidate of choice', PLUGIN_SLUG); ?>');
+					target_obj.val('').attr('placeholder', '<?php _e('Candidate value 1, Candidate value 2, ...', PLUGIN_SLUG); ?>');
+					controll_col_attribute(parse_str[2], 'none');
 				} else if (type_format == 'decimal') {
-					target_obj.val('10,0').attr('placeholder', '<?php _e('Total number of digits, Number of decimal places', PLUGIN_SLUG); ?>');
+					target_obj.val('10,0').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', PLUGIN_SLUG); ?>');
+					controll_col_attribute(parse_str[2], 'numgrp');
 				} else {
-					target_obj.val('').attr('placeholder', '<?php _e('Total number of digits, Number of decimal places', PLUGIN_SLUG); ?>');
+					target_obj.val('').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', PLUGIN_SLUG); ?>');
+					controll_col_attribute(parse_str[2], 'numgrp');
 				}
 			} else if (type_val == 'int') {
-				target_obj.val('').attr('placeholder', '<?php _e('integer', PLUGIN_SLUG); ?>');
+				target_obj.val('').attr('placeholder', '<?php _e('Integer of length', PLUGIN_SLUG); ?>');
+				if (type_format == 'varchar' || type_format == 'char') {
+					controll_col_attribute(parse_str[2], 'bingrp');
+				} else {
+					controll_col_attribute(parse_str[2], 'numgrp');
+				}
 			} else {
-				target_obj.val(type_val).attr('placeholder', '<?php _e('integer', PLUGIN_SLUG); ?>');
+				target_obj.val(type_val).attr('placeholder', '<?php _e('Integer of length', PLUGIN_SLUG); ?>');
+				controll_col_attribute(parse_str[2], 'numgrp');
 			}
 		}
 	});
 	
 	$('#set-sql').on('click', function(){
 		renumber_row_index();
-		var sql = '';
+		var sql = "CREATE TABLE " + $('.simulate_table_name').text() + " (\n";
 		var cols = new Array();
+		var keys = new Array();
 		$('#sortable').children('li.addnew').each(function(){
 			var elms = new Array();
 			elms['index'] = $(this).children('.handler').text();
@@ -384,8 +411,17 @@ jQuery(document).ready(function($){
 					col_sql += " DEFAULT '"+elms['default_val']+"'";
 				if (elms['auto_inc'] != '') 
 					col_sql += ' '+elms['auto_inc'].toUpperCase();
-				if (elms['key'] != '') 
-					col_sql += ' '+elms['key'].toUpperCase();
+				if (elms['key'] != '') {
+					if (elms['key'] == 'index') {
+						keys.push(' '+elms['key'].toUpperCase()+' index_'+(keys.length+1)+' ('+elms['col_name']+')');
+					} else if (elms['key'] == 'unique') {
+						keys.push(' '+elms['key'].toUpperCase()+' unique_index_'+(keys.length+1)+' ('+elms['col_name']+')');
+					} else if (elms['key'] == 'fulltext') {
+						keys.push(' '+elms['key'].toUpperCase()+' fulltext_index_'+(keys.length+1)+' ('+elms['col_name']+')');
+					} else if (elms['key'] == 'foreign key') {
+						keys.push(' '+elms['key'].toUpperCase()+' ('+elms['col_name']+') REFERENCES [table(column_name)] ON DELETE CASCADE');
+					}
+				}
 				if (elms['extra'] != '') 
 					col_sql += ' '+elms['extra'].toUpperCase();
 				if (elms['comment'] != '') 
@@ -393,7 +429,8 @@ jQuery(document).ready(function($){
 				cols.push(col_sql);
 			}
 		});
-		sql = cols.join(", \n") + ", \n";
+		sql += cols.join(", \n") + ", \n";
+		sql += keys.join(", \n") + " )\n";
 		$('#cdbt_create_table_sql').val(sql);
 	});
 	

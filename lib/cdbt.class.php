@@ -415,7 +415,8 @@ class CustomDatabaseTables {
 		global $wpdb;
 		if (!$this->check_table_exists()) {
 			// if not exists table, create table.
-			$create_sql = $wpdb->prepare($table_data['sql'], $table_data['db_engine'], $this->options['charset']);
+			//$create_sql = $wpdb->prepare($table_data['sql'], $table_data['db_engine'], $this->options['charset']);
+			$create_sql = $table_data['sql'];
 			if (isset($create_sql) && !empty($create_sql)) {
 				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 				dbDelta($create_sql);
@@ -875,24 +876,97 @@ class CustomDatabaseTables {
 	
 	/**
 	 * Validate sql for create table
-	 * @param string $table_name (must containing prefix of table) default 'cdbt_sample'
+	 * @param string $table_name
 	 * @param string $sql (for create table)
 	 * @return array
 	 */
-	function validate_sql_create_table($table_name='cdbt_sample', $sql) {
-	//var_dump(str_replace("\\", '', preg_replace("/\r|\n|\t/", '', $sql)));
-	//	$reg_base = '/^CREATE\sTABLE\s(.*)+\s(.*)+\sENGINE=(innoDB|MyISAM)\sDEFAULT\sCHARSET=(.*)+\s(.*)+;$/i';
-		$reg_base = "/^CREATE TABLE (.*)? \(`ID` int\(11\) unsigned NOT NULL AUTO_INCREMENT(.*)?`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'( COMMENT \'(.*)?\'|),`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP( COMMENT \'(.*)?\'|),PRIMARY KEY \(`ID`\),UNIQUE KEY `ID` \(`ID`\)\) ENGINE=(InnoDB|MyISAM) DEFAULT CHARSET=(.*)?( COMMENT='(.*)?'|) AUTO_INCREMENT=1 ;/i";
-		if (preg_match($reg_base, str_replace("\\", '', preg_replace("/\r|\n|\t/", '', trim($sql))), $matches)) {
-var_dump($matches);
-			if ($matches[1] == $table_name) {
-				$fixed_sql = str_replace("\\", '', $sql);
-				$fixed_sql = str_replace($matches[1], '%s', $fixed_sql);
-				$fixed_sql = str_replace('CHARSET='.$matches[4], '%s', $fixed_sql);
+	function validate_create_sql($table_name, $sql) {
+		$org_sql = preg_replace("/\r|\n|\t/", '', $sql);
+		$reg_base = '/^(CREATE\sTABLE\s'. $table_name .'\s\()(.*)$/iU';
+		if (preg_match($reg_base, $org_sql, $matches)) {
+			$sql_head = $matches[1];
+			$reg_type = '((|tiny|small|medium|big)int|float|double(| precision)|decimal|numeric|fixed|bool(|ean)|bit|(|var)char|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set|date(|time)|time(|stamp)|year)';
+			$reg_base = "/(|\s)((|`).*(|`)\s". $reg_type ."(|\(.*\))(\s.*(COMMENT\s'.*'|)|)(,|\)))+/iU";
+			$parse_body = array();
+			while (preg_match($reg_base, $matches[2], $one_column)) {
+				$matches[2] = str_replace($one_column[0], '', $matches[2]);
+				if (substr_count($one_column[0], '(') < substr_count($one_column[0], ')')) {
+					$parse_body[] = trim(substr_replace($one_column[0], '', strrpos($one_column[0], ')'), 1), ', ');
+				} else {
+					$parse_body[] = trim($one_column[0], ', ');
+				}
+			}
+			$reg_key = '/((primary key|key|index|unique(| index)|fulltext(| index)|foreign key|check)\s(|.*\s)\(.*\)(,|\)|\s\)))+/iU';
+			$parse_key = array();
+			while (preg_match($reg_key, $matches[2], $one_key)) {
+				$matches[2] = str_replace($one_key[0], '', $matches[2]);
+				if (substr_count($one_key[0], '(') < substr_count($one_key[0], ')')) {
+					$parse_key[] = trim(substr_replace($one_key[0], '', strrpos($one_key[0], ')'), 1), ', ');
+				} else {
+					$parse_key[] = trim($one_key[0], ', ');
+				}
+			}
+			$parse_option = array();
+			$reg_opt = '(type|engine|auto_increment|avg_row_length|checksum|comment|(max|min)_rows|pack_keys|password|delay_key_write|row_format|raid_type|union|insert_method|(data|index) directory|default char(acter set|set))';
+			$reg_base = "/(". $reg_opt ."(|\s)(|=)(|\s)(|'|\().*(|'|\))\s)+/iU";
+			while (preg_match($reg_base, $matches[2], $one_opt)) {
+				$matches[2] = str_replace($one_opt[0], '', $matches[2]);
+				if (strtolower($one_opt[2]) == 'type' || strtolower($one_opt[2]) == 'engine') {
+					$parse_option[] = trim(preg_replace('/^(.*)(|\s)=(|\s)(BDB|HEAP|ISAM|InnoDB|MERGE|MRG_MYISAM|MYISAM|MyISAM)/', '$1$2=$3%s', $one_opt[0]));
+				} else if (strtolower($one_opt[2]) == 'default character set' || strtolower($one_opt[2]) == 'default charset') {
+					$parse_option[] = trim(preg_replace("/^(.*)(|\s)=(|\s)(.*)$/iU", '$1$2=$3%s', $one_opt[0]));
+				} else if (strtolower($one_opt[2]) == 'comment') {
+					$parse_option[] = trim(preg_replace("/^(.*)(|\s)=(|\s)'(.*)'/iU", "$1$2=$3'%s'", $one_opt[0]));
+				} else {
+					$parse_option[] = trim($one_opt[0]);
+				}
+			}
+			$endpoint = trim($matches[2]);
+			if ((empty($endpoint) || $endpoint == ';') && !empty($parse_body)) {
+				$add_fields[0] = "`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."'";
+				$add_fields[1] = "`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."'";
+				$add_fields[2] = "`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."'";
+				foreach ($add_fields as $i => $field) {
+					if (!in_array($field, $parse_body)) {
+						if ($i == 0) {
+							array_unshift($parse_body, $field);
+						} else {
+							array_push($parse_body, $field);
+						}
+					}
+				}
+				$add_key = "PRIMARY KEY (`ID`)";
+				if (!in_array($add_key, $parse_key)) {
+					array_unshift($parse_key, $add_key);
+				}
+				$add_option = array(
+					'ENGINE|TYPE' => "ENGINE=%s", 
+					'DEFAULT CHAR' => "DEFAULT CHARSET=%s", 
+					'COMMENT' => "COMMENT='%s'", 
+				);
+				if (empty($parse_option)) {
+					array_push($parse_option, $add_option);
+				} else {
+					foreach ($add_option as $key => $option) {
+						$is_option = false;
+						foreach ($parse_option as $get_option) {
+							if (preg_match('/^('.$key.')/i', $get_option)) {
+								$is_option = true;
+								break;
+							}
+						}
+						if (!$is_option) {
+							array_push($parse_option, $option);
+						}
+					}
+				}
+				$fixed_sql = $sql_head ."\n". implode(", \n", $parse_body) .", \n". implode(", \n", $parse_key) ."\n) \n". implode(" \n", $parse_option) . ' ;';
 				$result = array(true, $fixed_sql);
+			} else {
+				$result = array(false, null);
 			}
 		} else {
-			$result = array(false, '');
+			$result = array(false, null);
 		}
 		return $result;
 	}

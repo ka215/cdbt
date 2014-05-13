@@ -88,9 +88,9 @@ $row = <<<EOH
 	<label class="w-sm"><input type="text" name="col_length_" value="" placeholder="$placeholder_length"></label>
 	<label class="w-xs"><input type="checkbox" name="col_notnull_" value="1"></label>
 	<label><input type="text" name="col_default_" value="" placeholder="$placeholder_default"></label>
-	<label><select name="col_attribute_"><option value=""></option><option value="unsigned">unsigned</option><option value="zerofill">zerofill</option></select></label>
+	<label><select name="col_attribute_"><option value="" class="numgrp bingrp"></option><option value="unsigned" class="numgrp">unsigned</option><option value="zerofill" class="numgrp">zerofill</option><option value="binary" class="bingrp">binary</option><option value="ascii" class="bingrp">ascii</option><option value="unicode" class="bingrp">unicode</option></select></label>
 	<label class="w-xs"><input type="checkbox" name="col_autoinc_" value="1"></label>
-	<label><select name="col_key_"><option value=""></option><option value="unique key">unique key</option><option value="index key">index key</option></select></label>
+	<label><select name="col_key_"><option value=""></option><option value="primary key" disabled="disabled">primary key</option><option value="index">index</option><option value="unique">unique</option><option value="fulltext">fulltext</option><option value="foreign key">foreign key</option></select></label>
 	<label class="w-lg"><input type="text" name="col_extra_" value="" placeholder="$placeholder_extra"></label>
 	<label class="w-xl"><input type="text" name="col_comment_" value="" placeholder="$placeholder_comment"></label>
 	<label class="add-row"><button type="button" name="col_add_preset" id="col_add_preset" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span></button></label>

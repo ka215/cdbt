@@ -105,9 +105,14 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								$msg = array('warning', __('Create Table SQL is empty.', self::DOMAIN));
 							} else {
 								$sql_str = stripcslashes(strip_tags($inherit_values['create_table_sql']));
-								// sql validate
-								$inherit_values['create_table_sql'] = $sql_str;
-var_dump($inherit_values['create_table_sql']);
+								list($result, $fixed_sql) = $this->validate_create_sql($create_full_table_name, $sql_str);
+								if ($result) {
+									// sql validate done
+									$inherit_values['create_table_sql'] = $fixed_sql;
+//var_dump($inherit_values['create_table_sql']);
+								} else {
+									$msg = array('warning', __('Create Table SQL is invalid.', self::DOMAIN));
+								}
 							}
 							if (empty($msg)) {
 								if (compare_var(empty($inherit_values['show_max_records']), true)) {
@@ -139,13 +144,7 @@ var_dump($inherit_values['create_table_sql']);
 						$new_table = array(
 							'table_name' => $this->current_table, 
 							'table_type' => 'enable_table', 
-							'sql' => "CREATE TABLE `{$this->current_table}` (
-								`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."',
-								{$inherit_values['create_table_sql']}
-								`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."',
-								`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."',
-								PRIMARY KEY (`ID`)
-								) ENGINE=%s DEFAULT CHARSET=%s COMMENT='$esc_table_comment' AUTO_INCREMENT=1 ;", 
+							'sql' => sprintf($inherit_values['create_table_sql'], $inherit_values['db_engine'], $this->options['charset'], $esc_table_comment), 
 							'db_engine' => $inherit_values['db_engine'], 
 							'show_max_records' => intval($inherit_values['show_max_records']), 
 							'roles' => array(
