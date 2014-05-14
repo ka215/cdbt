@@ -875,7 +875,7 @@ class CustomDatabaseTables {
 	}
 	
 	/**
-	 * Validate sql for create table
+	 * Validate and finalization sql for create table
 	 * @param string $table_name
 	 * @param string $sql (for create table)
 	 * @return array
@@ -884,6 +884,7 @@ class CustomDatabaseTables {
 		$org_sql = preg_replace("/\r|\n|\t/", '', $sql);
 		$reg_base = '/^(CREATE\sTABLE\s'. $table_name .'\s\()(.*)$/iU';
 		if (preg_match($reg_base, $org_sql, $matches)) {
+			// parse while verification
 			$sql_head = $matches[1];
 			$reg_type = '((|tiny|small|medium|big)int|float|double(| precision)|decimal|numeric|fixed|bool(|ean)|bit|(|var)char|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set|date(|time)|time(|stamp)|year)';
 			$reg_base = "/(|\s)((|`).*(|`)\s". $reg_type ."(|\(.*\))(\s.*(COMMENT\s'.*'|)|)(,|\)))+/iU";
@@ -923,6 +924,7 @@ class CustomDatabaseTables {
 			}
 			$endpoint = trim($matches[2]);
 			if ((empty($endpoint) || $endpoint == ';') && !empty($parse_body)) {
+				// make finalization sql
 				$add_fields[0] = "`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."'";
 				$add_fields[1] = "`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."'";
 				$add_fields[2] = "`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."'";
@@ -945,7 +947,9 @@ class CustomDatabaseTables {
 					'COMMENT' => "COMMENT='%s'", 
 				);
 				if (empty($parse_option)) {
-					array_push($parse_option, $add_option);
+					foreach ($add_option as $option) {
+						array_push($parse_option, $option);
+					}
 				} else {
 					foreach ($add_option as $key => $option) {
 						$is_option = false;

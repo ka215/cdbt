@@ -4,7 +4,6 @@ if ($_SERVER['SCRIPT_FILENAME'] == __FILE__)
 
 foreach ($_REQUEST as $k => $v) {
 	${$k} = $v;
-//var_dump('$'.$k." = '".$v."'\n");
 }
 if ($page != self::DOMAIN) 
 	die(__('Invalid access that is not from admin panel!', self::DOMAIN));
@@ -19,7 +18,7 @@ list($result, $table_name, $table_schema) = $this->get_table_schema();
 if ($result && !empty($table_name) && !empty($table_schema)) {
 	create_console_menu($_cdbt_token);
 	
-	$schm_html = '<h3 class="dashboard-title"><span class="glyphicon glyphicon-list-alt"></span> %s</h3><div class="current-table-schema"><table id="'. $table_name .'" class="table table-bordered">%s%s</table></div>';
+	$schm_html = '<h3 class="dashboard-title"><span class="glyphicon glyphicon-list-alt"></span> %s</h3><div class="current-table-schema"><table id="'. $table_name .'" class="table table-bordered">%s%s</table></div>%s';
 	list($result, $value) = $this->get_table_comment($table_name);
 	if ($result) {
 		$title = sprintf(__('%s table (table comment: %s) schema', self::DOMAIN), $table_name, $value);
@@ -55,7 +54,12 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$schm_rows .= '</tr>';
 		$offset++;
 	}
-	printf($schm_html, $title, $schm_index_row, '<tbody>'. $schm_rows . '</tbody>');
+	$sc_html = '<div class="current-table-shortcodes"><h4><span class="glyphicon glyphicon-expand"></span> %s</h4><ul>%s</ul></div>';
+	$sc_list = '<li><label>'. __('Shortcode to display list view of table data:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-view table="'. $table_name .'"&#93; </code></li>';
+	$sc_list .= '<li><label>'. __('Shortcode to display table data entry form:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-entry table="'. $table_name .'"&#93; </code></li>';
+	$sc_list .= '<li><label>'. __('Shortcode to display edit view of table data:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-edit table="'. $table_name .'" entry_page="entry-page[*]"&#93; </code><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> '. __('The value of entry_page attribute should be post-id or post-name of entry page.', self::DOMAIN) .'</p></li>';
+	$shortcodes = sprintf($sc_html, __('Available shortcodes', self::DOMAIN), $sc_list);
+	printf($schm_html, $title, $schm_index_row, '<tbody>'. $schm_rows . '</tbody>', $shortcodes);
 	
 } else {
 	create_console_menu($_cdbt_token);

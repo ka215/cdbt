@@ -6,13 +6,14 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 		${$k} = $v;
 	}
 	if (!empty($options)) {
+		$is_bootstrap_style = isset($options['bootstrap_style']) ? $options['bootstrap_style'] : false;
 		$is_display_title = isset($options['display_title']) ? $options['display_title'] : false;
 		$is_display_search = isset($options['display_search']) ? $options['display_search'] : false;
 		$is_display_list_num = isset($options['display_list_num']) ? $options['display_list_num'] : true;
 		$exclude_cols = isset($options['exclude_cols']) ? (array)$options['exclude_cols'] : array();
 		$add_class = isset($options['add_class']) ? $options['add_class'] : '';
 	} else {
-		$is_display_title = $is_display_search = false;
+		$is_bootstrap_style = $is_display_title = $is_display_search = false;
 		$is_display_list_num = true;
 		$exclude_cols = array();
 		$add_class = '';
@@ -33,10 +34,12 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 		} else {
 			$per_page = intval($per_page);
 		}
+		$table_class = $is_bootstrap_style ? 'table table-bordered table-striped table-hover ' : '';
+		$title_attr = $is_bootstrap_style ? 'class="sr-only"' : 'style="display: none;"';
 		if ($is_display_title) {
-			$list_html = '<h3 class="dashboard-title">%s</h3>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover '. $add_class .'">%s%s</table></div>%s';
+			$list_html = '<h3 class="dashboard-title">%s</h3>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="'. $table_class . $add_class .'">%s%s</table></div>%s';
 		} else {
-			$list_html = '<span class="sr-only">%s</span>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="table table-bordered table-striped table-hover '. $add_class .'" style="overflow-x: auto;">%s%s</table></div>%s';
+			$list_html = '<span '. $title_attr .'>%s</span>%s<div style="overflow-x: auto;"><table id="'. $table_name .'" class="'. $table_class . $add_class .'" style="overflow-x: auto;">%s%s</table></div>%s';
 		}
 		list($result, $value) = $cdbt->get_table_comment($table_name);
 		if ($result) {
@@ -75,44 +78,98 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 				}
 			}
 			
-			if ($is_display_search) {
-				$page_slug = PLUGIN_SLUG;
-				$controller_block_base = '<form method="post" class="controller-form" role="form">%s</form>';
-				$controller_block_title = __('Cosole', PLUGIN_SLUG);
-				$search_key = (!isset($search_key)) ? '' : $search_key;
-				$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
-				$search_button_label = __('Search', PLUGIN_SLUG);
-				$content = <<<NAV
-<nav class="navbar navbar-default" role="navigation">
+			$page_slug = PLUGIN_SLUG;
+			$controller_block_base = '<form method="post" class="controller-form" role="form">%s</form>';
+			$search_key = (!isset($search_key)) ? '' : $search_key;
+			$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
+			$search_button_label = __('Search', PLUGIN_SLUG);
+			$translate_text = array(
+				__('Deleting confirmation', PLUGIN_SLUG), 
+				__('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG), 
+				__('Delete', PLUGIN_SLUG), 
+				__('Alert', PLUGIN_SLUG), 
+				__('Checked items is none!', PLUGIN_SLUG), 
+				__('Search keyword is none!', PLUGIN_SLUG), 
+				__('Download binary files', PLUGIN_SLUG), 
+				__('Stored image', PLUGIN_SLUG), 
+				__('Stored binary file', PLUGIN_SLUG), 
+			);
+			$plugin_dir_path = plugins_url(PLUGIN_SLUG);
+			$media_nonce = wp_create_nonce(PLUGIN_SLUG . '_media');
+			$search_form = <<<SEARCH
+	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<div class="navbar-form navbar-right" role="search">
+			<div class="form-group">
+				<input type="text" name="search_key" class="form-control" placeholder="$search_key_placeholder" value="$search_key" />
+			</div>
+			<button type="button" class="btn btn-default" id="search_items" data-mode="$mode" data-action="search"><span class="glyphicon glyphicon-search"></span> $search_button_label</button>
+		</div>
+	</div>
+SEARCH;
+			$search_form = ($is_display_search) ? $search_form : null;
+			$add_style = ($is_display_search) ? null : ' style="display: none;"';
+			$content = <<<NAV
+<nav class="navbar navbar-default"$add_style role="navigation">
 	<div class="container-fluid">
-		<span class="navbar-brand">$controller_block_title</span>
 		<input type="hidden" name="table" value="$table_name" />
 		<input type="hidden" name="page" value="$page_slug" />
 		<input type="hidden" name="mode" value="$mode" />
 		<input type="hidden" name="action" value="" />
 		$nonce_field
 	</div>
-	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		<div class="navbar-form navbar-right" role="search">
-			<div class="form-group">
-				<input type="text" name="search_key" class="form-control" placeholder="$search_key_placeholder" value="$search_key" />
-			</div>
-			<button type="submit" class="btn btn-default" id="search_items" data-mode="$mode" data-action="search"><span class="glyphicon glyphicon-search"></span> $search_button_label</button>
-		</div>
-	</div>
+	$search_form
 </nav>
 <script>
 jQuery(function($){
 	$('#search_items').on('click', function(){
-		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
+		if ($('.controller-form input[name="search_key"]').val() != '') {
+			$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
+			$('.controller-form input[name="action"]').val($(this).attr('data-action'));
+			$('.controller-form').submit();
+		} else {
+			show_modal('{$translate_text[3]}', '{$translate_text[5]}', '');
+			$('.modal.confirmation').modal('show');
+		}
 	});
+	
+	function show_modal(title, body, run_process) {
+		var modal_obj = $('.modal.confirmation .modal-content');
+		modal_obj.find('.modal-title').text(title);
+		modal_obj.children('.modal-body').html(body);
+		if (run_process != '') {
+			modal_obj.find('.run-process').text(run_process).show();
+			modal_obj.find('.run-process').click(function(){
+				$('form[role="form"]').each(function(){
+					if ($(this).hasClass('controller-form')) {
+						$('.controller-form').submit();
+					}
+				});
+			});
+		} else {
+			modal_obj.find('.run-process').parent('button').hide();
+		}
+	}
+	
+	$('.text-collapse').on('click', function(){
+		var current_display_content = $(this).html();
+		$(this).html($(this).attr('full-content')).attr('full-content', current_display_content);
+	});
+	
+	$('.binary-file').on('click', function(){
+		if ($(this).text().indexOf('image/') > 0) {
+			var img = '<img src="{$plugin_dir_path}/lib/media.php?id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&table=$table_name&token=$media_nonce" width="100%" class="img-thumbnail">';
+			show_modal('{$translate_text[7]}', img, '');
+			$('.modal.confirmation').modal('show');
+		} else {
+			show_modal('{$translate_text[8]}', decodeURI($(this).attr('data-origin-file')), '');
+			$('.modal.confirmation').modal('show');
+		}
+	});
+	
 });
 </script>
 NAV;
-				$controller_block = sprintf($controller_block_base, $content);
-			} else {
-				$controller_block = null;
-			}
+			$controller_block = sprintf($controller_block_base, $content);
 			
 			if (!empty($data)) {
 				$list_num = 1 + (($page_num - 1) * $per_page);
@@ -160,7 +217,28 @@ NAV;
 				}
 				
 				$pagination = ($total_data > $per_page) ? create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
-				$display_html = sprintf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination);
+				$btn_cancel = __('Cancel', PLUGIN_SLUG);
+				$btn_run = __('Yes, run', PLUGIN_SLUG);
+				$modal_container = <<<MODAL
+<!-- /* Modal */ -->
+<div class="modal fade confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span></button>
+        <h4 class="modal-title" style="width: 100%; background: none;"></h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> <span class="cancel-close">$btn_cancel</span></button>
+        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> <span class="run-process">$btn_run</span></button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+MODAL;
+				$display_html = sprintf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination . $modal_container);
 			} else {
 				if (isset($action) && $action == 'search') {
 					$msg_str = sprintf(__('No data to match for "%s".', PLUGIN_SLUG), $search_key);

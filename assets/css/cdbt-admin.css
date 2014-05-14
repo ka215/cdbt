@@ -41,6 +41,31 @@
 .current-table-schema th.cell-type_format {
 	width: 132px!important;
 }
+.current-table-shortcodes {
+	margin-top: 24px;
+}
+.current-table-shortcodes h4 {
+	font-size: 16px;
+	font-weight: 700;
+}
+.current-table-shortcodes li {
+	margin-left: 1em;
+	margin-bottom: .75em;
+}
+.current-table-shortcodes li>label {
+	display: block;
+	font-weight: 500;
+}
+.cdbt-shortcode {
+	margin-left: .75em;
+	padding: 2px 4px;
+	font-size: 90%;
+	color: #ab254e;
+	background-color: #f0f0f0;
+	white-space: nowrap;
+	border: solid 1px #ddd;
+	border-radius: 4px;
+}
 .on-bottom-margin {
 	margin-bottom: 20px;
 }
@@ -113,6 +138,10 @@ select#cdbt_db_engine {
 	color: #2a6496;
 	text-decoration: underline;
 }
+.cdbt-shortcode + .text-info {
+	margin: 4px 10px;
+}
+
 
 /* table creator style */
 .mysql-table-creator p.description-tips {
