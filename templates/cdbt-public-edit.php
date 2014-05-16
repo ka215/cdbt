@@ -156,7 +156,7 @@ function render_edit_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 		$nonce_field
 	</div>
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		<button type="button" class="btn btn-default navbar-btn" style="position: absolute;" id="checked_items_delete" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation">
+		<button type="button" class="btn btn-default navbar-btn" style="position: absolute; left: 14px;" id="checked_items_delete" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation">
 			<span class="glyphicon glyphicon-check"></span> $all_checkbox_button_label</button>
 		<div class="navbar-form navbar-right" role="search">
 			<div class="form-group">
@@ -221,7 +221,7 @@ jQuery(function($){
 		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
 		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
 		$('.controller-form input[name="_cdbt_token"]').val($(this).attr('data-token'));
-		$('.controller-form input[name="_wp_http_referer"]').remove();
+//		$('.controller-form input[name="_wp_http_referer"]').remove();
 		$('.controller-form input[name="search_key"]').remove();
 //		$('.controller-form').attr('method', 'get');
 		$('.controller-form').attr('action', $(this).attr('action-url'));

@@ -63,7 +63,7 @@ function display_entry_table($atts, $content=''){
 		'hidden_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'add_class' => $add_class, 
 	);
-	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-entry.php';
+	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-input.php';
 	$mode = 'input';
 	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
 	

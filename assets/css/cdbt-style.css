@@ -12,6 +12,9 @@
 .on-bottom-margin {
 	margin-bottom: 20px;
 }
+.entry-button-block {
+	border-top: solid 2px #ddd;
+}
 .under-line {
 	border-bottom: solid 1px #dddddd;
 }

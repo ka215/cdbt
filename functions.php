@@ -307,7 +307,7 @@ function create_form($table_name, $column_name, $column_schema, $value) {
 					$origin_bin_data = array();
 				if (!empty($origin_bin_data)) {
 					$input_form .= '<input type="hidden" name="origin_bin_data" value="'. rawurlencode($value) .'" /> ';
-					$input_form .= '<p class="help-block"><span class="glyphicon glyphicon-paperclip"></span> '. $origin_bin_data['origin_file'] .' ('. $origin_bin_data['file_size'] .'byte)</p>';
+					$input_form .= '<p class="help-block"><span class="glyphicon glyphicon-paperclip"></span> '. rawurldecode($origin_bin_data['origin_file']) .' ('. $origin_bin_data['file_size'] .'byte)</p>';
 				}
 			}
 			
