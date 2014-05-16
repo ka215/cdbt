@@ -126,7 +126,7 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 				} else {
 					$message = null;
 				}
-				$entry_scripts = <<<MKICK
+				$modal_kicker = <<<MKICK
 <div style="display: none;">
 	<div class="modal-kicker">$message</div>
 </div>
@@ -136,7 +136,7 @@ MKICK;
 					__('Yes, run', PLUGIN_SLUG), 
 					__('Please confirm', PLUGIN_SLUG), 
 				);
-				$entry_scripts .= <<<EOS
+				$entry_scripts = <<<EOS
 <script>
 jQuery(function($){
 	$('#entry-submit').on('click', function(){
@@ -209,7 +209,7 @@ EOS;
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 MODAL;
-				$display_html = sprintf($form_html, $page_title, implode("\n", $form_objects) . $entry_scripts . $modal_container);
+				$display_html = sprintf($form_html, $page_title, implode("\n", $form_objects) . $modal_kicker . $modal_container . $entry_scripts);
 			}
 		} else {
 			$display_html = '<div class="alert alert-danger">'. __('Invild access!', PLUGIN_SLUG) .'</div>';
