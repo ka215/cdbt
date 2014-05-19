@@ -141,6 +141,9 @@ select#cdbt_db_engine {
 .cdbt-shortcode + .text-info {
 	margin: 4px 10px;
 }
+.other-note {
+	margin-top: 26px;
+}
 
 
 /* table creator style */

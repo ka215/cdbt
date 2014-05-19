@@ -59,6 +59,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	$sc_list .= '<li><label>'. __('Shortcode to display table data entry form:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-entry table="'. $table_name .'"&#93; </code></li>';
 	$sc_list .= '<li><label>'. __('Shortcode to display edit view of table data:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-edit table="'. $table_name .'" entry_page="entry-page[*]"&#93; </code><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> '. __('The value of entry_page attribute should be post-id or post-name of entry page.', self::DOMAIN) .'</p></li>';
 	$shortcodes = sprintf($sc_html, __('Available shortcodes', self::DOMAIN), $sc_list);
+	
 	printf($schm_html, $title, $schm_index_row, '<tbody>'. $schm_rows . '</tbody>', $shortcodes);
 	
 } else {
@@ -67,5 +68,25 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	<div class="alert alert-info"><?php _e('The enabled tables is not exists currently.<br />Please create tables.', self::DOMAIN); ?></div>
 <?php
 }
+
+$note_mes1 = __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', self::DOMAIN);
+$note_mes2 = __('If you wonder how you can help the project, just %sread this%s.', self::DOMAIN);
+$note_mes3 = __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', self::DOMAIN);
+$note_mes4 = __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', self::DOMAIN);
+$note_mes5 = __('Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', self::DOMAIN);
+$note_message = sprintf('<p>'. $note_mes1, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
+$note_message .= sprintf($note_mes2, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
+$note_message .= sprintf($note_mes3 .'</p>', '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">', '</a>');
+$note_message .= sprintf('<p class="pull-left">'. $note_mes4, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
+$note_message .= $note_mes5 .'</p>';
+$btn_alt = __('The safer, easier way to pay online!', self::DOMAIN);
+$note_html = '<div class="panel panel-default other-note"><div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> %s</div><div class="panel-body">%s</div></div>';
+$note_dont = <<<NOTE
+$note_message<div class="pull-left"><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_donations"><input type="hidden" name="business" value="2YZY4HWYSWEWG"><input type="hidden" name="lc" value="JP"><input type="hidden" name="currency_code" value="USD"><input type="hidden" name="item_name" value="">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - $btn_alt"></form></div>
+NOTE;
+
+printf($note_html, __('About Custom DataBase Tables', self::DOMAIN), $note_dont);
 
 create_console_footer();

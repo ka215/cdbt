@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 1.0\n"
-"POT-Creation-Date: 2014-05-19 13:48+0900\n"
-"PO-Revision-Date: 2014-05-19 13:48+0900\n"
+"POT-Creation-Date: 2014-05-19 17:44+0900\n"
+"PO-Revision-Date: 2014-05-19 17:51+0900\n"
 "Last-Translator: katsuhiko maeno <maenok@isao.co.jp>\n"
 "Language-Team: Katsuhiko Maeno <ka2@ka2.org>\n"
 "Language: ja_JP\n"
@@ -903,7 +903,7 @@ msgid "Data is none."
 msgstr "データがありません。"
 
 #: ../../custom-database-tables/templates/cdbt-edit.php:191
-#: ../../custom-database-tables/templates/cdbt-index.php:67
+#: ../../custom-database-tables/templates/cdbt-index.php:68
 #: ../../custom-database-tables/templates/cdbt-input.php:129
 #: ../../custom-database-tables/templates/cdbt-list.php:167
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:247
@@ -968,6 +968,57 @@ msgstr ""
 #: ../../custom-database-tables/templates/cdbt-index.php:61
 msgid "Available shortcodes"
 msgstr "利用可能なショートコード"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:72
+#, php-format
+msgid ""
+"Custom DataBase Tables is provided an extensive %sdocumentations%s. It "
+"includes Frequently Asked Questions for you to use in plugins and themes, as "
+"well as documentation for further details about how to use for programmers."
+msgstr ""
+"カスタム DB テーブルには豊富な %sドキュメント%s が提供されています。それに"
+"は、テーマやプラグインを利用するにあたってのよくある質問だけでなく、プログラ"
+"マーのための詳細説明ドキュメントなども含まれています。"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:73
+#, php-format
+msgid "If you wonder how you can help the project, just %sread this%s."
+msgstr ""
+"どのように使えば良いかわからなくなった際は、%sこちらをお読みください%s。"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:74
+#, php-format
+msgid ""
+"Custom DataBase Table is free of charge and is released under the same "
+"license as WordPress, the %sGPL%s."
+msgstr ""
+"カスタム DB テーブルは無料であり、WordPressと同じ %sGPL%sライセンスの下でリ"
+"リースされています。"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:75
+#, php-format
+msgid ""
+"You will also find useful information in the %ssupport forum%s. However "
+"don&apos;t forget to make a search before posting a new topic."
+msgstr ""
+"%sサポートフォーラム%s を利用して情報を見つけることも出来ますが、新しいトピッ"
+"クを投稿する前には過去ログを検索することを忘れないでください。"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:76
+msgid ""
+"Finally if you like this plugin or if it helps your business, donations to "
+"the author are greatly appreciated."
+msgstr ""
+"最後に、もしこのプラグインがあなたのビジネスに役立った場合などに、作者へ寄付"
+"していただけると大変嬉しいです。"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:82
+msgid "The safer, easier way to pay online!"
+msgstr "オンラインでより安全・簡単にお支払い"
+
+#: ../../custom-database-tables/templates/cdbt-index.php:90
+msgid "About Custom DataBase Tables"
+msgstr "カスタム DB テーブルについて"
 
 #: ../../custom-database-tables/templates/cdbt-input.php:14
 #: ../../custom-database-tables/templates/cdbt-public-input.php:24
