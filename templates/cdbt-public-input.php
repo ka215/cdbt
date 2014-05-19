@@ -6,7 +6,16 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 		${$k} = (is_array($v)) ? $v : stripcslashes($v);
 //var_dump("\$_REQUEST['{$k}'] = '$v' \n");
 	}
-	
+	if (!empty($options)) {
+		$is_bootstrap_style = isset($options['bootstrap_style']) ? $options['bootstrap_style'] : false;
+		$is_display_title = isset($options['display_title']) ? $options['display_title'] : false;
+		$hidden_cols = isset($options['hidden_cols']) ? (array)$options['hidden_cols'] : array();
+		$add_class = isset($options['add_class']) ? $options['add_class'] : '';
+	} else {
+		$is_bootstrap_style = $is_display_title = false;
+		$hidden_cols = array();
+		$add_class = '';
+	}
 	
 	list($result, $table_name, $table_schema) = $cdbt->get_table_schema($table);
 	if ($result && !empty($table_name) && !empty($table_schema)) {
@@ -63,7 +72,16 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 			$post_values = $validate_values = array();
 			foreach ($table_schema as $column_name => $column_schema) {
 				$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
-				$form_objects[] = create_form($table_name, $column_name, $column_schema, $value);
+				$hide_option = null;
+				if (!empty($hidden_cols)) {
+					foreach ($hidden_cols as $col) {
+						if ($col == $column_name) {
+							$hide_option = 'hide';
+							break;
+						}
+					}
+				}
+				$form_objects[] = create_form($table_name, $column_name, $column_schema, $value, $hide_option);
 				
 				$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 				if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
@@ -106,7 +124,8 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 				} else {
 					$complete_msg = __('Completed new add data. Data ID is : ', PLUGIN_SLUG) . $insert_id;
 				}
-				$display_html = sprintf('%s<div class="alert alert-success">%s</div>', $page_title, $complete_msg);
+				$display_html = sprintf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>', $page_title, $complete_msg);
+				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Continue', PLUGIN_SLUG) . '</a>';
 			} else {
 				if (isset($action) && $action == 'confirm') {
 					if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
@@ -131,63 +150,6 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 	<div class="modal-kicker">$message</div>
 </div>
 MKICK;
-				$translate_text = array(
-					__('loading', PLUGIN_SLUG), 
-					__('Yes, run', PLUGIN_SLUG), 
-					__('Please confirm', PLUGIN_SLUG), 
-				);
-				$entry_scripts = <<<EOS
-<script>
-jQuery(function($){
-	$('#entry-submit').on('click', function(){
-		var btn = $(this);
-		btn.button('{$translate_text[0]}');
-		$(this).parents('form').children('input[name="action"]').val($(this).attr('data-action'));
-		$(this).parents('form').submit();
-	});
-	
-	if ($('.modal-kicker').html() != '') {
-		if ($('.modal-kicker').hasClass('show-run')) {
-			var run_process = ($('.modal-kicker').attr('data-run-label') == '') ? '{$translate_text[1]}' : $('.modal-kicker').attr('data-run-label');
-		} else {
-			var run_process = '';
-		}
-		show_modal('{$translate_text[2]}', $('.modal-kicker').html(), run_process);
-		$('.modal.confirmation').modal('show');
-		$('.modal-kicker').remove();
-	}
-	
-	function show_modal(title, body, run_process) {
-		var modal_obj = $('.modal.confirmation .modal-content');
-		modal_obj.find('.modal-title').text(title);
-		modal_obj.children('.modal-body').html(body);
-		if (run_process != '') {
-			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(){
-				$('form[role="form"]').each(function(){
-					if ($(this).hasClass('controller-form')) {
-						$('.controller-form').submit();
-					}
-				});
-			});
-		} else {
-			modal_obj.find('.run-process').parent('button').hide();
-		}
-	}
-	
-	function ime_mode_inactive(event, targetObj) {
-		if ($('body').hasClass('locale-ja')) {
-			if (event == 'focus' || event == 'click') {
-				targetObj.attr('type', 'tel').css('ime-mode', 'disabled');
-			} else if (event == 'blur') {
-				targetObj.attr('type', 'text');
-			}
-		}
-	}
-	
-});
-</script>
-EOS;
 				$btn_cancel = __('Cancel', PLUGIN_SLUG);
 				$btn_run = __('Yes, run', PLUGIN_SLUG);
 				$modal_container = <<<MODAL
@@ -209,7 +171,7 @@ EOS;
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 MODAL;
-				$display_html = sprintf($form_html, $page_title, implode("\n", $form_objects) . $modal_kicker . $modal_container . $entry_scripts);
+				$display_html = sprintf($form_html, $page_title, implode("\n", $form_objects) . $modal_kicker . $modal_container);
 			}
 		} else {
 			$display_html = '<div class="alert alert-danger">'. __('Invild access!', PLUGIN_SLUG) .'</div>';

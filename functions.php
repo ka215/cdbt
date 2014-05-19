@@ -90,7 +90,7 @@ function check_current_table_role($mode, $table=null) {
 	$is_enable_mode = false;
 	foreach ($cdbt_option['tables'] as $table) {
 		if ($table['table_name'] == $current_table) {
-			if ($table['roles'][$mode . '_role'] <= current_user_level()) {
+			if (intval($table['roles'][$mode . '_role']) <= current_user_level()) {
 				$is_enable_mode = true;
 				break;
 			}
@@ -239,9 +239,10 @@ function create_console_footer($message=null, $run=false, $run_label=null) {
  * @param string $culumn_name
  * @param array $culumn_schema
  * @param string $value
+ * @param string $option (optional) be hidden form
  * @return string (eq. html document)
  */
-function create_form($table_name, $column_name, $column_schema, $value) {
+function create_form($table_name, $column_name, $column_schema, $value, $option=null) {
 	if (preg_match('/^(ID|created|updated)$/i', $column_name)) {
 		// Automatic insertion by the database column is excluded.
 		$component = null;
@@ -253,49 +254,72 @@ function create_form($table_name, $column_name, $column_schema, $value) {
 		$attr_id = $table_name . '-' . $column_name;
 		$label_title = (empty($column_schema['logical_name'])) ? $column_name : $column_schema['logical_name'];
 		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">require</span>' : '';
+		$is_hidden = ($option == 'hide') ? true: false;
 		$base_component = '<div class="form-group">%s</div>';
 		if ($column_schema['type'] == 'enum') {
 			// selectbox
 			$eval_string = str_replace('enum', '$items = array', $column_schema['type_format']) . ';';
 			eval($eval_string);
-			$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-			$input_form .= '<select class="form-control" id="'. $attr_id .'" name="'. $attr_id .'">';
-			foreach ($items as $item) {
-				$input_form .= '<option value="'. $item .'"'. selected($set_value, $item, false) .'>'. _cdbt($item) .'</option>';
+			if ($column_schema['not_null'] && empty($set_value)) 
+				$is_hidden = false;
+			if (!$is_hidden) {
+				$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
+				$input_form .= '<select class="form-control" id="'. $attr_id .'" name="'. $attr_id .'">';
+				foreach ($items as $item) {
+					$input_form .= '<option value="'. $item .'"'. selected($set_value, $item, false) .'>'. _cdbt($item) .'</option>';
+				}
+				$input_form .= '</select></div></div>';
+			} else {
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $set_value .'">';
 			}
-			$input_form .= '</select></div></div>';
 			
 		} else if ($column_schema['type'] == 'set') {
 			// multiple checkbox
 			$eval_string = str_replace('set', '$items = array', $column_schema['type_format']) . ';';
 			eval($eval_string);
-			$input_form = '<label>'. $label_title . $require_label .'</label><div>';
-			$item_index = 1;
-			if (!is_array($set_value)) {
-				$set_value = explode(',', $set_value);
+			if ($column_schema['not_null'] && empty($set_value)) 
+				$is_hidden = false;
+			if (!$is_hidden) {
+				$input_form = '<label>'. $label_title . $require_label .'</label><div>';
+				$item_index = 1;
+				if (!is_array($set_value)) {
+					$set_value = explode(',', $set_value);
+				}
+				foreach ($items as $item) {
+					$attr_checked = checked(in_array($item, $set_value), true, false);
+					$input_form .= '<label class="checkbox-inline">';
+					$input_form .= '<input type="checkbox" id="'. $attr_id .'-'. $item_index .'" name="'. $attr_id .'[]" value="'. $item .'"'. $attr_checked .' />';
+					$input_form .= _cdbt($item) . '</label>';
+					$item_index++;
+				}
+				$input_form .= '</div>';
+			} else {
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'[]" value="'. $set_value .'">';
 			}
-			foreach ($items as $item) {
-				$attr_checked = checked(in_array($item, $set_value), true, false);
-				$input_form .= '<label class="checkbox-inline">';
-				$input_form .= '<input type="checkbox" id="'. $attr_id .'-'. $item_index .'" name="'. $attr_id .'[]" value="'. $item .'"'. $attr_checked .' />';
-				$input_form .= _cdbt($item) . '</label>';
-				$item_index++;
-			}
-			$input_form .= '</div>';
 			
 		} else if (strtolower($column_schema['type_format']) == 'tinyint(1)') {
 			// single checkbox
 			$attr_checked = checked($set_value, 1, false);
-			$input_form = '<label>'. $label_title . $require_label .'</label><div class="checkbox"><label>';
-			$input_form .= '<input type="checkbox" id="'. $attr_id .'" name="'. $attr_id .'" value="1"'. $attr_checked .' />';
-			$input_form .= _cdbt($label_title) .'</label></div>';
+			if (!$is_hidden) {
+				$input_form = '<label>'. $label_title . $require_label .'</label><div class="checkbox"><label>';
+				$input_form .= '<input type="checkbox" id="'. $attr_id .'" name="'. $attr_id .'" value="1"'. $attr_checked .' />';
+				$input_form .= _cdbt($label_title) .'</label></div>';
+			} else {
+				if ($column_schema['not_null'] && empty($set_value)) 
+					$set_value = 1;
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $set_value .'">';
+			}
 			
 		} else if ($column_schema['type'] == 'text') {
 			// textarea
-			$default_rows = ceil(($column_schema['max_length'] * $font_size) / 940);
-			$default_rows = ($default_rows > 6) ? 6 : 3;
-			$input_form = '<label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-			$input_form .= '<textarea class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" rows="'. $default_rows .'">'. esc_textarea($set_value) .'</textarea>';
+			if (!$is_hidden) {
+				$default_rows = ceil(($column_schema['max_length'] * $font_size) / 940);
+				$default_rows = ($default_rows > 6) ? 6 : 3;
+				$input_form = '<label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
+				$input_form .= '<textarea class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" rows="'. $default_rows .'">'. esc_textarea($set_value) .'</textarea>';
+			} else {
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_textarea($set_value) .'">';
+			}
 			
 		} else if (preg_match('/blob/i', strtolower($column_schema['type']))) {
 			// file uploader
@@ -313,12 +337,16 @@ function create_form($table_name, $column_name, $column_schema, $value) {
 			
 		} else {
 			// text field
-			$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
-			$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
-			$input_type = (preg_match('/(int|numeric)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
-			$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-			$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
-			$input_form .= '</div></div>';
+			if (!$is_hidden) {
+				$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
+				$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
+				$input_type = (preg_match('/(int|numeric)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
+				$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
+				$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
+				$input_form .= '</div></div>';
+			} else {
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_html($set_value) .'">';
+			}
 			
 		}
 		$component = sprintf($base_component, $input_form);

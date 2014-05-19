@@ -242,8 +242,6 @@ class CustomDatabaseTables {
 	function load_common_assets(){
 		wp_enqueue_style('cdbt_common_style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, null, 'all');
 		wp_enqueue_script('cdbt_common_script', $this->dir_url . '/assets/js/script.min.js', null, null, false);
-		//wp_enqueue_style('cdbt_style', $this->dir_url . '/assets/css/cdbt-style.css', false, self::$version, 'all');
-		//wp_enqueue_script('cdbt_script', $this->dir_url . '/assets/js/cdbt-main.js', null, self::$version, true);
 	}
 	
 	/**

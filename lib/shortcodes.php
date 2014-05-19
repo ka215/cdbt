@@ -23,7 +23,11 @@ function display_view_table($atts, $content=''){
 	if (get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt_common_script');
 	}
+	wp_register_script('cdbt_public_script',  $cdbt->dir_url . '/assets/js/cdbt-public.js.php', false, null, true);
+	wp_enqueue_script('cdbt_public_script');
+	
 	$options = array(
 		'bootstrap_style' => get_boolean($bootstrap_style), 
 		'display_title' => get_boolean($display_title), 
@@ -50,17 +54,21 @@ function display_entry_table($atts, $content=''){
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
 		return __('No table specified', PLUGIN_SLUG);
-	if (!check_current_table_role('view', $table)) 
+	if (!check_current_table_role('input', $table)) 
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
 	if (get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt_common_script');
 	}
+	wp_register_script('cdbt_public_script',  $cdbt->dir_url . '/assets/js/cdbt-public.js.php', false, null, true);
+	wp_enqueue_script('cdbt_public_script');
+	
 	$options = array(
 		'bootstrap_style' => get_boolean($bootstrap_style), 
 		'display_title' => get_boolean($display_title), 
-		'hidden_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
+		'hidden_cols' => !empty($hidden_cols) ? explode(',', $hidden_cols) : array(), 
 		'add_class' => $add_class, 
 	);
 	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-input.php';
@@ -83,13 +91,17 @@ function display_edit_table($atts, $content=''){
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
 		return __('No table specified', PLUGIN_SLUG);
-	if (!check_current_table_role('view', $table)) 
+	if (!check_current_table_role('edit', $table)) 
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
 	if (get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt_common_script');
 	}
+	wp_register_script('cdbt_public_script',  $cdbt->dir_url . '/assets/js/cdbt-public.js.php', false, null, true);
+	wp_enqueue_script('cdbt_public_script');
+	
 	$options = array(
 		'bootstrap_style' => get_boolean($bootstrap_style), 
 		'display_title' => get_boolean($display_title), 

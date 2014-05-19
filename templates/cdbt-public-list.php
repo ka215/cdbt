@@ -83,19 +83,6 @@ function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 			$search_key = (!isset($search_key)) ? '' : $search_key;
 			$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
 			$search_button_label = __('Search', PLUGIN_SLUG);
-			$translate_text = array(
-				__('Deleting confirmation', PLUGIN_SLUG), 
-				__('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG), 
-				__('Delete', PLUGIN_SLUG), 
-				__('Alert', PLUGIN_SLUG), 
-				__('Checked items is none!', PLUGIN_SLUG), 
-				__('Search keyword is none!', PLUGIN_SLUG), 
-				__('Download binary files', PLUGIN_SLUG), 
-				__('Stored image', PLUGIN_SLUG), 
-				__('Stored binary file', PLUGIN_SLUG), 
-			);
-			$plugin_dir_path = plugins_url(PLUGIN_SLUG);
-			$media_nonce = wp_create_nonce(PLUGIN_SLUG . '_media');
 			$search_form = <<<SEARCH
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<div class="navbar-form navbar-right" role="search">
@@ -119,55 +106,6 @@ SEARCH;
 	</div>
 	$search_form
 </nav>
-<script>
-jQuery(function($){
-	$('#search_items').on('click', function(){
-		if ($('.controller-form input[name="search_key"]').val() != '') {
-			$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
-			$('.controller-form input[name="action"]').val($(this).attr('data-action'));
-			$('.controller-form').submit();
-		} else {
-			show_modal('{$translate_text[3]}', '{$translate_text[5]}', '');
-			$('.modal.confirmation').modal('show');
-		}
-	});
-	
-	function show_modal(title, body, run_process) {
-		var modal_obj = $('.modal.confirmation .modal-content');
-		modal_obj.find('.modal-title').text(title);
-		modal_obj.children('.modal-body').html(body);
-		if (run_process != '') {
-			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(){
-				$('form[role="form"]').each(function(){
-					if ($(this).hasClass('controller-form')) {
-						$('.controller-form').submit();
-					}
-				});
-			});
-		} else {
-			modal_obj.find('.run-process').parent('button').hide();
-		}
-	}
-	
-	$('.text-collapse').on('click', function(){
-		var current_display_content = $(this).html();
-		$(this).html($(this).attr('full-content')).attr('full-content', current_display_content);
-	});
-	
-	$('.binary-file').on('click', function(){
-		if ($(this).text().indexOf('image/') > 0) {
-			var img = '<img src="{$plugin_dir_path}/lib/media.php?id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&table=$table_name&token=$media_nonce" width="100%" class="img-thumbnail">';
-			show_modal('{$translate_text[7]}', img, '');
-			$('.modal.confirmation').modal('show');
-		} else {
-			show_modal('{$translate_text[8]}', decodeURI($(this).attr('data-origin-file')), '');
-			$('.modal.confirmation').modal('show');
-		}
-	});
-	
-});
-</script>
 NAV;
 			$controller_block = sprintf($controller_block_base, $content);
 			

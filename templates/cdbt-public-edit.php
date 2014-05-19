@@ -78,7 +78,7 @@ function render_edit_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 			if (isset($action) && $action == 'delete') {
 				$IDs = explode(',', $ID);
 				if (is_array($IDs) && !empty($IDs)) {
-					$information_html_base = '<div class="alert alert-info"><ul>%s</ul></div>';
+					$information_html_base = '<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><ul>%s</ul></div>';
 					$deleted_IDs = array();
 					foreach ($IDs as $ID) {
 						$is_deleted = $cdbt->delete_data($table_name, intval($ID));
@@ -131,20 +131,6 @@ function render_edit_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 			$search_key = (!isset($search_key)) ? '' : $search_key;
 			$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
 			$search_button_label = __('Search', PLUGIN_SLUG);
-			$translate_text = array(
-				__('Deleting confirmation', PLUGIN_SLUG), 
-				__('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG), 
-				__('Delete', PLUGIN_SLUG), 
-				__('Alert', PLUGIN_SLUG), 
-				__('Checked items is none!', PLUGIN_SLUG), 
-				__('Search keyword is none!', PLUGIN_SLUG), 
-				__('Download binary files', PLUGIN_SLUG), 
-				__('Stored image', PLUGIN_SLUG), 
-				__('Stored binary file', PLUGIN_SLUG), 
-			);
-			$plugin_dir_path = plugins_url(PLUGIN_SLUG);
-			$ajax_nonce = wp_create_nonce(PLUGIN_SLUG . '_ajax');
-			$media_nonce = wp_create_nonce(PLUGIN_SLUG . '_media');
 			$content = <<<NAV
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
@@ -166,125 +152,6 @@ function render_edit_page($table=null, $mode=null, $_cdbt_token=null, $options=a
 		</div>
 	</div>
 </nav>
-<script>
-jQuery(function($){
-	$('#all_checkbox_controller').on('click', function(){
-		if ($(this).is(':checked')) {
-			$('.inherit_checkbox').each(function(){
-				if (!$(this).is(':checked')) 
-					$(this).prop('checked', 'checked');
-			});
-		} else {
-			$('.inherit_checkbox').each(function(){
-				if ($(this).is(':checked')) 
-					$(this).removeAttr('checked');
-			});
-		}
-	});
-	
-	$('#checked_items_delete').on('click', function(){
-		index = 0;
-		target_ids = new Array();
-		var modal_obj = $('.modal.confirmation .modal-content');
-		$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
-		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
-		$('.inherit_checkbox').each(function(){
-			index = (typeof index == 'undefined') ? 0 : index;
-			if ($(this).is(':checked')) {
-				target_ids.push(Number($(this).val()));
-			}
-			index++;
-		});
-		if (typeof target_ids == 'object') {
-			if (target_ids.length > 0) {
-				$('.controller-form input[name="ID"]').val(target_ids.join(','));
-				show_modal('{$translate_text[0]}', '{$translate_text[1]}'.replace('%s', target_ids.join(',')), '{$translate_text[2]}');
-			} else {
-				show_modal('{$translate_text[3]}', '{$translate_text[4]}', '');
-			}
-		}
-	});
-	
-	$('#search_items').on('click', function(){
-		if ($('.controller-form input[name="search_key"]').val() != '') {
-			$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
-			$('.controller-form input[name="action"]').val($(this).attr('data-action'));
-			$('.controller-form').submit();
-		} else {
-			show_modal('{$translate_text[3]}', '{$translate_text[5]}', '');
-			$('.modal.confirmation').modal('show');
-		}
-	});
-	
-	$('.edit-row').on('click', function(){
-		$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
-		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
-		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
-		$('.controller-form input[name="_cdbt_token"]').val($(this).attr('data-token'));
-//		$('.controller-form input[name="_wp_http_referer"]').remove();
-		$('.controller-form input[name="search_key"]').remove();
-//		$('.controller-form').attr('method', 'get');
-		$('.controller-form').attr('action', $(this).attr('action-url'));
-		$('.controller-form').submit();
-	});
-	
-	$('.download-binary').on('click', function(){
-		var btn = $(this);
-		btn.addClass('btn-primary').button('loading');
-		$.ajax({
-			type: 'POST', 
-			url: '{$plugin_dir_path}/lib/ajax.php', 
-			data: { mode: $(this).attr('data-action'), id: $(this).attr('data-id'), table: '$table_name', token: '$ajax_nonce' }
-		}).done(function(res){
-			show_modal('{$translate_text[6]}', res, '');
-			$('.modal.confirmation').modal('show');
-		}).always(function(){
-			btn.removeClass('btn-primary').button('reset');
-		});
-	});
-	
-	$('.delete-row').on('click', function(){
-		$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
-		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
-		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
-		show_modal('{$translate_text[0]}', '{$translate_text[1]}'.replace('%s', $(this).attr('data-id')), '{$translate_text[2]}');
-	});
-	
-	function show_modal(title, body, run_process) {
-		var modal_obj = $('.modal.confirmation .modal-content');
-		modal_obj.find('.modal-title').text(title);
-		modal_obj.children('.modal-body').html(body);
-		if (run_process != '') {
-			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(){
-				$('form[role="form"]').each(function(){
-					if ($(this).hasClass('controller-form')) {
-						$('.controller-form').submit();
-					}
-				});
-			});
-		} else {
-			modal_obj.find('.run-process').parent('button').hide();
-		}
-	}
-	
-	$('.text-collapse').on('click', function(){
-		var current_display_content = $(this).html();
-		$(this).html($(this).attr('full-content')).attr('full-content', current_display_content);
-	});
-	
-	$('.binary-file').on('click', function(){
-		if ($(this).text().indexOf('image/') > 0) {
-			var img = '<img src="{$plugin_dir_path}/lib/media.php?id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&table=$table_name&token=$media_nonce" width="100%" class="img-thumbnail">';
-			show_modal('{$translate_text[7]}', img, '');
-			$('.modal.confirmation').modal('show');
-		} else {
-			show_modal('{$translate_text[8]}', decodeURI($(this).attr('data-origin-file')), '');
-			$('.modal.confirmation').modal('show');
-		}
-	});
-});
-</script>
 NAV;
 			$controller_block = sprintf($controller_block_base, $content);
 			
@@ -372,7 +239,7 @@ MODAL;
 				} else {
 					$msg_str = __('Data is none.', PLUGIN_SLUG);
 				}
-				$information_html = '<div class="alert alert-info">'. $msg_str .'</div>';
+				$information_html = '<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'. $msg_str .'</div>';
 				$display_html = sprintf($list_html, $title, $controller_block, '', '', $information_html);
 			}
 		}
