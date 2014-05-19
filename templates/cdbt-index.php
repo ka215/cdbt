@@ -82,8 +82,8 @@ $note_message .= $note_mes5 .'</p>';
 $btn_alt = __('The safer, easier way to pay online!', self::DOMAIN);
 $note_html = '<div class="panel panel-default other-note"><div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> %s</div><div class="panel-body">%s</div></div>';
 $note_dont = <<<NOTE
-$note_message<div class="pull-left"><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_donations"><input type="hidden" name="business" value="2YZY4HWYSWEWG"><input type="hidden" name="lc" value="JP"><input type="hidden" name="currency_code" value="USD"><input type="hidden" name="item_name" value="">
+$note_message<div class="pull-left"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_donations"><input type="hidden" name="business" value="2YZY4HWYSWEWG"><input type="hidden" name="lc" value="en_US"><input type="hidden" name="currency_code" value="USD"><input type="hidden" name="item_name" value="">
 <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - $btn_alt"></form></div>
 NOTE;
 
