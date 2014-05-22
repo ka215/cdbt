@@ -6,6 +6,8 @@ if (wp_verify_nonce($token, PLUGIN_SLUG . '_media')) {
 	$mode = 'view';
 } else if (wp_verify_nonce($token, PLUGIN_SLUG . '_download')) {
 	$mode = 'download';
+} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_tmpl_download')) {
+	$mode = 'csv_tmpl_download';
 } else {
 	file_not_found();
 }
@@ -33,6 +35,31 @@ if ($mode == 'view' || $mode == 'download') {
 			echo $file_data['bin_data'];
 		} else {
 			file_not_found();
+		}
+	}
+} else if ($mode == 'csv_tmpl_download') {
+	global $cdbt;
+	if (!empty($cdbt)) {
+		$table_name = $_REQUEST['tablename'];
+		list($result, $data) = $cdbt->export_table($table_name, true);
+		if ($result) {
+			$csv = array();
+			foreach ($data as $row) {
+				$line = array();
+				foreach ($row as $val) {
+					if (function_exists('mb_convert_encoding')) {
+						$val = mb_convert_encoding($val, 'SJIS', 'UTF-8, UTF-7, ASCII, EUC-JP,SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP, ISO-8859-1');
+					}
+					$line[] = '"'. $val .'"';
+				}
+				$csv[] = implode(',', $line);
+			}
+			$csv = implode("\r\n", $csv);
+			header('Content-Type: application/octet-stream');
+			header('Content-Disposition: attachment; filename=' . $table_name . '.csv');
+			echo $csv;
+		} else {
+			header('Location: ' . $_SERVER['HTTP_REFERER']);
 		}
 	}
 }

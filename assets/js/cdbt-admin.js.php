@@ -112,17 +112,25 @@ jQuery(document).ready(function($){
 		modal_obj.children('.modal-body').html(body);
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(){
-				$('form[role="form"]').each(function(){
-					if ($(this).hasClass('controller-form')) {
-						$('.controller-form').submit();
-					} else {
-						if ($(this).parents('.tab-pane').hasClass('active')) {
-							$(this).children('input[name="section"]').val('run');
-							$(this).submit();
+			modal_obj.find('.run-process').click(function(e){
+				e.preventDefault();
+				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-import') {
+					// console.info('import proc.');
+				} else 
+				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-export') {
+					// console.info('export proc.');
+				} else {
+					$('form[role="form"]').each(function(){
+						if ($(this).hasClass('controller-form')) {
+							$('.controller-form').submit();
+						} else {
+							if ($(this).parents('.tab-pane').hasClass('active')) {
+								$(this).children('input[name="section"]').val('run');
+								$(this).submit();
+							}
 						}
-					}
-				});
+					});
+				}
 			});
 		} else {
 			modal_obj.find('.run-process').parent('button').hide();
@@ -203,6 +211,11 @@ jQuery(document).ready(function($){
 		// console.info(e.relatedTarget); // previous tab
 	});
 	
+	$(document).on('click', '#download_template_csv', function(){
+		var url = '<?php echo plugins_url(PLUGIN_SLUG) . '/lib/media.php'; ?>?tablename='+$('#data-import-form input[name="import-table"]').val()+'&token='+$(this).attr('data-nonce');
+		location.href = url;
+	});
+	
 	$('#reflesh-table-list').on('click', function() {
 		$('#cdbt_managed_tables input[name="handle"]').val('reflesh');
 		$('#cdbt_managed_tables input[name="target_table"]').val('');
@@ -214,6 +227,50 @@ jQuery(document).ready(function($){
 		if (parse_str[0] == $(this).attr('data-table')) {
 			$('#cdbt_managed_tables input[name="handle"]').val(parse_str[1]);
 			$('#cdbt_managed_tables input[name="target_table"]').val($(this).attr('data-table'));
+			if (parse_str[1] == 'data-import') {
+				var html = '<?php
+$translate_text = array(
+	__('1. Download template csv file to import data.', PLUGIN_SLUG), 
+	__('It will be downloaded csv file is included only index row. You should be add in it the import data.', PLUGIN_SLUG), 
+	__('Download CSV', PLUGIN_SLUG), 
+	__('2. Upload csv file including import data.', PLUGIN_SLUG), 
+	__('If invalid file will be uploaded, it will not import data.', PLUGIN_SLUG), 
+);
+$dl_nonce = wp_create_nonce(PLUGIN_SLUG . '_csv_tmpl_download');
+$html =<<<EOH
+<form method="post" id="data-import-form" class="import-form" enctype="multipart/form-data" role="form">
+	<input type="hidden" name="import-table" value="%s">
+	<div class="form-group">
+		<label for="download_template_csv">{$translate_text[0]}</label>
+		<p class="help-block">{$translate_text[1]}</p>
+		<button type="button" id="download_template_csv" class="btn btn-default btn-xs" data-nonce="$dl_nonce">{$translate_text[2]}</button>
+	</div>
+	<div class="form-group">
+		<label for="upload_import_csv">{$translate_text[3]}</label>
+		<input type="file" id="upload_import_csv" name="csv_file">
+		<p class="help-block upload_note">{$translate_text[4]}</p>
+	</div>
+</form>
+EOH;
+echo preg_replace('/\n|\r|\t/', '', $html);
+				?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Import procedures', PLUGIN_SLUG); ?>', html, '<?php _e('Import now!', PLUGIN_SLUG); ?>');
+				$('.modal.confirmation').modal('show');
+				$(document).on('click', '.confirmation .modal-footer .btn-primary', function(e) {
+					e.preventDefault();
+					if ($('#upload_import_csv').val().toLowerCase().indexOf('.csv') > 0) {
+						$('#cdbt_managed_tables input[type="hidden"]').each(function(){
+							if ($(this).attr('name') == 'section') 
+								$(this).val('run');
+							$(this).clone().appendTo('#data-import-form');
+						});
+						$('#data-import-form').submit();
+					} else {
+						$('.upload_note .alert-text').remove();
+						$('.upload_note').append('<div class="alert-text"><?php _e('You are trying to upload a not CSV file.', PLUGIN_SLUG); ?></div>');
+					}
+				});
+			}
 			if (parse_str[1] == 'truncate-table') {
 				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
 				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');

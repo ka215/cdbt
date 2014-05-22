@@ -25,7 +25,7 @@ if (count($cdbt_options['tables']) > 1) {
 		$thead_th .= '<th>'. $th_text .'</th>';
 	}
 	$enable_handle = array(
-		'data-import' => array('enable' => false, 'label' => __('Data Import', PLUGIN_SLUG)), 
+		'data-import' => array('enable' => true, 'label' => __('Data Import', PLUGIN_SLUG)), 
 		'data-export' => array('enable' => false, 'label' => __('Data Export', PLUGIN_SLUG)), 
 		'alter-table' => array('enable' => false, 'label' => __('Alter table', PLUGIN_SLUG)), 
 		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', PLUGIN_SLUG)), 

@@ -490,7 +490,7 @@ class CustomDatabaseTables {
 			}
 			$result = array(true, $table_name, $table_schema);
 		} else {
-			$result = array(false, __('table is not exists', self::DOMAIN));
+			$result = array(false, __('Table is not exists', self::DOMAIN));
 		}
 		return $result;
 	}
@@ -510,11 +510,11 @@ class CustomDatabaseTables {
 					$result = array(true, $data->Comment);
 					break;
 				} else {
-					$result = array(false, __('table comment is none', self::DOMAIN));
+					$result = array(false, __('Table comment is none', self::DOMAIN));
 				}
 			}
 		} else {
-			$result = array(false, __('table is not exists', self::DOMAIN));
+			$result = array(false, __('Table is not exists', self::DOMAIN));
 		}
 		return $result;
 	}
@@ -972,7 +972,7 @@ class CustomDatabaseTables {
 		}
 		return $result;
 	}
-
+	
 	/**
 	 * compare to reservation table names
 	 * @param string $table_name
@@ -987,7 +987,69 @@ class CustomDatabaseTables {
 		);
 		return in_array($naked_table_name, $reservation_names);
 	}
-
+	
+	/**
+	 * import data from any table
+	 * @param string $table_name
+	 * @param array $import_data
+	 * @return array
+	 */
+	function import_table($table_name, $import_data) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if (!empty($import_data)) {
+			list($is_table,,$table_schema) = $this->get_table_schema($table_name);
+			if ($is_table) {
+				$diff_ary = array_diff_assoc(array_keys($table_schema), array_keys($import_data[0]));
+				if (empty($diff_ary)) {
+					$insert_ids = array();
+					foreach ($import_data as $one_data) {
+						foreach ($table_schema as $column_name => $column_schema) {
+							if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
+								$validate_result = $this->validate_data($column_schema, $one_data[$column_name]);
+								if (!array_shift($validate_result))
+									$one_data[$column_name] = '';
+							} else {
+								unset($one_data[$column_name]);
+							}
+						}
+						$insert_ids[] = $this->insert_data($table_name, $one_data, $table_schema);
+					}
+					$result = array(true, sprintf(__('Data of %d was imported.', self::DOMAIN), count($insert_ids)));
+				} else {
+					$result = array(false, __('Import data is invalid.', self::DOMAIN));
+				}
+			} else {
+				$result = array(false, __('Table is not exists', self::DOMAIN));
+			}
+		} else {
+			$result = array(false, __('Import data is none.', self::DOMAIN));
+		}
+		return $result;
+	}
+	
+	/**
+	 * export data from any table
+	 * @param string $table_name
+	 * @param boolean $index_only (optional) default false
+	 * @return array
+	 */
+	function export_table($table_name, $index_only=false) {
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		list($is_table,,$table_schema) = $this->get_table_schema($table_name);
+		if ($is_table) {
+			$data = array();
+			$data[] = array_keys($table_schema);
+			if (!$index_only) {
+				$dt = get_data($table_name);
+var_dump($dt);
+			}
+			$result = array(true, $data);
+		} else {
+			$result = array(false, __('Table is not exists', self::DOMAIN));
+		}
+		return $result;
+	}
+	
 /**
  * This function features description
  * @param 
