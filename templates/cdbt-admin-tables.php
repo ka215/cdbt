@@ -26,7 +26,7 @@ if (count($cdbt_options['tables']) > 1) {
 	}
 	$enable_handle = array(
 		'data-import' => array('enable' => true, 'label' => __('Data Import', PLUGIN_SLUG)), 
-		'data-export' => array('enable' => false, 'label' => __('Data Export', PLUGIN_SLUG)), 
+		'data-export' => array('enable' => true, 'label' => __('Data Export', PLUGIN_SLUG)), 
 		'alter-table' => array('enable' => false, 'label' => __('Alter table', PLUGIN_SLUG)), 
 		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', PLUGIN_SLUG)), 
 		'drop-table' => array('enable' => true, 'label' => __('Drop table', PLUGIN_SLUG)), 

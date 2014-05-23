@@ -118,7 +118,10 @@ jQuery(document).ready(function($){
 					// console.info('import proc.');
 				} else 
 				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-export') {
-					// console.info('export proc.');
+					$('#cdbt_managed_tables').children('input[name="section"]').val('run');
+					var url = '<?php echo plugins_url(PLUGIN_SLUG) . '/lib/media.php'; ?>?tablename='+$('#cdbt_managed_tables input[name="target_table"]').val()+'&token=<?php echo wp_create_nonce(PLUGIN_SLUG . '_csv_export'); ?>';
+					$('.modal.confirmation').modal('hide');
+					location.href = url;
 				} else {
 					$('form[role="form"]').each(function(){
 						if ($(this).hasClass('controller-form')) {
@@ -270,6 +273,11 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 						$('.upload_note').append('<div class="alert-text"><?php _e('You are trying to upload a not CSV file.', PLUGIN_SLUG); ?></div>');
 					}
 				});
+			}
+			if (parse_str[1] == 'data-export') {
+				var msg = '<?php _e('Will export data of "%s" table. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Export now!', PLUGIN_SLUG); ?>');
+				$('.modal.confirmation').modal('show');
 			}
 			if (parse_str[1] == 'truncate-table') {
 				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));

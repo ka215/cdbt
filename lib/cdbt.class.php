@@ -921,7 +921,7 @@ class CustomDatabaseTables {
 				}
 			}
 			$endpoint = trim($matches[2]);
-			if ((empty($endpoint) || $endpoint == ';') && !empty($parse_body)) {
+			if ((empty($endpoint) || $endpoint == ')' || $endpoint == ';') && !empty($parse_body)) {
 				// make finalization sql
 				$add_fields[0] = "`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."'";
 				$add_fields[1] = "`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."'";
@@ -962,7 +962,8 @@ class CustomDatabaseTables {
 						}
 					}
 				}
-				$fixed_sql = $sql_head ."\n". implode(", \n", $parse_body) .", \n". implode(", \n", $parse_key) ."\n) \n". implode(" \n", $parse_option) . ' ;';
+				$ds = empty($parse_key) ? " \n" : ", \n";
+				$fixed_sql = $sql_head ."\n". implode(", \n", $parse_body) .$ds. implode(", \n", $parse_key) ."\n) \n". implode(" \n", $parse_option) . ' ;';
 				$result = array(true, $fixed_sql);
 			} else {
 				$result = array(false, null);
@@ -1040,8 +1041,14 @@ class CustomDatabaseTables {
 			$data = array();
 			$data[] = array_keys($table_schema);
 			if (!$index_only) {
-				$dt = get_data($table_name);
-var_dump($dt);
+				$all_data = $this->get_data($table_name);
+				foreach ($all_data as $data_obj) {
+					$row = array();
+					foreach ($data_obj as $key => $val) {
+						$row[] = $val;
+					}
+					$data[] = $row;
+				}
 			}
 			$result = array(true, $data);
 		} else {

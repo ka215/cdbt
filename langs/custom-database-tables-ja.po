@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 1.0\n"
-"POT-Creation-Date: 2014-05-22 14:36+0900\n"
-"PO-Revision-Date: 2014-05-22 14:40+0900\n"
+"POT-Creation-Date: 2014-05-23 21:32+0900\n"
+"PO-Revision-Date: 2014-05-23 21:34+0900\n"
 "Last-Translator: katsuhiko maeno <maenok@isao.co.jp>\n"
 "Language-Team: Katsuhiko Maeno <ka2@ka2.org>\n"
 "Language: ja_JP\n"
@@ -69,8 +69,8 @@ msgid "loading"
 msgstr "ロード中"
 
 #: ../../custom-database-tables/assets/js/cdbt-admin.js.php:99
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:274
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:279
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:284
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:289
 #: ../../custom-database-tables/assets/js/cdbt-public.js.php:119
 #: ../../custom-database-tables/functions.php:228
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:215
@@ -80,17 +80,18 @@ msgid "Yes, run"
 msgstr "実行する"
 
 #: ../../custom-database-tables/assets/js/cdbt-admin.js.php:103
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:274
 #: ../../custom-database-tables/assets/js/cdbt-admin.js.php:279
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:284
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:289
 #: ../../custom-database-tables/assets/js/cdbt-public.js.php:123
 msgid "Please confirm"
 msgstr "確認"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:232
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:236
 msgid "1. Download template csv file to import data."
 msgstr "1. データインポート用のCSVテンプレートをダウンロードする。"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:233
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:237
 msgid ""
 "It will be downloaded csv file is included only index row. You should be add "
 "in it the import data."
@@ -98,32 +99,42 @@ msgstr ""
 "ダウンロードされるCSVはインデックス行のみのファイルとなります。そのファイルに"
 "インポートデータを追加してください。"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:234
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:238
 msgid "Download CSV"
 msgstr "CSVをダウンロードする"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:235
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:239
 msgid "2. Upload csv file including import data."
 msgstr "2. インポートデータが含まれるCSVファイルをアップロードする。"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:236
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:240
 msgid "If invalid file will be uploaded, it will not import data."
 msgstr "不正なファイルがアップロードされた場合、インポートは行われません。"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:255
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:260
 msgid "Import procedures"
 msgstr "データインポートの手順"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:255
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:260
 msgid "Import now!"
 msgstr "インポートする"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:268
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:273
 msgid "You are trying to upload a not CSV file."
 msgstr "CSVでないファイルはアップロードできません。"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:273
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:235
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:278
+#, php-format
+msgid "Will export data of \"%s\" table. Would you like?"
+msgstr ""
+"「%s」テーブルのデータをCSVファイルとしてエクスポートします。よろしいですか？"
+
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:279
+msgid "Export now!"
+msgstr "エクスポートする"
+
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:283
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:251
 #, php-format
 msgid ""
 "Will truncate and initialize data of \"%s\" table. After this handled cannot "
@@ -132,35 +143,35 @@ msgstr ""
 "「%s」テーブルのデータを初期化します。この操作はやり直しできませんが、よろし"
 "いですか？"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:278
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:252
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:288
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:268
 #, php-format
 msgid ""
 "Will delete a \"%s\" table. After this handled cannot resume. Would you like?"
 msgstr ""
 "「%s」テーブルを削除します。この操作はやり直しできませんが、よろしいですか？"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:306
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:316
 #: ../../custom-database-tables/assets/js/cdbt-public.js.php:69
 msgid "Stored image"
 msgstr "格納画像"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:309
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:319
 #: ../../custom-database-tables/assets/js/cdbt-public.js.php:72
 msgid "Stored binary file"
 msgstr "格納されているバイナリファイル"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:388
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:398
 msgid "Candidate value 1, Candidate value 2, ..."
 msgstr "候補1,候補2,..."
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:391
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:394
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:401
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:404
 msgid "Integer of length, Integer of decimals"
 msgstr "桁数,少数部桁"
 
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:398
-#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:405
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:408
+#: ../../custom-database-tables/assets/js/cdbt-admin.js.php:415
 msgid "Integer of length"
 msgstr "文字数"
 
@@ -362,6 +373,7 @@ msgstr "テーブルデータを初期化できませんでした。"
 #: ../../custom-database-tables/lib/cdbt.class.php:493
 #: ../../custom-database-tables/lib/cdbt.class.php:517
 #: ../../custom-database-tables/lib/cdbt.class.php:1023
+#: ../../custom-database-tables/lib/cdbt.class.php:1055
 msgid "Table is not exists"
 msgstr "テーブルがありません。"
 
@@ -463,7 +475,7 @@ msgid "access is not from admin panel!"
 msgstr "管理パネルからでないアクセスです！"
 
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:8
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:314
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:330
 #: ../../custom-database-tables/templates/cdbt-input.php:124
 #: ../../custom-database-tables/templates/cdbt-public-input.php:177
 msgid "Invild access!"
@@ -542,54 +554,62 @@ msgstr "はい、作成します"
 msgid "Is invalid call to create table."
 msgstr "テーブル作成が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:214
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:217
 msgid "Invalid file was uploaded."
 msgstr "不正なファイルがアップロードされました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:217
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:221
 msgid "You can not handle to import data."
 msgstr "データのインポートができません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:221
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:225
 msgid "Is invalid call to import data."
 msgstr "インポートの不正な呼び出しです。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:242
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:237
+msgid "You can not handle to export data."
+msgstr "データのエクスポートができません。"
+
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:241
+msgid "Is invalid call to export data."
+msgstr "エクスポートの不正な呼び出しです。"
+
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:258
 msgid "You can not handle to truncate this table."
 msgstr "このテーブルのデータ初期化はできません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:246
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:262
 msgid "Is invalid call to truncate table."
 msgstr "テーブルデータ初期化が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:272
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:288
 msgid "You can not handle to drop controller table."
 msgstr "コントローラテーブルの削除はできません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:276
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:292
 msgid "Is invalid call to drop table."
 msgstr "テーブル削除が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:285
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:301
 #, php-format
 msgid "The %s&apos;s table was chosen as the current table."
 msgstr "%sテーブルを対象テーブルに指定しました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:292
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:308
 #, php-format
 msgid "Did not choose the %s&apos;s table."
 msgstr "%sテーブルが選択されていません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:355
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:371
 msgid "General setting"
 msgstr "共通設定"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:356
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:372
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:26
 msgid "Create table"
 msgstr "テーブル作成"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:357
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:373
 msgid "Enable tables list"
 msgstr "利用可能テーブル一覧"
 

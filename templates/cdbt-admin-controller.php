@@ -226,8 +226,20 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				}
 			}
 			if ($handle == 'data-export') {
-				// is not implemented in this version.
-				
+				if ($section == 'confirm') {
+					$section = 'run';
+				} else if ($section == 'run') {
+					$this->current_table = $target_table;
+					if (check_current_table_valid()) {
+						//$export_token = wp_create_nonce(self::DOMAIN . '_csv_export');
+						//$url = $this->dir_url . '/lib/media.php?tablename='. $this->current_table .'&token='. $export_token;
+					} else {
+						$msg = array('warning', __('You can not handle to export data.', self::DOMAIN));
+					}
+					$this->current_table = $prev_current_table;
+				} else {
+					$msg = array('warning', __('Is invalid call to export data.', self::DOMAIN));
+				}
 			}
 			if ($handle == 'alter-table') {
 				// is not implemented in this version.
