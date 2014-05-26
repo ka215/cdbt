@@ -62,7 +62,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$post_values = $validate_values = array();
 		foreach ($table_schema as $column_name => $column_schema) {
 			$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
-			$form_objects[] = create_form($table_name, $column_name, $column_schema, $value);
+			$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value);
 			
 			$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 			if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
@@ -71,7 +71,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 					$validate_values[$column_name] = array_pop($validate_result);
 			}
 		}
-		$form_objects[] = '<div class="center-block on-bottom-margin"><div class="text-left">' . create_button('stateful', array(__('submit data', self::DOMAIN), __('now sending...', self::DOMAIN)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
+		$form_objects[] = '<div class="center-block on-bottom-margin"><div class="text-left">' . cdbt_create_button('stateful', array(__('submit data', self::DOMAIN), __('now sending...', self::DOMAIN)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
 		
 		if (!empty($post_values)) {
 			if (empty($validate_values)) {
@@ -93,7 +93,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		}
 		
 		if (is_admin()) 
-			create_console_menu($_cdbt_token);
+			cdbt_create_console_menu($_cdbt_token);
 		
 		if ((isset($insert_id) && (bool)$insert_id) || (isset($update_id) && (bool)$update_id)) {
 			if ($is_update_mode) {
@@ -132,4 +132,4 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 
 $info_msg = empty($info_msg) ? null : $info_msg;
 
-create_console_footer($info_msg);
+cdbt_create_console_footer($info_msg);

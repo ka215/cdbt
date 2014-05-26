@@ -16,7 +16,7 @@ if(!$this->check_table_exists())
 
 list($result, $table_name, $table_schema) = $this->get_table_schema();
 if ($result && !empty($table_name) && !empty($table_schema)) {
-	create_console_menu($_cdbt_token);
+	cdbt_create_console_menu($_cdbt_token);
 	
 	$schm_html = '<h3 class="dashboard-title"><span class="glyphicon glyphicon-list-alt"></span> %s</h3><div class="current-table-schema"><table id="'. $table_name .'" class="table table-bordered">%s%s</table></div>%s';
 	list($result, $value) = $this->get_table_comment($table_name);
@@ -63,7 +63,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	printf($schm_html, $title, $schm_index_row, '<tbody>'. $schm_rows . '</tbody>', $shortcodes);
 	
 } else {
-	create_console_menu($_cdbt_token);
+	cdbt_create_console_menu($_cdbt_token);
 ?>
 	<div class="alert alert-info"><?php _e('The enabled tables is not exists currently.<br />Please create tables.', self::DOMAIN); ?></div>
 <?php
@@ -89,4 +89,4 @@ NOTE;
 
 printf($note_html, __('About Custom DataBase Tables', self::DOMAIN), $note_dont);
 
-create_console_footer();
+cdbt_create_console_footer();

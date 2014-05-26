@@ -32,10 +32,10 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 	
 	switch ($action) {
 		case 'general': 
-			if (isset($handle) && compare_var($handle, 'save')) {
+			if (isset($handle) && cdbt_compare_var($handle, 'save')) {
 				foreach ($inherit_values as $key => $value) {
 					if (preg_match('/^(use_wp_prefix|cleaning_options)$/', $key)) {
-						$this->options[$key] = get_boolean($value);
+						$this->options[$key] = cdbt_get_boolean($value);
 					} else {
 						$this->options[$key] = $value;
 					}
@@ -52,7 +52,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 						foreach ($this->options['tables'] as $i => $table) {
 							$this->current_table = $table['table_name'];
 							if (isset($table['table_type']) && $table['table_type'] != 'controller_table') {
-								if (get_boolean($this->check_table_exists())) {
+								if (cdbt_get_boolean($this->check_table_exists())) {
 									$re_tables[] = $table;
 								}
 							} else {
@@ -70,12 +70,12 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 			if ($handle == 'create-table') {
 				if ($section == 'confirm') {
 					$create_full_table_name = null;
-					if (compare_var(empty($inherit_values['naked_table_name']), true)) {
+					if (cdbt_compare_var(empty($inherit_values['naked_table_name']), true)) {
 						$msg = array('warning', __('Table name is empty.', self::DOMAIN));
 					} else {
-						$create_full_table_name = (get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
+						$create_full_table_name = (cdbt_get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
 					}
-					if (compare_var(empty($create_full_table_name), true)) {
+					if (cdbt_compare_var(empty($create_full_table_name), true)) {
 						$msg = array('warning', __('Table name is empty.', self::DOMAIN));
 					} else {
 						if (preg_match('/^([a-zA-Z0-9_\-]+)$/', $inherit_values['naked_table_name'], $matches)) {
@@ -92,7 +92,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								$msg = array('warning', __('Table name is invalid. Table name cannot named in only numbers.', self::DOMAIN));
 							}
 							foreach ($this->options['tables'] as $table) {
-								if (compare_var($create_full_table_name, $table['table_name'])) {
+								if (cdbt_compare_var($create_full_table_name, $table['table_name'])) {
 									$msg = array('warning', __('This table is already created.', self::DOMAIN));
 									break;
 								}
@@ -101,7 +101,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 							$msg = array('warning', __('Table name is invalid. Characters that can not be used in table name is included.', self::DOMAIN));
 						}
 						if (empty($msg)) {
-							if (compare_var(empty($inherit_values['create_table_sql']), true)) {
+							if (cdbt_compare_var(empty($inherit_values['create_table_sql']), true)) {
 								$msg = array('warning', __('Create Table SQL is empty.', self::DOMAIN));
 							} else {
 								$sql_str = stripcslashes(strip_tags($inherit_values['create_table_sql']));
@@ -115,18 +115,18 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								}
 							}
 							if (empty($msg)) {
-								if (compare_var(empty($inherit_values['show_max_records']), true)) {
+								if (cdbt_compare_var(empty($inherit_values['show_max_records']), true)) {
 									$msg = array('warning', __('Show Max Records is empty.', self::DOMAIN));
 								} else if (intval($inherit_values['show_max_records']) == 0) {
 									$msg = array('warning', __('Show Max Records must be one more integer.', self::DOMAIN));
 								}
-								if (compare_var(empty($inherit_values['view_role']), true) || intval($inherit_values['view_role']) < 1 || intval($inherit_values['view_role']) > 9) 
+								if (cdbt_compare_var(empty($inherit_values['view_role']), true) || intval($inherit_values['view_role']) < 1 || intval($inherit_values['view_role']) > 9) 
 									$inherit_values['view_role'] = '1';
-								if (compare_var(empty($inherit_values['input_role']), true) || intval($inherit_values['input_role']) < 1 || intval($inherit_values['input_role']) > 9) 
+								if (cdbt_compare_var(empty($inherit_values['input_role']), true) || intval($inherit_values['input_role']) < 1 || intval($inherit_values['input_role']) > 9) 
 									$inherit_values['input_role'] = '5';
-								if (compare_var(empty($inherit_values['edit_role']), true) || intval($inherit_values['edit_role']) < 1 || intval($inherit_values['edit_role']) > 9) 
+								if (cdbt_compare_var(empty($inherit_values['edit_role']), true) || intval($inherit_values['edit_role']) < 1 || intval($inherit_values['edit_role']) > 9) 
 									$inherit_values['edit_role'] = '7';
-								if (compare_var(empty($inherit_values['admin_role']), true) || intval($inherit_values['admin_role']) < 1 || intval($inherit_values['admin_role']) > 9) 
+								if (cdbt_compare_var(empty($inherit_values['admin_role']), true) || intval($inherit_values['admin_role']) < 1 || intval($inherit_values['admin_role']) > 9) 
 									$inherit_values['admin_role'] = '9';
 								if (empty($msg)) {
 									$section = 'run';
@@ -137,7 +137,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					}
 				} else if ($section == 'run') {
 					$prev_current_table = $this->current_table;
-					$this->current_table = (get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
+					$this->current_table = (cdbt_get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
 					if (!$this->check_table_exists()) {
 						$esc_table_comment = stripcslashes(strip_tags($inherit_values['table_comment']));
 						$inherit_values['create_table_sql'] = stripcslashes(strip_tags($inherit_values['create_table_sql']));
@@ -189,7 +189,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$section = 'run';
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (check_current_table_valid()) {
+					if (cdbt_check_current_table_valid()) {
 						if (preg_match('/^application\/(vnd.ms-excel|octet-stream)$/', $_FILES['csv_file']['type']) && $_FILES['csv_file']['size'] > 0) {
 							$data = file_get_contents($_FILES['csv_file']['tmp_name']);
 							if (function_exists('mb_convert_encoding')) {
@@ -230,7 +230,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$section = 'run';
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (check_current_table_valid()) {
+					if (cdbt_check_current_table_valid()) {
 						//$export_token = wp_create_nonce(self::DOMAIN . '_csv_export');
 						//$url = $this->dir_url . '/lib/media.php?tablename='. $this->current_table .'&token='. $export_token;
 					} else {
@@ -251,7 +251,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (check_current_table_valid()) {
+					if (cdbt_check_current_table_valid()) {
 						list($result, $message) = $this->truncate_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 					} else {
@@ -268,17 +268,17 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will delete a "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (check_current_table_valid()) {
+					if (cdbt_check_current_table_valid()) {
 						list($result, $message) = $this->drop_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 						if ($result) {
 							foreach ($this->options['tables'] as $i => $table) {
-								if (compare_var($table['table_name'], $target_table)) {
+								if (cdbt_compare_var($table['table_name'], $target_table)) {
 									unset($this->options['tables'][$i]);
 								}
 							}
 							update_option(self::DOMAIN, $this->options);
-							if (compare_var(get_option(self::DOMAIN . '_current_table'), $target_table)) 
+							if (cdbt_compare_var(get_option(self::DOMAIN . '_current_table'), $target_table)) 
 								delete_option(self::DOMAIN . '_current_table');
 							$this->current_table = ($prev_current_table != $target_table) ? $prev_current_table : '';
 						} else {
@@ -296,7 +296,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				$prev_current_table = get_option(self::DOMAIN . '_current_table');
 				$this->current_table = $target_table;
 				update_option(self::DOMAIN . '_current_table', $this->current_table);
-				if (check_current_table_valid()) {
+				if (cdbt_check_current_table_valid()) {
 					update_option(self::DOMAIN . '_current_table', $target_table);
 					$message = sprintf(__('The %s&apos;s table was chosen as the current table.', self::DOMAIN), $target_table);
 					$msg_type = 'success';
@@ -325,19 +325,19 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 	}
 } else {
 	$_cdbt_token = wp_create_nonce(self::DOMAIN . '_admin');
-	create_console_menu($_cdbt_token);
+	cdbt_create_console_menu($_cdbt_token);
 	
 	$information_html = sprintf('<div class="alert alert-danger">%s</div>', __('Invild access!', self::DOMAIN));
 }
 
 // display management console
-create_console_menu($_cdbt_token);
+cdbt_create_console_menu($_cdbt_token);
 
 $contents_base = (!empty($msg) && $msg[0] == 'success') ? $nav_tabs_html . $information_html . $tabs_content_html : $nav_tabs_html . $tabs_content_html;
 $contents_html = sprintf($contents_base, $nav_tabs_list, $tabs_content);
 printf('<div class="tab-container">%s</div>', $contents_html);
 
-create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $information_html : ''), ((!empty($msg) && $msg[0] == 'confirmation') ? true : false), ((!empty($msg) && isset($msg[2])) ? $msg[2] : ''));
+cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $information_html : ''), ((!empty($msg) && $msg[0] == 'confirmation') ? true : false), ((!empty($msg) && isset($msg[2])) ? $msg[2] : ''));
 
 
 function create_tab_content($tab_name, $nonce, $inherit_values=null) {

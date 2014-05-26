@@ -11,7 +11,7 @@
  * @param string $mode (optional) default 'list'
  * @return string
  */
-function create_pagination($page_num, $per_page, $total_data, $mode='list') {
+function cdbt_create_pagination($page_num, $per_page, $total_data, $mode='list') {
 	$max_pages = ceil($total_data / $per_page);
 	$pagination_base = '<div class="text-center"><ul class="pagination pagination-sm">%s</ul>%s%s</div>';
 	$active_class = ' class="active"';
@@ -53,7 +53,7 @@ EOS;
  * get level of current login user
  * @return int
  */
-function current_user_level() {
+function cdbt_current_user_level() {
 	if (is_user_logged_in()) {
 		$user_cap = wp_get_current_user()->caps;
 		if (array_key_exists('subscriber', $user_cap) && $user_cap['subscriber']) 
@@ -78,7 +78,7 @@ function current_user_level() {
  * @param string $table (optional) default null
  * @return boolean
  */
-function check_current_table_role($mode, $table=null) {
+function cdbt_check_current_table_role($mode, $table=null) {
 	$cdbt_option = get_option(PLUGIN_SLUG);
 	if (empty($table)) {
 		$current_table = get_option(PLUGIN_SLUG . '_current_table');
@@ -90,7 +90,7 @@ function check_current_table_role($mode, $table=null) {
 	$is_enable_mode = false;
 	foreach ($cdbt_option['tables'] as $table) {
 		if ($table['table_name'] == $current_table) {
-			if (intval($table['roles'][$mode . '_role']) <= current_user_level()) {
+			if (intval($table['roles'][$mode . '_role']) <= cdbt_current_user_level()) {
 				$is_enable_mode = true;
 				break;
 			}
@@ -103,7 +103,7 @@ function check_current_table_role($mode, $table=null) {
  * check the table whether current table valid
  * @return boolean
  */
-function check_current_table_valid() {
+function cdbt_check_current_table_valid() {
 	$cdbt_option = get_option(PLUGIN_SLUG);
 	$current_table = get_option(PLUGIN_SLUG . '_current_table');
 	if (!$current_table || !$cdbt_option) 
@@ -125,8 +125,8 @@ function check_current_table_valid() {
  * @param string $nonce
  * @return void
  */
-function create_console_menu($nonce) {
-	$user_level = current_user_level();
+function cdbt_create_console_menu($nonce) {
+	$user_level = cdbt_current_user_level();
 //var_dump($user_level);
 	$current_table = get_option(PLUGIN_SLUG . '_current_table');
 	$attr = disabled($current_table, false, false);
@@ -141,13 +141,13 @@ function create_console_menu($nonce) {
 		if (!$current_table) {
 			$admin_attr = '';
 		} else {
-			$admin_attr = disabled(check_current_table_role('admin'), false, false);
+			$admin_attr = disabled(cdbt_check_current_table_role('admin'), false, false);
 		}
 	} else {
 		if (!$current_table) {
 			$admin_attr = $attr;
 		} else {
-			$admin_attr = disabled(check_current_table_role('admin'), false, false);
+			$admin_attr = disabled(cdbt_check_current_table_role('admin'), false, false);
 		}
 	}
 	$buttons[1] = array(
@@ -161,21 +161,21 @@ function create_console_menu($nonce) {
 		'_mode' => 'input', 
 		'_name' => __('Input data', PLUGIN_SLUG), 
 		'_class' => 'default', 
-		'_attr' => empty($attr) ? disabled(check_current_table_role('input'), false, false) : $attr, 
+		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('input'), false, false) : $attr, 
 		'_icon' => 'pencil', 
 	);
 	$buttons[3] = array( 
 		'_mode' => 'list', 
 		'_name' => __('View data', PLUGIN_SLUG), 
 		'_class' => 'default', 
-		'_attr' => empty($attr) ? disabled(check_current_table_role('view'), false, false) : $attr, 
+		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('view'), false, false) : $attr, 
 		'_icon' => 'list', 
 	); 
 	$buttons[4] = array(
 		'_mode' => 'edit', 
 		'_name' => __('Edit data', PLUGIN_SLUG), 
 		'_class' => 'default', 
-		'_attr' => empty($attr) ? disabled(check_current_table_role('edit'), false, false) : $attr, 
+		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('edit'), false, false) : $attr, 
 		'_icon' => 'edit', 
 	);
 	ksort($buttons);
@@ -201,9 +201,9 @@ function create_console_menu($nonce) {
  * @param string $run_label default null
  * @return void
  */
-function create_console_footer($message=null, $run=false, $run_label=null) {
+function cdbt_create_console_footer($message=null, $run=false, $run_label=null) {
 	if (!empty($message)) {
-		$is_run = get_boolean($run) ? 'show-run' : '';
+		$is_run = cdbt_get_boolean($run) ? 'show-run' : '';
 		$modal_kicker = sprintf('<div class="modal-kicker %s" data-run-label="%s">%s</div>', $is_run, $run_label, str_replace("\n", '<br />', strip_tags($message)));
 	} else {
 		$modal_kicker = '';
@@ -242,7 +242,7 @@ function create_console_footer($message=null, $run=false, $run_label=null) {
  * @param string $option (optional) be hidden form
  * @return string (eq. html document)
  */
-function create_form($table_name, $column_name, $column_schema, $value, $option=null) {
+function cdbt_create_form($table_name, $column_name, $column_schema, $value, $option=null) {
 	if (preg_match('/^(ID|created|updated)$/i', $column_name)) {
 		// Automatic insertion by the database column is excluded.
 		$component = null;
@@ -266,7 +266,7 @@ function create_form($table_name, $column_name, $column_schema, $value, $option=
 				$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
 				$input_form .= '<select class="form-control" id="'. $attr_id .'" name="'. $attr_id .'">';
 				foreach ($items as $item) {
-					$input_form .= '<option value="'. $item .'"'. selected($set_value, $item, false) .'>'. _cdbt($item) .'</option>';
+					$input_form .= '<option value="'. $item .'"'. selected($set_value, $item, false) .'>'. cdbt__($item) .'</option>';
 				}
 				$input_form .= '</select></div></div>';
 			} else {
@@ -289,7 +289,7 @@ function create_form($table_name, $column_name, $column_schema, $value, $option=
 					$attr_checked = checked(in_array($item, $set_value), true, false);
 					$input_form .= '<label class="checkbox-inline">';
 					$input_form .= '<input type="checkbox" id="'. $attr_id .'-'. $item_index .'" name="'. $attr_id .'[]" value="'. $item .'"'. $attr_checked .' />';
-					$input_form .= _cdbt($item) . '</label>';
+					$input_form .= cdbt__($item) . '</label>';
 					$item_index++;
 				}
 				$input_form .= '</div>';
@@ -303,7 +303,7 @@ function create_form($table_name, $column_name, $column_schema, $value, $option=
 			if (!$is_hidden) {
 				$input_form = '<label>'. $label_title . $require_label .'</label><div class="checkbox"><label>';
 				$input_form .= '<input type="checkbox" id="'. $attr_id .'" name="'. $attr_id .'" value="1"'. $attr_checked .' />';
-				$input_form .= _cdbt($label_title) .'</label></div>';
+				$input_form .= cdbt__($label_title) .'</label></div>';
 			} else {
 				if ($column_schema['not_null'] && empty($set_value)) 
 					$set_value = 1;
@@ -364,7 +364,7 @@ function create_form($table_name, $column_name, $column_schema, $value, $option=
  * @param string $prefix_icon (optional) (eq. value of "glyphicon-*" of the bootstrap)
  * @return string (eq. html document)
  */
-function create_button($btn_type='button', $btn_value, $btn_id=null, $btn_class='default', $btn_action=null, $prefix_icon=null) {
+function cdbt_create_button($btn_type='button', $btn_value, $btn_id=null, $btn_class='default', $btn_action=null, $prefix_icon=null) {
 	$btn_display = (is_array($btn_value)) ? array_shift($btn_value) : $btn_value;
 	$change_str = (is_array($btn_value)) ? array_shift($btn_value) : $btn_display;
 	if (!empty($prefix_icon)) {
@@ -392,7 +392,7 @@ function create_button($btn_type='button', $btn_value, $btn_id=null, $btn_class=
  * @param boolean $collapse (optional) default false
  * @return string
  */
-function str_truncate($string, $length=40, $suffix='...', $collapse=false) {
+function cdbt_str_truncate($string, $length=40, $suffix='...', $collapse=false) {
 	if (mb_check_encoding($string, 'utf-8') && function_exists('mb_strwidth') && function_exists('mb_strimwidth')) {
 		if (mb_strwidth($string) > (int)$length*2) {
 			$truncated_str = mb_strimwidth(strip_tags($string), 0, (int)$length*2, $suffix, 'utf-8');
@@ -416,7 +416,7 @@ function str_truncate($string, $length=40, $suffix='...', $collapse=false) {
  * @param mixed(string|int|boolean) $compare
  * @return boolean
  */
-function compare_var($var, $compare=null) {
+function cdbt_compare_var($var, $compare=null) {
 	if ((string)$var === (string)$compare) {
 		return true;
 	} else {
@@ -429,7 +429,7 @@ function compare_var($var, $compare=null) {
  * @param string $string
  * @return boolean
  */
-function get_boolean($string) {
+function cdbt_get_boolean($string) {
 	if (is_bool($string)) {
 		return $string;
 	} else if (function_exists('boolval')) {
@@ -452,7 +452,7 @@ function get_boolean($string) {
  * @param string $string
  * @return string
  */
-function _cdbt($string) {
+function cdbt__($string) {
 	return __($string, PLUGIN_SLUG);
 }
 
@@ -461,7 +461,7 @@ function _cdbt($string) {
  * @param string $string
  * @return void
  */
-function _e_cdbt($string) {
+function cdbt_e($string) {
 	_e($string, PLUGIN_SLUG);
 }
 

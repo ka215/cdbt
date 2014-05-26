@@ -81,7 +81,7 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 						}
 					}
 				}
-				$form_objects[] = create_form($table_name, $column_name, $column_schema, $value, $hide_option);
+				$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $hide_option);
 				
 				$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 				if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
@@ -91,11 +91,11 @@ function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=
 				}
 			}
 			if ($is_update_mode) {
-				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . create_button('stateful', array(__('update data', PLUGIN_SLUG), __('now updating...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send');
+				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('update data', PLUGIN_SLUG), __('now updating...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send');
 				$form_button .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Cancel', PLUGIN_SLUG) . '</a>';
 				$form_button .= '</div></div>';
 			} else {
-				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . create_button('stateful', array(__('entry data', PLUGIN_SLUG), __('now sending...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
+				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('entry data', PLUGIN_SLUG), __('now sending...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
 			}
 			$form_objects[] = $form_button;
 			

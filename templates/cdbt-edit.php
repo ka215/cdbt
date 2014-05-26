@@ -15,7 +15,7 @@ if (!isset($_cdbt_token))
 
 list($result, $table_name, $table_schema) = $this->get_table_schema();
 if ($result && !empty($table_name) && !empty($table_schema)) {
-	create_console_menu($_cdbt_token);
+	cdbt_create_console_menu($_cdbt_token);
 	
 	$page_num = (!isset($page_num) || empty($page_num)) ? 1 : intval($page_num);
 	if (!isset($per_page) || empty($per_page)) {
@@ -158,7 +158,7 @@ NAV;
 							if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
 						}
 					}
-					$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
+					$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : cdbt_str_truncate($val, 40, '...', true);
 					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {
@@ -173,7 +173,7 @@ NAV;
 				$list_num++;
 			}
 			
-			$pagination = ($total_data > $per_page) ? create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
+			$pagination = ($total_data > $per_page) ? cdbt_create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
 			$pagination = (($mode == 'edit') ? '</form>' : '') . $pagination;
 			printf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination);
 		} else {
@@ -192,4 +192,4 @@ NAV;
 <?php
 }
 
-create_console_footer();
+cdbt_create_console_footer();

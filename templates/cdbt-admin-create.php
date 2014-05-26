@@ -8,11 +8,11 @@ if (is_array($inherit_values) && !empty($inherit_values)) {
 $section = (isset($section) && !empty($section) && $section == 'run') ? 'run' : 'confirm';
 $naked_table_name = (isset($naked_table_name) && !empty($naked_table_name)) ? $naked_table_name : '';
 if (isset($use_wp_prefix_for_newtable) && !empty($use_wp_prefix_for_newtable)) {
-	$create_table_checkbox_attr = checked(get_boolean($use_wp_prefix_for_newtable), true, false);
-	$use_wp_prefix_for_newtable = get_boolean($use_wp_prefix_for_newtable);
+	$create_table_checkbox_attr = checked(cdbt_get_boolean($use_wp_prefix_for_newtable), true, false);
+	$use_wp_prefix_for_newtable = cdbt_get_boolean($use_wp_prefix_for_newtable);
 } else {
-	$create_table_checkbox_attr = checked(get_boolean($cdbt_options['use_wp_prefix']), true, false);
-	$use_wp_prefix_for_newtable = get_boolean($cdbt_options['use_wp_prefix']);
+	$create_table_checkbox_attr = checked(cdbt_get_boolean($cdbt_options['use_wp_prefix']), true, false);
+	$use_wp_prefix_for_newtable = cdbt_get_boolean($cdbt_options['use_wp_prefix']);
 }
 $table_comment = (isset($table_comment) && !empty($table_comment)) ? $table_comment : '';
 
@@ -65,7 +65,7 @@ $cap_levels = array(
 $user_role_forms = null;
 foreach ($roles as $param_name => $param_value) {
 	list($label_title, $default_level) = $param_value;
-	if (compare_var($param_name, 'admin_role')) {
+	if (cdbt_compare_var($param_name, 'admin_role')) {
 		$user_role_forms .= '<input type="hidden" name="'. $param_name .'" id="'. $param_name .'" value="'. $default_level .'">';
 	} else {
 		$user_role_forms .= '<div class="form-group">';

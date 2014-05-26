@@ -17,10 +17,10 @@ function display_view_table($atts, $content=''){
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
 		return __('No table specified', PLUGIN_SLUG);
-	if (!check_current_table_role('view', $table)) 
+	if (!cdbt_check_current_table_role('view', $table)) 
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
-	if (get_boolean($bootstrap_style)) {
+	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
 		wp_enqueue_script('cdbt_common_script');
@@ -29,10 +29,10 @@ function display_view_table($atts, $content=''){
 	wp_enqueue_script('cdbt_public_script');
 	
 	$options = array(
-		'bootstrap_style' => get_boolean($bootstrap_style), 
-		'display_title' => get_boolean($display_title), 
-		'display_search' => get_boolean($display_search), 
-		'display_list_num' => get_boolean($display_list_num), 
+		'bootstrap_style' => cdbt_get_boolean($bootstrap_style), 
+		'display_title' => cdbt_get_boolean($display_title), 
+		'display_search' => cdbt_get_boolean($display_search), 
+		'display_list_num' => cdbt_get_boolean($display_list_num), 
 		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'add_class' => $add_class, 
 	);
@@ -54,10 +54,10 @@ function display_entry_table($atts, $content=''){
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
 		return __('No table specified', PLUGIN_SLUG);
-	if (!check_current_table_role('input', $table)) 
+	if (!cdbt_check_current_table_role('input', $table)) 
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
-	if (get_boolean($bootstrap_style)) {
+	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
 		wp_enqueue_script('cdbt_common_script');
@@ -66,8 +66,8 @@ function display_entry_table($atts, $content=''){
 	wp_enqueue_script('cdbt_public_script');
 	
 	$options = array(
-		'bootstrap_style' => get_boolean($bootstrap_style), 
-		'display_title' => get_boolean($display_title), 
+		'bootstrap_style' => cdbt_get_boolean($bootstrap_style), 
+		'display_title' => cdbt_get_boolean($display_title), 
 		'hidden_cols' => !empty($hidden_cols) ? explode(',', $hidden_cols) : array(), 
 		'add_class' => $add_class, 
 	);
@@ -91,10 +91,10 @@ function display_edit_table($atts, $content=''){
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
 		return __('No table specified', PLUGIN_SLUG);
-	if (!check_current_table_role('edit', $table)) 
+	if (!cdbt_check_current_table_role('edit', $table)) 
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
-	if (get_boolean($bootstrap_style)) {
+	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
 		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
 		wp_enqueue_script('cdbt_common_script');
@@ -103,9 +103,9 @@ function display_edit_table($atts, $content=''){
 	wp_enqueue_script('cdbt_public_script');
 	
 	$options = array(
-		'bootstrap_style' => get_boolean($bootstrap_style), 
-		'display_title' => get_boolean($display_title), 
-		'display_list_num' => get_boolean($display_list_num), 
+		'bootstrap_style' => cdbt_get_boolean($bootstrap_style), 
+		'display_title' => cdbt_get_boolean($display_title), 
+		'display_list_num' => cdbt_get_boolean($display_list_num), 
 		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'entry_page' => $entry_page, 
 		'add_class' => $add_class, 

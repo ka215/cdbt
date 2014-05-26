@@ -192,7 +192,7 @@ NAV;
 								if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
 							}
 						}
-						$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : str_truncate($val, 40, '...', true);
+						$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : cdbt_str_truncate($val, 40, '...', true);
 						if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 							continue;
 						} else {
@@ -210,7 +210,7 @@ NAV;
 					$list_num++;
 				}
 				
-				$pagination = ($total_data > $per_page) ? create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
+				$pagination = ($total_data > $per_page) ? cdbt_create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
 				$btn_cancel = __('Cancel', PLUGIN_SLUG);
 				$btn_run = __('Yes, run', PLUGIN_SLUG);
 				$modal_container = <<<MODAL
