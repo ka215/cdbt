@@ -316,8 +316,8 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 	$tabs_content_html = '<div class="tab-content">%s</div><!-- /.tab-content -->';
 	foreach ($tabs as $tab_name => $active) {
 		$nav_active_class = ($active) ? 'active' : '';
-		$nav_tabs_list .= sprintf('<li class="%s"><a href="#cdbt-%s" data-toggle="tab">%s</a></li>', $nav_active_class, $tab_name, translate_tab_name($tab_name));
-		$tabs_content .= sprintf('<div class="tab-pane %s" id="cdbt-%s">%s</div>', $nav_active_class, $tab_name, create_tab_content($tab_name, $_cdbt_token, $inherit_values));
+		$nav_tabs_list .= sprintf('<li class="%s"><a href="#cdbt-%s" data-toggle="tab">%s</a></li>', $nav_active_class, $tab_name, cdbt_translate_tab_name($tab_name));
+		$tabs_content .= sprintf('<div class="tab-pane %s" id="cdbt-%s">%s</div>', $nav_active_class, $tab_name, cdbt_create_tab_content($tab_name, $_cdbt_token, $inherit_values));
 	}
 	if (!empty($msg)) {
 		$cls_btn = $msg[0] == 'success' ? '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' : '';
@@ -340,7 +340,7 @@ printf('<div class="tab-container">%s</div>', $contents_html);
 cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $information_html : ''), ((!empty($msg) && $msg[0] == 'confirmation') ? true : false), ((!empty($msg) && isset($msg[2])) ? $msg[2] : ''));
 
 
-function create_tab_content($tab_name, $nonce, $inherit_values=null) {
+function cdbt_create_tab_content($tab_name, $nonce, $inherit_values=null) {
 	global $wpdb, $cdbt;
 	$cdbt_options = get_option(PLUGIN_SLUG);
 	$controller_table = $cdbt_options['tables'][0]['table_name'];
@@ -366,7 +366,7 @@ function create_tab_content($tab_name, $nonce, $inherit_values=null) {
 	return $content_html;
 }
 
-function translate_tab_name($tab_name){
+function cdbt_translate_tab_name($tab_name){
 	$translate_tab_name = array(
 		'general' => __('General setting', PLUGIN_SLUG), 
 		'create' => __('Create table', PLUGIN_SLUG), 

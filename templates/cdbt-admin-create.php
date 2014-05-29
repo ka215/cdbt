@@ -22,7 +22,7 @@ $create_table_sql = (isset($create_table_sql) && !empty($create_table_sql)) ? st
 $show_max_records = (isset($show_max_records) && !empty($show_max_records) && intval($show_max_records) > 0) ? intval($show_max_records) : intval(get_option('posts_per_page', 10));
 
 // translate text
-$tab_name_label = translate_tab_name($tab_name);
+$tab_name_label = cdbt_translate_tab_name($tab_name);
 $submit_label = __('Create table', PLUGIN_SLUG);
 $table_name_label = __('Table Name', PLUGIN_SLUG);
 $table_name_placeholder = __('Enter Table Name', PLUGIN_SLUG);

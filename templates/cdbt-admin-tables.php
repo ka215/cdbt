@@ -1,6 +1,6 @@
 <?php
 // tables tab display setting
-$tab_name_label = translate_tab_name($tab_name);
+$tab_name_label = cdbt_translate_tab_name($tab_name);
 $target_table = isset($target_table) ? $target_table : '';
 $refresh_button_label = __('Reflesh Table List', PLUGIN_SLUG);
 $current_table = get_option(PLUGIN_SLUG . '_current_table', $cdbt_options['tables'][0]['table_name']);

@@ -1,6 +1,6 @@
 <?php
 
-function render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=array()) {
+function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $options=array()) {
 	global $cdbt;
 	foreach ($_REQUEST as $k => $v) {
 		${$k} = (is_array($v)) ? $v : stripcslashes($v);

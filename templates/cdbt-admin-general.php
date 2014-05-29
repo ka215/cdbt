@@ -11,7 +11,7 @@ $cleaning_options = checked($cdbt_options['cleaning_options'], true, false);
 //var_dump($inherit_values);
 
 // translate text
-$tab_name_label = translate_tab_name($tab_name);
+$tab_name_label = cdbt_translate_tab_name($tab_name);
 $submit_label = __('Save changes', PLUGIN_SLUG);
 $helper_msg = __('If you will create the new table, in default table name is used the table-prefix of WordPress&apos;s config.<br />However, when create table you can change this setting.', PLUGIN_SLUG);
 $charset_label = __('Table Charset', PLUGIN_SLUG);

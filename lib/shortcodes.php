@@ -1,10 +1,10 @@
 <?php
 
-add_shortcode('cdbt-view', 'display_view_table');
-add_shortcode('cdbt-entry', 'display_entry_table');
-add_shortcode('cdbt-edit', 'display_edit_table');
+add_shortcode('cdbt-view', 'cdbt_display_view_table');
+add_shortcode('cdbt-entry', 'cdbt_display_entry_table');
+add_shortcode('cdbt-edit', 'cdbt_display_edit_table');
 
-function display_view_table($atts, $content=''){
+function cdbt_display_view_table($atts, $content=''){
 	extract(shortcode_atts(array(
 		'table' => '', 
 		'bootstrap_style' => true, 
@@ -40,10 +40,10 @@ function display_view_table($atts, $content=''){
 	$mode = 'list';
 	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
 	
-	return render_list_page($table, $mode, $_cdbt_token, $options);
+	return cdbt_render_list_page($table, $mode, $_cdbt_token, $options);
 }
 
-function display_entry_table($atts, $content=''){
+function cdbt_display_entry_table($atts, $content=''){
 	extract(shortcode_atts(array(
 		'table' => '', 
 		'bootstrap_style' => true, 
@@ -75,10 +75,10 @@ function display_entry_table($atts, $content=''){
 	$mode = 'input';
 	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
 	
-	return render_input_page($table, $mode, $_cdbt_token, $options);
+	return cdbt_render_input_page($table, $mode, $_cdbt_token, $options);
 }
 
-function display_edit_table($atts, $content=''){
+function cdbt_display_edit_table($atts, $content=''){
 	extract(shortcode_atts(array(
 		'table' => '', 
 		'entry_page' => '', // integer of post ID or strings of post name
@@ -114,5 +114,5 @@ function display_edit_table($atts, $content=''){
 	$mode = 'edit';
 	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
 	
-	return render_edit_page($table, $mode, $_cdbt_token, $options);
+	return cdbt_render_edit_page($table, $mode, $_cdbt_token, $options);
 }

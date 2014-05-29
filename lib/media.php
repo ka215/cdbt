@@ -11,7 +11,7 @@ if (wp_verify_nonce($token, PLUGIN_SLUG . '_media')) {
 } else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_export')) {
 	$mode = 'csv_export';
 } else {
-	file_not_found();
+	cdbt_file_not_found();
 }
 if ($mode == 'view' || $mode == 'download') {
 	global $cdbt;
@@ -36,7 +36,7 @@ if ($mode == 'view' || $mode == 'download') {
 			header("Content-type: {$file_data['mine_type']}");
 			echo $file_data['bin_data'];
 		} else {
-			file_not_found();
+			cdbt_file_not_found();
 		}
 	}
 } else if ($mode == 'csv_tmpl_download') {
@@ -91,6 +91,6 @@ if ($mode == 'view' || $mode == 'download') {
 	}
 }
 
-function file_not_found() {
+function cdbt_file_not_found() {
 	header('HTTP', true, 404);
 }

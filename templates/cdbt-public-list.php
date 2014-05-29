@@ -1,6 +1,6 @@
 <?php
 
-function render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=array()) {
+function cdbt_render_list_page($table=null, $mode=null, $_cdbt_token=null, $options=array()) {
 	global $cdbt;
 	foreach ($_REQUEST as $k => $v) {
 		${$k} = $v;
