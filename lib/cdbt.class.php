@@ -98,14 +98,6 @@ class CustomDatabaseTables {
 	function __construct() {
 		global $wpdb;
 		
-		/*
-		if (!isset($_SESSION)) {
-			session_start();
-		}
-		if (!isset($_SESSION[$this->session]) || empty($_SESSION[$this->session])) {
-			$_SESSION[$this->session] = array();
-		}
-		*/
 		foreach (explode(DS, dirname(__FILE__)) as $dir_name) {
 			$this->dir .= (!empty($dir_name)) ? DS . $dir_name : '';
 			if (self::DOMAIN == $dir_name) 
@@ -122,7 +114,6 @@ class CustomDatabaseTables {
 		
 		$this->current_table = get_option(self::DOMAIN . '_current_table', '');
 		
-//		add_action('wp_enqueue_scripts', array($this, 'load_common_assets'));
 		add_filter('plugin_action_links', array($this, 'add_action_links'), 10, 2);
 		add_action('admin_menu', array($this, 'create_admin'));
 		
@@ -236,15 +227,6 @@ class CustomDatabaseTables {
 	}
 	
 	/**
-	 * load stylesheet and javascript for this plugin (common assets)
-	 * @return void
-	 */
-	function load_common_assets(){
-		wp_enqueue_style('cdbt_common_style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, null, 'all');
-		wp_enqueue_script('cdbt_common_script', $this->dir_url . '/assets/js/script.min.js', null, null, false);
-	}
-	
-	/**
 	 * append action links to this plugin on list page
 	 * @return array
 	 */
@@ -262,9 +244,8 @@ class CustomDatabaseTables {
 	 */
 	function create_admin(){
 		add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), plugin_dir_url(__FILE__) . 'assets/img/undo.png');
-		//add_submenu_page(plugin_dir_url(__FILE__), __('Custom Database Tables', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'));
 		wp_parse_str($_SERVER['QUERY_STRING'], $this->query);
-		add_action('admin_init', array($this, 'admin_header'));
+		//add_action('admin_init', array($this, 'admin_header'));
 		add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
 		add_action('admin_notice', array($this, 'admin_notice'));
 	}
@@ -293,6 +274,7 @@ class CustomDatabaseTables {
 				break;
 		}
 		require_once PLUGIN_TMPL_DIR . DS . $template_name;
+		cdbt_create_javascript();
 	}
 	
 	/**
@@ -301,7 +283,7 @@ class CustomDatabaseTables {
 	 */
 	function admin_header(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
-			# printf('<h2>%s</h2>', __('Custom DataBase Tables Management console', self::DOMAIN));
+			//
 		}
 	}
 	
@@ -314,11 +296,8 @@ class CustomDatabaseTables {
 			wp_enqueue_style('cdbt_common_style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, $this->version, 'all');
 			wp_enqueue_style('jquery_ui_style', $this->dir_url . '/assets/css/jquery-ui-1.10.4.custom.min.css', false, '1.10.4', 'all');
 			wp_enqueue_style('cdbt_admin_style', $this->dir_url . '/assets/css/cdbt-admin.css', false, $this->version, 'all');
-			//wp_deregister_script('jquery');
-			//wp_enqueue_script('jquery', $this->dir_url . '/assets/js/jquery-1.10.2.js', array(), '1.10.2');
 			wp_enqueue_script('jquery_ui', $this->dir_url . '/assets/js/jquery-ui-1.10.4.custom.min.js', array('jquery'), '1.10.4', false);
 			wp_enqueue_script('cdbt_common_script', $this->dir_url . '/assets/js/scripts.min.js', null, null, false);
-			wp_enqueue_script('cdbt_admin_script', $this->dir_url . '/assets/js/cdbt-admin.js.php', null, $this->version, true);
 		}
 	}
 	
@@ -1057,10 +1036,4 @@ class CustomDatabaseTables {
 		return $result;
 	}
 	
-/**
- * This function features description
- * @param 
- * @return 
- */
-
 }
