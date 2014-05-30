@@ -127,7 +127,6 @@ function cdbt_check_current_table_valid() {
  */
 function cdbt_create_console_menu($nonce) {
 	$user_level = cdbt_current_user_level();
-//var_dump($user_level);
 	$current_table = get_option(PLUGIN_SLUG . '_current_table');
 	$attr = disabled($current_table, false, false);
 	$buttons[0] = array( // Index key number is button order from left.
@@ -464,23 +463,3 @@ function cdbt__($string) {
 function cdbt_e($string) {
 	_e($string, PLUGIN_SLUG);
 }
-
-
-// will have translated strings for system before use.
-$translate_temp = array(
-	__('This plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.', PLUGIN_SLUG), 
-	__('Katsuhiko Maeno', PLUGIN_SLUG), 
-	__('http://www.ka2.org', PLUGIN_SLUG), 
-	__('logical_name', PLUGIN_SLUG), 
-	__('max_length', PLUGIN_SLUG), 
-	__('octet_length', PLUGIN_SLUG), 
-	__('not_null', PLUGIN_SLUG), 
-	__('default', PLUGIN_SLUG), 
-	__('type', PLUGIN_SLUG), 
-	__('type_format', PLUGIN_SLUG), 
-	__('primary_key', PLUGIN_SLUG), 
-	__('column_key', PLUGIN_SLUG), 
-	__('unsigned', PLUGIN_SLUG), 
-	__('extra', PLUGIN_SLUG), 
-	__('auto_increment', PLUGIN_SLUG), 
-);
