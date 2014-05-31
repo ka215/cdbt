@@ -1,5 +1,5 @@
 <?php
-class CustomDataBaseTables_Media extends CustomDataBaseTables {
+class CustomDataBaseTables_Media {
 	
 	private static $instance;
 	
@@ -21,14 +21,15 @@ class CustomDataBaseTables_Media extends CustomDataBaseTables {
 	}
 	
 	public function cdbt_media() {
+		global $cdbt;
 		$token = $_REQUEST['token'];
-		if (wp_verify_nonce($token, self::DOMAIN . '_media')) {
+		if (wp_verify_nonce($token, PLUGIN_SLUG . '_media')) {
 			$mode = 'view';
-		} else if (wp_verify_nonce($token, self::DOMAIN . '_download')) {
+		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_download')) {
 			$mode = 'download';
-		} else if (wp_verify_nonce($token, self::DOMAIN . '_csv_tmpl_download')) {
+		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_tmpl_download')) {
 			$mode = 'csv_tmpl_download';
-		} else if (wp_verify_nonce($token, self::DOMAIN . '_csv_export')) {
+		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_export')) {
 			$mode = 'csv_export';
 		} else {
 			cdbt_file_not_found();
@@ -36,8 +37,8 @@ class CustomDataBaseTables_Media extends CustomDataBaseTables {
 		if ($mode == 'view' || $mode == 'download') {
 			$id = $_REQUEST['id'];
 			$filename = $_REQUEST['filename'];
-			$table = (isset($_REQUEST['table']) && !empty($_REQUEST['table'])) ? $_REQUEST['table'] : $this->current_table;
-			$data = $this->get_data($table, '*', array('ID' => $id), null, 1);
+			$table = (isset($_REQUEST['table']) && !empty($_REQUEST['table'])) ? $_REQUEST['table'] : $cdbt->current_table;
+			$data = $cdbt->get_data($table, '*', array('ID' => $id), null, 1);
 			foreach (array_shift($data) as $key => $val) {
 				if (is_string($val) && strlen($val) > 24 && preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) {
 					$file_data = unserialize($val);
@@ -58,7 +59,7 @@ class CustomDataBaseTables_Media extends CustomDataBaseTables {
 			}
 		} else if ($mode == 'csv_tmpl_download') {
 			$table_name = $_REQUEST['tablename'];
-			list($result, $data) = $this->export_table($table_name, true);
+			list($result, $data) = $cdbt->export_table($table_name, true);
 			if ($result) {
 				$csv = array();
 				foreach ($data as $row) {
@@ -80,7 +81,7 @@ class CustomDataBaseTables_Media extends CustomDataBaseTables {
 			}
 		} else if ($mode == 'csv_export') {
 			$table_name = $_REQUEST['tablename'];
-			list($result, $data) = $this->export_table($table_name, false);
+			list($result, $data) = $cdbt->export_table($table_name, false);
 			if ($result) {
 				$csv = array();
 				foreach ($data as $row) {
@@ -119,5 +120,3 @@ class CustomDataBaseTables_Media extends CustomDataBaseTables {
 	}
 	
 }
-
-CustomDataBaseTables_Media::instance();

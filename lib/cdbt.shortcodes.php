@@ -21,9 +21,9 @@ function cdbt_display_view_table($atts, $content=''){
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
-		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
-		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
-		wp_enqueue_script('cdbt_common_script');
+		wp_enqueue_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
+		wp_enqueue_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt-common-script');
 	}
 	add_action('wp_footer', 'cdbt_create_javascript', 9999);
 	
@@ -57,9 +57,9 @@ function cdbt_display_entry_table($atts, $content=''){
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
-		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
-		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
-		wp_enqueue_script('cdbt_common_script');
+		wp_enqueue_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
+		wp_enqueue_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt-common-script');
 	}
 	add_action('wp_footer', 'cdbt_create_javascript', 9999);
 	
@@ -93,9 +93,9 @@ function cdbt_display_edit_table($atts, $content=''){
 		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
-		wp_enqueue_style('cdbt_common_style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
-		wp_enqueue_script('cdbt_common_script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
-		wp_enqueue_script('cdbt_common_script');
+		wp_enqueue_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', false, $cdbt->version, 'all');
+		wp_enqueue_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', null, null, false);
+		wp_enqueue_script('cdbt-common-script');
 	}
 	add_action('wp_footer', 'cdbt_create_javascript', 9999);
 	

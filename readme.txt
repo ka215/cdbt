@@ -2,9 +2,9 @@
 Contributors: ka2
 Donate link: http://example.com/
 Tags: custom database tables, CDBT, MySQL, database, table, create, delete, insert, update, edit, truncate, drop
-Requires at least: 3.1
+Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 0.9.3
+Stable tag: 0.9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,8 +42,12 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
-= 0.9.3 =
+= 0.9.5 =
 * First beta release
+
+= 0.9.1 =
+* First review version (alpha release)
+
 
 == Other Notes ==
 

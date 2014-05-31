@@ -114,9 +114,11 @@ class CustomDatabaseTables {
 		
 		$this->current_table = get_option(self::DOMAIN . '_current_table', '');
 		
+		CustomDataBaseTables_Ajax::instance();
+		CustomDataBaseTables_Media::instance();
+		
 		add_filter('plugin_action_links', array($this, 'add_action_links'), 10, 2);
 		add_action('admin_menu', array($this, 'create_admin'));
-		
 	}
 	
 	/**
@@ -293,11 +295,16 @@ class CustomDatabaseTables {
 	 */
 	function admin_assets(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
-			wp_enqueue_style('cdbt_common_style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, $this->version, 'all');
-			wp_enqueue_style('jquery_ui_style', $this->dir_url . '/assets/css/jquery-ui-1.10.4.custom.min.css', false, '1.10.4', 'all');
-			wp_enqueue_style('cdbt_admin_style', $this->dir_url . '/assets/css/cdbt-admin.css', false, $this->version, 'all');
-			wp_enqueue_script('jquery_ui', $this->dir_url . '/assets/js/jquery-ui-1.10.4.custom.min.js', array('jquery'), '1.10.4', false);
-			wp_enqueue_script('cdbt_common_script', $this->dir_url . '/assets/js/scripts.min.js', null, null, false);
+			wp_enqueue_style('cdbt-common-style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, $this->version, 'all');
+			wp_enqueue_style('cdbt-admin-style', $this->dir_url . '/assets/css/cdbt-admin.css', false, $this->version, 'all');
+			wp_register_script('cdbt-common-script', $this->dir_url . '/assets/js/scripts.min.js');
+			wp_enqueue_script('jquery-ui-core');
+			wp_enqueue_script('jquery-ui-widget');
+			wp_enqueue_script('jquery-ui-mouse');
+			wp_enqueue_script('jquery-ui-position');
+			wp_enqueue_script('jquery-ui-sortable');
+			wp_enqueue_script('jquery-ui-autocomplete');
+			wp_enqueue_script('cdbt-common-script');
 		}
 	}
 	
