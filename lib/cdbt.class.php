@@ -295,8 +295,9 @@ class CustomDatabaseTables {
 	 */
 	function admin_assets(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
-			wp_enqueue_style('cdbt-common-style', $this->dir_url . '/assets/css/cdbt-main.min.css', false, $this->version, 'all');
-			wp_enqueue_style('cdbt-admin-style', $this->dir_url . '/assets/css/cdbt-admin.css', false, $this->version, 'all');
+			if (is_admin()) {
+			wp_enqueue_style('cdbt-common-style', $this->dir_url . '/assets/css/cdbt-main.min.css', array(), $this->version, 'all');
+			wp_enqueue_style('cdbt-admin-style', $this->dir_url . '/assets/css/cdbt-admin.css', true, $this->version, 'all');
 			wp_register_script('cdbt-common-script', $this->dir_url . '/assets/js/scripts.min.js');
 			wp_enqueue_script('jquery-ui-core');
 			wp_enqueue_script('jquery-ui-widget');
@@ -305,6 +306,7 @@ class CustomDatabaseTables {
 			wp_enqueue_script('jquery-ui-sortable');
 			wp_enqueue_script('jquery-ui-autocomplete');
 			wp_enqueue_script('cdbt-common-script');
+			}
 		}
 	}
 	
