@@ -35,7 +35,7 @@ First of all, please try to create the database required for the first.
 ## Features
 
 * You can create any tables to the database.
-* Data entry from on the web to your created table.Å@At that time, the entry form will be created automatically in accordance with the table structure.
+* Data entry from on the web to your created table. At that time, the entry form will be created automatically in accordance with the table structure.
 * Entry data will able to edit from on the web.
 * Entry data can view as a table listed.
 * Correspond to the input and output of binary data to the table.
@@ -48,13 +48,6 @@ First of all, please try to create the database required for the first.
 
 ## Contributing
 
-Everyone is welcome to help [contribute](CONTRIBUTING.md) and improve this project. There are several ways you can contribute:
-
-* Reporting issues (please read [issue guidelines](https://github.com/ka215/issue-guidelines))
-* Suggesting new features
-* Writing or refactoring code
-* Fixing [issues]()
-* Replying to questions on the [forum]()
 
 ## Support
 
