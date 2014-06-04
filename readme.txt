@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: ka2
-Donate link: http://example.com/
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, CDBT, MySQL, database, table, create, delete, insert, update, edit, truncate, drop
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 0.9.5
+Stable tag: 0.9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,8 +15,6 @@ Custom DataBase Tables plug-in allows you to perform data storage and reference 
 WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, is more better to create a new table. 
 
 This plugin provides the ability to be able to add a new table freely in the database of WordPress in such a case, and can be management of data in a simple user interface. This plugin works with WordPress3.x or more. 
-
-All official development on this plugin is on GitHub. Published version will bump here on WordPress.org. You can find the repository at [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt).
 
 == Installation ==
 
@@ -34,13 +32,25 @@ An answer to that question.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Dashboard
+2. Setting General Options
+3. Create New Table
+4. Table Creator of GUI Tool
+5. Enable Table list
+6. Import data to created table
+7. Viewer listed data in table
+8. Entry data form is automaticaly create
+9. Editor data in table
+10. Binary data is able to view by modal
+11. Binary data is able to download
+12. Viewer, Editor, and Entry page can display to frontend by shortcodes
 
 == Changelog ==
+
+= 0.9.6 =
+* Updated the translate-template file (.pot)
+* Changed how to import stylesheet and javascript
+* Add some screenshot images and revise readme.txt
 
 = 0.9.5 =
 * First beta release
@@ -51,3 +61,4 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Other Notes ==
 
+All official development on this plugin is on GitHub. Published version will bump here on WordPress.org. You can find the repository at [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt).
