@@ -192,12 +192,21 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 							$msg = array('warning', __('Modify Table SQL is empty.', self::DOMAIN));
 						} else {
 							$sql_str = stripcslashes(strip_tags($inherit_values['alter_table_sql']));
-							list($result, $fixed_sql) = $this->validate_alter_sql($target_modify_table_name, $sql_str);
-							if ($result) {
-								// sql validate done
-								$inherit_values['substance_sql'] = rawurlencode($fixed_sql);
-							} else {
-								$msg = array('warning', __('Modify Table SQL is invalid.', self::DOMAIN));
+							if (preg_match('/RENAME\s(.*)(\s|;|,|$)/iU', trim($sql_str), $matches)) {
+								if ($this->check_table_exists(str_replace('`', '', $matches[1]))) {
+									$msg = array('warning', __('Can not rename to already exists table.', self::DOMAIN));
+									$inherit_values['target_table_name'] = $inherit_values['previous_table_name'];
+									$inherit_values['alter_table_sql'] = preg_replace('/RENAME\s(.*)(\s|;|,|$)/iU', '', $sql_str);
+								}
+							}
+							if (empty($msg)) {
+								list($result, $fixed_sql) = $this->validate_alter_sql($target_modify_table_name, $sql_str);
+								if ($result) {
+									// sql validate done
+									$inherit_values['substance_sql'] = rawurlencode($fixed_sql);
+								} else {
+									$msg = array('warning', __('Modify Table SQL is invalid.', self::DOMAIN));
+								}
 							}
 						}
 						if (empty($msg)) {
@@ -228,7 +237,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$this->current_table = $inherit_values['target_table'];
 					if ($this->check_table_exists()) {
 						$alter_table_sql = rawurldecode($inherit_values['substance_sql']);
-						preg_match('/RENAME\s(`|)(.*)(`|)(\s|,|$)/iU', $alter_table_sql, $matches);
+						preg_match('/RENAME\s(\`|)(.*)(\`|)(\s|\n|,|;|)/iU', $alter_table_sql, $matches);
 						if (isset($matches[2]) && !empty($matches[2])) 
 							$inherit_values['target_table_name'] = $matches[2];
 						$wpdb->get_results($alter_table_sql);
@@ -272,7 +281,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								$msg = array('warning', __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN));
 							}
 						} else {
-							$msg = array('warning', __('Failed to get the table create sql.', self::DOMAIN));
+							$msg = array('warning', __('Failed to get the table modify sql.', self::DOMAIN));
 						}
 					} else {
 						$msg = array('warning', __('will modify table is not exists table.', self::DOMAIN));

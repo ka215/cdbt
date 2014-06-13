@@ -996,20 +996,9 @@ class CustomDatabaseTables {
 		$org_sql = preg_replace("/\r|\n|\t/", '', $sql);
 		$reg_base = '/^(ALTER\sTABLE\s'. $table_name .'\s)(.*)$/iU';
 		if (preg_match($reg_base, $org_sql, $matches)) {
-			$alt_elms = explode(',', $matches[2]);
-			foreach ($alt_elms as $elm) {
-				if (preg_match('/RENAME\s(.*)$/iU', trim($elm), $hits)) {
-					if (isset($hits[1]) && !empty($hits[1])) {
-						if ($this->check_table_exists(str_replace('`', '', $hits[1]))) 
-							$result = array(false, null);
-							break;
-					}
-				}
-			}
-			if (!isset($result)) {
-				$fixed_sql = $matches[1] . preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
-				$result = array(true, $fixed_sql);
-			}
+			
+			$fixed_sql = $matches[1] . preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
+			$result = array(true, $fixed_sql);
 		} else {
 			$result = array(false, null);
 		}

@@ -207,24 +207,24 @@ jQuery(document).ready(function($){
 		var add_sql = ($(this).val() == '') ? '' : $(this).attr('data-sql-tmpl').replace(/{value}/gi, $(this).val())+",\n";
 		var reg = /(RENAME\s|COMMENT\s|ENGINE\s)(`|\'|=\s)(.*)?(`|\'|)(\s|\n|,)/gi;
 		var get_sqlstr = $('#cdbt_alter_table_sql').val();
+		var now_sql = get_sqlstr.toLowerCase();
+		var chk_sql = add_sql.toLowerCase().replace(reg, '$1').trim();
+		if (now_sql.indexOf(chk_sql) > -1) {
+			if (chk_sql == 'rename') 
+				reg = /RENAME\s`(.*)?`(\s|\n|,(\s|)(\n|))/gi;
+			if (chk_sql == 'comment') 
+				reg = /COMMENT\s\'(.*)?\'(\s|\n|,(\s|)(\n|))/gi;
+			if (chk_sql == 'engine') 
+				reg = /ENGINE(\s|)=(\s|)(.*)?(\s|\n|,(\s|)(\n|))/gi;
+			$('#cdbt_alter_table_sql').val(get_sqlstr.replace(reg, ''));
+		}
 		if ($(this).next('input').val() != $(this).val()) {
 			$(this).parent().next('div').show();
 			if (get_sqlstr.toLowerCase().indexOf(add_sql.toLowerCase()) == -1) {
-				$('#cdbt_alter_table_sql').val(get_sqlstr+add_sql);
+				$('#cdbt_alter_table_sql').val($('#cdbt_alter_table_sql').val()+add_sql);
 			}
 		} else {
 			$(this).parent().next('div').hide();
-			var now_sql = get_sqlstr.toLowerCase();
-			var chk_sql = add_sql.toLowerCase().replace(reg, '$1').trim();
-			if (now_sql.indexOf(chk_sql) > -1) {
-				if (chk_sql == 'rename') 
-					reg = /RENAME\s`(.*)?`(\s|\n|,(\s|)(\n|))/gi;
-				if (chk_sql == 'comment') 
-					reg = /COMMENT\s\'(.*)?\'(\s|\n|,(\s|)(\n|))/gi;
-				if (chk_sql == 'engine') 
-					reg = /ENGINE(\s|)=(\s|)(.*)?(\s|\n|,(\s|)(\n|))/gi;
-				$('#cdbt_alter_table_sql').val(get_sqlstr.replace(reg, ''));
-			}
 		}
 	}
 	
