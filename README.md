@@ -44,6 +44,7 @@ First of all, please try to create the database required for the first.
 * About viewing, editing and using entry form for each tables, you are also possible to grant access limited by user privileges of WordPress.
 * Your created tables can deleted. (drop table)
 * All data of any table can initialize. (truncate table)
+* You can modify table. (alter table)
 * Using API functions can connect to CRUD of plugin core.
 
 ## Contributing

@@ -3,8 +3,8 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, CDBT, MySQL, database, table, create, delete, insert, update, edit, truncate, drop
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 0.9.6
+Tested up to: 3.9.1
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,10 @@ An answer to that question.
 12. Viewer, Editor, and Entry page can display to frontend by shortcodes
 
 == Changelog ==
+
+= 1.0.0 =
+* Add to new feature to modify table (alter table)
+* Some debugs, and has improved the user interface
 
 = 0.9.6 =
 * Updated the translate-template file (.pot)
