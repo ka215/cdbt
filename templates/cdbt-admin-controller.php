@@ -17,6 +17,8 @@ foreach ($_REQUEST as $key => $value) {
 		$inherit_values[$key] = $value;
 	}
 }
+if (isset($handle)) 
+	$inherit_values['handle'] = $handle;
 $information_html = $contents_html = $nav_tabs_list = $tabs_content = null;
 $tabs = array(
 	'general' => false, 
@@ -108,8 +110,9 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								list($result, $fixed_sql) = $this->validate_create_sql($create_full_table_name, $sql_str);
 								if ($result) {
 									// sql validate done
-									$inherit_values['create_table_sql'] = $fixed_sql;
-//var_dump($inherit_values['create_table_sql']);
+									$esc_table_comment = stripcslashes(strip_tags($inherit_values['table_comment']));
+									$fixed_sql = sprintf($fixed_sql, $inherit_values['db_engine'], $this->options['charset'], $esc_table_comment);
+									$inherit_values['substance_sql'] = rawurlencode($fixed_sql);
 								} else {
 									$msg = array('warning', __('Create Table SQL is invalid.', self::DOMAIN));
 								}
@@ -130,7 +133,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 									$inherit_values['admin_role'] = '9';
 								if (empty($msg)) {
 									$section = 'run';
-									$msg = array('confirmation', sprintf(__('Will create a "%s" table. Would you like?', self::DOMAIN), $create_full_table_name), __('Yes, create.', self::DOMAIN));
+									$msg = array('confirmation', '{#code class="confirm-sql"#}'. $fixed_sql .'{#/code#}' . sprintf(__('Will create a "%s" table. Would you like?', self::DOMAIN), $create_full_table_name), __('Yes, create.', self::DOMAIN), 'set_substance_sql');
 								}
 							}
 						}
@@ -139,12 +142,11 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$prev_current_table = $this->current_table;
 					$this->current_table = (cdbt_get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
 					if (!$this->check_table_exists()) {
-						$esc_table_comment = stripcslashes(strip_tags($inherit_values['table_comment']));
-						$inherit_values['create_table_sql'] = stripcslashes(strip_tags($inherit_values['create_table_sql']));
+						$create_table_sql = rawurldecode($inherit_values['substance_sql']);
 						$new_table = array(
 							'table_name' => $this->current_table, 
 							'table_type' => 'enable_table', 
-							'sql' => sprintf($inherit_values['create_table_sql'], $inherit_values['db_engine'], $this->options['charset'], $esc_table_comment), 
+							'sql' => $create_table_sql, 
 							'db_engine' => $inherit_values['db_engine'], 
 							'show_max_records' => intval($inherit_values['show_max_records']), 
 							'roles' => array(
@@ -162,6 +164,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 						);
 						list($result, $message) = $this->create_table($new_table);
 						if ($result) {
+							list(,$new_table['sql']) = $this->get_create_table_sql();
 							$this->options['tables'][] = $new_table;
 							if (update_option(self::DOMAIN, $this->options)) {
 								$msg = array('success', $message);
@@ -179,6 +182,112 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				} else {
 					$msg = array('warning', __('Is invalid call to create table.', self::DOMAIN));
 				}
+			} else if ($handle == 'alter-table') {
+				if ($section == 'confirm') {
+					if (cdbt_get_boolean($inherit_values['init_set'])) 
+						break;
+					$target_modify_table_name = $inherit_values['target_table'];
+					if ($target_modify_table_name == $inherit_values['previous_table_name'] && $this->check_table_exists($target_modify_table_name)) {
+						if (cdbt_compare_var(empty($inherit_values['alter_table_sql']), true)) {
+							$msg = array('warning', __('Modify Table SQL is empty.', self::DOMAIN));
+						} else {
+							$sql_str = stripcslashes(strip_tags($inherit_values['alter_table_sql']));
+							list($result, $fixed_sql) = $this->validate_alter_sql($target_modify_table_name, $sql_str);
+							if ($result) {
+								// sql validate done
+								$inherit_values['substance_sql'] = rawurlencode($fixed_sql);
+							} else {
+								$msg = array('warning', __('Modify Table SQL is invalid.', self::DOMAIN));
+							}
+						}
+						if (empty($msg)) {
+							if (cdbt_compare_var(empty($inherit_values['show_max_records']), true)) {
+								$msg = array('warning', __('Show Max Records is empty.', self::DOMAIN));
+							} else if (intval($inherit_values['show_max_records']) == 0) {
+								$msg = array('warning', __('Show Max Records must be one more integer.', self::DOMAIN));
+							}
+							if (cdbt_compare_var(empty($inherit_values['view_role']), true) || intval($inherit_values['view_role']) < 1 || intval($inherit_values['view_role']) > 9) 
+								$inherit_values['view_role'] = '1';
+							if (cdbt_compare_var(empty($inherit_values['input_role']), true) || intval($inherit_values['input_role']) < 1 || intval($inherit_values['input_role']) > 9) 
+								$inherit_values['input_role'] = '5';
+							if (cdbt_compare_var(empty($inherit_values['edit_role']), true) || intval($inherit_values['edit_role']) < 1 || intval($inherit_values['edit_role']) > 9) 
+								$inherit_values['edit_role'] = '7';
+							if (cdbt_compare_var(empty($inherit_values['admin_role']), true) || intval($inherit_values['admin_role']) < 1 || intval($inherit_values['admin_role']) > 9) 
+								$inherit_values['admin_role'] = '9';
+							if (empty($msg)) {
+								$section = 'run';
+								$msg = array('confirmation', '{#code class="confirm-sql"#}'. $fixed_sql .'{#/code#}' . sprintf(__('Will modify a "%s" table. Would you like?', self::DOMAIN), $target_modify_table_name), __('Yes, modify.', self::DOMAIN));
+							}
+						}
+					} else {
+						$msg = array('warning', __('will modify table is not exists table.', self::DOMAIN));
+					}
+				} else if ($section == 'run') {
+					//var_dump($inherit_values);
+					$prev_current_table = $this->current_table;
+					$this->current_table = $inherit_values['target_table'];
+					if ($this->check_table_exists()) {
+						$alter_table_sql = rawurldecode($inherit_values['substance_sql']);
+						preg_match('/RENAME\s(`|)(.*)(`|)(\s|,|$)/iU', $alter_table_sql, $matches);
+						if (isset($matches[2]) && !empty($matches[2])) 
+							$inherit_values['target_table_name'] = $matches[2];
+						$wpdb->get_results($alter_table_sql);
+						list($result, $new_sql) = $this->get_create_table_sql($inherit_values['target_table_name']);
+						if ($result) {
+							preg_match('/ENGINE=(.*)(\s|,|$)/iU', $new_sql, $matches);
+							$inherit_values['target_table'] = $inherit_values['target_table_name'];
+							$inherit_values['create_table_sql'] = $new_sql;
+							$inherit_values['db_engine'] = $matches[1];
+							$inherit_values['alter_table_sql'] = 'ALTER TABLE '. $inherit_values['target_table_name'] ." \n";
+							$inherit_values['substance_sql'] = null;
+							$inherit_values['init_set'] = true;
+							$update_table = array(
+								'table_name' => $inherit_values['target_table_name'], 
+								'table_type' => 'enable_table', 
+								'sql' => $new_sql, 
+								'db_engine' => $matches[1], 
+								'show_max_records' => intval($inherit_values['show_max_records']), 
+								'roles' => array(
+									'view_role' => $inherit_values['view_role'], 
+									'input_role' => $inherit_values['input_role'], 
+									'edit_role' => $inherit_values['edit_role'], 
+									'admin_role' => $inherit_values['admin_role'], 
+								), 
+								'display_format' => array(
+									// {column_name} => array('(require|optional)', '(show|hide|none)', '{display_item_name}', '{default_value}', '(string|integer|float|date|binary)')
+									'ID' => array('require', 'none', '', '', 'integer'), 
+									'created' => array('require', 'none', '', '', 'date'), 
+									'updated' => array('require', 'none', '', '', 'date'), 
+								),
+							);
+							foreach ($this->options['tables'] as $i => $table) {
+								if ($table['table_name'] == $inherit_values['previous_table_name']) {
+									$this->options['tables'][$i] = $update_table;
+									break;
+								}
+							}
+							if (update_option(self::DOMAIN, $this->options)) {
+								$msg = array('success', __('Modified of the table schema has been successfully completed.', self::DOMAIN));
+							} else {
+								$msg = array('warning', __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN));
+							}
+						} else {
+							$msg = array('warning', __('Failed to get the table create sql.', self::DOMAIN));
+						}
+					} else {
+						$msg = array('warning', __('will modify table is not exists table.', self::DOMAIN));
+					}
+					if ($inherit_values['target_table_name'] != $inherit_values['previous_table_name']) {
+						if ($prev_current_table == $inherit_values['previous_table_name']) {
+							$this->current_table = $inherit_values['target_table_name'];
+							update_option(self::DOMAIN . '_current_table', $this->current_table);
+						} else {
+							$this->current_table = $prev_current_table;
+						}
+					}
+				} else {
+					$msg = array('warning', __('Is invalid call to modify table.', self::DOMAIN));
+				}
 			}
 			break;
 		case 'tables': 
@@ -189,7 +298,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$section = 'run';
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (cdbt_check_current_table_valid()) {
+					if (cdbt_check_current_table_valid($this->current_table)) {
 						if (preg_match('/^application\/(vnd.ms-excel|octet-stream)$/', $_FILES['csv_file']['type']) && $_FILES['csv_file']['size'] > 0) {
 							$data = file_get_contents($_FILES['csv_file']['tmp_name']);
 							if (function_exists('mb_convert_encoding')) {
@@ -230,7 +339,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$section = 'run';
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (cdbt_check_current_table_valid()) {
+					if (cdbt_check_current_table_valid($this->current_table)) {
 						//$export_token = wp_create_nonce(self::DOMAIN . '_csv_export');
 						//$url = $this->dir_url . '/lib/media.php?tablename='. $this->current_table .'&token='. $export_token;
 					} else {
@@ -242,8 +351,16 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				}
 			}
 			if ($handle == 'alter-table') {
-				// is not implemented in this version.
-				
+				if ($section == 'confirm') {
+					$section = 'run';
+					$msg = array('confirmation', sprintf(__('Will modify schema of "%s" table. This handle is same that recreating the table. Would you like?', self::DOMAIN), $target_table), '');
+				} else if ($section == 'run') {
+					$section = 'confirm';
+					$action = 'create';
+					$handle = 'create-table';
+				} else {
+					$msg = array('warning', __('Is invalid call to alter table.', self::DOMAIN));
+				}
 			}
 			if ($handle == 'truncate-table') {
 				if ($section == 'confirm') {
@@ -251,7 +368,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (cdbt_check_current_table_valid()) {
+					if (cdbt_check_current_table_valid($this->current_table)) {
 						list($result, $message) = $this->truncate_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 					} else {
@@ -268,7 +385,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('confirmation', sprintf(__('Will delete a "%s" table. After this handled cannot resume. Would you like?', self::DOMAIN), $target_table), '');
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
-					if (cdbt_check_current_table_valid()) {
+					if (cdbt_check_current_table_valid($this->current_table)) {
 						list($result, $message) = $this->drop_table();
 						$msg = array(($result ? 'success' : 'warning'), $message);
 						if ($result) {
@@ -285,7 +402,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 							$this->current_table = $prev_current_table;
 						}
 					} else {
-						$msg = array('warning', __('You can not handle to drop controller table.', self::DOMAIN));
+						$msg = array('warning', __('You can not handle to drop this table.', self::DOMAIN));
 						$this->current_table = $prev_current_table;
 					}
 				} else {
@@ -337,7 +454,7 @@ $contents_base = (!empty($msg) && $msg[0] == 'success') ? $nav_tabs_html . $info
 $contents_html = sprintf($contents_base, $nav_tabs_list, $tabs_content);
 printf('<div class="tab-container">%s</div>', $contents_html);
 
-cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $information_html : ''), ((!empty($msg) && $msg[0] == 'confirmation') ? true : false), ((!empty($msg) && isset($msg[2])) ? $msg[2] : ''));
+cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $information_html : ''), ((!empty($msg) && $msg[0] == 'confirmation') ? true : false), ((!empty($msg) && isset($msg[2])) ? $msg[2] : ''), ((!empty($msg) && isset($msg[3])) ? $msg[3] : ''));
 
 
 function cdbt_create_tab_content($tab_name, $nonce, $inherit_values=null) {

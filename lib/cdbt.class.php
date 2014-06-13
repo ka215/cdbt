@@ -492,13 +492,37 @@ class CustomDatabaseTables {
 		global $wpdb;
 		$table_name = !empty($table_name) ? $table_name : $this->current_table;
 		if ($this->check_table_exists($table_name)) {
-			$sql = $wpdb->prepare("SHOW TABLE STATUS LIKE '%s'", $table_name);
+			$sql = $wpdb->prepare("SHOW TABLE STATUS LIKE %s", $table_name);
 			foreach ($wpdb->get_results($sql) as $data) {
 				if (!empty($data->Comment)) {
 					$result = array(true, $data->Comment);
 					break;
 				} else {
 					$result = array(false, __('Table comment is none', self::DOMAIN));
+				}
+			}
+		} else {
+			$result = array(false, __('Table is not exists', self::DOMAIN));
+		}
+		return $result;
+	}
+	
+	/**
+	 * get create table sql
+	 * @param string $table_name (optional) default $this->current_table
+	 * @return array
+	 */
+	function get_create_table_sql($table_name=null) {
+		global $wpdb;
+		$table_name = !empty($table_name) ? $table_name : $this->current_table;
+		if ($this->check_table_exists($table_name)) {
+			$sql = 'SHOW CREATE TABLE `'. $table_name . '`';
+			$temp = $wpdb->get_results($sql);
+			$temp = array_shift($temp);
+			foreach ($temp as $key => $data) {
+				if ($key == 'Create Table') {
+					$result = array(true, $data);
+					break;
 				}
 			}
 		} else {
@@ -597,7 +621,7 @@ class CustomDatabaseTables {
 			$limit_clause = "LIMIT ";
 			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
 		}
-		$search_key = preg_replace('/[\s　]+/', ' ', trim($search_key), -1);
+		$search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
 		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
 		if (!empty($keywords)) {
 			$union_clauses = array();
@@ -955,6 +979,36 @@ class CustomDatabaseTables {
 				$result = array(true, $fixed_sql);
 			} else {
 				$result = array(false, null);
+			}
+		} else {
+			$result = array(false, null);
+		}
+		return $result;
+	}
+	
+	/**
+	 * Validate and finalization sql for alter table
+	 * @param string $table_name
+	 * @param string $sql (for alter table)
+	 * @return array
+	 */
+	function validate_alter_sql($table_name, $sql) {
+		$org_sql = preg_replace("/\r|\n|\t/", '', $sql);
+		$reg_base = '/^(ALTER\sTABLE\s'. $table_name .'\s)(.*)$/iU';
+		if (preg_match($reg_base, $org_sql, $matches)) {
+			$alt_elms = explode(',', $matches[2]);
+			foreach ($alt_elms as $elm) {
+				if (preg_match('/RENAME\s(.*)$/iU', trim($elm), $hits)) {
+					if (isset($hits[1]) && !empty($hits[1])) {
+						if ($this->check_table_exists(str_replace('`', '', $hits[1]))) 
+							$result = array(false, null);
+							break;
+					}
+				}
+			}
+			if (!isset($result)) {
+				$fixed_sql = $matches[1] . preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
+				$result = array(true, $fixed_sql);
 			}
 		} else {
 			$result = array(false, null);

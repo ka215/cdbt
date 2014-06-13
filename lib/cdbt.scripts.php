@@ -112,15 +112,16 @@ jQuery(document).ready(function($){
 			} else {
 				var run_process = '';
 			}
-			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', $(this).html(), run_process);
+			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', $(this).html(), run_process, $(this).attr('data-hidden-callback'));
 			$('.modal.confirmation').modal('show');
 			$(this).remove();
 		}
 	});
 	
-	function show_modal(title, body, run_process) {
+	function show_modal(title, body, run_process, hidden_callback) {
 		var modal_obj = $('.modal.confirmation .modal-content');
 		modal_obj.find('.modal-title').text(title);
+		body = body.replace(/{#(.*?)#}/gi, '<$1>');
 		modal_obj.children('.modal-body').html(body);
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
@@ -150,7 +151,16 @@ jQuery(document).ready(function($){
 		} else {
 			modal_obj.find('.run-process').parent('button').hide();
 		}
+		if (hidden_callback != '') {
+			modal_obj.parent().parent('.modal').attr('data-callback', hidden_callback);
+		}
 	}
+	
+	$('.modal.confirmation').on('hidden.bs.modal', function(e){
+		if (typeof e.target.dataset.callback != 'undefined') {
+			eval(e.target.dataset.callback+'.call()');
+		}
+	});
 	
 	function ime_mode_inactive(event, targetObj) {
 		if ($('body').hasClass('locale-ja')) {
@@ -166,16 +176,63 @@ jQuery(document).ready(function($){
 		ime_mode_inactive(e.type, $('#cdbt_naked_table_name'));
 		$('code').each(function(){
 			if ($(this).hasClass('simulate_table_name')) {
-				var table_name = $('#cdbt_naked_table_name').val();
-				if ($('#cdbt_use_wp_prefix_for_newtable').is(':checked')) 
-					table_name = $('#cdbt_use_wp_prefix_for_newtable').attr('data-prefix') + table_name;
+				var naked_table_name = $('#cdbt_naked_table_name').val();
+				if ($('#cdbt_use_wp_prefix_for_newtable').is(':checked')) {
+					table_name = $('#cdbt_use_wp_prefix_for_newtable').attr('data-prefix') + naked_table_name;
+				} else {
+					table_name = naked_table_name;
+				}
 				$(this).text(table_name);
+				if (e.type == 'blur') {
+					var table_name = (naked_table_name == '') ? '{table_name}' : table_name;
+					var reg = /CREATE\sTABLE\s(.*)?\s\(/gi;
+					var get_sqlstr = $('#cdbt_create_table_sql').val();
+					$('#cdbt_create_table_sql').val(get_sqlstr.replace(reg, 'CREATE TABLE ' + table_name + ' ('));
+				}
 			}
 		});
 	}
 	
 	$('#cdbt_naked_table_name').on('click focus blur', set_current_table_name);
 	$('#cdbt_use_wp_prefix_for_newtable').on('click blur', set_current_table_name);
+	
+	function set_substance_sql() {
+		//console.info($('input[name="substance_sql"]').val());
+	}
+	
+	function set_alter_table_sql(e) {
+		if (e.target.id == 'cdbt_target_table_name') {
+			ime_mode_inactive(e.type, $('#cdbt_target_table_name'));
+		}
+		var add_sql = ($(this).val() == '') ? '' : $(this).attr('data-sql-tmpl').replace(/{value}/gi, $(this).val())+",\n";
+		var reg = /(RENAME\s|COMMENT\s|ENGINE\s)(`|\'|=\s)(.*)?(`|\'|)(\s|\n|,)/gi;
+		var get_sqlstr = $('#cdbt_alter_table_sql').val();
+		if ($(this).next('input').val() != $(this).val()) {
+			$(this).parent().next('div').show();
+			if (get_sqlstr.toLowerCase().indexOf(add_sql.toLowerCase()) == -1) {
+				$('#cdbt_alter_table_sql').val(get_sqlstr+add_sql);
+			}
+		} else {
+			$(this).parent().next('div').hide();
+			var now_sql = get_sqlstr.toLowerCase();
+			var chk_sql = add_sql.toLowerCase().replace(reg, '$1').trim();
+			if (now_sql.indexOf(chk_sql) > -1) {
+				if (chk_sql == 'rename') 
+					reg = /RENAME\s`(.*)?`(\s|\n|,(\s|)(\n|))/gi;
+				if (chk_sql == 'comment') 
+					reg = /COMMENT\s\'(.*)?\'(\s|\n|,(\s|)(\n|))/gi;
+				if (chk_sql == 'engine') 
+					reg = /ENGINE(\s|)=(\s|)(.*)?(\s|\n|,(\s|)(\n|))/gi;
+				$('#cdbt_alter_table_sql').val(get_sqlstr.replace(reg, ''));
+			}
+		}
+	}
+	
+	if ($('#cdbt_create_table input[name="handle"]').val() == 'alter-table') {
+		$('#cdbt_target_table_name').on('click focus blur', set_alter_table_sql);
+		$('#cdbt_table_comment').on('click focus blur', set_alter_table_sql);
+		$('#cdbt_db_engine').on('click focus blur change', set_alter_table_sql);
+	}
 	
 	$('.sql-editor a').on('click', function() {
 		if ($(this).attr('id') == 'sql-statements-mode') {
@@ -212,6 +269,22 @@ jQuery(document).ready(function($){
 		$('#cdbt_create_table').submit();
 	});
 	
+	$('#cdbt_alter_table_submit').on('click', function() {
+		var get_sqlstr = $('#cdbt_alter_table_sql').val().trim();
+		if (get_sqlstr.substr(-1,1) == ',') 
+			get_sqlstr = get_sqlstr.slice(0,-1);
+		$('#cdbt_alter_table_sql').val(get_sqlstr);
+		$('#cdbt_create_table').submit();
+	});
+	
+	$('#cdbt_alter_table_cancel').on('click', function() {
+		$('#cdbt_create_table input[name="handle"]').val('create-table');
+		$('#cdbt_create_table input[name="section"]').val('confirm');
+		$('#cdbt_managed_tables input[name="handle"]').val('reflesh');
+		$('#cdbt_managed_tables input[name="target_table"]').val('');
+		$('#cdbt_managed_tables').submit();
+	});
+	
 	$('#cdbt_general_setting_save').on('click', function() {
 		$('#cdbt_general_setting input[name="use_wp_prefix"]').val( $('#cdbt_use_wp_prefix').is(':checked') ? 'true' : 'false' );
 		$('#cdbt_general_setting input[name="cleaning_options"]').val( $('#cdbt_cleaning_options').is(':checked') ? 'true' : 'false' );
@@ -220,10 +293,18 @@ jQuery(document).ready(function($){
 	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
 		$('.tab-header').remove();
-		if (e.target.text == 'create') {
-			set_current_table_name();
+		if (e.currentTarget.hash == '#cdbt-create') {
+			set_current_table_name(e.type);
+			if ($('#cdbt_create_table input[name="handle"]').val() == 'alter-table') {
+				$('#cdbt_create_table').submit();
+			}
+		} else if (e.currentTarget.hash == '#cdbt-tables') {
+			$('#cdbt_managed_tables input[name="handle"]').val('reflesh');
+			$('#cdbt_managed_tables input[name="target_table"]').val('');
+			$('#cdbt_managed_tables').submit();
+		} else {
+			//$('#cdbt_general_setting').submit();
 		}
-		// console.info(e.relatedTarget); // previous tab
 	});
 	
 	$(document).on('click', '#download_template_csv', function(){
@@ -291,6 +372,18 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Export now!', PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 			}
+			if (parse_str[1] == 'alter-table') {
+				var msg = '<?php _e('Will modify schema of "%s" table. This handle is same that recreating the table. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Start modify', PLUGIN_SLUG); ?>');
+				$('.modal.confirmation').modal('show');
+				$(document).on('click', '.confirmation .modal-footer .btn-primary', function(e) {
+					e.preventDefault();
+					$('#cdbt_create_table input[name="handle"]').val('alter-table');
+					$('#cdbt_create_table input[name="target_table"]').val($('#cdbt_managed_tables input[name="target_table"]').val());
+					$('#cdbt_create_table input[name="init_set"]').val('true');
+					$('#cdbt_create_table').submit();
+				});
+			}
 			if (parse_str[1] == 'truncate-table') {
 				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
 				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');
@@ -334,7 +427,9 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 		}
 	});
 	
-	// table creator
+/*
+ * for Table Creator
+ */
 	$('#col_add_preset').on('click', function(){
 		var new_row = $('li.preset').clone();
 		var add_num = $('#sortable').children('li').length;
@@ -357,7 +452,7 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 				$(this).removeAttr('selected');
 			});
 		});
-		new_row.insertAfter('li.preset');
+		new_row.insertBefore('li.preset');
 		renumber_row_index();
 	});
 	
@@ -433,7 +528,8 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 	
 	$('#set-sql').on('click', function(){
 		renumber_row_index();
-		var sql = "CREATE TABLE " + $('.simulate_table_name').text() + " (\n";
+		var table_name = ($('#cdbt_naked_table_name').val() != '') ? $('.simulate_table_name').text() : '{table_name}';
+		var sql = "CREATE TABLE " + table_name + " (\n";
 		var cols = new Array();
 		var keys = new Array();
 		$('#sortable').children('li.addnew').each(function(){
@@ -507,8 +603,12 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 				cols.push(col_sql);
 			}
 		});
-		sql += cols.join(", \n") + ", \n";
-		sql += keys.join(", \n") + " )\n";
+		sql += cols.join(", \n") + ',';
+		if (keys.length > 0) 
+			sql += "\n" + keys.join(", \n");
+		if (sql.substr(-1,1) == ',') 
+			sql = sql.slice(0,-1);
+		sql += "\n)\n";
 		$('#cdbt_create_table_sql').val(sql);
 	});
 	

@@ -100,12 +100,13 @@ function cdbt_check_current_table_role($mode, $table=null) {
 }
 
 /**
- * check the table whether current table valid
+ * check whether current table enable
+ * @param string $table_name (optional) default null
  * @return boolean
  */
-function cdbt_check_current_table_valid() {
+function cdbt_check_current_table_valid($table_name=null) {
 	$cdbt_option = get_option(PLUGIN_SLUG);
-	$current_table = get_option(PLUGIN_SLUG . '_current_table');
+	$current_table = empty($table_name) ? get_option(PLUGIN_SLUG . '_current_table') : $table_name;
 	if (!$current_table || !$cdbt_option) 
 		return false;
 	$is_enable_table = false;
@@ -118,6 +119,26 @@ function cdbt_check_current_table_valid() {
 		}
 	}
 	return $is_enable_table;
+}
+
+/**
+ * get all options of table
+ * @param string $table_name (optional) default null
+ * @return array|boolean
+ */
+function cdbt_get_options_table($table_name=null) {
+	$cdbt_option = get_option(PLUGIN_SLUG);
+	$target_table = empty($table_name) ? get_option(PLUGIN_SLUG . '_current_table') : $table_name;
+	if (!$target_table || !$cdbt_option) 
+		return false;
+	foreach ($cdbt_option['tables'] as $table) {
+		if ($table['table_name'] == $target_table) {
+			$option_data = $table;
+			break;
+		}
+	}
+	$option_data = !isset($option_data) ? false : $option_data;
+	return $option_data;
 }
 
 /**
@@ -198,12 +219,13 @@ function cdbt_create_console_menu($nonce) {
  * @param string $message default null
  * @param boolean $run default false
  * @param string $run_label default null
+ * @param string $hidden_callback default null
  * @return void
  */
-function cdbt_create_console_footer($message=null, $run=false, $run_label=null) {
+function cdbt_create_console_footer($message=null, $run=false, $run_label=null, $hidden_callback=null) {
 	if (!empty($message)) {
 		$is_run = cdbt_get_boolean($run) ? 'show-run' : '';
-		$modal_kicker = sprintf('<div class="modal-kicker %s" data-run-label="%s">%s</div>', $is_run, $run_label, str_replace("\n", '<br />', strip_tags($message)));
+		$modal_kicker = sprintf('<div class="modal-kicker %s" data-run-label="%s" data-hidden-callback="%s">%s</div>', $is_run, $run_label, $hidden_callback, str_replace("\n", '<br />', strip_tags($message)));
 	} else {
 		$modal_kicker = '';
 	}
@@ -431,8 +453,6 @@ function cdbt_compare_var($var, $compare=null) {
 function cdbt_get_boolean($string) {
 	if (is_bool($string)) {
 		return $string;
-	} else if (function_exists('boolval')) {
-		return boolval($string);
 	} else {
 		if (empty($string)) {
 			return false;
