@@ -399,14 +399,20 @@ class CustomDatabaseTables {
 	 */
 	function create_table($table_data) {
 		global $wpdb;
-		if (!$this->check_table_exists()) {
+		if (!empty($table_data['table_name'])) {
+			$table_name =  $table_data['table_name'];
+		} else {
+			preg_match('/^create\stable\s(|`)(.*)(|`)\s\(.*/iU', $table_data['sql'], $matches);
+			$table_name = trim($matches[2]);
+		}
+		if (!$this->check_table_exists($table_name)) {
 			// if not exists table, create table.
 			//$create_sql = $wpdb->prepare($table_data['sql'], $table_data['db_engine'], $this->options['charset']);
 			$create_sql = $table_data['sql'];
 			if (isset($create_sql) && !empty($create_sql)) {
 				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 				dbDelta($create_sql);
-				if (!empty($wpdb->last_error) && !$this->check_table_exists()) {
+				if (!empty($wpdb->last_error) && !$this->check_table_exists($table_name)) {
 					$result = array(false, __('Failed to create table.', self::DOMAIN));
 				} else {
 					$result = array(true, __('New table was created.', self::DOMAIN));
@@ -720,11 +726,11 @@ class CustomDatabaseTables {
 			}
 		}
 		if (isset($format) && !empty($format) && count($data) == count($format)) {
-			$wpdb->insert($table_name, $data, $format);
+			$res = $wpdb->insert($table_name, $data, $format);
 		} else {
-			$wpdb->insert($table_name, $data);
+			$res = $wpdb->insert($table_name, $data);
 		}
-		return $wpdb->insert_id;
+		return (!$res) ? $res : $wpdb->insert_id;
 	}
 	
 	/**
@@ -771,7 +777,7 @@ class CustomDatabaseTables {
 			$result = ($result) ? $ID : $result;
 			return $result;
 		} else {
-			return 0;
+			return false;
 		}
 	}
 	

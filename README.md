@@ -1,11 +1,11 @@
 # [Custom DataBase Tables](http://cdbt.ka2.org/)
 
-Custom DataBase Tables plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.
+Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
 
-* Release version source: [http://wordpress.org/plugins/custom-database-tables/](http://downloads.wordpress.org/plugin/custom-database-tables.0.9.6.zip)
+* Release version source: [http://wordpress.org/plugins/custom-database-tables/](http://downloads.wordpress.org/plugin/custom-database-tables.1.0.0.zip)
 * Home Page: [http://cdbt.ka2.org/](http://cdbt.ka2.org/)
 * Twitter: [@ka2bowy](https://twitter.com/ka2bowy)
-* Forum: []()
+* Forum: [support forum](http://ka2.org/cdbt-forum/forum/support-forum/)
 * Donate link: [donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=)
 
 ## Installation
@@ -26,11 +26,17 @@ Navigate to the Custom DB Tables submenu in setting menu of WordPress administra
 
 First of all, please try to create the database required for the first.
 
+[Please see the tutorial for more use of the plugin](http://ka2.org/cdbt/tutorials/).
+
 ## Documentation
 
-### [CDBT Docs](http://ka2.org/cdbt/)
+### [Plugin Documentation](http://ka2.org/cdbt/documentation/)
 
-* [Custom DataBase Tables](http://ka2.org/cdbt/) ? A guide to installing Plugin, the files and theme organization
+* [Plugin configuration files](http://ka2.org/cdbt/documentation/plugin-files/)
+* [Plugin methods](http://ka2.org/cdbt/documentation/methods/)
+* [Plugin APIs](http://ka2.org/cdbt/documentation/apis/)
+* [Plugin shortcodes](http://ka2.org/cdbt/documentation/shortcodes/)
+
 
 ## Features
 
@@ -49,6 +55,11 @@ First of all, please try to create the database required for the first.
 
 ## Contributing
 
+If you thought this plugin felt to be useful, you want to cooperate in the development, or would like to contribute, I'm very happy that you make a donation to me. 
+The magnitude of the amount of the donation is not a problem. 
+Your feelings will become motivation of myself to develop this plugin.
 
 ## Support
 
+I've prepared a [support forum](http://ka2.org/cdbt-forum/forum/support-forum/). 
+Please to slip issuance in here questions about plugin.
