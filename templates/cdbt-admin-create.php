@@ -146,8 +146,8 @@ if ($handle != 'alter-table') {
 			<input type="text" class="form-control" name="naked_table_name" id="cdbt_naked_table_name" placeholder="$table_name_placeholder" value="$naked_table_name" required>
 		</div>
 		<div class="col-sm-3">
-			<select type="text" class="form-control" name="incorporate_table" id="cdbt_incorporate_table">
-				<option value="">$incorporate_table_label</option>
+			<select type="text" class="form-control" name="incorporate_table" id="cdbt_incorporate_table" data-action="get_table_list">
+				<option value="" option-index="true">$incorporate_table_label</option>
 			</select>
 			<input type="hidden" name="is_incorporate_table" value="false">
 		</div>

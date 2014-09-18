@@ -89,7 +89,8 @@ class CustomDatabaseTables {
 	 * outputted logs on debug mode
 	 * @var boolean
 	 */
-	protected $debug = true;
+	#protected $debug = true;
+	var $debug = true;
 	
 	/**
 	 * constructor for PHP5
@@ -135,7 +136,8 @@ class CustomDatabaseTables {
 	 * @param string $msg
 	 * @return void
 	 */
-	protected function log_info($msg) {
+	#protected function log_info($msg) {
+	function log_info($msg) {
 		if ($this->debug) {
 			$now_datetime = date("Y-m-d H:i:s (e)", strtotime(current_time('mysql')));
 			$log_file_path = $this->dir . DS . 'log.txt';

@@ -196,6 +196,35 @@ jQuery(document).ready(function($){
 	$('#cdbt_naked_table_name').on('click focus blur', set_current_table_name);
 	$('#cdbt_use_wp_prefix_for_newtable').on('click blur', set_current_table_name);
 	
+	// incorporate table
+	$('#cdbt_incorporate_table').on('click', function(e) {
+		//e.stopImmediatePropagation();
+		if ($(this).attr('data-proc') != 'loaded') {
+			$(this).children('option[option-index="true"]').text("<?php echo __('Now searching...', PLUGIN_SLUG); ?>");
+			var post_data = {
+				action: 'cdbt_ajax_core', 
+				mode: $(this).attr('data-action'), 
+				token: '<?php echo $ajax_nonce; ?>', 
+				'_ajax_nonce': '<?php echo $action_nonce; ?>' 
+			}
+			$.ajax({
+				type: 'POST', 
+				url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
+				data: post_data
+			}).done(function(res){
+				$('#cdbt_incorporate_table').attr('data-proc', 'loaded').append(res).blur();
+				$('#cdbt_incorporate_table').children('option[option-index="true"]').text("<?php echo __('Select an incorporate table', PLUGIN_SLUG); ?>");
+				$('#cdbt_incorporate_table').focus();
+			});
+		}
+	});
+	
+	$('#cdbt_incorporate_table').on('change', function() {
+		if ($(this).attr('data-proc') == 'loaded') {
+			alert($(this).selectedIndex);
+		}
+	});
+	
 	function set_substance_sql() {
 		//console.info($('input[name="substance_sql"]').val());
 	}
