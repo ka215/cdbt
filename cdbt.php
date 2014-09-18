@@ -12,6 +12,7 @@
   Domain Path: /langs
 */
 define('PLUGIN_VERSION', '1.1.0');
+define('DB_VERSION', (float)1.1);
 define('PLUGIN_SLUG', 'custom-database-tables');
 
 define('DS', DIRECTORY_SEPARATOR);

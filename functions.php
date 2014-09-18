@@ -149,6 +149,7 @@ function cdbt_get_options_table($table_name=null) {
 function cdbt_create_console_menu($nonce) {
 	$user_level = cdbt_current_user_level();
 	$current_table = get_option(PLUGIN_SLUG . '_current_table');
+	$options = get_option(PLUGIN_SLUG);
 	$attr = disabled($current_table, false, false);
 	$buttons[0] = array( // Index key number is button order from left.
 		'_mode' => 'index', 
@@ -210,7 +211,8 @@ function cdbt_create_console_menu($nonce) {
 		}
 		$menu_content .= sprintf('<a href="%s" class="btn btn-%s"%s><span class="glyphicon glyphicon-%s"></span> %s</a>', $menu_url, $button['_class'], $button['_attr'], $button['_icon'], $button['_name']);
 	}
-	$console_title = sprintf('<h2 class="cdbt-title">%s</h2>', __('Custom DataBase Tables Management console', PLUGIN_SLUG));
+	$plugin_version = sprintf('<div class="cdbt-version pull-right"><span class="label label-default">Ver. %s</span></div>', $options['plugin_version']);
+	$console_title = sprintf('<h2 class="cdbt-title">%s%s</h2>', __('Custom DataBase Tables Management console', PLUGIN_SLUG), $plugin_version);
 	echo sprintf('<div class="console-container"><div class="console-menu">%s<div class="btn-group btn-group-justified">%s</div></div>', $console_title, $menu_content);
 }
 

@@ -74,10 +74,10 @@ $note_mes2 = __('If you wonder how you can help the project, just %sread this%s.
 $note_mes3 = __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', self::DOMAIN);
 $note_mes4 = __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', self::DOMAIN);
 $note_mes5 = __('Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', self::DOMAIN);
-$note_message = sprintf('<p>'. $note_mes1, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
-$note_message .= sprintf($note_mes2, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
-$note_message .= sprintf($note_mes3 .'</p>', '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">', '</a>');
-$note_message .= sprintf('<p class="pull-left">'. $note_mes4, '<a href="http://cdbt.ka2.org/" target="_blank">', '</a>');
+$note_message = sprintf('<p>'. $note_mes1, '<a href="http://ka2.org/cdbt/documentation/" target="_blank" alt="CDBT Documentations">', '</a>');
+$note_message .= sprintf($note_mes2, '<a href="http://ka2.org/cdbt/tutorials/" target="_blank" alt="CDBT Tutorials">', '</a>');
+$note_message .= sprintf($note_mes3 .'</p>', '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>');
+$note_message .= sprintf('<p class="pull-left">'. $note_mes4, '<a href="http://ka2.org/cdbt-forum/forum/support-forum/" target="_blank" alt="CDBT Support Forum">', '</a>');
 $note_message .= $note_mes5 .'</p>';
 $btn_alt = __('The safer, easier way to pay online!', self::DOMAIN);
 $note_html = '<div class="panel panel-default other-note"><div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> %s</div><div class="panel-body">%s</div></div>';

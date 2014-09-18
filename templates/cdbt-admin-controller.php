@@ -12,7 +12,6 @@ $inherit_values = array();
 foreach ($_REQUEST as $key => $value) {
 	if (preg_match('/^(page|mode|_cdbt_token|action|handle|section|_wp_http_referer)$/', $key)) {
 		${$key} = $value;
-//var_dump('$'.$key.'="'.$value.'";'."\n");
 	} else {
 		$inherit_values[$key] = $value;
 	}
@@ -36,7 +35,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 		case 'general': 
 			if (isset($handle) && cdbt_compare_var($handle, 'save')) {
 				foreach ($inherit_values as $key => $value) {
-					if (preg_match('/^(use_wp_prefix|cleaning_options)$/', $key)) {
+					if (preg_match('/^(use_wp_prefix|cleaning_options|uninstall_options|resume_options)$/', $key)) {
 						$this->options[$key] = cdbt_get_boolean($value);
 					} else {
 						$this->options[$key] = $value;
@@ -44,27 +43,69 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				}
 				if (update_option(self::DOMAIN, $this->options)) {
 					$msg = array('success', __('Completed successful to save option setting.', self::DOMAIN));
-				} else {
-					$msg = array('warning', __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN));
-				}
-				if ($this->options['cleaning_options']) {
-					$prev_current_table = $this->current_table;
-					if (isset($this->options['tables']) && !empty($this->options['tables'])) {
-						$re_tables = array();
-						foreach ($this->options['tables'] as $i => $table) {
-							$this->current_table = $table['table_name'];
-							if (isset($table['table_type']) && $table['table_type'] != 'controller_table') {
-								if (cdbt_get_boolean($this->check_table_exists())) {
-									$re_tables[] = $table;
+					if ($this->options['resume_options']) {
+						$revision_tables = get_option(self::DOMAIN . '_previous_revision_backup');
+						if ($revision_tables !== false && isset($revision_tables['tables']) && count($revision_tables['tables']) > 0) {
+							$resume_count = 0;
+							foreach ($revision_tables['tables'] as $i => $past_table_data) {
+								if (isset($past_table_data['table_type']) && $past_table_data['table_type'] != 'controller_table') {
+									$is_same_table = false;
+									foreach ($this->options['tables'] as $j => $table_data) {
+										if ($table_data['table_name'] == $past_table_data['table_name']) {
+											$is_same_table = true;
+											break;
+										}
+									}
+									if (!$is_same_table) {
+										if (cdbt_get_boolean($this->check_table_exists($past_table_data['table_name']))) {
+											if (isset($past_table_data['sql']) && !empty($past_table_data['sql'])) {
+												$table_create_sql = $past_table_data['sql'];
+											} else {
+												$res_ary = $this->get_create_table_sql($past_table_data['table_name']);
+												$table_create_sql = $res_ary[1];
+											}
+											$this->options['tables'][] = array(
+												'table_name' => $past_table_data['table_name'], 
+												'table_type' => $past_table_data['table_type'], 
+												'sql' => $table_create_sql, 
+												'db_engine' => $past_table_data['db_engine'], 
+												'show_max_records' => isset($past_table_data['show_max_records']) ? $past_table_data['show_max_records'] : $this->options['tables'][0]['show_max_records'], 
+												'roles' => isset($past_table_data['roles']) ? $past_table_data['roles'] : $this->options['tables'][0]['roles'], 
+												'display_format' => isset($past_table_data['display_format']) ? $past_table_data['display_format'] : $this->options['tables'][0]['display_format'], 
+											);
+											$resume_count++;
+										}
+									}
 								}
-							} else {
-								$re_tables[] = $table;
+							}
+							if ($resume_count > 0) {
+								update_option(self::DOMAIN, $this->options);
+								$msg[1] .= "\n " . __('And have resumed as management table from in the past table setting.', self::DOMAIN);
 							}
 						}
-						$this->options['tables'] = $re_tables;
-						update_option(self::DOMAIN, $this->options);
 					}
-					$this->current_table = $prev_current_table;
+					if ($this->options['cleaning_options']) {
+						$prev_current_table = $this->current_table;
+						if (isset($this->options['tables']) && !empty($this->options['tables'])) {
+							$re_tables = array();
+							foreach ($this->options['tables'] as $i => $table) {
+								$this->current_table = $table['table_name'];
+								if (isset($table['table_type']) && $table['table_type'] != 'controller_table') {
+									if (cdbt_get_boolean($this->check_table_exists())) {
+										$re_tables[] = $table;
+									}
+								} else {
+									$re_tables[] = $table;
+								}
+							}
+							$this->options['tables'] = $re_tables;
+							update_option(self::DOMAIN, $this->options);
+						}
+						$this->current_table = $prev_current_table;
+						$msg[1] .= "\n " . __('And the cleaning of the table settings done.', self::DOMAIN);
+					}
+				} else {
+					$msg = array('warning', __('Failed to save option setting. Please note it is not saved if there is no change.', self::DOMAIN));
 				}
 			}
 			break;
@@ -469,7 +510,7 @@ cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $informatio
 function cdbt_create_tab_content($tab_name, $nonce, $inherit_values=null) {
 	global $wpdb, $cdbt;
 	$cdbt_options = get_option(PLUGIN_SLUG);
-	$controller_table = $cdbt_options['tables'][0]['table_name'];
+	$controller_table = count($cdbt_options['tables']) > 0 ? $cdbt_options['tables'][0]['table_name'] : null;
 	$content_html = null;
 	$nonce_field = wp_nonce_field(PLUGIN_SLUG .'_admin', '_cdbt_token', true, false);
 	switch ($tab_name) {

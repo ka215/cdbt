@@ -5,13 +5,13 @@ class CustomDatabaseTables {
 	 * plugin version
 	 * @var string
 	 */
-	var $version;
+	var $version = PLUGIN_VERSION;
 	
 	/**
 	 * database version
 	 * @var float
 	 */
-	var $db_version;
+	var $db_version = DB_VERSION;
 	
 	/**
 	 * name of controller table
@@ -108,7 +108,7 @@ class CustomDatabaseTables {
 		
 		load_plugin_textdomain(self::DOMAIN, false, basename($this->dir) . DS . 'langs');
 		
-		$this->options = get_option(self::DOMAIN, '');
+		$this->options = get_option(self::DOMAIN);
 		if (!empty($this->options['timezone'])) 
 			date_default_timezone_set($this->options['timezone']);
 		
@@ -138,7 +138,10 @@ class CustomDatabaseTables {
 	protected function log_info($msg) {
 		if ($this->debug) {
 			$now_datetime = date("Y-m-d H:i:s (e)", strtotime(current_time('mysql')));
-			error_log("[$now_datetime] CURRENT_TABLE=\"$this->current_table\" INFO=\"$msg\" ;\n", 3, $this->dir . DS . 'log.txt');
+			$log_file_path = $this->dir . DS . 'log.txt';
+			if (!file_exists($log_file_path)) 
+				$log_file_path = substr($log_file_path, 1);
+			error_log("[$now_datetime] CURRENT_TABLE=\"$this->current_table\" INFO=\"$msg\" ;\n", 3, $log_file_path);
 		}
 	}
 	
@@ -150,30 +153,28 @@ class CustomDatabaseTables {
 		global $wpdb;
 		$default_timezone = get_option('timezone_string', 'UTC');
 		$default_options = array(
-			'plugin_version' => PLUGIN_VERSION, 
-			'db_version' => (float)1.0, 
+			'plugin_version' => $this->version, 
+			'db_version' => $this->db_version, 
 			'use_wp_prefix' => true, 
 			'charset' => DB_CHARSET, 
 			'timezone' => $default_timezone, 
 			'cleaning_options' => true, 
+			'uninstall_options' => false, 
+			'resume_options' => false, 
 			'tables' => array(
 				array(
-					'table_name' => $wpdb->prefix . 'cdbt_controller', 
+					'table_name' => 'cdbt_schema_template', 
 					'table_type' => 'controller_table', 
-					'sql' => "CREATE TABLE `". $wpdb->prefix . "cdbt_controller` (
+					'sql' => "CREATE TABLE `cdbt_schema_template` (
 							`ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '". __('ID', self::DOMAIN) ."',
-							`table_name` varchar(64) NOT NULL COMMENT '". __('Table Name', self::DOMAIN) ."',
-							`enable` boolean DEFAULT 1 COMMENT '". __('Enable', self::DOMAIN) ."',
-							`create_sql` text COMMENT '". __('Create Table SQL', self::DOMAIN) ."',
-							`show_max_records` tinyint(4) DEFAULT 10 COMMENT '". __('Show Max Records', self::DOMAIN) ."',
-							`view_role` enum('0','1','2','3','4','5','6','7','8','9') DEFAULT '1' COMMENT '". __('View Role', self::DOMAIN) ."',
-							`input_role` enum('0','1','2','3','4','5','6','7','8','9') DEFAULT '3' COMMENT '". __('Input Role', self::DOMAIN) ."',
-							`edit_role` enum('0','1','2','3','4','5','6','7','8','9') DEFAULT '5' COMMENT '". __('Edit Role', self::DOMAIN) ."',
-							`admin_role` enum('0','1','2','3','4','5','6','7','8','9') DEFAULT '9' COMMENT '". __('Admin Role', self::DOMAIN) ."',
+							{%column_definition%}
 							`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '". __('Created Date', self::DOMAIN) ."',
 							`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '". __('Updated Date', self::DOMAIN) ."',
 							PRIMARY KEY (`ID`)
-						) ENGINE=%s DEFAULT CHARSET=%s COMMENT='". __('Custom Database Tables Controller', self::DOMAIN) ."' AUTO_INCREMENT=1 ;", 
+							{%keyindex_definition%}
+							{%reference_definition%}
+						) ENGINE=%s DEFAULT CHARSET=%s COMMENT='". __('Custom Database Tables Controller', self::DOMAIN) ."' AUTO_INCREMENT=1 
+						{%table_options%} ;", 
 					'db_engine' => 'InnoDB', 
 					'show_max_records' => 10, 
 					'roles' => array(
@@ -188,16 +189,25 @@ class CustomDatabaseTables {
 			), 
 		);
 		
-		$this->options = get_option(self::DOMAIN, $default_options);
+		//$pre_option = apply_filters('pre_option_' . self::DOMAIN, false);
+		$pre_option = get_option(self::DOMAIN);
+		if ($pre_option) {
+			$this->options = $pre_option;
+		} else {
+			$this->options = $default_options;
+		}
 		if (in_array('plugin_version', $this->options)) {
 			if ($this->options['plugin_version'] != $default_options['plugin_version']) {
-				if (version_compare($default_options['plugin_version'], $this->options['plugin_version']) >= 0) {
-					update_option(self::DOMAIN . '_previous_revision_backup', $this->options);
-					$this->options = array_merge($this->options, $default_options);
+				if (version_compare($default_options['plugin_version'], $this->options['plugin_version']) > 0) {
+					foreach ($this->options['tables'] as $i => $table_data) {
+						if ($table_data['table_name'] != $default_options['tables'][0]['table_name']) {
+							$default_options['tables'][] = $table_data;
+						}
+					}
+					$this->options = $default_options;
 				}
 			}
 		} else {
-			update_option(self::DOMAIN . '_previous_revision_backup', $this->options);
 			$this->options = $default_options;
 		}
 		if (count($this->options['tables']) > 1) {
@@ -213,10 +223,13 @@ class CustomDatabaseTables {
 		} else {
 			$this->current_table = '';
 		}
-		$this->db_version = $this->options['db_version'];
 		date_default_timezone_set($this->options['timezone']);
 		
-		update_option(self::DOMAIN, $this->options);
+		if (get_option(self::DOMAIN) !== false) {
+			update_option(self::DOMAIN, $this->options);
+		} else {
+			add_option(self::DOMAIN, $this->options, '', 'no');
+		}
 	}
 	
 	/**
@@ -224,7 +237,13 @@ class CustomDatabaseTables {
 	 * @return void
 	 */
 	function deactivation(){
-		//delete_option(self::DOMAIN . '_current_table');
+		$revision_option = self::DOMAIN . '_previous_revision_backup';
+		if (get_option($revision_option) !== false) {
+			update_option($revision_option, $this->options);
+		} else {
+			add_option($revision_option, $this->options, '', 'no');
+		}
+		delete_option(self::DOMAIN . '_current_table');
 		$this->log_info('cdbt plugin deactivated.');
 	}
 	
@@ -1092,6 +1111,16 @@ class CustomDatabaseTables {
 			$result = array(false, __('Table is not exists', self::DOMAIN));
 		}
 		return $result;
+	}
+	
+	/**
+	 * incorporate table that created on out of plugin
+	 * @param string $table_name
+	 * @param 
+	 * @return 
+	 */
+	function incorporate_table_option() {
+		// Will be released in the next version
 	}
 	
 }

@@ -6,6 +6,8 @@ $charset_disabled = disabled($change_charset, false, false);
 $change_timezone = false;
 $timezone_disabled = disabled($change_timezone, false, false);
 $cleaning_options = checked($cdbt_options['cleaning_options'], true, false);
+$uninstall_options = checked($cdbt_options['uninstall_options'], true, false);
+$resume_options = checked($cdbt_options['resume_options'], true, false);
 
 // inherit values
 //var_dump($inherit_values);
@@ -19,6 +21,8 @@ $charset_placeholder = __('Table Charset', PLUGIN_SLUG);
 $timezone_label = __('Database Timezone', PLUGIN_SLUG);
 $timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
 $helper_msg2 = __('Can clean the setting by delete the setting of the table that does not exist in database when save this general setting.', PLUGIN_SLUG);
+$helper_msg3 = __('To erase all the configuration information for the CDBT plugin when you want to uninstall this plugin.', PLUGIN_SLUG);
+$helper_msg4 = __('Want to resume the management tables from in the past plugin settings. However, tables that do not currently exist will not be restored.', PLUGIN_SLUG);
 
 $content_html = <<<EOH
 <h3><span class="glyphicon glyphicon-wrench"></span> $tab_name_label</h3>
@@ -55,6 +59,26 @@ $content_html = <<<EOH
 				<label>
 					<input type="checkbox" id="cdbt_cleaning_options" value="1"$cleaning_options> $helper_msg2
 					<input type="hidden" name="cleaning_options" value="true">
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-9">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="cdbt_uninstall_options" value="1"$uninstall_options> $helper_msg3
+					<input type="hidden" name="uninstall_options" value="false">
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-9">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" id="cdbt_resume_options" value="1"$resume_options> $helper_msg4
+					<input type="hidden" name="resume_options" value="false">
 				</label>
 			</div>
 		</div>

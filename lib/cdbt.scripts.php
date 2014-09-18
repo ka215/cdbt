@@ -288,6 +288,8 @@ jQuery(document).ready(function($){
 	$('#cdbt_general_setting_save').on('click', function() {
 		$('#cdbt_general_setting input[name="use_wp_prefix"]').val( $('#cdbt_use_wp_prefix').is(':checked') ? 'true' : 'false' );
 		$('#cdbt_general_setting input[name="cleaning_options"]').val( $('#cdbt_cleaning_options').is(':checked') ? 'true' : 'false' );
+		$('#cdbt_general_setting input[name="uninstall_options"]').val( $('#cdbt_uninstall_options').is(':checked') ? 'true' : 'false' );
+		$('#cdbt_general_setting input[name="resume_options"]').val( $('#cdbt_resume_options').is(':checked') ? 'true' : 'false' );
 		$('#cdbt_general_setting').submit();
 	});
 	
