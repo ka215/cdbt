@@ -5,7 +5,7 @@ if (!defined('WP_UNINSTALL_PLUGIN'))
 
 $option_name = PLUGIN_SLUG;
 $cdbt_options = get_option($option_name);
-if (isset($cdbt_options['uninstall_options']) {
+if (isset($cdbt_options['uninstall_options'])) {
 	$is_delete = $cdbt_options['uninstall_options'];
 } else {
 	$is_delete = false;
