@@ -56,9 +56,9 @@ An answer to that question.
 * Be able to incorporated into plugin as a managable table the tables that already exists (this feature is an experimental implemented yet).
 * Can resume table from in the past table settings.
 * Did optimize processing when the plugin is stop and uninstall.
-* Fixed a bug in the create_table method
-* Changed specifications of update_data method and insert_data method
-* 
+* Fixed a bug in the create_table method.
+* Changed specifications of update_data method and insert_data method.
+* Add to new method get_table_list.
 
 = 1.0.0 =
 * Add to new feature to modify table (alter table)

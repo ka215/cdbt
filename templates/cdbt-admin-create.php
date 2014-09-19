@@ -7,6 +7,7 @@ if (is_array($inherit_values) && !empty($inherit_values)) {
 }
 $section = (isset($section) && !empty($section) && $section == 'run') ? 'run' : 'confirm';
 $handle = (isset($handle) && !empty($handle) && $handle == 'alter-table') ? 'alter-table' : 'create-table';
+$is_incorporate_table = (isset($incorporate_table) && !empty($incorporate_table)) ? true : false;
 
 if ($handle == 'alter-table') {
 	// Variables for alter table
@@ -130,6 +131,11 @@ foreach ($roles as $param_name => $param_value) {
 
 if ($handle != 'alter-table') {
 	// to create table
+	if ($is_incorporate_table) {
+		$incorporate_options = sprintf('<option value="%s" selected="selected">%s</option>', $incorporate_table, $incorporate_table);
+	} else {
+		$incorporate_options = '<option value="" option-index="true">'. $incorporate_table_label .'</option>';
+	}
 	$content_html = <<<EOH
 <h3><span class="glyphicon glyphicon-wrench"></span> $tab_name_label</h3>
 <form method="post" class="form-horizontal" id="cdbt_create_table" role="form">
@@ -147,9 +153,9 @@ if ($handle != 'alter-table') {
 		</div>
 		<div class="col-sm-3">
 			<select type="text" class="form-control" name="incorporate_table" id="cdbt_incorporate_table" data-action="get_table_list">
-				<option value="" option-index="true">$incorporate_table_label</option>
+				$incorporate_options
 			</select>
-			<input type="hidden" name="is_incorporate_table" value="false">
+			<input type="hidden" name="is_incorporate_table" value="{$is_incorporate_table}">
 		</div>
 	</div>
 	<div class="form-group">

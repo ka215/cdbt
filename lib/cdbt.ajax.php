@@ -52,25 +52,8 @@ class CustomDataBaseTables_Ajax {
 					}
 					break;
 				case 'get_table_list': 
-					global $wpdb;
-					$res = $wpdb->get_results('SHOW TABLES', 'ARRAY_N');
-					$exists_tables = array();
-					foreach ($res as $i => $one_res) {
-						if (!$cdbt->compare_reservation_tables($one_res[0])) {
-							$is_enable = false;
-							foreach ($cdbt->options['tables'] as $j => $table_data) {
-								if (cdbt_compare_var($one_res[0], $table_data['table_name'])) {
-									$is_enable = true;
-									break;
-								}
-							}
-							if (!$is_enable) {
-								$exists_tables[] = $one_res[0];
-							}
-						}
-					}
 					$response = '';
-					foreach ($exists_tables as $table_name) {
+					foreach ($cdbt->get_table_list('unmanageable') as $table_name) {
 						$response .= sprintf('<option value="%s">%s</option>'."\n", $table_name, $table_name);
 					}
 					die($response);

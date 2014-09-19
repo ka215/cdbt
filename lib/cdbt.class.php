@@ -1116,6 +1116,55 @@ class CustomDatabaseTables {
 	}
 	
 	/**
+	 * get table list in database
+	 * @param string $narrow_type default 'enable' is managable table in this plugin.
+	 * @return mixed
+	 */
+	function get_table_list($narrow_type='enable') {
+		global $wpdb;
+		$res = $wpdb->get_results('SHOW TABLES', 'ARRAY_N');
+		$table_list = array();
+		foreach ($res as $i => $one_res) {
+			$table_list[] = $one_res[0];
+		}
+		if (!empty($table_list)) {
+			if ($narrow_type == 'unreserved' || $narrow_type == 'unmanageable') {
+				foreach ($table_list as $i => $table_name) {
+					if ($this->compare_reservation_tables($table_name)) {
+						unset($table_list[$i]);
+					}
+				}
+				if ($narrow_type == 'unmanageable') {
+					foreach ($table_list as $i => $table_name) {
+						foreach ($this->options['tables'] as $j => $table_data) {
+							if (cdbt_compare_var($table_name, $table_data['table_name'])) {
+								unset($table_list[$i]);
+								break;
+							}
+						}
+					}
+				}
+			} else if ($narrow_type == 'enable') {
+				foreach ($table_list as $i => $table_name) {
+					$is_enable = false;
+					foreach ($this->options['tables'] as $j => $table_data) {
+						if (cdbt_compare_var($table_name, $table_data['table_name'])) {
+							$is_enable = true;
+							break;
+						}
+					}
+					if (!$is_enable) 
+						unset($table_list[$i]);
+				}
+			}
+			return $table_list;
+		} else {
+			return false;
+		}
+	}
+	
+
+	/**
 	 * incorporate table that created on out of plugin
 	 * @param string $table_name
 	 * @param 
