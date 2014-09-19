@@ -102,6 +102,9 @@
 	font-weight: 500;
 	text-align: left;
 }
+select#cdbt_incorporate_table {
+	height: 34px;
+}
 select#cdbt_db_engine {
 	width: 100px;
 	height: 34px;
