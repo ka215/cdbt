@@ -112,6 +112,12 @@ class CustomDatabaseTables {
 		if (!empty($this->options['timezone'])) 
 			date_default_timezone_set($this->options['timezone']);
 		
+		if ($this->options['plugin_version'] != $this->version) {
+			if (version_compare($this->version, $this->options['plugin_version']) > 0) {
+				$this->activate();
+			}
+		}
+		
 		$this->current_table = get_option(self::DOMAIN . '_current_table', '');
 		
 		CustomDataBaseTables_Ajax::instance();
@@ -189,7 +195,6 @@ class CustomDatabaseTables {
 			), 
 		);
 		
-		//$pre_option = apply_filters('pre_option_' . self::DOMAIN, false);
 		$pre_option = get_option(self::DOMAIN);
 		if ($pre_option) {
 			$this->options = $pre_option;

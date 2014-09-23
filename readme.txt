@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, CDBT, MySQL, database, table, create, delete, insert, update, edit, truncate, drop
 Requires at least: 3.6
 Tested up to: 4.0.0
-Stable tag: 1.1.0
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,13 @@ An answer to that question.
 12. The pages of Viewer, Editor, and Entry Forms can display to frontend by using shortcodes.
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed bug that failed to upload a CSV that is not Excel format.
+* Fixed bug that was failing of setting up plugin options when updated the plugin version.
+
+= 1.1.1 =
+* Fixed a bug when uninstall the plugin.
 
 = 1.1.0 =
 * Have been confirmed in the normal operation on the WordPress 4.0
