@@ -423,7 +423,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				} else if ($section == 'run') {
 					$this->current_table = $target_table;
 					if (cdbt_check_current_table_valid($this->current_table)) {
-						if (preg_match('/^application\/(vnd.ms-excel|octet-stream)$/', $_FILES['csv_file']['type']) && $_FILES['csv_file']['size'] > 0) {
+						if (preg_match('/text\/csv$/', $_FILES['csv_file']['type']) && $_FILES['csv_file']['size'] > 0) {
 							$data = file_get_contents($_FILES['csv_file']['tmp_name']);
 							if (function_exists('mb_convert_encoding')) {
 								$data = mb_convert_encoding($data, 'UTF-8', 'UTF-8, UTF-7, ASCII, EUC-JP,SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP, ISO-8859-1');
