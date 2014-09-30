@@ -304,7 +304,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$target_modify_table_name = $inherit_values['target_table'];
 					if ($target_modify_table_name == $inherit_values['previous_table_name'] && $this->check_table_exists($target_modify_table_name)) {
 						if (cdbt_compare_var(empty($inherit_values['alter_table_sql']), true)) {
-							$msg = array('warning', __('Modify Table SQL is empty.', self::DOMAIN));
+							$msg = array('information', __('Modify Table SQL is empty.', self::DOMAIN));
 						} else {
 							$sql_str = stripcslashes(strip_tags($inherit_values['alter_table_sql']));
 							if (preg_match('/RENAME\s(.*)(\s|;|,|$)/iU', trim($sql_str), $matches)) {
@@ -320,11 +320,11 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 									// sql validate done
 									$inherit_values['substance_sql'] = rawurlencode($fixed_sql);
 								} else {
-									$msg = array('warning', __('Modify Table SQL is invalid.', self::DOMAIN));
+									$msg = array('information', __('Modify Table SQL is invalid.', self::DOMAIN));
 								}
 							}
 						}
-						if (empty($msg)) {
+						if (empty($msg) || $msg[0] == 'information') {
 							if (cdbt_compare_var(empty($inherit_values['show_max_records']), true)) {
 								$msg = array('warning', __('Show Max Records is empty.', self::DOMAIN));
 							} else if (intval($inherit_values['show_max_records']) == 0) {
@@ -341,6 +341,9 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 							if (empty($msg)) {
 								$section = 'run';
 								$msg = array('confirmation', '{#code class="confirm-sql"#}'. $fixed_sql .'{#/code#}' . sprintf(__('Will modify a "%s" table. Would you like?', self::DOMAIN), $target_modify_table_name), __('Yes, modify.', self::DOMAIN));
+							} else if ($msg[0] == 'information') {
+								$section = 'run';
+								$msg = array('confirmation', $msg[1] ."\n". __('So, it will not issue the SQL query and will do other setup updates.', self::DOMAIN) ."\n". sprintf(__('Will modify a "%s" table. Would you like?', self::DOMAIN), $target_modify_table_name), __('Yes, modify.', self::DOMAIN));
 							}
 						}
 					} else {

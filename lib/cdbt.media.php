@@ -39,11 +39,14 @@ class CustomDataBaseTables_Media {
 			$filename = $_REQUEST['filename'];
 			$table = (isset($_REQUEST['table']) && !empty($_REQUEST['table'])) ? $_REQUEST['table'] : $cdbt->current_table;
 			$data = $cdbt->get_data($table, '*', array('ID' => $id), null, 1);
-			foreach (array_shift($data) as $key => $val) {
-				if (is_string($val) && strlen($val) > 24 && preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) {
-					$file_data = unserialize($val);
-					if ($file_data['origin_file'] == $filename) {
-						break;
+			if (is_array($data) && !empty($data)) {
+				$data = array_shift($data);
+				foreach ($data as $key => $val) {
+					if (is_string($val) && strlen($val) > 24 && preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) {
+						$file_data = unserialize($val);
+						if ($file_data['origin_file'] == $filename) {
+							break;
+						}
 					}
 				}
 			}

@@ -41,8 +41,13 @@ if (count($cdbt_options['tables']) > 1) {
 			$cdbt->current_table = $load_table_name;
 			if ($cdbt->check_table_exists()) {
 				$res = $cdbt->get_data($load_table_name, 'COUNT(*)');
-				foreach (array_shift($res) as $val) {
-					$total = intval($val);
+				if (is_array($res) && !empty($res)) {
+					$res = array_shift($res);
+					foreach ($res as $val) {
+						$total = intval($val);
+					}
+				} else {
+					$res = 0;
 				}
 				$is_current = ($current_table && $current_table == $load_table_name) ? true : false;
 				$table_rows .= '<tr><td>'. $index_num .'</td>';

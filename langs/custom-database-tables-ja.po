@@ -1,6 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Database Tables 1.1.0\n"
+"Project-Id-Version: Custom Database Tables 1.1.3\n"
+"POT-Creation-Date: 2014-09-30 16:55+0900\n"
+"PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
 "Language: ja_JP\n"
@@ -8,6 +10,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.6.7\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_x;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ../../custom-database-tables\n"
 
 #: ../../custom-database-tables/functions.php:156
 msgid "Home position"
@@ -36,10 +43,10 @@ msgstr "カスタム DB テーブル 管理コンソール"
 #: ../../custom-database-tables/functions.php:250
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:62
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:10
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:214
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:219
 #: ../../custom-database-tables/templates/cdbt-public-input.php:95
 #: ../../custom-database-tables/templates/cdbt-public-input.php:153
-#: ../../custom-database-tables/templates/cdbt-public-list.php:158
+#: ../../custom-database-tables/templates/cdbt-public-list.php:163
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -48,9 +55,9 @@ msgstr "キャンセル"
 #: ../../custom-database-tables/lib/cdbt.scripts.php:458
 #: ../../custom-database-tables/lib/cdbt.scripts.php:463
 #: ../../custom-database-tables/lib/cdbt.scripts.php:816
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:215
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:220
 #: ../../custom-database-tables/templates/cdbt-public-input.php:154
-#: ../../custom-database-tables/templates/cdbt-public-list.php:159
+#: ../../custom-database-tables/templates/cdbt-public-list.php:164
 msgid "Yes, run"
 msgstr "実行する"
 
@@ -60,141 +67,141 @@ msgid "Enter %s"
 msgstr "%sを入力してください"
 
 #: ../../custom-database-tables/lib/cdbt.ajax.php:27
-#: ../../custom-database-tables/lib/cdbt.ajax.php:62
+#: ../../custom-database-tables/lib/cdbt.ajax.php:65
 msgid "Invalid access!"
 msgstr "不正なアクセスです！"
 
-#: ../../custom-database-tables/lib/cdbt.ajax.php:51
+#: ../../custom-database-tables/lib/cdbt.ajax.php:54
 msgid "No binary data."
 msgstr "バイナリデータがありません。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:171
-#: ../../custom-database-tables/lib/cdbt.class.php:965
+#: ../../custom-database-tables/lib/cdbt.class.php:175
+#: ../../custom-database-tables/lib/cdbt.class.php:968
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:18
 msgid "ID"
 msgstr "ID"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:173
-#: ../../custom-database-tables/lib/cdbt.class.php:966
+#: ../../custom-database-tables/lib/cdbt.class.php:177
+#: ../../custom-database-tables/lib/cdbt.class.php:969
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:19
 msgid "Created Date"
 msgstr "登録日時"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:174
-#: ../../custom-database-tables/lib/cdbt.class.php:967
+#: ../../custom-database-tables/lib/cdbt.class.php:178
+#: ../../custom-database-tables/lib/cdbt.class.php:970
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:20
 msgid "Updated Date"
 msgstr "更新日時"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:178
+#: ../../custom-database-tables/lib/cdbt.class.php:182
 msgid "Custom Database Tables Controller"
 msgstr "カスタム DB テーブル 管理"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:258
+#: ../../custom-database-tables/lib/cdbt.class.php:261
 msgid "Settings"
 msgstr "設定"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:269
+#: ../../custom-database-tables/lib/cdbt.class.php:272
 msgid "Custom Database Tables Option: "
 msgstr "カスタム DB テーブル 設定："
 
-#: ../../custom-database-tables/lib/cdbt.class.php:269
+#: ../../custom-database-tables/lib/cdbt.class.php:272
 msgid "Custom Database Tables"
 msgstr "カスタム DB テーブル"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:384
+#: ../../custom-database-tables/lib/cdbt.class.php:387
 msgid "Completed to truncate table."
 msgstr "テーブルデータを初期化しました。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:386
+#: ../../custom-database-tables/lib/cdbt.class.php:389
 msgid "Failed to truncate table."
 msgstr "テーブルデータを初期化できませんでした。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:389
-#: ../../custom-database-tables/lib/cdbt.class.php:411
-#: ../../custom-database-tables/lib/cdbt.class.php:508
-#: ../../custom-database-tables/lib/cdbt.class.php:532
-#: ../../custom-database-tables/lib/cdbt.class.php:556
-#: ../../custom-database-tables/lib/cdbt.class.php:1081
-#: ../../custom-database-tables/lib/cdbt.class.php:1113
+#: ../../custom-database-tables/lib/cdbt.class.php:392
+#: ../../custom-database-tables/lib/cdbt.class.php:414
+#: ../../custom-database-tables/lib/cdbt.class.php:511
+#: ../../custom-database-tables/lib/cdbt.class.php:535
+#: ../../custom-database-tables/lib/cdbt.class.php:559
+#: ../../custom-database-tables/lib/cdbt.class.php:1084
+#: ../../custom-database-tables/lib/cdbt.class.php:1116
 msgid "Table is not exists"
 msgstr "テーブルがありません。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:406
+#: ../../custom-database-tables/lib/cdbt.class.php:409
 msgid "Completed to drop table."
 msgstr "テーブルを削除しました。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:408
+#: ../../custom-database-tables/lib/cdbt.class.php:411
 msgid "Failed to drop table."
 msgstr "テーブルが削除できませんでした。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:437
+#: ../../custom-database-tables/lib/cdbt.class.php:440
 msgid "Failed to create table."
 msgstr "テーブル作成に失敗しました。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:439
+#: ../../custom-database-tables/lib/cdbt.class.php:442
 msgid "New table was created."
 msgstr "新しいテーブルが作成されました。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:443
+#: ../../custom-database-tables/lib/cdbt.class.php:446
 msgid "Create table sql is none."
 msgstr "テーブル作成SQLがありません。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:446
+#: ../../custom-database-tables/lib/cdbt.class.php:449
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:212
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:293
 msgid "This table is already created."
 msgstr "このテーブルは既に作成済みです。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:528
+#: ../../custom-database-tables/lib/cdbt.class.php:531
 msgid "Table comment is none"
 msgstr "テーブルコメントがありません。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:826
-#: ../../custom-database-tables/lib/cdbt.class.php:909
+#: ../../custom-database-tables/lib/cdbt.class.php:829
+#: ../../custom-database-tables/lib/cdbt.class.php:912
 msgid "empty"
 msgstr "未入力"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:834
-#: ../../custom-database-tables/lib/cdbt.class.php:838
-#: ../../custom-database-tables/lib/cdbt.class.php:843
+#: ../../custom-database-tables/lib/cdbt.class.php:837
+#: ../../custom-database-tables/lib/cdbt.class.php:841
+#: ../../custom-database-tables/lib/cdbt.class.php:846
 msgid "not integer"
 msgstr "数値ではない"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:847
+#: ../../custom-database-tables/lib/cdbt.class.php:850
 msgid "not a positive number"
 msgstr "正数ではない"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:852
+#: ../../custom-database-tables/lib/cdbt.class.php:855
 msgid "invalid strings"
 msgstr "不正な文字"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:862
+#: ../../custom-database-tables/lib/cdbt.class.php:865
 msgid "invalid value"
 msgstr "不正な値"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:872
-#: ../../custom-database-tables/lib/cdbt.class.php:876
-#: ../../custom-database-tables/lib/cdbt.class.php:880
-#: ../../custom-database-tables/lib/cdbt.class.php:884
+#: ../../custom-database-tables/lib/cdbt.class.php:875
+#: ../../custom-database-tables/lib/cdbt.class.php:879
+#: ../../custom-database-tables/lib/cdbt.class.php:883
+#: ../../custom-database-tables/lib/cdbt.class.php:887
 msgid "invalid format"
 msgstr "不正な書式"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:894
-#: ../../custom-database-tables/lib/cdbt.class.php:904
+#: ../../custom-database-tables/lib/cdbt.class.php:897
+#: ../../custom-database-tables/lib/cdbt.class.php:907
 msgid "max length over"
 msgstr "最大文字数の超過"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:1076
+#: ../../custom-database-tables/lib/cdbt.class.php:1079
 #, php-format
 msgid "Data of %d was imported."
 msgstr "%d件のデータがインポートされました。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:1078
+#: ../../custom-database-tables/lib/cdbt.class.php:1081
 msgid "Import data is invalid."
 msgstr "インポートデータが不正です。"
 
-#: ../../custom-database-tables/lib/cdbt.class.php:1084
+#: ../../custom-database-tables/lib/cdbt.class.php:1087
 msgid "Import data is none."
 msgstr "インポートデータがありません。"
 
@@ -217,9 +224,9 @@ msgstr "ID：%s のデータが削除されます。よろしいですか？"
 #: ../../custom-database-tables/lib/cdbt.scripts.php:98
 #: ../../custom-database-tables/lib/cdbt.scripts.php:729
 #: ../../custom-database-tables/lib/cdbt.scripts.php:811
-#: ../../custom-database-tables/templates/cdbt-edit.php:169
-#: ../../custom-database-tables/templates/cdbt-list.php:145
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:207
+#: ../../custom-database-tables/templates/cdbt-edit.php:174
+#: ../../custom-database-tables/templates/cdbt-list.php:150
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:212
 msgid "Delete"
 msgstr "削除"
 
@@ -319,7 +326,7 @@ msgid "Export now!"
 msgstr "エクスポートする"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:445
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:480
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:483
 #, php-format
 msgid ""
 "Will modify schema of \"%s\" table. This handle is same that recreating the "
@@ -333,7 +340,7 @@ msgid "Start modify"
 msgstr "変更する"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:457
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:492
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:495
 #, php-format
 msgid ""
 "Will truncate and initialize data of \"%s\" table. After this handled cannot "
@@ -343,7 +350,7 @@ msgstr ""
 "いですか？"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:462
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:509
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:512
 #, php-format
 msgid ""
 "Will delete a \"%s\" table. After this handled cannot resume. Would you like?"
@@ -394,7 +401,7 @@ msgid "access is not from admin panel!"
 msgstr "管理パネルからでないアクセスです！"
 
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:8
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:571
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:574
 #: ../../custom-database-tables/templates/cdbt-input.php:124
 #: ../../custom-database-tables/templates/cdbt-public-input.php:177
 msgid "Invild access!"
@@ -415,7 +422,7 @@ msgstr "さらに、テーブル設定のクリーニングが完了しました
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:108
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:171
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:287
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:396
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:399
 msgid ""
 "Failed to save option setting. Please note it is not saved if there is no "
 "change."
@@ -527,91 +534,97 @@ msgid "Modify Table SQL is invalid."
 msgstr "テーブル構造変更用SQL文が不正です。"
 
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:343
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:346
 #, php-format
 msgid "Will modify a \"%s\" table. Would you like?"
 msgstr "「%s」テーブルを変更します。よろしいですか？"
 
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:343
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:346
 msgid "Yes, modify."
 msgstr "はい、変更する"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:347
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:402
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:346
+msgid "So, it will not issue the SQL query and will do other setup updates."
+msgstr "そのため、SQLクエリは発行せずに、それ以外の設定を更新します。"
+
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:350
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:405
 msgid "will modify table is not exists table."
 msgstr "テーブル構造変更の対象テーブルがありません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:394
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:397
 msgid "Modified of the table schema has been successfully completed."
 msgstr "テーブル構造の変更が正常に完了しました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:399
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:402
 msgid "Failed to get the table modify sql."
 msgstr "変更したテーブルのSQL文取得に失敗しました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:413
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:416
 msgid "Is invalid call to modify table."
 msgstr "テーブル構造変更が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:450
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:453
 msgid "Invalid file was uploaded."
 msgstr "不正なファイルがアップロードされました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:454
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:457
 msgid "You can not handle to import data."
 msgstr "データのインポートができません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:458
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:461
 msgid "Is invalid call to import data."
 msgstr "インポートの不正な呼び出しです。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:470
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:473
 msgid "You can not handle to export data."
 msgstr "データのエクスポートができません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:474
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:477
 msgid "Is invalid call to export data."
 msgstr "エクスポートの不正な呼び出しです。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:486
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:489
 msgid "Is invalid call to alter table."
 msgstr "テーブル構造変更が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:499
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:502
 msgid "You can not handle to truncate this table."
 msgstr "このテーブルのデータ初期化はできません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:503
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:506
 msgid "Is invalid call to truncate table."
 msgstr "テーブルデータ初期化が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:529
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:532
 msgid "You can not handle to drop this table."
 msgstr "このテーブルの削除はできません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:533
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:536
 msgid "Is invalid call to drop table."
 msgstr "テーブル削除が不正に呼び出されました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:542
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:545
 #, php-format
 msgid "The %s&apos;s table was chosen as the current table."
 msgstr "%sテーブルを対象テーブルに指定しました。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:549
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:552
 #, php-format
 msgid "Did not choose the %s&apos;s table."
 msgstr "%sテーブルが選択されていません。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:612
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:615
 msgid "General setting"
 msgstr "共通設定"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:613
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:616
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:61
 msgid "Create table"
 msgstr "テーブル作成"
 
-#: ../../custom-database-tables/templates/cdbt-admin-controller.php:614
+#: ../../custom-database-tables/templates/cdbt-admin-controller.php:617
 msgid "Enable tables list"
 msgstr "利用可能テーブル一覧"
 
@@ -676,23 +689,27 @@ msgid "Modify Table SQL"
 msgstr "テーブル構造変更SQL"
 
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:75
+msgid "Preset of SQL"
+msgstr "SQLプリセット"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:76
 msgid "Statements Mode"
 msgstr "直接編集モード"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:76
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:77
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:8
 msgid "Table Creator"
 msgstr "テーブルクリエーター"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:77
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:78
 msgid "Enter SQL Statements to create table"
 msgstr "テーブル作成用SQL文を入力してください"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:78
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:79
 msgid "Enter SQL Statements to alter table"
 msgstr "ALTER TABLEのSQL文を入力してください"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:79
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:80
 msgid ""
 "ID field of primary key for autoincrement type will be automatically "
 "inserted at the beginning. Then, the fields of update date and registration "
@@ -705,91 +722,123 @@ msgstr ""
 "追加されます。テーブルを作成するSQLを直接記述する場合、これらのフィールドのエ"
 "ントリは含めないでください。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:80
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:81
 msgid "Example of SQL statements: "
 msgstr "SQL文の例:"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:81
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:82
 msgid "Account Name"
 msgstr "アカウント名"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:82
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:83
 msgid "Gender"
 msgstr "性別"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:83
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:84
 msgid "Show Max Records"
 msgstr "ページ内最大表示数"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:84
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:85
 msgid "Enter Integer"
 msgstr "数値を入力してください"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:85
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:86
 msgid "records"
 msgstr "件"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:86
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:87
 msgid "The maximum number of records to be displayed on one page."
 msgstr "1ページ内に表示される最大レコード数。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:87
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:88
 msgid ""
 "Please enter the full text of the SQL statement of the table structure you "
 "want to change in this input field."
 msgstr "この入力欄に変更したいテーブル構造のSQLの全文を入力してください。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:88
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:89
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:90
 #: ../../custom-database-tables/templates/cdbt-admin-general.php:21
 #: ../../custom-database-tables/templates/cdbt-admin-general.php:22
 msgid "Database Timezone"
 msgstr "データベースのタイムゾーン"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:91
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:92
 msgid "User Role for View"
 msgstr "テーブルデータ閲覧を許可するユーザー"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:92
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:93
 msgid "User Role for Input"
 msgstr "テーブルデータ登録を許可するユーザー"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:93
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:94
 msgid "User Role for Edit"
 msgstr "テーブルデータ編集を許可するユーザー"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:94
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:95
 msgid "User Role for Admin"
 msgstr "テーブル管理を許可するユーザー"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:97
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:98
 msgid ""
 "All users &mdash; If you grant privileges to all users, including "
 "subscribers."
 msgstr ""
 "すべてのユーザー &mdash; 購読者を含むすべてのユーザーに権限を与える場合。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:98
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:99
 msgid ""
 "Contributor or more &mdash; If you grant privileges to user of contributor "
 "or more parties."
 msgstr "寄稿者以上 &mdash; 寄稿者以上のユーザーに権限を与える場合。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:99
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:100
 msgid ""
 "Author or more &mdash; If you grant privileges to user of author or more "
 "parties."
 msgstr "投稿者以上 &mdash; 投稿者以上のユーザーに対して権限を与える場合。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:100
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:101
 msgid ""
 "Editor or more &mdash; If you grant privileges to user of editor or more "
 "parties."
 msgstr "編集者以上 &mdash; 編集者以上のユーザーに権限を与える場合。"
 
-#: ../../custom-database-tables/templates/cdbt-admin-create.php:101
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:102
 msgid "Administrator only."
 msgstr "管理者専用"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:105
+msgid "Add column"
+msgstr "カラム追加"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:106
+msgid "Add index or key"
+msgstr "インデックス追加"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:107
+msgid "Add foreign key"
+msgstr "外部キー追加"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:108
+msgid "Alter default"
+msgstr "初期値変更"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:109
+msgid "Change column"
+msgstr "カラム変更（変名可）"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:110
+msgid "Modify column"
+msgstr "カラム更新"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:111
+msgid "Drop column or keys"
+msgstr "カラム／キー削除"
+
+#: ../../custom-database-tables/templates/cdbt-admin-create.php:112
+msgid "Switch keys"
+msgstr "キー切り替え"
 
 #: ../../custom-database-tables/templates/cdbt-admin-general.php:17
 msgid "Save changes"
@@ -901,10 +950,10 @@ msgid "Reflesh Table List"
 msgstr "テーブル一覧の更新"
 
 #: ../../custom-database-tables/templates/cdbt-admin-tables.php:13
-#: ../../custom-database-tables/templates/cdbt-edit.php:134
-#: ../../custom-database-tables/templates/cdbt-list.php:110
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:164
-#: ../../custom-database-tables/templates/cdbt-public-list.php:117
+#: ../../custom-database-tables/templates/cdbt-edit.php:139
+#: ../../custom-database-tables/templates/cdbt-list.php:115
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:169
+#: ../../custom-database-tables/templates/cdbt-public-list.php:122
 msgid "No."
 msgstr "No."
 
@@ -948,12 +997,12 @@ msgstr "テーブル構造変更"
 msgid "Set Current table"
 msgstr "管理対象テーブルにする"
 
-#: ../../custom-database-tables/templates/cdbt-admin-tables.php:55
-#: ../../custom-database-tables/templates/cdbt-admin-tables.php:58
+#: ../../custom-database-tables/templates/cdbt-admin-tables.php:60
+#: ../../custom-database-tables/templates/cdbt-admin-tables.php:63
 msgid "Currently selected"
 msgstr "選択中"
 
-#: ../../custom-database-tables/templates/cdbt-admin-tables.php:97
+#: ../../custom-database-tables/templates/cdbt-admin-tables.php:102
 msgid "The enabled table is none."
 msgstr "利用可能なテーブルがありません。"
 
@@ -979,75 +1028,75 @@ msgstr "データを削除しました。データID："
 msgid "Failed to delete data of ID:"
 msgstr "データの削除に失敗しました。データID："
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:96
-#: ../../custom-database-tables/templates/cdbt-list.php:75
+#: ../../custom-database-tables/templates/cdbt-edit.php:101
+#: ../../custom-database-tables/templates/cdbt-list.php:80
 msgid "Cosole"
 msgstr "コンソール"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:97
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:130
+#: ../../custom-database-tables/templates/cdbt-edit.php:102
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:135
 msgid "Checked items delete"
 msgstr "チェックされた項目を削除する"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:99
-#: ../../custom-database-tables/templates/cdbt-list.php:77
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:132
-#: ../../custom-database-tables/templates/cdbt-public-list.php:84
+#: ../../custom-database-tables/templates/cdbt-edit.php:104
+#: ../../custom-database-tables/templates/cdbt-list.php:82
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:137
+#: ../../custom-database-tables/templates/cdbt-public-list.php:89
 msgid "Search keyword"
 msgstr "検索キーワード"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:100
-#: ../../custom-database-tables/templates/cdbt-list.php:78
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:133
-#: ../../custom-database-tables/templates/cdbt-public-list.php:85
+#: ../../custom-database-tables/templates/cdbt-edit.php:105
+#: ../../custom-database-tables/templates/cdbt-list.php:83
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:138
+#: ../../custom-database-tables/templates/cdbt-public-list.php:90
 msgid "Search"
 msgstr "検索"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:140
-#: ../../custom-database-tables/templates/cdbt-list.php:116
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:174
+#: ../../custom-database-tables/templates/cdbt-edit.php:145
+#: ../../custom-database-tables/templates/cdbt-list.php:121
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:179
 msgid "Controll"
 msgstr "操作"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:166
-#: ../../custom-database-tables/templates/cdbt-list.php:142
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:204
+#: ../../custom-database-tables/templates/cdbt-edit.php:171
+#: ../../custom-database-tables/templates/cdbt-list.php:147
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:209
 msgid "Edit"
 msgstr "編集"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:168
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:206
+#: ../../custom-database-tables/templates/cdbt-edit.php:173
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:211
 msgid "Downloading..."
 msgstr "ダウンロード中..."
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:168
-#: ../../custom-database-tables/templates/cdbt-list.php:144
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:206
+#: ../../custom-database-tables/templates/cdbt-edit.php:173
+#: ../../custom-database-tables/templates/cdbt-list.php:149
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:211
 msgid "Download"
 msgstr "ダウンロード"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:181
-#: ../../custom-database-tables/templates/cdbt-list.php:157
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:238
-#: ../../custom-database-tables/templates/cdbt-public-list.php:182
+#: ../../custom-database-tables/templates/cdbt-edit.php:186
+#: ../../custom-database-tables/templates/cdbt-list.php:162
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:243
+#: ../../custom-database-tables/templates/cdbt-public-list.php:187
 #, php-format
 msgid "No data to match for \"%s\"."
 msgstr "\"%s\" に該当するデータはありません。"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:183
-#: ../../custom-database-tables/templates/cdbt-list.php:159
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:240
-#: ../../custom-database-tables/templates/cdbt-public-list.php:184
+#: ../../custom-database-tables/templates/cdbt-edit.php:188
+#: ../../custom-database-tables/templates/cdbt-list.php:164
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:245
+#: ../../custom-database-tables/templates/cdbt-public-list.php:189
 msgid "Data is none."
 msgstr "データがありません。"
 
-#: ../../custom-database-tables/templates/cdbt-edit.php:191
+#: ../../custom-database-tables/templates/cdbt-edit.php:196
 #: ../../custom-database-tables/templates/cdbt-index.php:68
 #: ../../custom-database-tables/templates/cdbt-input.php:129
-#: ../../custom-database-tables/templates/cdbt-list.php:167
-#: ../../custom-database-tables/templates/cdbt-public-edit.php:247
+#: ../../custom-database-tables/templates/cdbt-list.php:172
+#: ../../custom-database-tables/templates/cdbt-public-edit.php:252
 #: ../../custom-database-tables/templates/cdbt-public-input.php:180
-#: ../../custom-database-tables/templates/cdbt-public-list.php:191
+#: ../../custom-database-tables/templates/cdbt-public-list.php:196
 msgid "The enabled tables is not exists currently.<br />Please create tables."
 msgstr "有効なテーブルが指定されていません。<br />テーブルを作成してください。"
 
@@ -1242,21 +1291,27 @@ msgstr "データを登録する"
 msgid "Continue"
 msgstr "続ける"
 
+#: ../../custom-database-tables/translates.php:5
 msgid "Enable"
 msgstr "有効"
 
+#: ../../custom-database-tables/translates.php:6
 msgid "View Role"
 msgstr "閲覧権者"
 
+#: ../../custom-database-tables/translates.php:7
 msgid "Input Role"
 msgstr "登録権者"
 
+#: ../../custom-database-tables/translates.php:8
 msgid "Edit Role"
 msgstr "編集権者"
 
+#: ../../custom-database-tables/translates.php:9
 msgid "Admin Role"
 msgstr "管理権者"
 
+#: ../../custom-database-tables/translates.php:10
 msgid ""
 "This plug-in allows you to perform data storage and reference by creating a "
 "free tables in database of WordPress."
@@ -1264,68 +1319,89 @@ msgstr ""
 "このプラグインを使用すると、WordPress のデータベースに自由にテーブルを作成"
 "し、データの格納と参照を簡単に行うことができます。"
 
+#: ../../custom-database-tables/translates.php:11
 msgid "http://cdbt.ka2.org"
 msgstr "http://cdbt.ka2.org/"
 
+#: ../../custom-database-tables/translates.php:12
 msgid "logical_name"
 msgstr "表示名<br>（論理名）"
 
+#: ../../custom-database-tables/translates.php:13
 msgid "max_length"
 msgstr "最大文字数"
 
+#: ../../custom-database-tables/translates.php:14
 msgid "octet_length"
 msgstr "最大文字長（8進数）"
 
+#: ../../custom-database-tables/translates.php:15
 msgid "not_null"
 msgstr "NULL不可"
 
+#: ../../custom-database-tables/translates.php:16
 msgid "type"
 msgstr "データ型"
 
+#: ../../custom-database-tables/translates.php:17
 msgid "type_format"
 msgstr "データ型フォーマット"
 
+#: ../../custom-database-tables/translates.php:18
 msgid "primary_key"
 msgstr "プライマリ・キー"
 
+#: ../../custom-database-tables/translates.php:19
 msgid "column_key"
 msgstr "カラムキー"
 
+#: ../../custom-database-tables/translates.php:20
 msgid "unsigned"
 msgstr "UNSIGNED属性"
 
+#: ../../custom-database-tables/translates.php:21
 msgid "auto_increment"
 msgstr "オートインクリメント"
 
+#: ../../custom-database-tables/translates.php:22
 msgid "You can not handle to drop controller table."
 msgstr "コントローラテーブルの削除はできません。"
 
+#: ../../custom-database-tables/translates.php:23
 msgid "Shortcode to entry data to table:"
 msgstr "テーブルデータを登録するショートコード："
 
+#: ../../custom-database-tables/translates.php:24
 msgid "Shortcode to edit the table data:"
 msgstr "テーブルデータを編集するショートコード："
 
+#: ../../custom-database-tables/translates.php:25
 msgid "Candidate of choice"
 msgstr "選択肢候補"
 
+#: ../../custom-database-tables/translates.php:26
 msgid "Total number of digits, Number of decimal places"
 msgstr "全桁数, 小数点下桁数"
 
-msgid "max length"
-msgstr "最大文字数"
-
+#: ../../custom-database-tables/translates.php:27
 msgid "SQL to create table is empty."
 msgstr "テーブル作成SQLが定義されていません。"
 
+#: ../../custom-database-tables/translates.php:28
 msgid "Table name is empty. Table name of the only prefix is not allowed."
 msgstr "テーブル名が空です。プレフィックスのみのテーブル名は許可されません。"
 
+#: ../../custom-database-tables/translates.php:29
 msgid "You can not handle to truncate controller table."
 msgstr "コントローラテーブルのデータ初期化はできません。"
 
+#: ../../custom-database-tables/translates.php:30
 msgid "Custom Database Tables option setting"
 msgstr "カスタム DB テーブル 各種設定"
 
+#: ../../custom-database-tables/translates.php:31
 msgid "Edit Create SQL"
 msgstr "テーブル作成SQLを編集"
+
+#~ msgid "max length"
+#~ msgstr "最大文字数"

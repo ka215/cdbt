@@ -72,6 +72,7 @@ $helper_msg4 = __('Table comment is used for display name as logical name of tab
 $db_engine_label = __('Database Engine', PLUGIN_SLUG);
 $sql_label = __('Create Table SQL', PLUGIN_SLUG);
 $sql_label2 = __('Modify Table SQL', PLUGIN_SLUG);
+$sql_label3 = __('Preset of SQL', PLUGIN_SLUG);
 $edit_sql_mode1 = __('Statements Mode', PLUGIN_SLUG);
 $edit_sql_mode2 = __('Table Creator', PLUGIN_SLUG);
 $create_table_sql_placeholder = __('Enter SQL Statements to create table', PLUGIN_SLUG);
@@ -100,6 +101,16 @@ $cap_levels = array(
 	'7' => __('Editor or more &mdash; If you grant privileges to user of editor or more parties.', PLUGIN_SLUG), 
 	'9' => __('Administrator only.', PLUGIN_SLUG), 
 );
+$presets = array(
+	array(__('Add column', PLUGIN_SLUG), 'ADD COLUMN {column_definition} {position}'), 
+	array(__('Add index or key', PLUGIN_SLUG), 'ADD {index_or_key} {index_name} ({index_col_name})'), 
+	array(__('Add foreign key', PLUGIN_SLUG), 'ADD FOREIGN KEY {index_name} ({index_col_name}) {reference_definition}'), 
+	array(__('Alter default', PLUGIN_SLUG), 'ALTER {col_name} {default_definition}'), 
+	array(__('Change column', PLUGIN_SLUG), 'CHANGE {old_col_name} {column_definition} {position}'), 
+	array(__('Modify column', PLUGIN_SLUG), 'MODIFY {column_definition} {position}'), 
+	array(__('Drop column or keys', PLUGIN_SLUG), 'DROP {column_or_keys}'), 
+	array(__('Switch keys', PLUGIN_SLUG), '{switch_definition} KEYS'), 
+);
 
 // role section
 $user_role_forms = null;
@@ -127,6 +138,15 @@ foreach ($roles as $param_name => $param_value) {
 	}
 	if ($handle == 'alter-table') 
 		$user_role_forms .= '<input type="hidden" name="previous_'. $param_name .'" id="previous_'. $param_name .'" value="'. $previous_roles[$param_name] .'">';
+}
+
+if ($handle == 'alter-table') {
+	// presets section
+	$presets_buttons = null;
+	foreach ($presets as $idx => $preset_data) {
+		$i = intval($idx) + 1;
+		$presets_buttons .= sprintf('<a href="#alter_table_sql" id="sql-presets-%d" data-preset-template="%s" class="btn btn-default btn-sm" data-toggle="popover" data-container="body" data-html="true" data-placement="right" title="%s">%s</a>', $i, $preset_data[1], $preset_data[0], $preset_data[0]);
+	}
 }
 
 if ($handle != 'alter-table') {
@@ -285,9 +305,9 @@ if ($handle == 'alter-table') {
 	</div>
 	<div class="form-group">
 		<label for="cdbt_alter_table_sql" class="col-sm-2 control-label">$sql_label2
-			<div class="sql-editor btn-group-vertical">
-				<a href="#cdbt_create_table_sql" id="sql-statements-mode" class="btn btn-default btn-sm active">$edit_sql_mode1</a>
-				<a href="#cdbt_create_table_sql" id="sql-table-creator" class="btn btn-default btn-sm" data-toggle="modal" data-target=".mysql-table-creator" disabled="disabled">$edit_sql_mode2</a>
+			<div class="sql-preset-label">$sql_label3</div>
+			<div class="sql-preset btn-group-vertical">
+				$presets_buttons
 			</div>
 		</label>
 		<div class="col-sm-8">

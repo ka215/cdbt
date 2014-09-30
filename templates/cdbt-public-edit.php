@@ -117,11 +117,16 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				// $order_by['name'] = 'ASC';
 				$data = $cdbt->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
 				$total_data = $cdbt->get_data($table_name, 'COUNT(*)');
-				foreach (array_shift($total_data) as $key => $val) {
-					if ($key == 'COUNT(*)') {
-						$total_data = intval($val);
-						break;
+				if (is_array($total_data) && !empty($total_data)) {
+					$total_data = array_shift($total_data);
+					foreach ($total_data as $key => $val) {
+						if ($key == 'COUNT(*)') {
+							$total_data = intval($val);
+							break;
+						}
 					}
+				} else {
+					$total_data = 0;
 				}
 			}
 			

@@ -232,7 +232,7 @@ jQuery(document).ready(function($){
 				data: post_data
 			}).done(function(res){
 				$('#cdbt_incorporate_table').attr('data-proc', 'loaded').append(res).blur();
-				$('#cdbt_incorporate_table').children('option[option-index="true"]').text("<?php echo __('Select an incorporate table', PLUGIN_SLUG); ?>");
+				$('#cdbt_incorporate_table').children('option[option-index="true"]').text("<?php _e('Select an incorporate table', PLUGIN_SLUG); ?>");
 				$('#cdbt_incorporate_table').focus();
 			});
 		}
@@ -268,6 +268,7 @@ jQuery(document).ready(function($){
 	}
 	
 	function set_alter_table_sql(e) {
+		// From the presets other than
 		if (e.target.id == 'cdbt_target_table_name') {
 			ime_mode_inactive(e.type, $('#cdbt_target_table_name'));
 		}
@@ -309,6 +310,60 @@ jQuery(document).ready(function($){
 			$('#sql-statements-mode').removeClass('active');
 			$('#sql-table-creator').addClass('active');
 		}
+	});
+	
+	function set_alter_table_presets_sql(preset_id) {
+		$('.popover-content').html("<?php _e('Preset Loading Now...', PLUGIN_SLUG); ?>");
+		var post_data = {
+			action: 'cdbt_ajax_core', 
+			mode: 'load_preset', 
+			'preset_id': preset_id.substr(-1), 
+			'preset_template': $('#'+preset_id).attr('data-preset-template'), 
+			token: '<?php echo $ajax_nonce; ?>', 
+			'_ajax_nonce': '<?php echo $action_nonce; ?>' 
+		}
+		$.ajax({
+			type: 'POST', 
+			url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
+			data: post_data
+		}).done(function(res){
+			$('.popover-content').html(res);
+		});
+	}
+	
+	$(document).on('click', 'button[id^="set_preset_sql_"]', function() {
+		var preset_id = $(this).attr('id').substr(-1);
+		var sql_template = $('#sql-presets-'+preset_id).attr('data-preset-template');
+		var regex = new Array();
+		$('#cdbt_modify_table_preset_'+preset_id).find('input, select').each(function() {
+			if ($(this).context.tagName == 'INPUT') {
+				regex['{'+$(this).attr('name')+'}'] = $(this).val();
+			} else {
+				
+			}
+		});
+		regex.forEach( function(k,v) {
+			console.info(k,v);
+		} );
+		//console.info(regex);
+		
+		var now_sqlstr = $('#cdbt_alter_table_sql').val();
+		$('#cdbt_alter_table_sql').val(now_sqlstr + sql_template + ",\n");
+		$('.sql-preset a').popover('hide');
+	});
+	
+	$('.sql-preset a').popover();
+	$('.sql-preset a').on('click', function() {
+		var active_id = $(this).attr('id');
+		$('.sql-preset a').each(function() {
+			if (active_id == $(this).attr('id')) {
+				$(this).addClass('active');
+				set_alter_table_presets_sql(active_id);
+				//$('.popover-content').html(set_alter_table_presets_sql(active_id));
+			} else {
+				$(this).removeClass('active');
+			}
+		});
 	});
 	
 	$('div[data-toggle="buttons"] > label').hover(function() {
