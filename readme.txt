@@ -14,9 +14,9 @@ Custom DataBase Tables plug-in allows you to perform data storage and reference 
 
 WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, is more better to create a new table. 
 
-This plugin provides the ability to be able to add a new table freely in the database of WordPress in such a case, and can be management of data in a simple user interface. This plugin works with WordPress3.6 or more. 
+This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. This plugin works with WordPress3.6 or more. 
 
-If by making full use API or method or shortcodes that provides a rich set on this plugin, I'm hoping to be transformed into a powerful CMS WordPress.
+If you make by full use the various APIs, methods, and shortcodes that is provided a rich set on this plugin, WordPress might be transformed into a powerful CMS.
 
 [Please visit here for more description of the plugin](http://cdbt.ka2.org/).
 
@@ -30,13 +30,24 @@ That's it. Now you can easily start creating custom table in database of WordPre
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Does this plugin create table on direct mysql? =
 
-An answer to that question.
+Yes, can create tables in a MySQL database and manage that's tables while use this plugin.
+However, in the current version plugin can connect to only a MySQL database was installed of WordPress, yet. In other words, it can connect only a MySQL database connection settings are defined in "wp-config.php".
+
+= Is there any limit of the scope of the table? =
+
+You need a table that is managed by the plug-in is an "ID" is the primary key. The column that contains the update date and registration date of the line will also be necessary. Column These keys are added automatically when you create a table.
+
+= Can put table that have 100,000 or more rows? =
+
+There is no particular restriction on the amount of data that is stored in a table. Processing performance on a table with a large number of rows will depend on the structure such as a table or database server.
+
+
 
 == Screenshots ==
 
-1. You can see the short code and schema information of the table that was created in the dashboard.
+1. You can see the usable shortcodes and information of table schema that was created in the dashboard.
 2. You can control the common actions of this plugin in the setting general options.
 3. You can create a new table in the database at will from the management console.
 4. You can be created design structure of the table in visually using a GUI tool called table creator.
@@ -48,11 +59,13 @@ An answer to that question.
 10. If you have stored binary data as images in the database, preview is available in the modal window.
 11. Of course, download function of binary data is also provided.
 12. The pages of Viewer, Editor, and Entry Forms can display to frontend by using shortcodes.
+13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
 
 = 1.1.3 =
-* Fixed bug of modify table, and have powered up the its feature.
+* Was extended to allow updating of the table structure using presets.
+* Fixed bug that couldn't be updated table option with do not issue a SQL of alter table.
 * Fixed bug that happen error when deployed the array in block of foreach arguments on the specific version of PHP.
 
 = 1.1.2 =

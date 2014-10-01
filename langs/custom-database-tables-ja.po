@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 1.1.3\n"
-"POT-Creation-Date: 2014-09-30 16:55+0900\n"
+"POT-Creation-Date: 2014-10-01 01:32\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -10,11 +10,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.6.7\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_x;_n\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ../../custom-database-tables\n"
 
 #: ../../custom-database-tables/functions.php:156
 msgid "Home position"
@@ -51,10 +46,10 @@ msgid "Cancel"
 msgstr "キャンセル"
 
 #: ../../custom-database-tables/functions.php:251
-#: ../../custom-database-tables/lib/cdbt.scripts.php:111
-#: ../../custom-database-tables/lib/cdbt.scripts.php:458
-#: ../../custom-database-tables/lib/cdbt.scripts.php:463
-#: ../../custom-database-tables/lib/cdbt.scripts.php:816
+#: ../../custom-database-tables/lib/cdbt.scripts.php:122
+#: ../../custom-database-tables/lib/cdbt.scripts.php:537
+#: ../../custom-database-tables/lib/cdbt.scripts.php:542
+#: ../../custom-database-tables/lib/cdbt.scripts.php:906
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:220
 #: ../../custom-database-tables/templates/cdbt-public-input.php:154
 #: ../../custom-database-tables/templates/cdbt-public-list.php:164
@@ -67,13 +62,101 @@ msgid "Enter %s"
 msgstr "%sを入力してください"
 
 #: ../../custom-database-tables/lib/cdbt.ajax.php:27
-#: ../../custom-database-tables/lib/cdbt.ajax.php:65
+#: ../../custom-database-tables/lib/cdbt.ajax.php:76
 msgid "Invalid access!"
 msgstr "不正なアクセスです！"
 
 #: ../../custom-database-tables/lib/cdbt.ajax.php:54
 msgid "No binary data."
 msgstr "バイナリデータがありません。"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:85
+msgid "Column definition"
+msgstr "カラム定義"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:88
+msgid "Enter the column definition."
+msgstr "カラム定義を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:91
+msgid "Column position"
+msgstr "カラム位置"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:94
+msgid "Enter the FIRST or AFTER column name."
+msgstr "「FIRST」か「AFTER カラム名」を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:97
+msgid "Index or Key"
+msgstr "インデックス/キー選択"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:103
+msgid "Index name"
+msgstr "インデックス名"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:106
+msgid "Enter the index name."
+msgstr "インデックス名を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:109
+msgid "Index column name"
+msgstr "インデックスカラム名"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:112
+msgid "Enter the index column name."
+msgstr "インデックスカラム名を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:115
+msgid "Reference definition"
+msgstr "参照先定義"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:118
+msgid "Enter the reference definition."
+msgstr "参照先を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:121
+msgid "Column name"
+msgstr "カラム名"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:124
+msgid "Enter the column name."
+msgstr "カラム名を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:127
+msgid "Default definition"
+msgstr "デフォルト値定義"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:130
+msgid "Enter the default definition."
+msgstr "デフォルト値定義を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:133
+msgid "Old column name"
+msgstr "変更前カラム名"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:136
+msgid "Enter the old column name."
+msgstr "変更前カラム名を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:139
+msgid "Column name or Index name or Key name"
+msgstr "カラム名/インデックス名/キー名"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:142
+msgid "Enter the column name or key name or index name."
+msgstr "カラム名かインデックス名かキー名を入力"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:145
+msgid "Enable or Disable"
+msgstr "有効/無効選択"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:166
+msgid "Close"
+msgstr "閉じる"
+
+#: ../../custom-database-tables/lib/cdbt.ajax.php:167
+msgid "Set Preset"
+msgstr "セットする"
 
 #: ../../custom-database-tables/lib/cdbt.class.php:175
 #: ../../custom-database-tables/lib/cdbt.class.php:968
@@ -206,24 +289,24 @@ msgid "Import data is none."
 msgstr "インポートデータがありません。"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:43
-#: ../../custom-database-tables/lib/cdbt.scripts.php:98
-#: ../../custom-database-tables/lib/cdbt.scripts.php:729
-#: ../../custom-database-tables/lib/cdbt.scripts.php:811
+#: ../../custom-database-tables/lib/cdbt.scripts.php:109
+#: ../../custom-database-tables/lib/cdbt.scripts.php:808
+#: ../../custom-database-tables/lib/cdbt.scripts.php:901
 msgid "Deleting confirmation"
 msgstr "削除確認"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:43
-#: ../../custom-database-tables/lib/cdbt.scripts.php:98
-#: ../../custom-database-tables/lib/cdbt.scripts.php:729
-#: ../../custom-database-tables/lib/cdbt.scripts.php:811
+#: ../../custom-database-tables/lib/cdbt.scripts.php:109
+#: ../../custom-database-tables/lib/cdbt.scripts.php:808
+#: ../../custom-database-tables/lib/cdbt.scripts.php:901
 #, php-format
 msgid "ID: %s of data will be deleted. Would you like?"
 msgstr "ID：%s のデータが削除されます。よろしいですか？"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:43
-#: ../../custom-database-tables/lib/cdbt.scripts.php:98
-#: ../../custom-database-tables/lib/cdbt.scripts.php:729
-#: ../../custom-database-tables/lib/cdbt.scripts.php:811
+#: ../../custom-database-tables/lib/cdbt.scripts.php:109
+#: ../../custom-database-tables/lib/cdbt.scripts.php:808
+#: ../../custom-database-tables/lib/cdbt.scripts.php:901
 #: ../../custom-database-tables/templates/cdbt-edit.php:174
 #: ../../custom-database-tables/templates/cdbt-list.php:150
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:212
@@ -232,58 +315,62 @@ msgstr "削除"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:45
 #: ../../custom-database-tables/lib/cdbt.scripts.php:56
-#: ../../custom-database-tables/lib/cdbt.scripts.php:731
-#: ../../custom-database-tables/lib/cdbt.scripts.php:742
+#: ../../custom-database-tables/lib/cdbt.scripts.php:810
+#: ../../custom-database-tables/lib/cdbt.scripts.php:821
 msgid "Alert"
 msgstr "警告"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:45
-#: ../../custom-database-tables/lib/cdbt.scripts.php:731
+#: ../../custom-database-tables/lib/cdbt.scripts.php:810
 msgid "Checked items is none!"
 msgstr "チェックされている項目がありません！"
 
 #: ../../custom-database-tables/lib/cdbt.scripts.php:56
-#: ../../custom-database-tables/lib/cdbt.scripts.php:742
+#: ../../custom-database-tables/lib/cdbt.scripts.php:821
 msgid "Search keyword is none!"
 msgstr "検索キーワードがありません！"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:87
-#: ../../custom-database-tables/lib/cdbt.scripts.php:800
+#: ../../custom-database-tables/lib/cdbt.scripts.php:98
+#: ../../custom-database-tables/lib/cdbt.scripts.php:890
 msgid "Download binary files"
 msgstr "バイナリファイル・ダウンロード"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:103
-#: ../../custom-database-tables/lib/cdbt.scripts.php:767
+#: ../../custom-database-tables/lib/cdbt.scripts.php:114
+#: ../../custom-database-tables/lib/cdbt.scripts.php:857
 msgid "loading"
 msgstr "ロード中"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:115
-#: ../../custom-database-tables/lib/cdbt.scripts.php:441
-#: ../../custom-database-tables/lib/cdbt.scripts.php:446
-#: ../../custom-database-tables/lib/cdbt.scripts.php:458
-#: ../../custom-database-tables/lib/cdbt.scripts.php:463
-#: ../../custom-database-tables/lib/cdbt.scripts.php:820
+#: ../../custom-database-tables/lib/cdbt.scripts.php:126
+#: ../../custom-database-tables/lib/cdbt.scripts.php:520
+#: ../../custom-database-tables/lib/cdbt.scripts.php:525
+#: ../../custom-database-tables/lib/cdbt.scripts.php:537
+#: ../../custom-database-tables/lib/cdbt.scripts.php:542
+#: ../../custom-database-tables/lib/cdbt.scripts.php:910
 msgid "Please confirm"
 msgstr "確認"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:163
+#: ../../custom-database-tables/lib/cdbt.scripts.php:174
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:65
 msgid "Incorporate Already Exists Table"
 msgstr "既存のテーブルをインポートする"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:222
+#: ../../custom-database-tables/lib/cdbt.scripts.php:233
 msgid "Now searching..."
 msgstr "現在走査中…"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:235
+#: ../../custom-database-tables/lib/cdbt.scripts.php:246
 msgid "Select an incorporate table"
 msgstr "インポートするテーブルの選択"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:398
+#: ../../custom-database-tables/lib/cdbt.scripts.php:327
+msgid "Preset Loading Now..."
+msgstr "ただ今プリセットをロード中…"
+
+#: ../../custom-database-tables/lib/cdbt.scripts.php:477
 msgid "1. Download template csv file to import data."
 msgstr "1. データインポート用のCSVテンプレートをダウンロードする。"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:399
+#: ../../custom-database-tables/lib/cdbt.scripts.php:478
 msgid ""
 "It will be downloaded csv file is included only index row. You should be add "
 "in it the import data."
@@ -291,41 +378,41 @@ msgstr ""
 "ダウンロードされるCSVはインデックス行のみのファイルとなります。そのファイルに"
 "インポートデータを追加してください。"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:400
+#: ../../custom-database-tables/lib/cdbt.scripts.php:479
 msgid "Download CSV"
 msgstr "CSVをダウンロードする"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:401
+#: ../../custom-database-tables/lib/cdbt.scripts.php:480
 msgid "2. Upload csv file including import data."
 msgstr "2. インポートデータが含まれるCSVファイルをアップロードする。"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:402
+#: ../../custom-database-tables/lib/cdbt.scripts.php:481
 msgid "If invalid file will be uploaded, it will not import data."
 msgstr "不正なファイルがアップロードされた場合、インポートは行われません。"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:422
+#: ../../custom-database-tables/lib/cdbt.scripts.php:501
 msgid "Import procedures"
 msgstr "データインポートの手順"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:422
+#: ../../custom-database-tables/lib/cdbt.scripts.php:501
 msgid "Import now!"
 msgstr "インポートする"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:435
+#: ../../custom-database-tables/lib/cdbt.scripts.php:514
 msgid "You are trying to upload a not CSV file."
 msgstr "CSVでないファイルはアップロードできません。"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:440
+#: ../../custom-database-tables/lib/cdbt.scripts.php:519
 #, php-format
 msgid "Will export data of \"%s\" table. Would you like?"
 msgstr ""
 "「%s」テーブルのデータをCSVファイルとしてエクスポートします。よろしいですか？"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:441
+#: ../../custom-database-tables/lib/cdbt.scripts.php:520
 msgid "Export now!"
 msgstr "エクスポートする"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:445
+#: ../../custom-database-tables/lib/cdbt.scripts.php:524
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:483
 #, php-format
 msgid ""
@@ -335,11 +422,11 @@ msgstr ""
 "「%s」テーブルの構造を変更します。この操作は内部的にテーブル再作成と同じ処理"
 "を行います。よろしいですか？"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:446
+#: ../../custom-database-tables/lib/cdbt.scripts.php:525
 msgid "Start modify"
 msgstr "変更する"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:457
+#: ../../custom-database-tables/lib/cdbt.scripts.php:536
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:495
 #, php-format
 msgid ""
@@ -349,7 +436,7 @@ msgstr ""
 "「%s」テーブルのデータを初期化します。この操作はやり直しできませんが、よろし"
 "いですか？"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:462
+#: ../../custom-database-tables/lib/cdbt.scripts.php:541
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:512
 #, php-format
 msgid ""
@@ -357,27 +444,27 @@ msgid ""
 msgstr ""
 "「%s」テーブルを削除します。この操作はやり直しできませんが、よろしいですか？"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:491
-#: ../../custom-database-tables/lib/cdbt.scripts.php:757
+#: ../../custom-database-tables/lib/cdbt.scripts.php:570
+#: ../../custom-database-tables/lib/cdbt.scripts.php:847
 msgid "Stored image"
 msgstr "格納画像"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:494
-#: ../../custom-database-tables/lib/cdbt.scripts.php:760
+#: ../../custom-database-tables/lib/cdbt.scripts.php:573
+#: ../../custom-database-tables/lib/cdbt.scripts.php:850
 msgid "Stored binary file"
 msgstr "格納されているバイナリファイル"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:575
+#: ../../custom-database-tables/lib/cdbt.scripts.php:654
 msgid "Candidate value 1, Candidate value 2, ..."
 msgstr "候補1,候補2,..."
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:578
-#: ../../custom-database-tables/lib/cdbt.scripts.php:581
+#: ../../custom-database-tables/lib/cdbt.scripts.php:657
+#: ../../custom-database-tables/lib/cdbt.scripts.php:660
 msgid "Integer of length, Integer of decimals"
 msgstr "桁数,少数部桁"
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:585
-#: ../../custom-database-tables/lib/cdbt.scripts.php:592
+#: ../../custom-database-tables/lib/cdbt.scripts.php:664
+#: ../../custom-database-tables/lib/cdbt.scripts.php:671
 msgid "Integer of length"
 msgstr "文字数"
 
@@ -1403,5 +1490,5 @@ msgstr "カスタム DB テーブル 各種設定"
 msgid "Edit Create SQL"
 msgstr "テーブル作成SQLを編集"
 
-#~ msgid "max length"
-#~ msgstr "最大文字数"
+msgid "max length"
+msgstr "最大文字数"

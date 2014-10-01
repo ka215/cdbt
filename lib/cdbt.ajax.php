@@ -163,7 +163,8 @@ class CustomDataBaseTables_Ajax {
 					$form_set .= '</div>';
 					$preset_form .= $form_set;
 				}
-				$preset_form .= '<div class="form-group pull-right"><button type="button" id="set_preset_sql_'. $preset_id .'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> '. __('Set Preset', PLUGIN_SLUG) .'</button></div>';
+				$preset_form .= '<div class="form-group center-block"><button type="button" id="cancel_preset_sql_'. $preset_id .'" class="btn btn-default btn-sm" data-dismiss="popover"><span class="glyphicon glyphicon-remove"></span> '. __('Close', PLUGIN_SLUG) .'</button>';
+				$preset_form .= '<button type="button" id="set_preset_sql_'. $preset_id .'" class="btn btn-primary btn-sm" style="margin-left: 11px;"><span class="glyphicon glyphicon-plus"></span> '. __('Set Preset', PLUGIN_SLUG) .'</button></div>';
 				$preset_form .= '</form>';
 				return $preset_form;
 			} else {

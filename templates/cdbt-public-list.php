@@ -114,7 +114,7 @@ SEARCH;
 NAV;
 			$controller_block = sprintf($controller_block_base, $content);
 			
-			if (!empty($data)) {
+			if (!empty($data) && is_array($data)) {
 				$list_num = 1 + (($page_num - 1) * $per_page);
 				foreach ($data as $record) {
 					if ($list_num == (1 + (($page_num - 1) * $per_page))) {

@@ -305,7 +305,7 @@ if ($handle == 'alter-table') {
 	</div>
 	<div class="form-group">
 		<label for="cdbt_alter_table_sql" class="col-sm-2 control-label">$sql_label2
-			<div class="sql-preset-label">$sql_label3</div>
+			<div class="sql-preset-label"><span class="glyphicon glyphicon-collapse-down"></span> $sql_label3</div>
 			<div class="sql-preset btn-group-vertical">
 				$presets_buttons
 			</div>

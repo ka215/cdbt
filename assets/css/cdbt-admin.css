@@ -113,14 +113,22 @@ select#cdbt_db_engine {
 	position: absolute;
 	display: none;
 }
-.sql-editor {
+.sql-editor, .sql-preset {
 	margin: 1em 1em;
 	text-align: right;
 }
-.sql-editor .active {
+.sql-editor .active, .sql-preset .active {
 	color: #468847;
 	background-color: #dff0d8!important;
 	border-color: #3c763d;
+}
+.sql-preset-label {
+	text-align: left;
+	margin-bottom: 4px;
+	margin-bottom: -9px;
+	margin-left: 20px;
+	font-size: 12px;
+	color: #888;
 }
 .view_role-helper, .input_role-helper, .edit_role-helper, .admin_role-helper {
 	clear: both;
