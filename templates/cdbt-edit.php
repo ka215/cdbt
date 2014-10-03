@@ -4,7 +4,7 @@ if ($_SERVER['SCRIPT_FILENAME'] == __FILE__) die();
 if (is_admin() && !check_admin_referer(self::DOMAIN .'_edit', '_cdbt_token')) 
 	die(__('access is not from admin panel!', self::DOMAIN));
 
-foreach ($_REQUEST as $k => $v) {
+foreach ($_POST as $k => $v) {
 	${$k} = $v;
 }
 if (!isset($mode)) 
@@ -64,18 +64,16 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$limit = $per_page;
 		$offset = ($page_num - 1) * $limit;
 		$view_cols = null; // If this value is null, will be all columns display.
-		$order_by = null; // If this value is null, set the array('created' => 'DESC')
+		$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null; // default set the array('created' => 'DESC')
 		if (isset($action) && $action == 'search') {
 			if (isset($search_key) && !empty($search_key)) {
-				$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit);
-				if (count($data) == $limit) {
-					$total_data = count($this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by));
-				} else {
-					$total_data = count($data);
+				$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by);
+				$total_data = count($data);
+				if ($total_data > $limit) {
+					$data = $this->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit, $offset);
 				}
 			}
 		} else {
-			// $order_by['name'] = 'ASC';
 			$data = $this->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
 			$total_data = $this->get_data($table_name, 'COUNT(*)');
 			if (is_array($total_data) && !empty($total_data)) {
@@ -89,10 +87,14 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			} else {
 				$total_data = 0;
 			}
+			$total_data_info = $total_data > 0 ? sprintf(__('Total %d items', self::DOMAIN), $total_data) : '';
 		}
 		$is_controller = true;
 		$is_checkbox_controller = true;
 		$is_display_list_num = false;
+		$is_enable_sort = true;
+		$current_sort_by = (isset($sort_by) && !empty($sort_by)) ? $sort_by : '';
+		$current_order_by = (isset($sort_order) && !empty($sort_order)) ? $sort_order : 'DESC';
 		
 		if ($is_controller) {
 			$page_slug = self::DOMAIN;
@@ -100,23 +102,42 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			$controller_block_base .= ($mode == 'list') ? '</form>' : '';
 			$controller_block_title = __('Cosole', self::DOMAIN);
 			$all_checkbox_button_label = __('Checked items delete', self::DOMAIN);
+			if (isset($action) && $action == 'search' && isset($total_data) && $total_data > 0) {
+				$hits_message = $total_data == 1 ? __('1 row matched', self::DOMAIN) : sprintf(__('%d rows matched', self::DOMAIN), $total_data);
+				$search_hits = <<<HITS
+			<div class="search-hits tooltip left">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-inner">$hits_message</div>
+			</div>
+HITS;
+			} else {
+				$search_hits = '';
+			}
+			$search_key = (!isset($search_key)) ? '' : $search_key;
 			$search_key = (!isset($search_key)) ? '' : $search_key;
 			$search_key_placeholder = __('Search keyword', self::DOMAIN);
 			$search_button_label = __('Search', self::DOMAIN);
+			$action = (isset($action) && !empty($action)) ? $action : '';
+			$data_info = (isset($total_data_info) && !empty($total_data_info)) ? '<div class="navbar-inherit"><span class="label label-info">'. $total_data_info .'</span></div>' : '';
 			$content = <<<NAV
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 		<span class="navbar-brand">$controller_block_title</span>
 		<input type="hidden" name="page" value="$page_slug" />
+		<input type="hidden" name="page_num" value="$page_num" />
 		<input type="hidden" name="mode" value="$mode" />
-		<input type="hidden" name="action" value="" />
+		<input type="hidden" name="action" value="$action" />
 		<input type="hidden" name="ID" value="" />
+		<input type="hidden" name="sort_by" value="$current_sort_by" />
+		<input type="hidden" name="sort_order" value="$current_order_by" />
 		$nonce_field
 	</div>
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<button type="button" class="btn btn-default navbar-btn" id="checked_items_delete" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation">
 			<span class="glyphicon glyphicon-check"></span> $all_checkbox_button_label</button>
+		$data_info
 		<div class="navbar-form navbar-right" role="search">
+			$search_hits
 			<div class="form-group">
 				<input type="text" name="search_key" class="form-control" placeholder="$search_key_placeholder" value="$search_key" />
 			</div>
@@ -130,7 +151,7 @@ NAV;
 			$controller_block = null;
 		}
 		
-		if (!empty($data)) {
+		if (!empty($data) && is_array($data)) {
 			$list_num = 1 + (($page_num - 1) * $per_page);
 			foreach ($data as $record) {
 				if ($list_num == (1 + (($page_num - 1) * $per_page))) {
@@ -138,9 +159,24 @@ NAV;
 					$list_index_row .= ($is_checkbox_controller) ? '<th><input type="checkbox" id="all_checkbox_controller" /></th>' : '';
 					$list_index_row .= ($is_display_list_num) ? '<th>'. __('No.', self::DOMAIN) .'</th>' : '';
 					foreach ($record as $key => $val) {
-						if (array_key_exists($key, $table_schema)) 
-							$key = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
-						$list_index_row .= '<th>'. $key .'</th>';
+						if (array_key_exists($key, $table_schema)) {
+							if ($is_enable_sort) {
+								$column_type = $table_schema[$key]['type'];
+								if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', $column_type)) {
+									$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-order' : 'sort-by-order-alt';
+								} else if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/i', $column_type)) {
+									$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-alphabet' : 'sort-by-alphabet-alt';
+								} else {
+									$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-attributes' : 'sort-by-attributes-alt';
+								}
+								$toggle_order_by = strtoupper($current_order_by) == 'DESC' ? 'ASC' : 'DESC';
+								$sort_switch = '<a href="#" class="sort-switch btn btn-default btn-xs" data-sort-column="'. $key .'" data-toggle-order="'. $toggle_order_by .'"><span class="glyphicon glyphicon-'. $icon_type .'"></span></a>';
+							} else {
+								$sort_switch = '';
+							}
+							$display_name = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
+						}
+						$list_index_row .= '<th id="index-'. $key .'">'. $display_name . $sort_switch .'</th>';
 					}
 					$list_index_row .= ($mode == 'edit') ? '<th>'. __('Controll', self::DOMAIN) .'</th>' : '';
 					$list_index_row .= '</tr></thead>';
@@ -186,8 +222,10 @@ NAV;
 				$msg_str = sprintf(__('No data to match for "%s".', self::DOMAIN), $search_key);
 			} else {
 				$msg_str = __('Data is none.', self::DOMAIN);
+				$add_close_btn = false;
 			}
-			$information_html = '<div class="alert alert-info">'. $msg_str .'</div>';
+			$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', self::DOMAIN) .'</span></button>';
+			$information_html = '<div class="alert alert-info">'. $close_btn . $msg_str .'</div>';
 			printf($list_html, $title, $controller_block, '', '', $information_html);
 		}
 	}

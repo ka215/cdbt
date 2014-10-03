@@ -125,7 +125,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					$complete_msg = __('Completed new add data. Data ID is : ', PLUGIN_SLUG) . $insert_id;
 				}
 				$display_html = sprintf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>', $page_title, $complete_msg);
-				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Continue', PLUGIN_SLUG) . '</a>';
+				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', PLUGIN_SLUG) . '</a>';
 			} else {
 				if (isset($action) && $action == 'confirm') {
 					if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {

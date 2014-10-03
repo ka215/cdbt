@@ -101,7 +101,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			} else {
 				$complete_msg = __('Completed new add data. Data ID is : ', self::DOMAIN) . $insert_id;
 			}
-			printf('%s<div class="alert alert-success">%s</div>', $page_title, $complete_msg);
+			printf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">%s</span></button>%s</div>', $page_title, __('Close', self::DOMAIN), $complete_msg);
 		} else {
 			if (isset($action) && $action == 'confirm') {
 				if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
@@ -110,7 +110,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 					} else {
 						$err_msg = __('Failed to add the data.', self::DOMAIN);
 					}
-					$info_msg = '<div class="alert alert-danger">'. $err_msg .'</div>';
+					$info_msg = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', self::DOMAIN) .'</span></button>'. $err_msg .'</div>';
 				}
 			} else {
 				if (!$is_update_mode) 

@@ -11,6 +11,7 @@ function cdbt_display_view_table($atts, $content=''){
 		'display_title' => true, 
 		'display_search' => true, 
 		'display_list_num' => true, 
+		'enable_sort' => true, 
 		'exclude_cols' => '', // a column name or Comma-separated columns name
 		'add_class' => '', 
 	), $atts));
@@ -22,7 +23,9 @@ function cdbt_display_view_table($atts, $content=''){
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
+		wp_register_style('cdbt-custom-style', $cdbt->dir_url . '/assets/css/cdbt-style.css', array(), $cdbt->version, 'all');
 		wp_enqueue_style('cdbt-common-style');
+		wp_enqueue_style('cdbt-custom-style');
 		wp_register_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', array(), null, false);
 		wp_enqueue_script('cdbt-common-script');
 	}
@@ -33,6 +36,7 @@ function cdbt_display_view_table($atts, $content=''){
 		'display_title' => cdbt_get_boolean($display_title), 
 		'display_search' => cdbt_get_boolean($display_search), 
 		'display_list_num' => cdbt_get_boolean($display_list_num), 
+		'enable_sort' => cdbt_get_boolean($enable_sort), 
 		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'add_class' => $add_class, 
 	);
@@ -59,7 +63,9 @@ function cdbt_display_entry_table($atts, $content=''){
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
+		wp_register_style('cdbt-custom-style', $cdbt->dir_url . '/assets/css/cdbt-style.css', array(), $cdbt->version, 'all');
 		wp_enqueue_style('cdbt-common-style');
+		wp_enqueue_style('cdbt-custom-style');
 		wp_register_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', array(), null, false);
 		wp_enqueue_script('cdbt-common-script');
 	}
@@ -85,6 +91,7 @@ function cdbt_display_edit_table($atts, $content=''){
 		'bootstrap_style' => true, 
 		'display_title' => true, 
 		'display_list_num' => true, 
+		'enable_sort' => true, 
 		'exclude_cols' => '', // a column name or Comma-separated columns name
 		'add_class' => '', 
 	), $atts));
@@ -96,7 +103,9 @@ function cdbt_display_edit_table($atts, $content=''){
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
+		wp_register_style('cdbt-custom-style', $cdbt->dir_url . '/assets/css/cdbt-style.css', array(), $cdbt->version, 'all');
 		wp_enqueue_style('cdbt-common-style');
+		wp_enqueue_style('cdbt-custom-style');
 		wp_register_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', array(), null, false);
 		wp_enqueue_script('cdbt-common-script');
 	}
@@ -106,6 +115,7 @@ function cdbt_display_edit_table($atts, $content=''){
 		'bootstrap_style' => cdbt_get_boolean($bootstrap_style), 
 		'display_title' => cdbt_get_boolean($display_title), 
 		'display_list_num' => cdbt_get_boolean($display_list_num), 
+		'enable_sort' => cdbt_get_boolean($enable_sort), 
 		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'entry_page' => $entry_page, 
 		'add_class' => $add_class, 

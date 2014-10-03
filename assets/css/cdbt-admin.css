@@ -168,7 +168,32 @@ select#cdbt_db_engine {
 .other-note {
 	margin-top: 26px;
 }
-
+.navbar-inherit {
+	display: inline-block;
+	margin-left: 9px;
+	vertical-align: middle;
+}
+.list-adjust {
+	margin-top: 14px;
+}
+.search-hits {
+	top: 14px;
+	opacity: 1;
+}
+.search-hits.tooltip.left .tooltip-arrow {
+	border-left-color: #5bc0de;
+}
+.search-hits .tooltip-inner {
+	background-color: #5bc0de;
+}
+.table th {
+	position: relative;
+}
+.sort-switch {
+	position: relative;
+	display: inline-block;
+	right : -6px;
+}
 
 /* table creator style */
 .mysql-table-creator p.description-tips {

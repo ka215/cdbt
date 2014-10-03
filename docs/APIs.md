@@ -32,34 +32,45 @@
 
 #### <i class="fa fa-asterisk"></i> パラメータ
 **$page_num**
-> 数値として現在のページ番号 **page_num** を指定します。
-> **page_num** の指定がない場合は、
+> 数値として現在のページ番号 **page_num** を指定します。必須のパラメータです。
 
 **$per_page**
-> 数値としてページ内に表示する最大データ数 **per_page** を指定します。
-> **per_page** の指定がない場合は、
+> 数値としてページ内に表示する最大データ数 **per_page** を指定します。必須のパラメータです。
 
 **$total_data**
-> 数値として表示するテーブルのデータ数（行数） **total_data** を指定します。
-> **total_data** の指定がない場合は、
+> 数値として表示するテーブルのデータ数（行数） **total_data** を指定します。必須のパラメータです。
 
 **$mode**
 > 文字列として表示ページの種別 **mode** を指定します。
 > ページ種別には2種類あり、テーブル内のデータ閲覧ページである`list`か編集ページである`edit`のどちらかです。**mode** の指定がない場合は、`list`として扱われます。
 
+**$overflow**
+> 数値として最大表示ページ数 **overflow** を指定します。省略した場合は10となります。全ページ数がこの値より多かった場合は、ページネーションを前後に繰り送るための操作ボタンが追加されます。
+
 #### <i class="fa fa-asterisk"></i> 返り値
 **string**
 ページネーションのHTMLドキュメントを文字列として返します。
+この関数で出力されるページネーションについて、検索やソートの機能に対応しています。そのためにはページネーションが参照するコントローラーフォーム（`form.controller-form`）に対して別途JavaScriptによって検索キーワードやソート順などのパラメータを入れ込んでおく必要があります。
 
 #### <i class="fa fa-code-fork"></i> 変更履歴
 | バージョン | 内容 |
 |:--------:|:-----|
 | 1.0.0 | - |
+| 1.1.4 | **overflow** パラメータを追加し、ページネーション送りの処理を追加しました |
 
 #### <i class="fa fa-code"></i> 使用例
 ```
 <?php
+global $cdbt;
+$page_num = intval($_POST['page_num']);
+$per_page = 20;
+$result = $cdbt->get_data('prifix_tablename', 'count(*)');
+$result = get_object_vars($result[0]);
+$total_data = intval($result['count(*)'];
+$mode = $_POST['mode'];
+$overflow = 20;
 
+echo cdbt_create_pagination($page_num, $per_page, $total_data, $mode, $overflow);
 ```
 
 

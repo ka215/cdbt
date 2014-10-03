@@ -687,7 +687,7 @@ class CustomDatabaseTables {
 				}
 			} else {
 				// $table_schema is none
-				break;
+				
 			}
 			if (!empty($union_clauses)) {
 				if (count($union_clauses) == 1) {
@@ -837,8 +837,9 @@ class CustomDatabaseTables {
 							return array(false, __('not integer', self::DOMAIN));
 					} else {
 						$data = floatval($data);
-						if (!preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $data)) 
+						if ($data != 0 && !cdbt_get_boolean(preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $data))) {
 							return array(false, __('not integer', self::DOMAIN));
+						}
 					}
 				} else {
 					$data = intval($data);

@@ -2,19 +2,19 @@
 
 function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $options=array()) {
 	global $cdbt;
-	foreach ($_REQUEST as $k => $v) {
+	foreach ($_POST as $k => $v) {
 		${$k} = $v;
-//var_dump("\$_REQUEST['{$k}'] = '$v' \n");
 	}
 	if (!empty($options)) {
 		$is_bootstrap_style = isset($options['bootstrap_style']) ? $options['bootstrap_style'] : false;
 		$is_display_title = isset($options['display_title']) ? $options['display_title'] : false;
 		$is_display_list_num = isset($options['display_list_num']) ? $options['display_list_num'] : true;
+		$is_enable_sort = isset($options['enable_sort']) ? $options['enable_sort'] : false;
 		$entry_page = isset($options['entry_page']) ? $options['entry_page'] : '';
 		$exclude_cols = isset($options['exclude_cols']) ? (array)$options['exclude_cols'] : array();
 		$add_class = isset($options['add_class']) ? $options['add_class'] : '';
 	} else {
-		$is_bootstrap_style = $is_display_title = $is_display_search = false;
+		$is_bootstrap_style = $is_display_title = $is_display_search = $is_enable_sort = false;
 		$is_display_list_num = true;
 		$exclude_cols = array();
 		$entry_page = $add_class = '';
@@ -25,7 +25,7 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 			$post = get_post(intval($entry_page));
 		} else {
 			$post_types = get_post_types( array('public'=>true, '_builtin'=>false), 'names', 'and' );
-			if (is_array($post_types) && !empty($post_types)) {
+			if (is_array($post_types)) {
 				array_unshift($post_types, 'post', 'page');
 			}
 			$posts = get_posts( array('numberposts'=>-1, 'post_type'=>$post_types, 'orderby'=>'ID', 'order'=>'ASC') );
@@ -39,8 +39,10 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 		if (!empty($post)) {
 			$pattern = get_shortcode_regex();
 			if (preg_match_all('/'. $pattern .'/s', $post->post_content, $matches) && array_key_exists(2, $matches) && in_array('cdbt-entry', $matches[2])) {
-				$is_entry_page = true;
-				$entry_page_url = str_replace(get_option('siteurl'), '', get_permalink($post->ID));
+				if (preg_match('/table=(\'|\")'. $table .'(\'|\")/iU', $matches[0][0])) {
+					$is_entry_page = true;
+					$entry_page_url = str_replace(get_option('siteurl'), '', get_permalink($post->ID));
+				}
 			}
 		}
 	}
@@ -102,19 +104,16 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 			$limit = $per_page;
 			$offset = ($page_num - 1) * $limit;
 			$view_cols = null; // If this value is null, will be all columns display.
-			$order_by = null; // If this value is null, set the array('created' => 'DESC')
+			$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null; // default set the array('created' => 'DESC')
 			if (isset($action) && $action == 'search') {
 				if (isset($search_key) && !empty($search_key)) {
-					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit);
-					if (count($data) == $limit) {
-						$total_data = count($cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by));
-					} else {
-						$total_data = count($data);
+					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by);
+					$total_data = count($data);
+					if ($total_data > $limit) {
+						$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by, $limit, $offset);
 					}
 				}
-			}
-			if (!isset($data) || empty($data)) {
-				// $order_by['name'] = 'ASC';
+			} else {
 				$data = $cdbt->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
 				$total_data = $cdbt->get_data($table_name, 'COUNT(*)');
 				if (is_array($total_data) && !empty($total_data)) {
@@ -128,28 +127,49 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				} else {
 					$total_data = 0;
 				}
+				$total_data_info = $total_data > 0 ? sprintf(__('Total %d items', PLUGIN_SLUG), $total_data) : '';
 			}
 			
 			$page_slug = PLUGIN_SLUG;
 			$controller_block_base = '<form method="post" class="controller-form" role="form">%s';
 			$all_checkbox_button_label = __('Checked items delete', PLUGIN_SLUG);
+			$current_sort_by = (isset($sort_by) && !empty($sort_by)) ? $sort_by : '';
+			$current_order_by = (isset($sort_order) && !empty($sort_order)) ? $sort_order : 'DESC';
+			$data_info = (isset($total_data_info) && !empty($total_data_info)) ? '<div class="navbar-inherit edit-adjust"><span class="label label-info">'. $total_data_info .'</span></div>' : '';
+			if (isset($action) && $action == 'search' && isset($total_data) && $total_data > 0) {
+				$hits_message = $total_data == 1 ? __('1 row matched', PLUGIN_SLUG) : sprintf(__('%d rows matched', PLUGIN_SLUG), $total_data);
+				$search_hits = <<<HITS
+			<div class="search-hits tooltip left">
+				<div class="tooltip-arrow"></div>
+				<div class="tooltip-inner">$hits_message</div>
+			</div>
+HITS;
+			} else {
+				$search_hits = '';
+			}
 			$search_key = (!isset($search_key)) ? '' : $search_key;
 			$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
 			$search_button_label = __('Search', PLUGIN_SLUG);
+			$action = (isset($action) && !empty($action)) ? $action : '';
 			$content = <<<NAV
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 		<input type="hidden" name="table" value="$table_name" />
 		<input type="hidden" name="page" value="$page_slug" />
+		<input type="hidden" name="page_num" value="$page_num" />
 		<input type="hidden" name="mode" value="$mode" />
-		<input type="hidden" name="action" value="" />
+		<input type="hidden" name="action" value="$action" />
 		<input type="hidden" name="ID" value="" />
+		<input type="hidden" name="sort_by" value="$current_sort_by" />
+		<input type="hidden" name="sort_order" value="$current_order_by" />
 		$nonce_field
 	</div>
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<button type="button" class="btn btn-default navbar-btn" style="position: absolute; left: 14px;" id="checked_items_delete" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation">
 			<span class="glyphicon glyphicon-check"></span> $all_checkbox_button_label</button>
+		$data_info
 		<div class="navbar-form navbar-right" role="search">
+			$search_hits
 			<div class="form-group">
 				<input type="text" name="search_key" class="form-control" placeholder="$search_key_placeholder" value="$search_key" />
 			</div>
@@ -160,7 +180,7 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 NAV;
 			$controller_block = sprintf($controller_block_base, $content);
 			
-			if (!empty($data)) {
+			if (!empty($data) && is_array($data)) {
 				$list_num = 1 + (($page_num - 1) * $per_page);
 				foreach ($data as $record) {
 					if ($list_num == (1 + (($page_num - 1) * $per_page))) {
@@ -171,9 +191,24 @@ NAV;
 							if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 								continue;
 							} else {
-								if (array_key_exists($key, $table_schema)) 
-									$key = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
-								$list_index_row .= '<th>'. $key .'</th>';
+								if (array_key_exists($key, $table_schema)) {
+									if ($is_enable_sort) {
+										$column_type = $table_schema[$key]['type'];
+										if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', $column_type)) {
+											$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-order' : 'sort-by-order-alt';
+										} else if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/i', $column_type)) {
+											$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-alphabet' : 'sort-by-alphabet-alt';
+										} else {
+											$icon_type = strtoupper($current_order_by) == 'DESC' ? 'sort-by-attributes' : 'sort-by-attributes-alt';
+										}
+										$toggle_order_by = strtoupper($current_order_by) == 'DESC' ? 'ASC' : 'DESC';
+										$sort_switch = '<a href="#" class="sort-switch btn btn-default btn-xs" data-sort-column="'. $key .'" data-toggle-order="'. $toggle_order_by .'"><span class="glyphicon glyphicon-'. $icon_type .'"></span></a>';
+									} else {
+										$sort_switch = '';
+									}
+									$display_name = !empty($table_schema[$key]['logical_name']) ? $table_schema[$key]['logical_name'] : $key;
+								}
+								$list_index_row .= '<th id="index-'. $key .'">'. $display_name . $sort_switch .'</th>';
 							}
 						}
 						$list_index_row .= '<th>'. __('Controll', PLUGIN_SLUG) .'</th>';
@@ -243,8 +278,10 @@ MODAL;
 					$msg_str = sprintf(__('No data to match for "%s".', PLUGIN_SLUG), $search_key);
 				} else {
 					$msg_str = __('Data is none.', PLUGIN_SLUG);
+					$add_close_btn = false;
 				}
-				$information_html = '<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'. $msg_str .'</div>';
+				$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', PLUGIN_SLUG) .'</span></button>';
+				$information_html = '<div class="alert alert-info">'. $close_btn . $msg_str .'</div>';
 				$display_html = sprintf($list_html, $title, $controller_block, '', '', $information_html);
 			}
 		}

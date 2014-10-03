@@ -9,30 +9,69 @@
  * @param int $per_page
  * @param int $total_data
  * @param string $mode (optional) default 'list'
+ * @param int $overflow (optional) default 10
  * @return string
  */
-function cdbt_create_pagination($page_num, $per_page, $total_data, $mode='list') {
+function cdbt_create_pagination($page_num, $per_page, $total_data, $mode='list', $overflow=10) {
 	$max_pages = ceil($total_data / $per_page);
 	$pagination_base = '<div class="text-center"><ul class="pagination pagination-sm">%s</ul>%s%s</div>';
 	$active_class = ' class="active"';
-	$pagination_left = '<li%s>%s&laquo;%s</li>';
-	$pagination_right = '<li%s>%s&raquo;%s</li>';
+	$pagination_left = '<li%s>%s<span class="glyphicon glyphicon-step-backward"></span>%s</li>'; // &laquo;
+	$pagination_right = '<li%s>%s<span class="glyphicon glyphicon-step-forward"></span>%s</li>'; // &raquo;
+	$pagination_prev = '<li%s>%s<span class="glyphicon glyphicon-arrow-left"></span>%s</li>';
+	$pagination_next = '<li%s>%s<span class="glyphicon glyphicon-arrow-right"></span>%s</li>';
+	$pagination_interval = '<li%s>%s...%s</li>'; // <span class="glyphicon glyphicon-resize-horizontal"></span>
 	
-	$pagination_html = ($page_num == 1) ? sprintf($pagination_left, disabled($page_num, 1, false), '<span>', '</span>') : sprintf($pagination_left, '', '<a href="#" data-page="1">', '</a>');
-	for ($i = 1; $i <= $max_pages; $i++) {
-		$pagination_inner = '<li%s>%s'. $i .'%s</li>';
-		$pagination_html .= ($page_num == $i) ? sprintf($pagination_inner, $active_class, '<span>', ' <span class="sr-only">(current)</span></span>') : sprintf($pagination_inner, '', '<a href="#" data-page="'.$i.'">', '</a>');
+	if ($max_pages > $overflow) {
+		$pagination_html = sprintf($pagination_left, '', '<a href="#" data-page="1">', '</a>');
+		$pagination_html .= $page_num == 1 ? sprintf($pagination_prev, disabled($page_num, 1, false), '<span>', '</span>') : sprintf($pagination_prev, '', '<a href="#" data-page="'. ($page_num - 1) .'">', '</a>');
+		if ($page_num > $overflow) {
+			if ($page_num < ($max_pages - $overflow)) {
+				$start_num = $page_num - $overflow;
+				$interval_position = 'both';
+			} else {
+				$start_num = $max_pages - $overflow;
+				$interval_position = 'left';
+			}
+		} else {
+			$start_num = 1;
+			$interval_position = 'right';
+		}
+		if (preg_match('/^(left|both)$/i', $interval_position)) {
+			$prev_start_num = ($start_num - $overflow) > 0 ? $start_num - $overflow : 1;
+			$pagination_html .= sprintf($pagination_interval, '', '<a href="#" data-page="'. $prev_start_num .'">', '</a>');
+		}
+		for ($i = $start_num; $i <= $start_num + 10; $i++) {
+			$pagination_inner = '<li%s>%s'. $i .'%s</li>';
+			$pagination_html .= $page_num == $i ? sprintf($pagination_inner, $active_class, '<span>', ' <span class="sr-only">(current)</span></span>') : sprintf($pagination_inner, '', '<a href="#" data-page="'.$i.'">', '</a>');
+		}
+		if (preg_match('/^(both|right)$/i', $interval_position)) {
+			$next_start_num = ($start_num + ($overflow * 2)) < $max_pages ? $start_num + ($overflow * 2) : $max_pages - $overflow;
+			$pagination_html .= sprintf($pagination_interval, '', '<a href="#" data-page="'. $next_start_num .'">', '</a>');
+		}
+		$pagination_html .= $page_num == $max_pages ? sprintf($pagination_next, disabled($page_num, $max_pages, false), '<span>', '</span>') : sprintf($pagination_next, '', '<a href="#" data-page="'. ($page_num + 1) .'">', '</a>');
+		$pagination_html .= sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
+	} else {
+		$pagination_html = $page_num == 1 ? sprintf($pagination_left, disabled($page_num, 1, false), '<span>', '</span>') : sprintf($pagination_left, '', '<a href="#" data-page="1">', '</a>');
+		for ($i = 1; $i <= $max_pages; $i++) {
+			$pagination_inner = '<li%s>%s'. $i .'%s</li>';
+			$pagination_html .= $page_num == $i ? sprintf($pagination_inner, $active_class, '<span>', ' <span class="sr-only">(current)</span></span>') : sprintf($pagination_inner, '', '<a href="#" data-page="'.$i.'">', '</a>');
+		}
+		$pagination_html .= $page_num == $max_pages ? sprintf($pagination_right, disabled($page_num, $max_pages, false), '<span>', '</span>') : sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
 	}
-	$pagination_html .= ($page_num == $max_pages) ? sprintf($pagination_right, disabled($page_num, $max_pages, false), '<span>', '</span>') : sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
 	
 	$page_slug = PLUGIN_SLUG;
-	$nonce_field = wp_nonce_field(PLUGIN_SLUG .'_'. $mode, '_cdbt_token', false, false);
+	$nonce_field = wp_nonce_field($page_slug .'_'. $mode, '_cdbt_token', false, false);
 	$pagination_form = <<<EOH
-<form method="get" class="change-page" role="form">
+<form method="post" class="change-page" role="form">
 	<input type="hidden" name="page" value="$page_slug">
 	<input type="hidden" name="mode" value="$mode">
 	<input type="hidden" name="page_num" value="$page_num">
 	<input type="hidden" name="per_page" value="$per_page">
+	<input type="hidden" name="action" value="" />
+	<input type="hidden" name="search_key" value="" />
+	<input type="hidden" name="sort_by" value="" />
+	<input type="hidden" name="sort_order" value="" />
 	$nonce_field
 </form>
 EOH;
@@ -41,6 +80,10 @@ EOH;
 jQuery(document).ready(function(){
 	jQuery('.pagination a').on('click', function(){
 		jQuery('.change-page').children('input[name="page_num"]').val(jQuery(this).attr('data-page'));
+		jQuery('.change-page').children('input[name="action"]').val(jQuery('.controller-form input[name="action"]').val());
+		jQuery('.change-page').children('input[name="search_key"]').val(jQuery('.controller-form input[name="search_key"]').val());
+		jQuery('.change-page').children('input[name="sort_by"]').val(jQuery('.controller-form input[name="sort_by"]').val());
+		jQuery('.change-page').children('input[name="sort_order"]').val(jQuery('.controller-form input[name="sort_order"]').val());
 		jQuery('.change-page').submit();
 	});
 });
@@ -276,7 +319,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 		$set_value = !empty($value) ? $value : $column_schema['default'];
 		$attr_id = $table_name . '-' . $column_name;
 		$label_title = (empty($column_schema['logical_name'])) ? $column_name : $column_schema['logical_name'];
-		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">require</span>' : '';
+		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">'. __('require', PLUGIN_SLUG) .'</span>' : '';
 		$is_hidden = ($option == 'hide') ? true: false;
 		$base_component = '<div class="form-group">%s</div>';
 		if ($column_schema['type'] == 'enum') {
@@ -333,13 +376,14 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $set_value .'">';
 			}
 			
-		} else if ($column_schema['type'] == 'text') {
+		} else if (preg_match('/^(text|mediumtext|longtext)$/i', $column_schema['type'])) {
 			// textarea
 			if (!$is_hidden) {
+				$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
 				$default_rows = ceil(($column_schema['max_length'] * $font_size) / 940);
 				$default_rows = ($default_rows > 6) ? 6 : 3;
 				$input_form = '<label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-				$input_form .= '<textarea class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" rows="'. $default_rows .'">'. esc_textarea($set_value) .'</textarea>';
+				$input_form .= '<textarea class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" rows="'. $default_rows .'" placeholder="'. $placeholder .'">'. esc_textarea($set_value) .'</textarea>';
 			} else {
 				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_textarea($set_value) .'">';
 			}
@@ -353,9 +397,11 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 				if (!is_array($origin_bin_data)) 
 					$origin_bin_data = array();
 				if (!empty($origin_bin_data)) {
-					$input_form .= '<input type="hidden" name="origin_bin_data" value="'. rawurlencode($value) .'" /> ';
+					$input_form .= '<input type="hidden" id="'. $attr_id .'-origin_bin_data" name="'. $attr_id .'-origin_bin_data" value="'. rawurlencode($value) .'" /> ';
 					$input_form .= '<p class="help-block"><span class="glyphicon glyphicon-paperclip"></span> '. rawurldecode($origin_bin_data['origin_file']) .' ('. $origin_bin_data['file_size'] .'byte)</p>';
 				}
+			} else {
+				$origin_bin_data = null;
 			}
 			
 		} else {
@@ -363,7 +409,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 			if (!$is_hidden) {
 				$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
 				$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
-				$input_type = (preg_match('/(int|numeric)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
+				$input_type = (preg_match('/(int|numeric|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
 				$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
 				$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
 				$input_form .= '</div></div>';
