@@ -1,14 +1,14 @@
 === Plugin Name ===
 Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
-Tags: custom database tables, CDBT, MySQL, database, table, create, delete, insert, update, edit, truncate, drop
+Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
 Tested up to: 4.0.0
 Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom DataBase Tables plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.
+Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
 
 == Description ==
 
