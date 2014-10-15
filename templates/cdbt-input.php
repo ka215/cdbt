@@ -115,7 +115,8 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 					} else {
 						$err_msg = __('Failed to add the data.', self::DOMAIN);
 					}
-					$info_msg = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', self::DOMAIN) .'</span></button>'. $err_msg .'</div>';
+					//$info_msg = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', self::DOMAIN) .'</span></button>'. $err_msg .'</div>';
+					$info_msg = '<div class="alert alert-danger">'. $err_msg .'</div>';
 				}
 			} else {
 				if (!$is_update_mode) 

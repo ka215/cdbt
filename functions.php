@@ -313,7 +313,10 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 	$is_exists_created = $is_exists_updated = false;
 	if ($column_schema['primary_key']) 
 		$primary_key_name = $column_name;
-	if (preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
+	if (preg_match('/^(created|updated)$/i', $column_name)) {
+		// Automatic insertion by the database column is excluded.
+		$component = null;
+	} else if ($primary_key_name == $column_name && $column_schema['extra'] == 'auto_increment') {
 		// Automatic insertion by the database column is excluded.
 		$component = null;
 	} else {
@@ -410,15 +413,20 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 			
 		} else {
 			// text field
-			if (!$is_hidden) {
-				$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
-				$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
-				$input_type = (preg_match('/(int|numeric|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
-				$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-				$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
-				$input_form .= '</div></div>';
+			if (strtolower($column_schema['default']) == 'current_timestamp' || preg_match('/current_timestamp/i', strtolower($column_schema['extra']))) {
+				$current_timestamp = date('Y-m-d h:i:s', strtotime('now'));
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $current_timestamp .'">';
 			} else {
-				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_html($set_value) .'">';
+				if (!$is_hidden) {
+					$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
+					$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
+					$input_type = (preg_match('/(int|numeric|float|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
+					$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
+					$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
+					$input_form .= '</div></div>';
+				} else {
+					$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_html($set_value) .'">';
+				}
 			}
 			
 		}
