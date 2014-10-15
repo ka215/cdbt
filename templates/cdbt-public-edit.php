@@ -104,7 +104,7 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 			$limit = $per_page;
 			$offset = ($page_num - 1) * $limit;
 			$view_cols = null; // If this value is null, will be all columns display.
-			$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null; // default set the array('created' => 'DESC')
+			$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null;
 			if (isset($action) && $action == 'search') {
 				if (isset($search_key) && !empty($search_key)) {
 					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by);
@@ -115,7 +115,7 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				}
 			} else {
 				$data = $cdbt->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
-				$total_data = $cdbt->get_data($table_name, 'COUNT(*)');
+				$total_data = $cdbt->get_data($table_name, 'COUNT(*)', null, null);
 				if (is_array($total_data) && !empty($total_data)) {
 					$total_data = array_shift($total_data);
 					foreach ($total_data as $key => $val) {
@@ -181,8 +181,17 @@ NAV;
 			$controller_block = sprintf($controller_block_base, $content);
 			
 			if (!empty($data) && is_array($data)) {
+				
 				$list_num = 1 + (($page_num - 1) * $per_page);
 				foreach ($data as $record) {
+					$primary_key_name = $primary_key_value = null;
+					foreach ($record as $key => $val) {
+						if (empty($primary_key) && $table_schema[$key]['primary_key']) {
+							$primary_key_name = $key;
+							$primary_key_value = $val;
+							break;
+						}
+					}
 					if ($list_num == (1 + (($page_num - 1) * $per_page))) {
 						$list_index_row = '<thead><tr>';
 						$list_index_row .= '<th><input type="checkbox" id="all_checkbox_controller" /></th>';
@@ -215,12 +224,12 @@ NAV;
 						$list_index_row .= '</tr></thead>';
 					}
 					$list_rows .= '<tr>';
-					$list_rows .= '<td><input type="checkbox" id="checkbox_controller_'. $list_num .'" class="inherit_checkbox" value="'. $record->ID .'" /></td>';
+					$list_rows .= '<td><input type="checkbox" id="checkbox_controller_'. $list_num .'" class="inherit_checkbox" value="'. $primary_key_value .'" /></td>';
 					$list_rows .= ($is_display_list_num) ? '<td>'. $list_num .'</td>' : '';
 					$is_include_binary_file = false;
 					foreach ($record as $key => $val) {
-						if (strtoupper($key) == 'ID') 
-							$data_id = intval($val);
+						//if (strtoupper($key) == 'ID') 
+						//	$data_id = intval($val);
 						// strlen('a:*:{s:11:"origin_file";') = 24
 						$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($val, 0, 24))) ? true : false;
 						$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
@@ -232,7 +241,7 @@ NAV;
 								if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
 							}
 						}
-						$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : cdbt_str_truncate($val, 40, '...', true);
+						$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $primary_key_value .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : cdbt_str_truncate($val, 40, '...', true);
 						if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 							continue;
 						} else {
@@ -241,10 +250,10 @@ NAV;
 					}
 					$list_rows .= '<td><div class="btn-group-vertical">';
 					if ($is_entry_page) 
-						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm edit-row" action-url="'. $entry_page_url .'" data-id="'. $record->ID .'" data-mode="input" data-action="update" data-token="'. wp_create_nonce(PLUGIN_SLUG .'_input') .'"><span class="glyphicon glyphicon-edit"></span> '. __('Edit', PLUGIN_SLUG) .'</button>';
+						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm edit-row" action-url="'. $entry_page_url .'" data-id="'. $primary_key_value .'" data-mode="input" data-action="update" data-token="'. wp_create_nonce(PLUGIN_SLUG .'_input') .'"><span class="glyphicon glyphicon-edit"></span> '. __('Edit', PLUGIN_SLUG) .'</button>';
 					if ($is_include_binary_file) 
-						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm download-binary" data-id="'. $record->ID .'" data-mode="edit" data-action="download" data-loading-text="'. __('Downloading...', PLUGIN_SLUG) .'"><span class="glyphicon glyphicon-download"></span> '. __('Download', PLUGIN_SLUG) .'</button>';
-					$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm delete-row" data-id="'. $record->ID .'" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation"><span class="glyphicon glyphicon-trash"></span> '. __('Delete', PLUGIN_SLUG) .'</button>';
+						$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm download-binary" data-id="'. $primary_key_value .'" data-mode="edit" data-action="download" data-loading-text="'. __('Downloading...', PLUGIN_SLUG) .'"><span class="glyphicon glyphicon-download"></span> '. __('Download', PLUGIN_SLUG) .'</button>';
+					$list_rows .= "\t" . '<button type="button" class="btn btn-default btn-sm delete-row" data-id="'. $primary_key_value .'" data-mode="edit" data-action="delete" data-toggle="modal" data-target=".confirmation"><span class="glyphicon glyphicon-trash"></span> '. __('Delete', PLUGIN_SLUG) .'</button>';
 					$list_rows .= '</div></td>';
 					$list_rows .= '</tr>';
 					$list_num++;

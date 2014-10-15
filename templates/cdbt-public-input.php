@@ -4,7 +4,6 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 	global $cdbt;
 	foreach ($_REQUEST as $k => $v) {
 		${$k} = (is_array($v)) ? $v : stripcslashes($v);
-//var_dump("\$_REQUEST['{$k}'] = '$v' \n");
 	}
 	if (!empty($options)) {
 		$is_bootstrap_style = isset($options['bootstrap_style']) ? $options['bootstrap_style'] : false;
@@ -26,11 +25,17 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			$title_str = sprintf(__('Regist to %s table', PLUGIN_SLUG), $table_name);
 		}
 		$page_title = '<h3 class="dashboard-title">'. $title_str .'</h3>';
+		foreach ($table_schema as $col_name => $col_schema) {
+			if ($col_schema['primary_key']) {
+				$primary_key_name = $col_name;
+				break;
+			}
+		}
 		if ($is_update_mode) {
 			$ID = intval($ID);
 			if (isset($action) && !empty($action) && $action == 'update') {
 				// update data load
-				$data = $cdbt->get_data($table_name, null, array('ID' => $ID));
+				$data = $cdbt->get_data($table_name, null, array($primary_key_name => $ID), null);
 				$data = array_shift($data);
 				if (!empty($data)) {
 					foreach ($data as $column_name => $column_value) {
@@ -63,7 +68,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 		}
 		if (wp_verify_nonce($_cdbt_token, PLUGIN_SLUG .'_'. $mode)) {
 			$form_html = '<div>%s<form method="post" id="'. $table_name .'" enctype="multipart/form-data" role="form">';
-			$form_html .= ($is_update_mode) ? '<input type="hidden" name="ID" value="'. $ID .'" />' : '';
+			$form_html .= ($is_update_mode) ? '<input type="hidden" name="'. $primary_key_name .'" value="'. $ID .'" />' : '';
 			$form_html .= '<input type="hidden" name="mode" value="input" />';
 			$form_html .= '<input type="hidden" name="action" value="'. $action .'" />';
 			$form_html .= wp_nonce_field(PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
@@ -84,7 +89,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $hide_option);
 				
 				$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
-				if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
+				if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
 					$validate_result = $cdbt->validate_data($column_schema, $value);
 					if (!array_shift($validate_result)) 
 						$validate_values[$column_name] = array_pop($validate_result);
@@ -120,9 +125,9 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			
 			if ((isset($insert_id) && (bool)$insert_id) || (isset($update_id) && (bool)$update_id)) {
 				if ($is_update_mode) {
-					$complete_msg = __('Data update successful. Data ID is : ', PLUGIN_SLUG) . $update_id;
+					$complete_msg = sprintf(__('Data update successful. Data %s is : %s', PLUGIN_SLUG), $primary_key_name, $update_id);
 				} else {
-					$complete_msg = __('Completed new add data. Data ID is : ', PLUGIN_SLUG) . $insert_id;
+					$complete_msg = sprintf(__('Completed new add data. Data %s is : %s', PLUGIN_SLUG), $primary_key_name, $insert_id);
 				}
 				$display_html = sprintf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>', $page_title, $complete_msg);
 				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', PLUGIN_SLUG) . '</a>';
@@ -130,7 +135,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				if (isset($action) && $action == 'confirm') {
 					if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
 						if ($is_update_mode) {
-							$err_msg = sprintf(__('Did not update the data ID: %s. Please check if there is a change item.', PLUGIN_SLUG), $ID);
+							$err_msg = sprintf(__('Did not update the data %s: %s. Please check if there is a change item.', PLUGIN_SLUG), $primary_key_name, $ID);
 						} else {
 							$err_msg = __('Failed to add the data.', PLUGIN_SLUG);
 						}

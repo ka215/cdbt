@@ -16,11 +16,16 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$title_str = sprintf(__('Regist to %s table', self::DOMAIN), $table_name);
 	}
 	$page_title = '<h3 class="dashboard-title">'. $title_str .'</h3>';
+	foreach ($table_schema as $col_name => $col_schema) {
+		if ($col_schema['primary_key']) {
+			$primary_key_name = $col_name;
+			break;
+		}
+	}
 	if ($is_update_mode) {
-		$ID = intval($ID);
 		if (isset($action) && !empty($action) && $action == 'update') {
 			// update data load
-			$data = $this->get_data($table_name, null, array('ID' => $ID));
+			$data = $this->get_data($table_name, null, array($primary_key_name => $ID), null);
 			$data = array_shift($data);
 			if (!empty($data)) {
 				foreach ($data as $column_name => $column_value) {
@@ -53,7 +58,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 	}
 	if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 		$form_html = '<div>%s<form method="post" id="'. $table_name .'" enctype="multipart/form-data" role="form">';
-		$form_html .= ($is_update_mode) ? '<input type="hidden" name="ID" value="'. $ID .'" />' : '';
+		$form_html .= ($is_update_mode) ? '<input type="hidden" name="'. $primary_key_name .'" value="'. $ID .'" />' : '';
 		$form_html .= '<input type="hidden" name="mode" value="input" />';
 		$form_html .= '<input type="hidden" name="action" value="'. $action .'" />';
 		$form_html .= wp_nonce_field(self::DOMAIN .'_'. $mode, '_cdbt_token', true, false);
@@ -65,7 +70,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value);
 			
 			$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
-			if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
+			if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
 				$validate_result = $this->validate_data($column_schema, $value);
 				if (!array_shift($validate_result)) 
 					$validate_values[$column_name] = array_pop($validate_result);
@@ -97,16 +102,16 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		
 		if ((isset($insert_id) && (bool)$insert_id) || (isset($update_id) && (bool)$update_id)) {
 			if ($is_update_mode) {
-				$complete_msg = __('Data update successful. Data ID is : ', self::DOMAIN) . $update_id;
+				$complete_msg = sprintf(__('Data update successful. Data %s is : %s', self::DOMAIN), $primary_key_name, $update_id);
 			} else {
-				$complete_msg = __('Completed new add data. Data ID is : ', self::DOMAIN) . $insert_id;
+				$complete_msg = sprintf(__('Completed new add data. Data %s is : %s', self::DOMAIN), $primary_key_name, $insert_id);
 			}
 			printf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">%s</span></button>%s</div>', $page_title, __('Close', self::DOMAIN), $complete_msg);
 		} else {
 			if (isset($action) && $action == 'confirm') {
 				if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
 					if ($is_update_mode) {
-						$err_msg = sprintf(__('Did not update the data ID: %s. Please check if there is a change item.', self::DOMAIN), $ID);
+						$err_msg = sprintf(__('Did not update the data %s: %s. Please check if there is a change item.', self::DOMAIN), $primary_key_name, $ID);
 					} else {
 						$err_msg = __('Failed to add the data.', self::DOMAIN);
 					}

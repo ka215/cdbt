@@ -304,7 +304,13 @@ jQuery(document).ready(function($){
 				data: post_data
 			}).done(function(res){
 				$('#cdbt_incorporate_table').attr('data-proc', 'loaded').append(res).blur();
-				$('#cdbt_incorporate_table').children('option[option-index="true"]').text("<?php _e('Select an incorporate table', PLUGIN_SLUG); ?>");
+				var message = '';
+				if ($('#cdbt_incorporate_table').children('option').length > 1) {
+					message = "<?php _e('Select an incorporate table', PLUGIN_SLUG); ?>";
+				} else {
+					message = "<?php _e('Can be incorporated table was none', PLUGIN_SLUG); ?>";
+				}
+				$('#cdbt_incorporate_table').children('option[option-index="true"]').text(message);
 				$('#cdbt_incorporate_table').focus();
 			});
 		}

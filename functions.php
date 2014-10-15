@@ -309,7 +309,11 @@ function cdbt_create_console_footer($message=null, $run=false, $run_label=null, 
  * @return string (eq. html document)
  */
 function cdbt_create_form($table_name, $column_name, $column_schema, $value, $option=null) {
-	if (preg_match('/^(ID|created|updated)$/i', $column_name)) {
+	$primary_key_name = null;
+	$is_exists_created = $is_exists_updated = false;
+	if ($column_schema['primary_key']) 
+		$primary_key_name = $column_name;
+	if (preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
 		// Automatic insertion by the database column is excluded.
 		$component = null;
 	} else {

@@ -91,7 +91,7 @@ class CustomDataBaseTables_Ajax {
 				'label' => __('Column position', PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the FIRST or AFTER column name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the "FIRST" or after "column name".', PLUGIN_SLUG), 
 			),
 			'index_or_key' => array(
 				'label' => __('Index or Key', PLUGIN_SLUG), 

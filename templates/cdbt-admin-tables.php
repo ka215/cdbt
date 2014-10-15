@@ -40,7 +40,7 @@ if (count($cdbt_options['tables']) > 1) {
 				continue;
 			$cdbt->current_table = $load_table_name;
 			if ($cdbt->check_table_exists()) {
-				$res = $cdbt->get_data($load_table_name, 'COUNT(*)');
+				$res = $cdbt->get_data($load_table_name, 'COUNT(*)', null, null);
 				if (is_array($res) && !empty($res)) {
 					$res = array_shift($res);
 					foreach ($res as $val) {

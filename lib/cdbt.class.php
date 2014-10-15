@@ -571,7 +571,7 @@ class CustomDatabaseTables {
 	 * @param int $offset (optional) (eq. offset clause)
 	 * @return array
 	 */
-	function get_data($table_name, $columns='*', $conditions=null, $order=null, $limit=null, $offset=null) {
+	function get_data($table_name, $columns='*', $conditions=null, $order=array('created'=>'desc'), $limit=null, $offset=null) {
 		global $wpdb;
 		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
 		$where_clause = $order_clause = $limit_clause = null;
@@ -597,8 +597,6 @@ class CustomDatabaseTables {
 				}
 				$i++;
 			}
-		} else {
-			$order_clause = "ORDER BY `created` DESC ";
 		}
 		if (!empty($limit)) {
 			$limit_clause = "LIMIT ";
@@ -629,7 +627,7 @@ class CustomDatabaseTables {
 	 * @param int $offset (optional) (eq. offset clause)
 	 * @return array
 	 */
-	function find_data($table_name, $table_schema=null, $search_key, $columns, $order=null, $limit=null, $offset=null) {
+	function find_data($table_name, $table_schema=null, $search_key, $columns, $order=array('created'=>'desc'), $limit=null, $offset=null) {
 		global $wpdb;
 		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
 		$where_clause = $order_clause = $limit_clause = null;
@@ -644,8 +642,6 @@ class CustomDatabaseTables {
 				}
 				$i++;
 			}
-		} else {
-			$order_clause = "ORDER BY `created` DESC ";
 		}
 		if (!empty($limit)) {
 			$limit_clause = "LIMIT ";
@@ -729,23 +725,36 @@ class CustomDatabaseTables {
 	 */
 	function insert_data($table_name, $data, $table_schema=null) {
 		global $wpdb;
-		unset($data['ID']);
-		$data['created'] = date('Y-m-d H:i:s', time());
-		unset($data['updated']);
-		if (!empty($table_schema)) {
-			$format = array();
-			foreach ($data as $column_name => $value) {
-				if (array_key_exists($column_name, $table_schema)) {
-					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+$/', $value)) {
-						// is integer format
-						$format[] = '%d';
-					} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
-						// is double format
-						$format[] = '%f';
-					} else {
-						// is string format
-						$format[] = '%s';
-					}
+		if (empty($table_schema)) 
+			$table_schema = $this->get_table_schema($table_name);
+		$primary_key = null;
+		$is_exists_created = $is_exists_updated = false;
+		foreach ($table_schema as $key => $val) {
+			if (empty($primary_key) && $val['primary_key']) 
+				$primary_key = $key;
+			if ($key == 'created') 
+				$is_exists_created = true;
+			if ($key == 'updated') 
+				$is_exists_updated = true;
+		}
+		if (!empty($primary_key)) 
+			unset($data[$primary_key]);
+		if ($is_exists_created) 
+			$data['created'] = date('Y-m-d H:i:s', time());
+		if ($is_exists_updated) 
+			unset($data['updated']);
+		$format = array();
+		foreach ($data as $column_name => $value) {
+			if (array_key_exists($column_name, $table_schema)) {
+				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+$/', $value)) {
+					// is integer format
+					$format[] = '%d';
+				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
+					// is double format
+					$format[] = '%f';
+				} else {
+					// is string format
+					$format[] = '%s';
 				}
 			}
 		}
@@ -760,45 +769,54 @@ class CustomDatabaseTables {
 	/**
 	 * update data
 	 * @param string $table_name (must containing prefix of table)
-	 * @param int $ID
+	 * @param int $primary_key_value
 	 * @param array $data
 	 * @param array $table_schema default null
-	 * @return int updated row (eq. ID column's value)
+	 * @return int updated row (eq. primary key column's value)
 	 */
-	function update_data($table_name, $ID, $data, $table_schema=null) {
+	function update_data($table_name, $primary_key_value, $data, $table_schema=null) {
 		global $wpdb;
-		$ID = intval($ID);
-		if (array_key_exists('ID', $data)) 
-			unset($data['ID']);
-		if (array_key_exists('created', $data)) 
+		if (empty($table_schema)) 
+			$table_schema = $this->get_table_schema($table_name);
+		$primary_key_name = null;
+		$is_exists_created = $is_exists_updated = false;
+		foreach ($table_schema as $key => $val) {
+			if (empty($primary_key_name) && $val['primary_key']) 
+				$primary_key_name = $key;
+			if ($key == 'created') 
+				$is_exists_created = true;
+			if ($key == 'updated') 
+				$is_exists_updated = true;
+		}
+		if (array_key_exists($primary_key_name, $data)) 
+			unset($data[$primary_key_name]);
+		if ($is_exists_created && array_key_exists('created', $data)) 
 			unset($data['created']);
-		if (array_key_exists('updated', $data)) 
+		if ($is_exists_updated && array_key_exists('updated', $data)) 
 			unset($data['updated']);
-		if (!empty($table_schema)) {
-			$format = array();
-			foreach ($data as $column_name => $value) {
-				if (array_key_exists($column_name, $table_schema)) {
-					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+$/', $value)) {
-						// is integer format
-						$data[$column_name] = (int)$value;
-						$format[] = '%d';
-					} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
-						// is double format
-						$data[$column_name] = (float)$value;
-						$format[] = '%f';
-					} else {
-						// is string format
-						$data[$column_name] = (string)$value;
-						$format[] = '%s';
-					}
-					if (empty($value)) 
-						$value = null;
+		$format = array();
+		foreach ($data as $column_name => $value) {
+			if (array_key_exists($column_name, $table_schema)) {
+				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+$/', $value)) {
+					// is integer format
+					$data[$column_name] = (int)$value;
+					$format[] = '%d';
+				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^\d+(.{,1}\d+)?$/', $value)) {
+					// is double format
+					$data[$column_name] = (float)$value;
+					$format[] = '%f';
+				} else {
+					// is string format
+					$data[$column_name] = (string)$value;
+					$format[] = '%s';
 				}
+				if (empty($value)) 
+					$value = null;
 			}
 		}
-		if ($ID > 0 && isset($format) && !empty($format) && count($data) == count($format)) {
-			$result = $wpdb->update($table_name, $data, array('ID' => $ID), $format, array('%d'));
-			$result = ($result) ? $ID : $result;
+		if (intval($primary_key_value) > 0 && isset($format) && !empty($format) && count($data) == count($format)) {
+			$result = $wpdb->update($table_name, $data, array($primary_key_name => $primary_key_value), $format, array('%d'));
+			$result = ($result) ? $primary_key_value : $result;
 			return $result;
 		} else {
 			return false;

@@ -162,7 +162,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 									),
 								);
 								$table_list = $this->get_table_list('enable');
-								if ($table_list && !in_array($this->current_table, $table_list)) {
+								if (isset($table_list) && !in_array($this->current_table, $table_list)) {
 									$this->options['tables'][] = $new_table;
 									if (update_option(self::DOMAIN, $this->options)) {
 										$msg = array('success', __('Have been completed that resume the setting as manageable table in this plugin.', self::DOMAIN));

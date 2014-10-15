@@ -56,7 +56,7 @@ function cdbt_render_list_page($table=null, $mode=null, $_cdbt_token=null, $opti
 			$limit = $per_page;
 			$offset = ($page_num - 1) * $limit;
 			$view_cols = null; // If this value is null, will be all columns display.
-			$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null; // default set the array('created' => 'DESC')
+			$order_by = (isset($sort_by) && !empty($sort_by) && isset($sort_order) && !empty($sort_order)) ? array($sort_by => $sort_order) : null;
 			if (isset($action) && $action == 'search') {
 				if (isset($search_key) && !empty($search_key)) {
 					$data = $cdbt->find_data($table_name, $table_schema, $search_key, $view_cols, $order_by);
@@ -67,7 +67,7 @@ function cdbt_render_list_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				}
 			} else {
 				$data = $cdbt->get_data($table_name, $view_cols, null, $order_by, $limit, $offset);
-				$total_data = $cdbt->get_data($table_name, 'COUNT(*)');
+				$total_data = $cdbt->get_data($table_name, 'COUNT(*)', null, null);
 				if (is_array($total_data) && !empty($total_data)) {
 					$total_data = array_shift($total_data);
 					foreach ($total_data as $key => $val) {

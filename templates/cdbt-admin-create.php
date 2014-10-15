@@ -66,6 +66,7 @@ $incorporate_table_label = __('Incorporate Already Exists Table', PLUGIN_SLUG);
 $helper_msg1 = __('If you will create the new table, in default table name is used the table-prefix of WordPress&apos;s config.', PLUGIN_SLUG);
 $helper_msg2 = __('Table name in the current configuration:', PLUGIN_SLUG);
 $helper_msg3 = __('It does not reflect if you change the table name, and not re-created after you delete a table of current created. In addition, in this table name is not possible use the name of the origin table that WordPress generates.', PLUGIN_SLUG);
+$helper_msg8 = __('Uptake function of a table that already exists, does not ensure the normal operation for the table that has not been created by this plugin. It also does not support the incorporation of the core table of WordPress.', PLUGIN_SLUG);
 $table_comment_label = __('Table Comment', PLUGIN_SLUG);
 $table_comment_placeholder = __('Enter Table Comment', PLUGIN_SLUG);
 $helper_msg4 = __('Table comment is used for display name as logical name of table.', PLUGIN_SLUG);
@@ -193,6 +194,8 @@ if ($handle != 'alter-table') {
 			<p class="help-block">$helper_msg2 <code class="simulate_table_name"></code></p>
 			<p class="help-block"><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> 
 				$helper_msg3</p></p>
+			<p class="help-block"><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> 
+				$helper_msg8</p></p>
 		</div>
 	</div>
 	<div class="form-group">
