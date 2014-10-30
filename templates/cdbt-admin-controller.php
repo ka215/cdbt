@@ -37,6 +37,8 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 				foreach ($inherit_values as $key => $value) {
 					if (preg_match('/^(use_wp_prefix|cleaning_options|uninstall_options|resume_options)$/', $key)) {
 						$this->options[$key] = cdbt_get_boolean($value);
+					} else if (preg_match('/^(api_key)/', $key)) {
+						continue;
 					} else {
 						$this->options[$key] = $value;
 					}

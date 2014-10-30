@@ -657,6 +657,61 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 		}
 	});
 	
+	$('#cdbt_generate_api_key').on('click', function(){
+		if ($('#cdbt_api_key').val() != '') {
+			
+			var post_data = {
+				action: 'cdbt_ajax_core', 
+				mode: 'add_api_key', 
+				'host_addr': $('#cdbt_api_key').val(), 
+				token: '<?php echo $ajax_nonce; ?>', 
+				'_ajax_nonce': '<?php echo $action_nonce; ?>' 
+			}
+			$.ajax({
+				type: 'POST', 
+				url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
+				data: post_data
+			}).done(function(res){
+				var res = res.split(',');
+				if (res[0] == 'error') {
+					show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', res[1], '');
+					$('.modal.confirmation').modal('show');
+				} else {
+					location.reload();
+					//$('#api_key_list_tbody').append('<tr><td>' + res[0] + '</td><td>' + res[1] + '</td><td><button></button></td></tr>');
+				}
+			});
+			
+		} else {
+			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', '<?php _e('Request host address is none.', PLUGIN_SLUG); ?>', '');
+			$('.modal.confirmation').modal('show');
+		}
+	});
+	
+	$('#api_key_list_tbody button[id^="delete_api_key_"]').on('click', function(){
+		$(this).attr('data-api-key')
+		var post_data = {
+			action: 'cdbt_ajax_core', 
+			mode: 'delete_api_key', 
+			'host_addr': $(this).attr('data-api-key'), 
+			token: '<?php echo $ajax_nonce; ?>', 
+			'_ajax_nonce': '<?php echo $action_nonce; ?>' 
+		}
+		$.ajax({
+			type: 'POST', 
+			url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
+			data: post_data
+		}).done(function(res){
+			var res = res.split(',');
+			if (res[0] == 'error') {
+				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', res[1], '');
+				$('.modal.confirmation').modal('show');
+			} else {
+				location.reload();
+			}
+		});
+	});
+	
 /*
  * for Table Creator
  */

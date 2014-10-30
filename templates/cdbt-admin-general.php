@@ -20,9 +20,30 @@ $charset_label = __('Table Charset', PLUGIN_SLUG);
 $charset_placeholder = __('Table Charset', PLUGIN_SLUG);
 $timezone_label = __('Database Timezone', PLUGIN_SLUG);
 $timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
+$api_key_label = __('API keys', PLUGIN_SLUG);
+$api_key_placeholder = __('Enter the request host address', PLUGIN_SLUG);
+$generate_api_key = __('Generate API key', PLUGIN_SLUG);
 $helper_msg2 = __('Can clean the setting by delete the setting of the table that does not exist in database when save this general setting.', PLUGIN_SLUG);
 $helper_msg3 = __('To erase all the configuration information for the CDBT plugin when you want to uninstall this plugin.', PLUGIN_SLUG);
 $helper_msg4 = __('Want to resume the management tables from in the past plugin settings. However, tables that do not currently exist will not be restored.', PLUGIN_SLUG);
+$helper_msg5 = __('Here is able to issue an API key for each server host (IP address or DNS name) as the request source. Then would allow you to access to the managable tables in this plugin from different hosts to this WordPress site by utilizing the API key.', PLUGIN_SLUG);
+$helper_msg6 = __('helper text', PLUGIN_SLUG);
+
+if (isset($cdbt_options['api_key']) && !empty($cdbt_options['api_key']) && is_array($cdbt_options['api_key']) && count($cdbt_options['api_key']) > 0) {
+	$table_header = sprintf('<thead><tr><th>%s</th><th>%s</th><th>%s</th></tr></thead>', __('Request host address', PLUGIN_SLUG), __('API key', PLUGIN_SLUG), __('Delete', PLUGIN_SLUG));
+	$table_body = '';
+	$index_num = 1;
+	foreach ($cdbt_options['api_key'] as $host_addr => $api_key_string) {
+		$table_row = sprintf('<td data-index-id="%d">%s</td>', $index_num, $host_addr);
+		$table_row .= '<td>'. $api_key_string .'</td>';
+		$table_row .= sprintf('<td><button type="button" id="delete_api_key_%d" class="btn btn-default btn-sm" data-api-key="%s">%s</button></td>', $index_num, $host_addr, __('Delete', PLUGIN_SLUG));
+		$table_body .= sprintf('<tr>%s</tr>', $table_row);
+		$index_num++;
+	}
+	$api_key_list = sprintf('<table class="table table-border">%s<tbody id="api_key_list_tbody">%s</tbody></table>', $table_header, $table_body);
+} else {
+	$api_key_list = sprintf('<p class="alert alert-info" style="margin-top: 1em;">%s</p>', __('Currently valid API key is not exists.', PLUGIN_SLUG));
+}
 
 $content_html = <<<EOH
 <h3><span class="glyphicon glyphicon-wrench"></span> $tab_name_label</h3>
@@ -42,13 +63,13 @@ $content_html = <<<EOH
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="cdbt_table_name" class="col-sm-2 control-label">$charset_label</label>
+		<label for="cdbt_table_charset" class="col-sm-2 control-label">$charset_label</label>
 		<div class="col-sm-2">
 			<input type="text" class="form-control" name="table_charset" id="cdbt_table_charset" placeholder="$charset_placeholder" value="{$cdbt_options['charset']}"$charset_disabled>
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="cdbt_table_name" class="col-sm-2 control-label">$timezone_label</label>
+		<label for="cdbt_timezone" class="col-sm-2 control-label">$timezone_label</label>
 		<div class="col-sm-2">
 			<input type="text" class="form-control" name="timezone" id="cdbt_timezone" placeholder="$timezone_placeholder" value="{$cdbt_options['timezone']}"$timezone_disabled>
 		</div>
@@ -81,6 +102,25 @@ $content_html = <<<EOH
 					<input type="hidden" name="resume_options" value="false">
 				</label>
 			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="cdbt_api_key" class="col-sm-2 control-label">$api_key_label</label>
+		<div class="col-sm-9">
+			<p>$helper_msg5</p>
+		</div>
+		<div class="col-sm-offset-2 col-sm-4">
+			<input type="text" class="form-control" name="api_key" id="cdbt_api_key" placeholder="$api_key_placeholder" value="">
+		</div>
+		<div class="col-sm-2">
+			<button type="button" id="cdbt_generate_api_key" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span> $generate_api_key</button>
+		</div>
+		<div class="col-sm-offset-2 col-sm-7">
+			$api_key_list
+		</div>
+		<div class="col-sm-offset-2 col-sm-9">
+			<p class="help-block"><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> 
+				$helper_msg6</p></p>
 		</div>
 	</div>
 	<div class="form-group">

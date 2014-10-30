@@ -24,7 +24,15 @@ class CustomDataBaseTables_Ajax {
 		global $cdbt;
 		$token = $_POST['token'];
 		if (!wp_verify_nonce($token, PLUGIN_SLUG . '_ajax')) {
-			die(__('Invalid access!', PLUGIN_SLUG));
+			$api_key = isset($_REQUEST['api_key']) && !empty($_REQUEST['api_key']);
+			if (!$cdbt->verify_api_key($api_key)) {
+				die(__('Invalid access!', PLUGIN_SLUG));
+			} else {
+				
+				
+				
+				
+			}
 		} else {
 			$mode = $_POST['mode'];
 			switch($mode) {
@@ -71,6 +79,37 @@ class CustomDataBaseTables_Ajax {
 					$response = $this->create_preset_form($preset_id, $preset_template);
 					#var_dump($response);
 					die($response);
+					break;
+				case 'add_api_key': 
+					$host_addr = $_POST['host_addr'];
+					if (preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $host_addr)) {
+						// done
+					} elseif (preg_match('/^((http|https|ftp):\/\/|)([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $host_addr, $matches)) {
+						$host_addr = $matches[3];
+					} else {
+						die('error,'. __('Invalid request host address!', PLUGIN_SLUG));
+					}
+					$api_key = $cdbt->generate_api_key($host_addr);
+					if (isset($cdbt->options['api_key']) && !empty($cdbt->options['api_key'])) {
+						$cdbt->options['api_key'][$host_addr] = $api_key;
+					} else {
+						$cdbt->options['api_key'] = array($host_addr => $api_key);
+					}
+					update_option(PLUGIN_SLUG, $cdbt->options);
+					die($host_addr .','. $api_key);
+					
+					break;
+				case 'delete_api_key': 
+					$host_addr = $_POST['host_addr'];
+					if (isset($cdbt->options['api_key']) && !empty($cdbt->options['api_key'])) {
+						if (array_key_exists($host_addr, $cdbt->options['api_key'])) {
+							unset($cdbt->options['api_key'][$host_addr]);
+							update_option(PLUGIN_SLUG, $cdbt->options);
+							die('done,');
+						}
+					} else {
+						die('error,'. __('Currently valid API key is not exists.', PLUGIN_SLUG));
+					}
 					break;
 				default: 
 					die(__('Invalid access!', PLUGIN_SLUG));

@@ -167,6 +167,7 @@ class CustomDatabaseTables {
 			'cleaning_options' => true, 
 			'uninstall_options' => false, 
 			'resume_options' => false, 
+			'api_key' => array(),
 			'tables' => array(
 				array(
 					'table_name' => 'cdbt_schema_template', 
@@ -356,6 +357,56 @@ class CustomDatabaseTables {
 				printf($notice_base, 'updated', $notice_list);
 			}
 		}
+	}
+	
+	/**
+	 * create api key for remote address
+	 * @param string $remote_addr (optional) default null eq. $_SERVER['REMOTE_ADDR']
+	 * @return string $api_key
+	 */
+	function generate_api_key($remote_addr=''){
+		if (!defined(DB_NAME)) {
+			$base_salt = md5(self::DOMAIN . DB_NAME . $_SERVER['SERVER_ADDR'] . (!empty($remote_addr) ? $remote_addr : $_SERVER['SERVER_PORT']) . uniqid());
+			$base_salt = str_split(strtoupper($base_salt), strlen($base_salt)/4);
+			$api_key = implode('-', $base_salt);
+		} else {
+			$api_key = '';
+		}
+		return $api_key;
+	}
+	
+	/**
+	 * verify api key
+	 * @param string $api_key
+	 * @return void
+	 */
+	function verify_api_key($api_key){
+		if (isset($request_host) && !empty($request_host) && isset($api_key) && !empty($api_key)) {
+			$result = false;
+			if (isset($this->options['api_key']) && !empty($this->options['api_key']) && is_array($this->options['api_key']) && count($this->options['api_key']) > 0) {
+				foreach ($this->options['api_key'] as $host_addr => $regist_api_key) {
+					if (cdbt_compare_var($api_key, $regist_api_key)) {
+						if (preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $host_addr)) {
+							if (isset($_SERVER['REMOTE_ADDR']) && cdbt_compare_var($host_addr, $_SERVER['REMOTE_ADDR'])) {
+								$result = true;
+							} elseif (isset($_SERVER['REMOTE_HOST']) && cdbt_compare_var($host_addr, gethostbynamel($_SERVER['REMOTE_HOST']))) {
+								$result = true;
+							}
+						} else {
+							if (isset($_SERVER['REMOTE_HOST']) && cdbt_compare_var($host_addr, $_SERVER['REMOTE_HOST'])) {
+								$result = true;
+							} elseif (isset($_SERVER['REMOTE_ADDR']) && cdbt_compare_var($host_addr, gethostbyaddr($_SERVER['REMOTE_ADDR']))) {
+								$result = true;
+							}
+						}
+						if ($result) break;
+					}
+				}
+			}
+		} else {
+			$result = false;
+		}
+		return $result;
 	}
 	
 // //////////////////// following CRUD //////////////////////////////////////////////////
