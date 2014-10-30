@@ -305,7 +305,7 @@ function cdbt_create_console_footer($message=null, $run=false, $run_label=null, 
  * @param string $culumn_name
  * @param array $culumn_schema
  * @param string $value
- * @param string $option (optional) be hidden form
+ * @param string $option (optional) If hide form 'hide', If not create form 'none'
  * @return string (eq. html document)
  */
 function cdbt_create_form($table_name, $column_name, $column_schema, $value, $option=null) {
@@ -313,7 +313,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 	$is_exists_created = $is_exists_updated = false;
 	if ($column_schema['primary_key']) 
 		$primary_key_name = $column_name;
-	if (preg_match('/^(created|updated)$/i', $column_name)) {
+	if (preg_match('/^updated$/i', $column_name) || $option == 'none') {
 		// Automatic insertion by the database column is excluded.
 		$component = null;
 	} else if ($primary_key_name == $column_name && $column_schema['extra'] == 'auto_increment') {
