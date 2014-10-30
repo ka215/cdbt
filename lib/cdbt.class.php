@@ -833,8 +833,8 @@ class CustomDatabaseTables {
 				unset($data[$primary_key_name]);
 			}
 		}
-		if ($is_exists_created && array_key_exists('created', $data)) 
-			unset($data['created']);
+		//if ($is_exists_created && array_key_exists('created', $data)) 
+		//	unset($data['created']);
 		if ($is_exists_updated && array_key_exists('updated', $data)) 
 			unset($data['updated']);
 		if ($primary_key_count <= 1) {
