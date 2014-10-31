@@ -117,6 +117,20 @@ class CustomDatabaseTables {
 				$this->activate();
 			}
 		}
+		if ($this->options['db_version'] != $this->db_version) {
+			if (version_compare($this->db_version, $this->options['db_version']) > 0) {
+				$this->activate();
+			}
+		}
+		
+		if (isset($this->options['api_key'])) {
+			add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
+			add_filter('query_vars', array($this, 'insert_query_vars'));
+			add_action('wp_loaded', array($this, 'flush_rules'));
+			if (!empty($this->options['api_key'])) {
+				add_action('send_headers', array($this, 'allow_host'));
+			}
+		}
 		
 		$this->current_table = get_option(self::DOMAIN . '_current_table', '');
 		
@@ -125,6 +139,7 @@ class CustomDatabaseTables {
 		
 		add_filter('plugin_action_links', array($this, 'add_action_links'), 10, 2);
 		add_action('admin_menu', array($this, 'create_admin'));
+		add_action('pre_get_posts', array($this, 'receive_api_request'));
 	}
 	
 	/**
@@ -381,30 +396,191 @@ class CustomDatabaseTables {
 	 * @return void
 	 */
 	function verify_api_key($api_key){
-		if (isset($request_host) && !empty($request_host) && isset($api_key) && !empty($api_key)) {
+		if (isset($api_key) && !empty($api_key)) {
 			$result = false;
 			if (isset($this->options['api_key']) && !empty($this->options['api_key']) && is_array($this->options['api_key']) && count($this->options['api_key']) > 0) {
+				if (isset($_SERVER['HTTP_ORIGIN']) && !empty($_SERVER['HTTP_ORIGIN'])) {
+					$client_host = preg_replace('/^(http|https|ftp):\/\/(.*)/iU', '$2', $_SERVER['HTTP_ORIGIN']);
+				} elseif (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+					$client_host = preg_replace('/^(http|https|ftp):\/\/(.*)(\/|\?|:).*$/iU', '$2', $_SERVER['HTTP_REFERER']);
+				} elseif (isset($_SERVER['REMOTE_HOST']) && !empty($_SERVER['REMOTE_HOST'])) {
+					$client_host = $_SERVER['REMOTE_HOST'];
+				} elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
+					$client_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+				} else {
+					$client_host = '';
+				}
+				if (!empty($client_host)) {
+					list($client_addr, ) = gethostbynamel($client_host);
+				} else {
+					$client_addr = $_SERVER['SERVER_ADDR'];
+				}
 				foreach ($this->options['api_key'] as $host_addr => $regist_api_key) {
 					if (cdbt_compare_var($api_key, $regist_api_key)) {
-						if (preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $host_addr)) {
-							if (isset($_SERVER['REMOTE_ADDR']) && cdbt_compare_var($host_addr, $_SERVER['REMOTE_ADDR'])) {
-								$result = true;
-							} elseif (isset($_SERVER['REMOTE_HOST']) && cdbt_compare_var($host_addr, gethostbynamel($_SERVER['REMOTE_HOST']))) {
-								$result = true;
-							}
-						} else {
-							if (isset($_SERVER['REMOTE_HOST']) && cdbt_compare_var($host_addr, $_SERVER['REMOTE_HOST'])) {
-								$result = true;
-							} elseif (isset($_SERVER['REMOTE_ADDR']) && cdbt_compare_var($host_addr, gethostbyaddr($_SERVER['REMOTE_ADDR']))) {
-								$result = true;
-							}
+						if (cdbt_compare_var($client_host, $host_addr)) {
+							$result = true;
+						} elseif (cdbt_compare_var($client_addr, $host_addr)) {
+							$result = true;
 						}
-						if ($result) break;
+						if ($result) {
+							break;
+						}
 					}
 				}
 			}
 		} else {
 			$result = false;
+		}
+		return $result;
+	}
+	
+	/**
+	 * flush_rules() if extend rules are not yet included
+	 */
+	function flush_rules() {
+		$rules = get_option('rewrite_rules');
+		if (!isset($rules['^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$'])) {
+			global $wp_rewrite;
+			$wp_rewrite->flush_rules();
+		}
+	}
+	
+	/**
+	 * Adding a extend rule for requesting api
+	 */
+	function insert_rewrite_rules($rules) {
+		$newrules = array();
+		$newrules['^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$'] = 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]';
+		return $newrules + $rules;
+	}
+	
+	/**
+	 * Adding the vars of requesting api so that WP recognizes it
+	 */
+	function insert_query_vars($vars) {
+		array_push($vars, 'cdbt_api_key', 'cdbt_table', 'cdbt_api_request');
+		return $vars;
+	}
+	
+	/**
+	 * Enable HTTP access control (CORS)
+	 */
+	function allow_host() {
+		header("Access-Control-Allow-Origin: *");
+		header("Access-Control-Allow-Methods: POST, GET");
+		header("Access-Control-Max-Age: 86400");
+	}
+	
+	/**
+	 * controller process when receive the api request
+	 * @param string $wp_query
+	 * @return void
+	 */
+	function receive_api_request($wp_query){
+		if (isset($wp_query->query['cdbt_api_key']) && !empty($wp_query->query['cdbt_api_key'])) {
+			if ($this->verify_api_key(trim($wp_query->query['cdbt_api_key']))) {
+				$target_table = (isset($wp_query->query['cdbt_table']) && !empty($wp_query->query['cdbt_table'])) ? trim($wp_query->query['cdbt_table']) : '';
+				$request = (isset($wp_query->query['cdbt_api_request']) && !empty($wp_query->query['cdbt_api_request'])) ? trim($wp_query->query['cdbt_api_request']) : '';
+				if (!empty($target_table) && !empty($request)) {
+					if ($this->check_table_exists($target_table)) {
+						// 200: Successful
+						switch($request) {
+							case 'get_data': 
+								$response = array('success' => array('code' => 200, 'table' => $target_table, 'request' => $request));
+								$allow_args = array('columns' => 'mixed', 'conditions' => 'hash', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int');
+								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+								break;
+							default: 
+								$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+								break;
+						}
+					} else {
+						$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+					}
+				} else {
+					// 400: Invalid API request
+					$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+				}
+			} else {
+				// 401: Authentication failure
+				$response = array('error' => array('code' => 401, 'desc' => 'Authentication Failure'));
+			}
+			$is_crossdomain = (isset($_REQUEST['callback']) && !empty($_REQUEST['callback'])) ? trim($_REQUEST['callback']) : false;
+			header( 'Content-Type: text/javascript; charset=utf-8' );
+			if ($is_crossdomain) {
+				$response = $is_crossdomain . '(' . json_encode($response) . ')';
+			} else {
+				$response = json_encode($response);
+			}
+			echo $response;
+			exit;
+		} else {
+			// 403: Invalid access
+			$response = array('error' => array('code' => 403, 'desc' => 'Invalid Access'));
+			header("HTTP/1.1 404 Not Found", false, 404);
+		}
+	}
+	
+	/**
+	 * Wrapper for executing core methods from requested API
+	 * @param string $target_table
+	 * @param string $request eq. name of this CRUD mothods
+	 * @param array $allow_args
+	 * @return mixed
+	 */
+	function api_method_wrapper($target_table, $request, $allow_args) {
+		foreach ($allow_args as $var_name => $val_type) {
+			${$var_name} = (isset($_REQUEST[$var_name]) && !empty($_REQUEST[$var_name])) ? trim($_REQUEST[$var_name]) : null;
+			if (!empty(${$var_name})) {
+				if ($val_type == 'mixed') {
+					if (preg_match('/^\{(.*)\}$/U', ${$var_name}, $matches)) {
+						$tmp = explode(',', $matches[1]);
+						$tmp_ary = array();
+						foreach ($tmp as $line_str) {
+							list($key, $val) = explode(':', trim($line_str));
+							$tmp_ary[trim(trim($key), "\"'\s")] = trim(trim($val), "\"'\s");
+						}
+						${$var_name} = $tmp_ary;
+					} elseif (preg_match('/^\[(.*)\]$/U', ${$var_name}, $matches)) {
+						$tmp = explode(',', $matches[1]);
+						$tmp_ary = array();
+						foreach ($tmp as $line_str) {
+							$tmp_ary[] = trim(trim($line_str), "\"'\s");
+						}
+						${$var_name} = $tmp_ary;
+					}
+				} elseif ($val_type == 'array') {
+					if (preg_match('/^\[(.*)\]$/U', ${$var_name}, $matches)) {
+						$tmp = explode(',', $matches[1]);
+						$tmp_ary = array();
+						foreach ($tmp as $line_str) {
+							$tmp_ary[] = trim(trim($line_str), "\"'\s");
+						}
+						${$var_name} = $tmp_ary;
+					} else {
+						${$var_name} = null;
+					}
+				} elseif ($val_type == 'hash') {
+					if (preg_match('/^\{(.*)\}$/U', ${$var_name}, $matches)) {
+						$tmp = explode(',', $matches[1]);
+						$tmp_ary = array();
+						foreach ($tmp as $line_str) {
+							list($key, $val) = explode(':', trim($line_str));
+							$tmp_ary[trim(trim($key), "\"'\s")] = trim(trim($val), "\"'\s");
+						}
+						${$var_name} = $tmp_ary;
+					} else {
+						${$var_name} = null;
+					}
+				} elseif ($val_type == 'int') {
+					${$var_name} = intval($_REQUEST[$var_name]);
+				}
+			}
+		}
+		if ($request == 'get_data') {
+			$result = $this->get_data($target_table, $columns, $conditions, $order, $limit, $offset);
+		} elseif ($request == 'find_data') {
+			$result = $this->find_data();
 		}
 		return $result;
 	}

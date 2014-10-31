@@ -27,7 +27,11 @@ $helper_msg2 = __('Can clean the setting by delete the setting of the table that
 $helper_msg3 = __('To erase all the configuration information for the CDBT plugin when you want to uninstall this plugin.', PLUGIN_SLUG);
 $helper_msg4 = __('Want to resume the management tables from in the past plugin settings. However, tables that do not currently exist will not be restored.', PLUGIN_SLUG);
 $helper_msg5 = __('Here is able to issue an API key for each server host (IP address or DNS name) as the request source. Then would allow you to access to the managable tables in this plugin from different hosts to this WordPress site by utilizing the API key.', PLUGIN_SLUG);
-$helper_msg6 = __('helper text', PLUGIN_SLUG);
+//$helper_msg6 = sprintf(__('The destination URL of the API requests will be <code>%s/&lt;API key&gt;/&lt;table name&gt;/&lt;request method name&gt;?&lt;Parameter name&gt;=&lt;parameter value&gt;&amp;...</code>.', PLUGIN_SLUG), get_option('siteurl'));
+$api_url_format = sprintf('<code>%s/?cdbt_api_key=&lt;%s&gt;&amp;cdbt_table=&lt;%s&gt;&amp;cdbt_api_request=&lt;%s&gt;&amp;&lt;%s&gt;=&lt;%s&gt;&amp;...</code>', get_option('siteurl'), __('API key', PLUGIN_SLUG), __('Table name', PLUGIN_SLUG), __('Request method name', PLUGIN_SLUG), __('Parameter name', PLUGIN_SLUG), __('Parameter value', PLUGIN_SLUG));
+$api_url_example = sprintf('<code>%s/?cdbt_api_key=&lt;%s&gt;&amp;cdbt_table=sample_table&amp;cdbt_api_request=get_data&amp;order={created:desc}&amp;limit=5</code>', get_option('siteurl'), __('API key', PLUGIN_SLUG));
+$helper_msg6 = sprintf(__('The destination URL of the API requests will be : <br>%s.', PLUGIN_SLUG), $api_url_format);
+$helper_msg7 = sprintf(__('For example, if you want to get recently 5 data from the table of "sample_table" : <br>%s', PLUGIN_SLUG), $api_url_example);
 
 if (isset($cdbt_options['api_key']) && !empty($cdbt_options['api_key']) && is_array($cdbt_options['api_key']) && count($cdbt_options['api_key']) > 0) {
 	$table_header = sprintf('<thead><tr><th>%s</th><th>%s</th><th>%s</th></tr></thead>', __('Request host address', PLUGIN_SLUG), __('API key', PLUGIN_SLUG), __('Delete', PLUGIN_SLUG));
@@ -119,8 +123,10 @@ $content_html = <<<EOH
 			$api_key_list
 		</div>
 		<div class="col-sm-offset-2 col-sm-9">
-			<p class="help-block"><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> 
-				$helper_msg6</p></p>
+			<p class="help-block">
+				<p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> $helper_msg6</p>
+				<p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> $helper_msg7</p>
+			</p>
 		</div>
 	</div>
 	<div class="form-group">

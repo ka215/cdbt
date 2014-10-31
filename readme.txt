@@ -64,8 +64,11 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 1.1.6 =
-* 
+* Newly added the API function that outputs the search result of table data in JSON and JSONP format.
+* Added the ability to access the managable tables under the plugin from an external site by using generated API key.
+* Extended the mime-type of importable CSV file: "application/vnd.ms-excel", "application/octet-stream", "text/plain", "text/csv", "text/tsv"
 * Updated methods (delete_data, find_data, insert_data, update_data).
+* Added a registration datetime (column named "created") in the target columns when editing table data.
 
 = 1.1.5 =
 * Fixed a bug that resume of external table does not work if the table that you created in plugins have none.
