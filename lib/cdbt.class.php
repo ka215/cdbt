@@ -285,10 +285,11 @@ class CustomDatabaseTables {
 	 * @return void
 	 */
 	function create_admin(){
-		add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), plugin_dir_url(__FILE__) . 'assets/img/undo.png');
+		$cdbt_plugin_page = add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), plugin_dir_url(__FILE__) . 'assets/img/undo.png');
 		wp_parse_str($_SERVER['QUERY_STRING'], $this->query);
-		//add_action('admin_init', array($this, 'admin_header'));
-		add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
+		add_action("admin_head-$cdbt_plugin_page", array($this, 'admin_header'));
+		add_action("load-$cdbt_plugin_page", array($this, 'admin_assets'));
+		add_action("admin_footer-$cdbt_plugin_page", array($this, 'admin_footer'));
 		add_action('admin_notice', array($this, 'admin_notice'));
 	}
 	
@@ -316,11 +317,10 @@ class CustomDatabaseTables {
 				break;
 		}
 		require_once PLUGIN_TMPL_DIR . DS . $template_name;
-		cdbt_create_javascript();
 	}
 	
 	/**
-	 * load header for admin panel
+	 * load header for CDBT management console in admin panel
 	 * @return void
 	 */
 	function admin_header(){
@@ -330,28 +330,58 @@ class CustomDatabaseTables {
 	}
 	
 	/**
-	 * load assets for admin panel
+	 * load assets for CDBT management console in admin panel
 	 * @return void
 	 */
 	function admin_assets(){
+		if (!is_admin()) 
+			return;
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
-			if (is_admin()) {
-			wp_enqueue_style('cdbt-common-style', $this->dir_url . '/assets/css/cdbt-main.min.css', array(), $this->version, 'all');
-			wp_enqueue_style('cdbt-admin-style', $this->dir_url . '/assets/css/cdbt-admin.css', true, $this->version, 'all');
-			wp_register_script('cdbt-common-script', $this->dir_url . '/assets/js/scripts.min.js');
-			wp_enqueue_script('jquery-ui-core');
-			wp_enqueue_script('jquery-ui-widget');
-			wp_enqueue_script('jquery-ui-mouse');
-			wp_enqueue_script('jquery-ui-position');
-			wp_enqueue_script('jquery-ui-sortable');
-			wp_enqueue_script('jquery-ui-autocomplete');
-			wp_enqueue_script('cdbt-common-script');
+			$cdbt_admin_assets = array(
+				'styles' => array(
+					'cdbt-common-style' => array( $this->dir_url . '/assets/css/cdbt-main.min.css', array(), $this->version, 'all' ), 
+					'cdbt-admin-style' => array( $this->dir_url . '/assets/css/cdbt-admin.css', true, $this->version, 'all' ), 
+				), 
+				'scripts' => array(
+					'cdbt-common-script' => array( $this->dir_url . '/assets/js/scripts.min.js', array(), null, false ), 
+					'jquery-ui-core' => null, 
+					'jquery-ui-widget' => null, 
+					'jquery-ui-mouse' => null, 
+					'jquery-ui-position' => null, 
+					'jquery-ui-sortable' => null, 
+					'jquery-ui-autocomplete' => null, 
+				)
+			);
+			foreach ($cdbt_admin_assets as $asset_type => $asset_instance) {
+				if ($asset_type == 'styles') {
+					foreach ($asset_instance as $asset_name => $asset_values) {
+						wp_enqueue_style($asset_name, $asset_values[0], $asset_values[1], $asset_values[2], $asset_values[3]);
+					}
+				}
+				if ($asset_type == 'scripts') {
+					foreach ($asset_instance as $asset_name => $asset_values) {
+						if (!empty($asset_values)) {
+							wp_register_script($asset_name, $asset_values[0], $asset_values[1], $asset_values[2], $asset_values[3]);
+						}
+						wp_enqueue_script($asset_name);
+					}
+				}
 			}
 		}
 	}
 	
 	/**
-	 * show notice on admin panel
+	 * load footer for CDBT management console in admin panel
+	 * @return void
+	 */
+	function admin_footer(){
+		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
+			cdbt_create_javascript();
+		}
+	}
+	
+	/**
+	 * show notice on CDBT management console in admin panel
 	 * @return void
 	 */
 	function admin_notice(){
@@ -477,33 +507,53 @@ class CustomDatabaseTables {
 	 * @return void
 	 */
 	function receive_api_request($wp_query){
+		if (is_admin()) 
+			return;
 		if (isset($wp_query->query['cdbt_api_key']) && !empty($wp_query->query['cdbt_api_key'])) {
+			$request_uri = $_SERVER['REQUEST_URI'];
+			$request_date = date('c', $_SERVER['REQUEST_TIME']);
 			if ($this->verify_api_key(trim($wp_query->query['cdbt_api_key']))) {
 				$target_table = (isset($wp_query->query['cdbt_table']) && !empty($wp_query->query['cdbt_table'])) ? trim($wp_query->query['cdbt_table']) : '';
 				$request = (isset($wp_query->query['cdbt_api_request']) && !empty($wp_query->query['cdbt_api_request'])) ? trim($wp_query->query['cdbt_api_request']) : '';
 				if (!empty($target_table) && !empty($request)) {
 					if ($this->check_table_exists($target_table)) {
 						// 200: Successful
+						$response = array('success' => array('code' => 200, 'table' => $target_table, 'request' => $request, 'request_uri' => $request_uri, 'request_date' => $request_date));
 						switch($request) {
 							case 'get_data': 
-								$response = array('success' => array('code' => 200, 'table' => $target_table, 'request' => $request));
 								$allow_args = array('columns' => 'mixed', 'conditions' => 'hash', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int');
 								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
 								break;
+							case 'find_data': 
+								$allow_args = array('search_key' => 'string', 'columns' => 'mixed', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int');
+								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+								break;
+							case 'insert_data': 
+								$allow_args = array('data' => 'hash');
+								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+								break;
+							case 'update_data': 
+								$allow_args = array('primary_key_value' => 'int', 'data' => 'hash');
+								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+								break;
+							case 'delete_data': 
+								$allow_args = array('primary_key_value' => 'int');
+								$response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+								break;
 							default: 
-								$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+								$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date));
 								break;
 						}
 					} else {
-						$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+						$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date));
 					}
 				} else {
 					// 400: Invalid API request
-					$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request'));
+					$response = array('error' => array('code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date));
 				}
 			} else {
 				// 401: Authentication failure
-				$response = array('error' => array('code' => 401, 'desc' => 'Authentication Failure'));
+				$response = array('error' => array('code' => 401, 'desc' => 'Authentication Failure', 'request_uri' => $request_uri, 'request_date' => $request_date));
 			}
 			$is_crossdomain = (isset($_REQUEST['callback']) && !empty($_REQUEST['callback'])) ? trim($_REQUEST['callback']) : false;
 			header( 'Content-Type: text/javascript; charset=utf-8' );
@@ -512,11 +562,12 @@ class CustomDatabaseTables {
 			} else {
 				$response = json_encode($response);
 			}
-			echo $response;
+			// Currently, logging of API request is not implemented yet.
+			die($response);
 			exit;
 		} else {
 			// 403: Invalid access
-			$response = array('error' => array('code' => 403, 'desc' => 'Invalid Access'));
+			// $response = array('error' => array('code' => 403, 'desc' => 'Invalid Access'));
 			header("HTTP/1.1 404 Not Found", false, 404);
 		}
 	}
@@ -537,15 +588,18 @@ class CustomDatabaseTables {
 						$tmp = explode(',', $matches[1]);
 						$tmp_ary = array();
 						foreach ($tmp as $line_str) {
-							list($key, $val) = explode(':', trim($line_str));
-							$tmp_ary[trim(trim($key), "\"'\s")] = trim(trim($val), "\"'\s");
+							list($column_name, $column_value) = explode(':', trim($line_str));
+							$column_name = trim(trim(stripcslashes($column_name)), "\"' ");
+							$column_value = trim(trim(stripcslashes($column_value)), "\"' ");
+							if (!empty($column_name)) 
+								$tmp_ary[$column_name] = empty($column_value) ? 'NULL' : $column_value;
 						}
 						${$var_name} = $tmp_ary;
 					} elseif (preg_match('/^\[(.*)\]$/U', ${$var_name}, $matches)) {
 						$tmp = explode(',', $matches[1]);
 						$tmp_ary = array();
 						foreach ($tmp as $line_str) {
-							$tmp_ary[] = trim(trim($line_str), "\"'\s");
+							$tmp_ary[] = trim(trim(stripcslashes($line_str)), "\"' ");
 						}
 						${$var_name} = $tmp_ary;
 					}
@@ -554,7 +608,7 @@ class CustomDatabaseTables {
 						$tmp = explode(',', $matches[1]);
 						$tmp_ary = array();
 						foreach ($tmp as $line_str) {
-							$tmp_ary[] = trim(trim($line_str), "\"'\s");
+							$tmp_ary[] = trim(trim(stripcslashes($line_str)), "\"' ");
 						}
 						${$var_name} = $tmp_ary;
 					} else {
@@ -565,8 +619,11 @@ class CustomDatabaseTables {
 						$tmp = explode(',', $matches[1]);
 						$tmp_ary = array();
 						foreach ($tmp as $line_str) {
-							list($key, $val) = explode(':', trim($line_str));
-							$tmp_ary[trim(trim($key), "\"'\s")] = trim(trim($val), "\"'\s");
+							list($column_name, $column_value) = explode(':', trim($line_str));
+							$column_name = trim(trim(stripcslashes($column_name)), "\"' ");
+							$column_value = trim(trim(stripcslashes($column_value)), "\"' ");
+							if (!empty($column_name)) 
+								$tmp_ary[$column_name] = empty($column_value) ? 'NULL' : $column_value;
 						}
 						${$var_name} = $tmp_ary;
 					} else {
@@ -577,10 +634,25 @@ class CustomDatabaseTables {
 				}
 			}
 		}
-		if ($request == 'get_data') {
-			$result = $this->get_data($target_table, $columns, $conditions, $order, $limit, $offset);
-		} elseif ($request == 'find_data') {
-			$result = $this->find_data();
+		switch($request) {
+			case 'get_data': 
+				$result = $this->get_data($target_table, $columns, $conditions, $order, $limit, $offset);
+				break;
+			case 'find_data': 
+				$result = $this->find_data($target_table, null, $search_key, $columns, $order, $limit, $offset);
+				break;
+			case 'insert_data': 
+				$result = $this->insert_data($target_table, $data, null);
+				break;
+			case 'update_data': 
+				$result = $this->update_data($target_table, $primary_key_value, $data, null);
+				break;
+			case 'delete_data': 
+				$result = $this->delete_data($target_table, $primary_key_value);
+				break;
+			default: 
+				$result = false;
+				break;
 		}
 		return $result;
 	}
@@ -877,7 +949,7 @@ class CustomDatabaseTables {
 		$search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
 		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
 		if (!empty($keywords)) {
-			if (!empty($table_schema)) 
+			if (empty($table_schema)) 
 				list(, , $table_schema) = $this->get_table_schema($table_name);
 			$primary_key_name = null;
 			foreach ($table_schema as $col_name => $col_scm) {

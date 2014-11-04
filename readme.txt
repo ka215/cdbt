@@ -64,6 +64,7 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 1.1.6 =
+* Changed the reading position of the plugins dedicated inline JavaScript in management page.
 * Newly added the API function that outputs the search result of table data in JSON and JSONP format.
 * Added the ability to access the managable tables under the plugin from an external site by using generated API key.
 * Extended the mime-type of importable CSV file: "application/vnd.ms-excel", "application/octet-stream", "text/plain", "text/csv", "text/tsv"
