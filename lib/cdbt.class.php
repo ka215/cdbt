@@ -568,7 +568,7 @@ class CustomDatabaseTables {
 		} else {
 			// 403: Invalid access
 			// $response = array('error' => array('code' => 403, 'desc' => 'Invalid Access'));
-			header("HTTP/1.1 404 Not Found", false, 404);
+			//header("HTTP/1.1 404 Not Found", false, 404);
 		}
 	}
 	

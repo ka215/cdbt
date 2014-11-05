@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Database Tables 1.1.6\n"
-"POT-Creation-Date: 2014-11-04 18:39+0900\n"
+"Project-Id-Version: Custom Database Tables 1.1.7\n"
+"POT-Creation-Date: 2014-11-05 13:14+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -171,6 +171,7 @@ msgstr "有効/無効選択"
 #: ../../custom-database-tables/templates/cdbt-edit.php:236
 #: ../../custom-database-tables/templates/cdbt-input.php:112
 #: ../../custom-database-tables/templates/cdbt-list.php:202
+#: ../../custom-database-tables/templates/cdbt-public-contents.php:83
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:292
 #: ../../custom-database-tables/templates/cdbt-public-list.php:226
 msgid "Close"
@@ -503,15 +504,17 @@ msgstr "桁数,少数部桁"
 msgid "Integer of length"
 msgstr "文字数"
 
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:20
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:60
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:100
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:26
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:66
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:106
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:150
 msgid "No table specified"
 msgstr "テーブルが指定されていません"
 
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:22
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:62
-#: ../../custom-database-tables/lib/cdbt.shortcodes.php:102
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:28
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:68
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:108
+#: ../../custom-database-tables/lib/cdbt.shortcodes.php:152
 msgid "You&apos;ve denied permission to view this table."
 msgstr "あなたはこのテーブルを閲覧する権限がありません。"
 
@@ -1302,6 +1305,7 @@ msgstr "\"%s\" に該当するデータはありません。"
 
 #: ../../custom-database-tables/templates/cdbt-edit.php:233
 #: ../../custom-database-tables/templates/cdbt-list.php:199
+#: ../../custom-database-tables/templates/cdbt-public-contents.php:81
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:289
 #: ../../custom-database-tables/templates/cdbt-public-list.php:223
 msgid "Data is none."
@@ -1311,6 +1315,7 @@ msgstr "データがありません。"
 #: ../../custom-database-tables/templates/cdbt-index.php:68
 #: ../../custom-database-tables/templates/cdbt-input.php:138
 #: ../../custom-database-tables/templates/cdbt-list.php:209
+#: ../../custom-database-tables/templates/cdbt-public-contents.php:88
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:298
 #: ../../custom-database-tables/templates/cdbt-public-input.php:187
 #: ../../custom-database-tables/templates/cdbt-public-list.php:232
