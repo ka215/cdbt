@@ -5,31 +5,31 @@
 //var_dump($inherit_values);
 
 // translate text
-$table_creator_label = __('Table Creator', PLUGIN_SLUG);
-$tips_message = __('Columns of updated date and created date, and ID column of primary key can not be deleted or edited. You can create a new columns other that. And it will be sorted in drag.', PLUGIN_SLUG);
-$cancel_close_btn_label = __('Cancel', PLUGIN_SLUG);
-$set_sql_btn_label = __('Set SQL Statements', PLUGIN_SLUG);
+$table_creator_label = __('Table Creator', CDBT_PLUGIN_SLUG);
+$tips_message = __('Columns of updated date and created date, and ID column of primary key can not be deleted or edited. You can create a new columns other that. And it will be sorted in drag.', CDBT_PLUGIN_SLUG);
+$cancel_close_btn_label = __('Cancel', CDBT_PLUGIN_SLUG);
+$set_sql_btn_label = __('Set SQL Statements', CDBT_PLUGIN_SLUG);
 
-$placeholder_column_name = __('column name', PLUGIN_SLUG);
-$placeholder_length = __('integer', PLUGIN_SLUG);
-$placeholder_default = __('default', PLUGIN_SLUG);
-$placeholder_extra = __('extra', PLUGIN_SLUG);
-$placeholder_comment = __('comment', PLUGIN_SLUG);
-$value_primary_key = __('ID', PLUGIN_SLUG);
-$value_created = __('Created Date', PLUGIN_SLUG);
-$value_updated = __('Updated Date', PLUGIN_SLUG);
+$placeholder_column_name = __('column name', CDBT_PLUGIN_SLUG);
+$placeholder_length = __('integer', CDBT_PLUGIN_SLUG);
+$placeholder_default = __('default', CDBT_PLUGIN_SLUG);
+$placeholder_extra = __('extra', CDBT_PLUGIN_SLUG);
+$placeholder_comment = __('comment', CDBT_PLUGIN_SLUG);
+$value_primary_key = __('ID', CDBT_PLUGIN_SLUG);
+$value_created = __('Created Date', CDBT_PLUGIN_SLUG);
+$value_updated = __('Updated Date', CDBT_PLUGIN_SLUG);
 
 $index_row = sprintf('<li class="index-row"><label class="null"></label><label class="w-xl">%s</label><label>%s</label><label class="w-sm">%s</label><label class="w-xs">%s</label><label>%s</label><label>%s</label><label class="w-xs">%s</label><label>%s</label><label class="w-lg">%s</label><label class="w-xl">%s</label><label class="null"></label></li>', 
-	__('column name', PLUGIN_SLUG), 
-	__('type format', PLUGIN_SLUG), 
-	__('length', PLUGIN_SLUG), 
-	__('not null', PLUGIN_SLUG), 
-	__('default', PLUGIN_SLUG), 
-	__('attribute', PLUGIN_SLUG), 
-	__('autoinc.', PLUGIN_SLUG), 
-	__('key', PLUGIN_SLUG), 
-	__('extra', PLUGIN_SLUG), 
-	__('comment', PLUGIN_SLUG));
+	__('column name', CDBT_PLUGIN_SLUG), 
+	__('type format', CDBT_PLUGIN_SLUG), 
+	__('length', CDBT_PLUGIN_SLUG), 
+	__('not null', CDBT_PLUGIN_SLUG), 
+	__('default', CDBT_PLUGIN_SLUG), 
+	__('attribute', CDBT_PLUGIN_SLUG), 
+	__('autoinc.', CDBT_PLUGIN_SLUG), 
+	__('key', CDBT_PLUGIN_SLUG), 
+	__('extra', CDBT_PLUGIN_SLUG), 
+	__('comment', CDBT_PLUGIN_SLUG));
 
 $preset_col_type = array( 
 	'int' => 11, // = int(11)

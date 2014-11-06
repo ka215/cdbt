@@ -11,21 +11,21 @@
   Text Domain: custom-database-tables
   Domain Path: /langs
 */
-define('PLUGIN_VERSION', '1.1.7');
-define('DB_VERSION', (float)1.2);
-define('PLUGIN_SLUG', 'custom-database-tables');
+define('CDBT_PLUGIN_VERSION', '1.1.7');
+define('CDBT_DB_VERSION', (float)1.2);
+define('CDBT_PLUGIN_SLUG', 'custom-database-tables');
 
-define('DS', DIRECTORY_SEPARATOR);
-define('PLUGIN_DIR', dirname(__FILE__));
-define('PLUGIN_LIB_DIR', PLUGIN_DIR . DS . 'lib');
-define('PLUGIN_TMPL_DIR', PLUGIN_DIR . DS . 'templates');
+define('CDBT_DS', DIRECTORY_SEPARATOR);
+define('CDBT_PLUGIN_DIR', dirname(__FILE__));
+define('CDBT_PLUGIN_LIB_DIR', CDBT_PLUGIN_DIR . CDBT_DS . 'lib');
+define('CDBT_PLUGIN_TMPL_DIR', CDBT_PLUGIN_DIR . CDBT_DS . 'templates');
 
-require_once PLUGIN_LIB_DIR . DS . 'cdbt.class.php';
-require_once PLUGIN_LIB_DIR . DS . 'cdbt.ajax.php';
-require_once PLUGIN_LIB_DIR . DS . 'cdbt.media.php';
-require_once PLUGIN_LIB_DIR . DS . 'cdbt.scripts.php';
-require_once PLUGIN_LIB_DIR . DS . 'cdbt.shortcodes.php';
-require_once PLUGIN_DIR . DS . 'functions.php';
+require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.class.php';
+require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.ajax.php';
+require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.media.php';
+require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.scripts.php';
+require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.shortcodes.php';
+require_once CDBT_PLUGIN_DIR . CDBT_DS . 'functions.php';
 
 global $cdbt;
 $cdbt = new CustomDatabaseTables();

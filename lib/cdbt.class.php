@@ -5,13 +5,13 @@ class CustomDatabaseTables {
 	 * plugin version
 	 * @var string
 	 */
-	var $version = PLUGIN_VERSION;
+	var $version = CDBT_PLUGIN_VERSION;
 	
 	/**
 	 * database version
 	 * @var float
 	 */
-	var $db_version = DB_VERSION;
+	var $db_version = CDBT_DB_VERSION;
 	
 	/**
 	 * name of controller table
@@ -65,7 +65,7 @@ class CustomDatabaseTables {
 	 * domain name for i18n
 	 * @var string
 	 */
-	const DOMAIN = PLUGIN_SLUG;
+	const DOMAIN = CDBT_PLUGIN_SLUG;
 	
 	/**
 	 * undocumented class variable
@@ -98,15 +98,15 @@ class CustomDatabaseTables {
 	function __construct() {
 		global $wpdb;
 		
-		foreach (explode(DS, dirname(__FILE__)) as $dir_name) {
-			$this->dir .= (!empty($dir_name)) ? DS . $dir_name : '';
+		foreach (explode(CDBT_DS, dirname(__FILE__)) as $dir_name) {
+			$this->dir .= (!empty($dir_name)) ? CDBT_DS . $dir_name : '';
 			if (self::DOMAIN == $dir_name) 
 				break;
 		}
 		$path_list = explode('/', plugin_basename(__FILE__));
 		$this->dir_url = @plugin_dir_url() . array_shift($path_list);
 		
-		load_plugin_textdomain(self::DOMAIN, false, basename($this->dir) . DS . 'langs');
+		load_plugin_textdomain(self::DOMAIN, false, basename($this->dir) . CDBT_DS . 'langs');
 		
 		$this->options = get_option(self::DOMAIN);
 		if (!empty($this->options['timezone'])) 
@@ -159,7 +159,7 @@ class CustomDatabaseTables {
 	protected function log_info($msg) {
 		if ($this->debug) {
 			$now_datetime = date("Y-m-d H:i:s (e)", strtotime(current_time('mysql')));
-			$log_file_path = $this->dir . DS . 'log.txt';
+			$log_file_path = $this->dir . CDBT_DS . 'log.txt';
 			if (!file_exists($log_file_path)) 
 				$log_file_path = substr($log_file_path, 1);
 			error_log("[$now_datetime] CURRENT_TABLE=\"$this->current_table\" INFO=\"$msg\" ;\n", 3, $log_file_path);
@@ -316,7 +316,7 @@ class CustomDatabaseTables {
 				$template_name = 'cdbt-index.php';
 				break;
 		}
-		require_once PLUGIN_TMPL_DIR . DS . $template_name;
+		require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . $template_name;
 	}
 	
 	/**

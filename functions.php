@@ -60,7 +60,7 @@ function cdbt_create_pagination($page_num, $per_page, $total_data, $mode='list',
 		$pagination_html .= $page_num == $max_pages ? sprintf($pagination_right, disabled($page_num, $max_pages, false), '<span>', '</span>') : sprintf($pagination_right, '', '<a href="#" data-page="'. $max_pages .'">', '</a>');
 	}
 	
-	$page_slug = PLUGIN_SLUG;
+	$page_slug = CDBT_PLUGIN_SLUG;
 	$nonce_field = wp_nonce_field($page_slug .'_'. $mode, '_cdbt_token', false, false);
 	$pagination_form = <<<EOH
 <form method="post" class="change-page" role="form">
@@ -122,9 +122,9 @@ function cdbt_current_user_level() {
  * @return boolean
  */
 function cdbt_check_current_table_role($mode, $table=null) {
-	$cdbt_option = get_option(PLUGIN_SLUG);
+	$cdbt_option = get_option(CDBT_PLUGIN_SLUG);
 	if (empty($table)) {
-		$current_table = get_option(PLUGIN_SLUG . '_current_table');
+		$current_table = get_option(CDBT_PLUGIN_SLUG . '_current_table');
 	} else {
 		$current_table = $table;
 	}
@@ -148,8 +148,8 @@ function cdbt_check_current_table_role($mode, $table=null) {
  * @return boolean
  */
 function cdbt_check_current_table_valid($table_name=null) {
-	$cdbt_option = get_option(PLUGIN_SLUG);
-	$current_table = empty($table_name) ? get_option(PLUGIN_SLUG . '_current_table') : $table_name;
+	$cdbt_option = get_option(CDBT_PLUGIN_SLUG);
+	$current_table = empty($table_name) ? get_option(CDBT_PLUGIN_SLUG . '_current_table') : $table_name;
 	if (!$current_table || !$cdbt_option) 
 		return false;
 	$is_enable_table = false;
@@ -170,8 +170,8 @@ function cdbt_check_current_table_valid($table_name=null) {
  * @return array|boolean
  */
 function cdbt_get_options_table($table_name=null) {
-	$cdbt_option = get_option(PLUGIN_SLUG);
-	$target_table = empty($table_name) ? get_option(PLUGIN_SLUG . '_current_table') : $table_name;
+	$cdbt_option = get_option(CDBT_PLUGIN_SLUG);
+	$target_table = empty($table_name) ? get_option(CDBT_PLUGIN_SLUG . '_current_table') : $table_name;
 	if (!$target_table || !$cdbt_option) 
 		return false;
 	foreach ($cdbt_option['tables'] as $table) {
@@ -191,12 +191,12 @@ function cdbt_get_options_table($table_name=null) {
  */
 function cdbt_create_console_menu($nonce) {
 	$user_level = cdbt_current_user_level();
-	$current_table = get_option(PLUGIN_SLUG . '_current_table');
-	$options = get_option(PLUGIN_SLUG);
+	$current_table = get_option(CDBT_PLUGIN_SLUG . '_current_table');
+	$options = get_option(CDBT_PLUGIN_SLUG);
 	$attr = disabled($current_table, false, false);
 	$buttons[0] = array( // Index key number is button order from left.
 		'_mode' => 'index', 
-		'_name' => __('Home position', PLUGIN_SLUG), 
+		'_name' => __('Home position', CDBT_PLUGIN_SLUG), 
 		'_class' => 'default', 
 		'_attr' => '', 
 		'_icon' => 'dashboard', 
@@ -216,28 +216,28 @@ function cdbt_create_console_menu($nonce) {
 	}
 	$buttons[1] = array(
 		'_mode' => 'admin', 
-		'_name' => __('Setting', PLUGIN_SLUG), 
+		'_name' => __('Setting', CDBT_PLUGIN_SLUG), 
 		'_class' => 'default', 
 		'_attr' => $admin_attr, 
 		'_icon' => 'cog', 
 	);
 	$buttons[2] = array(
 		'_mode' => 'input', 
-		'_name' => __('Input data', PLUGIN_SLUG), 
+		'_name' => __('Input data', CDBT_PLUGIN_SLUG), 
 		'_class' => 'default', 
 		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('input'), false, false) : $attr, 
 		'_icon' => 'pencil', 
 	);
 	$buttons[3] = array( 
 		'_mode' => 'list', 
-		'_name' => __('View data', PLUGIN_SLUG), 
+		'_name' => __('View data', CDBT_PLUGIN_SLUG), 
 		'_class' => 'default', 
 		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('view'), false, false) : $attr, 
 		'_icon' => 'list', 
 	); 
 	$buttons[4] = array(
 		'_mode' => 'edit', 
-		'_name' => __('Edit data', PLUGIN_SLUG), 
+		'_name' => __('Edit data', CDBT_PLUGIN_SLUG), 
 		'_class' => 'default', 
 		'_attr' => empty($attr) ? disabled(cdbt_check_current_table_role('edit'), false, false) : $attr, 
 		'_icon' => 'edit', 
@@ -245,17 +245,17 @@ function cdbt_create_console_menu($nonce) {
 	ksort($buttons);
 	$menu_content = '';
 	foreach ($buttons as $button) {
-		if ($nonce == wp_create_nonce(PLUGIN_SLUG .'_'. $button['_mode'])) 
+		if ($nonce == wp_create_nonce(CDBT_PLUGIN_SLUG .'_'. $button['_mode'])) 
 			$button['_class'] .= ' active';
 		if (is_admin()) {
-			$menu_url = wp_nonce_url(admin_url('options-general.php?page=' . PLUGIN_SLUG . '&mode=' . $button['_mode']), PLUGIN_SLUG .'_'. $button['_mode'], '_cdbt_token');
+			$menu_url = wp_nonce_url(admin_url('options-general.php?page=' . CDBT_PLUGIN_SLUG . '&mode=' . $button['_mode']), CDBT_PLUGIN_SLUG .'_'. $button['_mode'], '_cdbt_token');
 		} else {
-			$menu_url = wp_nonce_url($_SERVER['SCRIPT_NAME'] . '?page=' . PLUGIN_SLUG . '&mode=' . $button['_mode'], PLUGIN_SLUG .'_'. $button['_mode'], '_cdbt_token');
+			$menu_url = wp_nonce_url($_SERVER['SCRIPT_NAME'] . '?page=' . CDBT_PLUGIN_SLUG . '&mode=' . $button['_mode'], CDBT_PLUGIN_SLUG .'_'. $button['_mode'], '_cdbt_token');
 		}
 		$menu_content .= sprintf('<a href="%s" class="btn btn-%s"%s><span class="glyphicon glyphicon-%s"></span> %s</a>', $menu_url, $button['_class'], $button['_attr'], $button['_icon'], $button['_name']);
 	}
 	$plugin_version = sprintf('<div class="cdbt-version pull-right"><span class="label label-default">Ver. %s</span></div>', $options['plugin_version']);
-	$console_title = sprintf('<h2 class="cdbt-title">%s%s</h2>', __('Custom DataBase Tables Management console', PLUGIN_SLUG), $plugin_version);
+	$console_title = sprintf('<h2 class="cdbt-title">%s%s</h2>', __('Custom DataBase Tables Management console', CDBT_PLUGIN_SLUG), $plugin_version);
 	echo sprintf('<div class="console-container"><div class="console-menu">%s<div class="btn-group btn-group-justified">%s</div></div>', $console_title, $menu_content);
 }
 
@@ -290,8 +290,8 @@ function cdbt_create_console_footer($message=null, $run=false, $run_label=null, 
       <div class="modal-body">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> <span class="cancel-close"><?php _e('Cancel', PLUGIN_SLUG); ?></span></button>
-        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> <span class="run-process"><?php _e('Yes, run', PLUGIN_SLUG); ?></span></button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> <span class="cancel-close"><?php _e('Cancel', CDBT_PLUGIN_SLUG); ?></span></button>
+        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> <span class="run-process"><?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?></span></button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -326,7 +326,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 		$set_value = !empty($value) ? $value : $column_schema['default'];
 		$attr_id = $table_name . '-' . $column_name;
 		$label_title = (empty($column_schema['logical_name'])) ? $column_name : $column_schema['logical_name'];
-		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">'. __('require', PLUGIN_SLUG) .'</span>' : '';
+		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">'. __('require', CDBT_PLUGIN_SLUG) .'</span>' : '';
 		$is_hidden = ($option == 'hide') ? true: false;
 		$base_component = '<div class="form-group">%s</div>';
 		if ($column_schema['type'] == 'enum') {
@@ -386,7 +386,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 		} else if (preg_match('/^(text|mediumtext|longtext)$/i', $column_schema['type'])) {
 			// textarea
 			if (!$is_hidden) {
-				$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
+				$placeholder = sprintf(__('Enter %s', CDBT_PLUGIN_SLUG), $label_title);
 				$default_rows = ceil(($column_schema['max_length'] * $font_size) / 940);
 				$default_rows = ($default_rows > 6) ? 6 : 3;
 				$input_form = '<label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
@@ -418,7 +418,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $current_timestamp .'">';
 			} else {
 				if (!$is_hidden) {
-					$placeholder = sprintf(__('Enter %s', PLUGIN_SLUG), $label_title);
+					$placeholder = sprintf(__('Enter %s', CDBT_PLUGIN_SLUG), $label_title);
 					$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
 					$input_type = (preg_match('/(int|numeric|float|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
 					$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
@@ -532,7 +532,7 @@ function cdbt_get_boolean($string) {
  * @return string
  */
 function cdbt__($string) {
-	return __($string, PLUGIN_SLUG);
+	return __($string, CDBT_PLUGIN_SLUG);
 }
 
 /**
@@ -541,5 +541,5 @@ function cdbt__($string) {
  * @return void
  */
 function cdbt_e($string) {
-	_e($string, PLUGIN_SLUG);
+	_e($string, CDBT_PLUGIN_SLUG);
 }

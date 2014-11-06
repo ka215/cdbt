@@ -23,13 +23,13 @@ class CustomDataBaseTables_Media {
 	public function cdbt_media() {
 		global $cdbt;
 		$token = $_REQUEST['token'];
-		if (wp_verify_nonce($token, PLUGIN_SLUG . '_media')) {
+		if (wp_verify_nonce($token, CDBT_PLUGIN_SLUG . '_media')) {
 			$mode = 'view';
-		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_download')) {
+		} else if (wp_verify_nonce($token, CDBT_PLUGIN_SLUG . '_download')) {
 			$mode = 'download';
-		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_tmpl_download')) {
+		} else if (wp_verify_nonce($token, CDBT_PLUGIN_SLUG . '_csv_tmpl_download')) {
 			$mode = 'csv_tmpl_download';
-		} else if (wp_verify_nonce($token, PLUGIN_SLUG . '_csv_export')) {
+		} else if (wp_verify_nonce($token, CDBT_PLUGIN_SLUG . '_csv_export')) {
 			$mode = 'csv_export';
 		} else {
 			cdbt_file_not_found();

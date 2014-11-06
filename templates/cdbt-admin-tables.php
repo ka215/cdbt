@@ -2,35 +2,35 @@
 // tables tab display setting
 $tab_name_label = cdbt_translate_tab_name($tab_name);
 $target_table = isset($target_table) ? $target_table : '';
-$refresh_button_label = __('Reflesh Table List', PLUGIN_SLUG);
-$current_table = get_option(PLUGIN_SLUG . '_current_table', $cdbt_options['tables'][0]['table_name']);
+$refresh_button_label = __('Reflesh Table List', CDBT_PLUGIN_SLUG);
+$current_table = get_option(CDBT_PLUGIN_SLUG . '_current_table', $cdbt_options['tables'][0]['table_name']);
 if (count($cdbt_options['tables']) > 1) {
 	foreach ($cdbt_options['tables'] as $i => $table) {
 		if ($table['table_type'] == 'enable_table') 
 			$load_tables[] = $table['table_name'];
 	}
 	$index_label = array(
-		__('No.', PLUGIN_SLUG), 
-		__('Table Name', PLUGIN_SLUG), 
-		__('Total Records', PLUGIN_SLUG), 
-		__('Data Import', PLUGIN_SLUG), 
-		__('Data Export', PLUGIN_SLUG), 
-		__('Change Table Schema', PLUGIN_SLUG), 
-		__('Truncate table', PLUGIN_SLUG), 
-		__('Drop table', PLUGIN_SLUG), 
-		__('Choise Current table', PLUGIN_SLUG), 
+		__('No.', CDBT_PLUGIN_SLUG), 
+		__('Table Name', CDBT_PLUGIN_SLUG), 
+		__('Total Records', CDBT_PLUGIN_SLUG), 
+		__('Data Import', CDBT_PLUGIN_SLUG), 
+		__('Data Export', CDBT_PLUGIN_SLUG), 
+		__('Change Table Schema', CDBT_PLUGIN_SLUG), 
+		__('Truncate table', CDBT_PLUGIN_SLUG), 
+		__('Drop table', CDBT_PLUGIN_SLUG), 
+		__('Choise Current table', CDBT_PLUGIN_SLUG), 
 	);
 	$thead_th = '';
 	foreach ($index_label as $th_text) {
 		$thead_th .= '<th>'. $th_text .'</th>';
 	}
 	$enable_handle = array(
-		'data-import' => array('enable' => true, 'label' => __('Data Import', PLUGIN_SLUG)), 
-		'data-export' => array('enable' => true, 'label' => __('Data Export', PLUGIN_SLUG)), 
-		'alter-table' => array('enable' => true, 'label' => __('Alter table', PLUGIN_SLUG)), 
-		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', PLUGIN_SLUG)), 
-		'drop-table' => array('enable' => true, 'label' => __('Drop table', PLUGIN_SLUG)), 
-		'choise-current-table' => array('enable' => true, 'label' => __('Set Current table', PLUGIN_SLUG)), 
+		'data-import' => array('enable' => true, 'label' => __('Data Import', CDBT_PLUGIN_SLUG)), 
+		'data-export' => array('enable' => true, 'label' => __('Data Export', CDBT_PLUGIN_SLUG)), 
+		'alter-table' => array('enable' => true, 'label' => __('Alter table', CDBT_PLUGIN_SLUG)), 
+		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', CDBT_PLUGIN_SLUG)), 
+		'drop-table' => array('enable' => true, 'label' => __('Drop table', CDBT_PLUGIN_SLUG)), 
+		'choise-current-table' => array('enable' => true, 'label' => __('Set Current table', CDBT_PLUGIN_SLUG)), 
 	);
 	$table_rows = null;
 	if (!empty($load_tables)) {
@@ -57,10 +57,10 @@ if (count($cdbt_options['tables']) > 1) {
 					$add_attr = (!$handle_info['enable']) ? ' disabled="disabled"' : '';
 					$add_class = '';
 					if ($handle_name == 'choise-current-table') {
-						$add_attr .= ' data-selected-text="'. __('Currently selected', PLUGIN_SLUG). '"';
+						$add_attr .= ' data-selected-text="'. __('Currently selected', CDBT_PLUGIN_SLUG). '"';
 						if ($is_current) {
 							$add_class = ' active';
-							$handle_info['label'] = __('Currently selected', PLUGIN_SLUG);
+							$handle_info['label'] = __('Currently selected', CDBT_PLUGIN_SLUG);
 						}
 					}
 					$table_rows .= '<td><button type="button" class="btn btn-default'. $add_class .'" id="'. $load_table_name .':'. $handle_name .'" data-table="'. $load_table_name .'"'. $add_attr .'>'. $handle_info['label'] .'</button></td>' . "\n";
@@ -99,5 +99,5 @@ if (count($cdbt_options['tables']) > 1) {
 </div>
 EOH;
 } else {
-	$content_html = sprintf('<div class="alert alert-%s tab-header">%s<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>', 'warning', __('The enabled table is none.', PLUGIN_SLUG));
+	$content_html = sprintf('<div class="alert alert-%s tab-header">%s<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>', 'warning', __('The enabled table is none.', CDBT_PLUGIN_SLUG));
 }

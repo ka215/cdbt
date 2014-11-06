@@ -23,9 +23,9 @@ function cdbt_display_view_table($atts, $content='') {
 	), $atts));
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
-		return __('No table specified', PLUGIN_SLUG);
+		return __('No table specified', CDBT_PLUGIN_SLUG);
 	if (!cdbt_check_current_table_role('view', $table)) 
-		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
+		return __('You&apos;ve denied permission to view this table.', CDBT_PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
@@ -46,9 +46,9 @@ function cdbt_display_view_table($atts, $content='') {
 		'exclude_cols' => !empty($exclude_cols) ? explode(',', $exclude_cols) : array(), 
 		'add_class' => $add_class, 
 	);
-	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-list.php';
+	require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-public-list.php';
 	$mode = 'list';
-	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
+	$_cdbt_token = wp_create_nonce(CDBT_PLUGIN_SLUG .'_'. $mode);
 	
 	return cdbt_render_list_page($table, $mode, $_cdbt_token, $options);
 }
@@ -63,9 +63,9 @@ function cdbt_display_entry_table($atts, $content='') {
 	), $atts));
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
-		return __('No table specified', PLUGIN_SLUG);
+		return __('No table specified', CDBT_PLUGIN_SLUG);
 	if (!cdbt_check_current_table_role('input', $table)) 
-		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
+		return __('You&apos;ve denied permission to view this table.', CDBT_PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
@@ -83,9 +83,9 @@ function cdbt_display_entry_table($atts, $content='') {
 		'hidden_cols' => !empty($hidden_cols) ? explode(',', $hidden_cols) : array(), 
 		'add_class' => $add_class, 
 	);
-	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-input.php';
+	require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-public-input.php';
 	$mode = 'input';
-	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
+	$_cdbt_token = wp_create_nonce(CDBT_PLUGIN_SLUG .'_'. $mode);
 	
 	return cdbt_render_input_page($table, $mode, $_cdbt_token, $options);
 }
@@ -103,9 +103,9 @@ function cdbt_display_edit_table($atts, $content='') {
 	), $atts));
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
-		return __('No table specified', PLUGIN_SLUG);
+		return __('No table specified', CDBT_PLUGIN_SLUG);
 	if (!cdbt_check_current_table_role('edit', $table)) 
-		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
+		return __('You&apos;ve denied permission to view this table.', CDBT_PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
@@ -126,9 +126,9 @@ function cdbt_display_edit_table($atts, $content='') {
 		'entry_page' => $entry_page, 
 		'add_class' => $add_class, 
 	);
-	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-edit.php';
+	require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-public-edit.php';
 	$mode = 'edit';
-	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
+	$_cdbt_token = wp_create_nonce(CDBT_PLUGIN_SLUG .'_'. $mode);
 	
 	return cdbt_render_edit_page($table, $mode, $_cdbt_token, $options);
 }
@@ -147,9 +147,9 @@ function cdbt_display_extract_data($atts, $content='') {
 	), $atts));
 	global $cdbt;
 	if (empty($table) || !$cdbt->check_table_exists($table)) 
-		return __('No table specified', PLUGIN_SLUG);
+		return __('No table specified', CDBT_PLUGIN_SLUG);
 	if (!cdbt_check_current_table_role('view', $table)) 
-		return __('You&apos;ve denied permission to view this table.', PLUGIN_SLUG);
+		return __('You&apos;ve denied permission to view this table.', CDBT_PLUGIN_SLUG);
 	
 	if (cdbt_get_boolean($bootstrap_style)) {
 		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
@@ -205,9 +205,9 @@ function cdbt_display_extract_data($atts, $content='') {
 		'limit_items' => intval($limit_items), 
 		'add_class' => $add_class, 
 	);
-	require_once PLUGIN_TMPL_DIR . DS . 'cdbt-public-contents.php';
+	require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-public-contents.php';
 	$mode = 'extract';
-	$_cdbt_token = wp_create_nonce(PLUGIN_SLUG .'_'. $mode);
+	$_cdbt_token = wp_create_nonce(CDBT_PLUGIN_SLUG .'_'. $mode);
 	
 	return cdbt_render_contents($table, $mode, $_cdbt_token, $options);
 }

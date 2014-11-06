@@ -23,10 +23,10 @@ class CustomDataBaseTables_Ajax {
 	public function cdbt_ajax_core() {
 		global $cdbt;
 		$token = $_POST['token'];
-		if (!wp_verify_nonce($token, PLUGIN_SLUG . '_ajax')) {
+		if (!wp_verify_nonce($token, CDBT_PLUGIN_SLUG . '_ajax')) {
 			$api_key = isset($_REQUEST['api_key']) && !empty($_REQUEST['api_key']);
 			if (!$cdbt->verify_api_key($api_key)) {
-				die(__('Invalid access!', PLUGIN_SLUG));
+				die(__('Invalid access!', CDBT_PLUGIN_SLUG));
 			} else {
 				
 				
@@ -53,13 +53,13 @@ class CustomDataBaseTables_Ajax {
 						$response = '';
 						$response .= '<ul class="download-files">';
 						foreach ($binary_files as $binary_file) {
-							$url = esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))) . '?action=cdbt_media&id='. $binary_file['ID'] .'&filename='. $binary_file['origin_file'] .'&token='. wp_create_nonce(PLUGIN_SLUG . '_download');
+							$url = esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))) . '?action=cdbt_media&id='. $binary_file['ID'] .'&filename='. $binary_file['origin_file'] .'&token='. wp_create_nonce(CDBT_PLUGIN_SLUG . '_download');
 							$response .= sprintf('<li><a href="%s">%s</a></li>', $url, rawurldecode($binary_file['origin_file']));
 						}
 						$response .= '</ul>';
 						die( $response );
 					} else {
-						die(__('No binary data.', PLUGIN_SLUG));
+						die(__('No binary data.', CDBT_PLUGIN_SLUG));
 					}
 					break;
 				case 'get_table_list': 
@@ -87,7 +87,7 @@ class CustomDataBaseTables_Ajax {
 					} elseif (preg_match('/^((http|https|ftp):\/\/|)([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $host_addr, $matches)) {
 						$host_addr = $matches[3];
 					} else {
-						die('error,'. __('Invalid request host address!', PLUGIN_SLUG));
+						die('error,'. __('Invalid request host address!', CDBT_PLUGIN_SLUG));
 					}
 					$api_key = $cdbt->generate_api_key($host_addr);
 					if (isset($cdbt->options['api_key']) && !empty($cdbt->options['api_key'])) {
@@ -95,7 +95,7 @@ class CustomDataBaseTables_Ajax {
 					} else {
 						$cdbt->options['api_key'] = array($host_addr => $api_key);
 					}
-					update_option(PLUGIN_SLUG, $cdbt->options);
+					update_option(CDBT_PLUGIN_SLUG, $cdbt->options);
 					die($host_addr .','. $api_key);
 					
 					break;
@@ -104,15 +104,15 @@ class CustomDataBaseTables_Ajax {
 					if (isset($cdbt->options['api_key']) && !empty($cdbt->options['api_key'])) {
 						if (array_key_exists($host_addr, $cdbt->options['api_key'])) {
 							unset($cdbt->options['api_key'][$host_addr]);
-							update_option(PLUGIN_SLUG, $cdbt->options);
+							update_option(CDBT_PLUGIN_SLUG, $cdbt->options);
 							die('done,');
 						}
 					} else {
-						die('error,'. __('Currently valid API key is not exists.', PLUGIN_SLUG));
+						die('error,'. __('Currently valid API key is not exists.', CDBT_PLUGIN_SLUG));
 					}
 					break;
 				default: 
-					die(__('Invalid access!', PLUGIN_SLUG));
+					die(__('Invalid access!', CDBT_PLUGIN_SLUG));
 					break;
 			}
 		}
@@ -121,67 +121,67 @@ class CustomDataBaseTables_Ajax {
 	public function create_preset_form($preset_id, $preset_template) {
 		$define_template = array(
 			'column_definition' => array(
-				'label' => __('Column definition', PLUGIN_SLUG), 
+				'label' => __('Column definition', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the column definition.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the column definition.', CDBT_PLUGIN_SLUG), 
 			),
 			'position' => array(
-				'label' => __('Column position', PLUGIN_SLUG), 
+				'label' => __('Column position', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the "FIRST" or after "column name".', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the "FIRST" or after "column name".', CDBT_PLUGIN_SLUG), 
 			),
 			'index_or_key' => array(
-				'label' => __('Index or Key', PLUGIN_SLUG), 
+				'label' => __('Index or Key', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'select', 
 				'form_elm' => '<select %s><option value="INDEX">INDEX</option><option value="KEY">KEY</option><option value="PRIMARY KEY">PRIMARY KEY</option><option value="UNIQUE">UNIQUE</option><option value="FULLTEXT">FULLTEXT</option><option value="SPATIAL">SPATIAL</option></select>', 
 				'placeholder' => '', 
 			),
 			'index_name' => array(
-				'label' => __('Index name', PLUGIN_SLUG), 
+				'label' => __('Index name', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the index name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the index name.', CDBT_PLUGIN_SLUG), 
 			),
 			'index_col_name' => array(
-				'label' => __('Index column name', PLUGIN_SLUG), 
+				'label' => __('Index column name', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the index column name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the index column name.', CDBT_PLUGIN_SLUG), 
 			),
 			'reference_definition' => array(
-				'label' => __('Reference definition', PLUGIN_SLUG), 
+				'label' => __('Reference definition', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the reference definition.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the reference definition.', CDBT_PLUGIN_SLUG), 
 			),
 			'col_name' => array(
-				'label' => __('Column name', PLUGIN_SLUG), 
+				'label' => __('Column name', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the column name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the column name.', CDBT_PLUGIN_SLUG), 
 			),
 			'default_definition' => array(
-				'label' => __('Default definition', PLUGIN_SLUG), 
+				'label' => __('Default definition', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the default definition.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the default definition.', CDBT_PLUGIN_SLUG), 
 			),
 			'old_col_name' => array(
-				'label' => __('Old column name', PLUGIN_SLUG), 
+				'label' => __('Old column name', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the old column name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the old column name.', CDBT_PLUGIN_SLUG), 
 			),
 			'column_or_keys' => array(
-				'label' => __('Column name or Index name or Key name', PLUGIN_SLUG), 
+				'label' => __('Column name or Index name or Key name', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'text', 
 				'form_elm' => '<input type="text" %s>', 
-				'placeholder' => __('Enter the column name or key name or index name.', PLUGIN_SLUG), 
+				'placeholder' => __('Enter the column name or key name or index name.', CDBT_PLUGIN_SLUG), 
 			),
 			'switch_definition' => array(
-				'label' => __('Enable or Disable', PLUGIN_SLUG), 
+				'label' => __('Enable or Disable', CDBT_PLUGIN_SLUG), 
 				'form_type' => 'select', 
 				'form_elm' => '<select %s><option value="DISABLE">DISABLE</option><option value="ENABLE">ENABLE</option></select>', 
 				'placeholder' => '', 
@@ -202,8 +202,8 @@ class CustomDataBaseTables_Ajax {
 					$form_set .= '</div>';
 					$preset_form .= $form_set;
 				}
-				$preset_form .= '<div class="form-group center-block"><button type="button" id="cancel_preset_sql_'. $preset_id .'" class="btn btn-default btn-sm" data-dismiss="popover"><span class="glyphicon glyphicon-remove"></span> '. __('Close', PLUGIN_SLUG) .'</button>';
-				$preset_form .= '<button type="button" id="set_preset_sql_'. $preset_id .'" class="btn btn-primary btn-sm" style="margin-left: 11px;"><span class="glyphicon glyphicon-plus"></span> '. __('Set Preset', PLUGIN_SLUG) .'</button></div>';
+				$preset_form .= '<div class="form-group center-block"><button type="button" id="cancel_preset_sql_'. $preset_id .'" class="btn btn-default btn-sm" data-dismiss="popover"><span class="glyphicon glyphicon-remove"></span> '. __('Close', CDBT_PLUGIN_SLUG) .'</button>';
+				$preset_form .= '<button type="button" id="set_preset_sql_'. $preset_id .'" class="btn btn-primary btn-sm" style="margin-left: 11px;"><span class="glyphicon glyphicon-plus"></span> '. __('Set Preset', CDBT_PLUGIN_SLUG) .'</button></div>';
 				$preset_form .= '</form>';
 				return $preset_form;
 			} else {

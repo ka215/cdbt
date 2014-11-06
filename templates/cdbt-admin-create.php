@@ -57,60 +57,60 @@ if ($handle == 'alter-table') {
 $db_engine_options = sprintf('<option value="InnoDB"%s>InnoDB</option><option value="MyISAM"%s>MyISAM</option>', selected($db_engine, 'InnoDB', false), selected($db_engine, 'MyISAM', false));
 
 // translate text
-$tab_name_label = ($handle == 'create-table') ? cdbt_translate_tab_name($tab_name) : __('Modify table', PLUGIN_SLUG);
-$submit_label = ($handle == 'create-table') ? __('Create table', PLUGIN_SLUG) : __('Modify table', PLUGIN_SLUG);
-$cancel_label = __('Cancel', PLUGIN_SLUG);
-$table_name_label = __('Table Name', PLUGIN_SLUG);
-$table_name_placeholder = __('Enter Table Name', PLUGIN_SLUG);
-$incorporate_table_label = __('Incorporate Already Exists Table', PLUGIN_SLUG);
-$helper_msg1 = __('If you will create the new table, in default table name is used the table-prefix of WordPress&apos;s config.', PLUGIN_SLUG);
-$helper_msg2 = __('Table name in the current configuration:', PLUGIN_SLUG);
-$helper_msg3 = __('It does not reflect if you change the table name, and not re-created after you delete a table of current created. In addition, in this table name is not possible use the name of the origin table that WordPress generates.', PLUGIN_SLUG);
-$helper_msg8 = __('Uptake function of a table that already exists, does not ensure the normal operation for the table that has not been created by this plugin. It also does not support the incorporation of the core table of WordPress.', PLUGIN_SLUG);
-$table_comment_label = __('Table Comment', PLUGIN_SLUG);
-$table_comment_placeholder = __('Enter Table Comment', PLUGIN_SLUG);
-$helper_msg4 = __('Table comment is used for display name as logical name of table.', PLUGIN_SLUG);
-$db_engine_label = __('Database Engine', PLUGIN_SLUG);
-$sql_label = __('Create Table SQL', PLUGIN_SLUG);
-$sql_label2 = __('Modify Table SQL', PLUGIN_SLUG);
-$sql_label3 = __('Preset of SQL', PLUGIN_SLUG);
-$edit_sql_mode1 = __('Statements Mode', PLUGIN_SLUG);
-$edit_sql_mode2 = __('Table Creator', PLUGIN_SLUG);
-$create_table_sql_placeholder = __('Enter SQL Statements to create table', PLUGIN_SLUG);
-$alter_table_sql_placeholder = __('Enter SQL Statements to alter table', PLUGIN_SLUG);
-$helper_msg5 = __('ID field of primary key for autoincrement type will be automatically inserted at the beginning. Then, the fields of update date and registration date and time will be added automatically to the end. Please do not include the entry of the field for those if you want to write SQL directly create the table.', PLUGIN_SLUG);
-$example_sql_label = __('Example of SQL statements: ', PLUGIN_SLUG);
-$example_col_comment1 = __('Account Name', PLUGIN_SLUG);
-$example_col_comment2 = __('Gender', PLUGIN_SLUG);
-$show_max_records_label = __('Show Max Records', PLUGIN_SLUG);
-$show_max_records_placeholder = __('Enter Integer', PLUGIN_SLUG);
-$show_max_records_unit = __('records', PLUGIN_SLUG);
-$helper_msg6 = __('The maximum number of records to be displayed on one page.', PLUGIN_SLUG);
-$helper_msg7 = __('Please enter the full text of the SQL statement of the table structure you want to change in this input field.', PLUGIN_SLUG);
-$timezone_label = __('Database Timezone', PLUGIN_SLUG);
-$timezone_placeholder = __('Database Timezone', PLUGIN_SLUG);
+$tab_name_label = ($handle == 'create-table') ? cdbt_translate_tab_name($tab_name) : __('Modify table', CDBT_PLUGIN_SLUG);
+$submit_label = ($handle == 'create-table') ? __('Create table', CDBT_PLUGIN_SLUG) : __('Modify table', CDBT_PLUGIN_SLUG);
+$cancel_label = __('Cancel', CDBT_PLUGIN_SLUG);
+$table_name_label = __('Table Name', CDBT_PLUGIN_SLUG);
+$table_name_placeholder = __('Enter Table Name', CDBT_PLUGIN_SLUG);
+$incorporate_table_label = __('Incorporate Already Exists Table', CDBT_PLUGIN_SLUG);
+$helper_msg1 = __('If you will create the new table, in default table name is used the table-prefix of WordPress&apos;s config.', CDBT_PLUGIN_SLUG);
+$helper_msg2 = __('Table name in the current configuration:', CDBT_PLUGIN_SLUG);
+$helper_msg3 = __('It does not reflect if you change the table name, and not re-created after you delete a table of current created. In addition, in this table name is not possible use the name of the origin table that WordPress generates.', CDBT_PLUGIN_SLUG);
+$helper_msg8 = __('Uptake function of a table that already exists, does not ensure the normal operation for the table that has not been created by this plugin. It also does not support the incorporation of the core table of WordPress.', CDBT_PLUGIN_SLUG);
+$table_comment_label = __('Table Comment', CDBT_PLUGIN_SLUG);
+$table_comment_placeholder = __('Enter Table Comment', CDBT_PLUGIN_SLUG);
+$helper_msg4 = __('Table comment is used for display name as logical name of table.', CDBT_PLUGIN_SLUG);
+$db_engine_label = __('Database Engine', CDBT_PLUGIN_SLUG);
+$sql_label = __('Create Table SQL', CDBT_PLUGIN_SLUG);
+$sql_label2 = __('Modify Table SQL', CDBT_PLUGIN_SLUG);
+$sql_label3 = __('Preset of SQL', CDBT_PLUGIN_SLUG);
+$edit_sql_mode1 = __('Statements Mode', CDBT_PLUGIN_SLUG);
+$edit_sql_mode2 = __('Table Creator', CDBT_PLUGIN_SLUG);
+$create_table_sql_placeholder = __('Enter SQL Statements to create table', CDBT_PLUGIN_SLUG);
+$alter_table_sql_placeholder = __('Enter SQL Statements to alter table', CDBT_PLUGIN_SLUG);
+$helper_msg5 = __('ID field of primary key for autoincrement type will be automatically inserted at the beginning. Then, the fields of update date and registration date and time will be added automatically to the end. Please do not include the entry of the field for those if you want to write SQL directly create the table.', CDBT_PLUGIN_SLUG);
+$example_sql_label = __('Example of SQL statements: ', CDBT_PLUGIN_SLUG);
+$example_col_comment1 = __('Account Name', CDBT_PLUGIN_SLUG);
+$example_col_comment2 = __('Gender', CDBT_PLUGIN_SLUG);
+$show_max_records_label = __('Show Max Records', CDBT_PLUGIN_SLUG);
+$show_max_records_placeholder = __('Enter Integer', CDBT_PLUGIN_SLUG);
+$show_max_records_unit = __('records', CDBT_PLUGIN_SLUG);
+$helper_msg6 = __('The maximum number of records to be displayed on one page.', CDBT_PLUGIN_SLUG);
+$helper_msg7 = __('Please enter the full text of the SQL statement of the table structure you want to change in this input field.', CDBT_PLUGIN_SLUG);
+$timezone_label = __('Database Timezone', CDBT_PLUGIN_SLUG);
+$timezone_placeholder = __('Database Timezone', CDBT_PLUGIN_SLUG);
 $roles = array(
-	'view_role' => array(__('User Role for View', PLUGIN_SLUG), (isset($view_role) && !empty($view_role) ? $view_role : '1')), 
-	'input_role' => array(__('User Role for Input', PLUGIN_SLUG), (isset($input_role) && !empty($input_role) ? $input_role : '5')), 
-	'edit_role' => array(__('User Role for Edit', PLUGIN_SLUG), (isset($edit_role) && !empty($edit_role) ? $edit_role : '7')), 
-	'admin_role' => array(__('User Role for Admin', PLUGIN_SLUG), (isset($admin_role) && !empty($admin_role) ? $admin_role : '9')), 
+	'view_role' => array(__('User Role for View', CDBT_PLUGIN_SLUG), (isset($view_role) && !empty($view_role) ? $view_role : '1')), 
+	'input_role' => array(__('User Role for Input', CDBT_PLUGIN_SLUG), (isset($input_role) && !empty($input_role) ? $input_role : '5')), 
+	'edit_role' => array(__('User Role for Edit', CDBT_PLUGIN_SLUG), (isset($edit_role) && !empty($edit_role) ? $edit_role : '7')), 
+	'admin_role' => array(__('User Role for Admin', CDBT_PLUGIN_SLUG), (isset($admin_role) && !empty($admin_role) ? $admin_role : '9')), 
 );
 $cap_levels = array(
-	'1' => __('All users &mdash; If you grant privileges to all users, including subscribers.', PLUGIN_SLUG), 
-	'3' => __('Contributor or more &mdash; If you grant privileges to user of contributor or more parties.', PLUGIN_SLUG), 
-	'5' => __('Author or more &mdash; If you grant privileges to user of author or more parties.', PLUGIN_SLUG), 
-	'7' => __('Editor or more &mdash; If you grant privileges to user of editor or more parties.', PLUGIN_SLUG), 
-	'9' => __('Administrator only.', PLUGIN_SLUG), 
+	'1' => __('All users &mdash; If you grant privileges to all users, including subscribers.', CDBT_PLUGIN_SLUG), 
+	'3' => __('Contributor or more &mdash; If you grant privileges to user of contributor or more parties.', CDBT_PLUGIN_SLUG), 
+	'5' => __('Author or more &mdash; If you grant privileges to user of author or more parties.', CDBT_PLUGIN_SLUG), 
+	'7' => __('Editor or more &mdash; If you grant privileges to user of editor or more parties.', CDBT_PLUGIN_SLUG), 
+	'9' => __('Administrator only.', CDBT_PLUGIN_SLUG), 
 );
 $presets = array(
-	array(__('Add column', PLUGIN_SLUG), 'ADD COLUMN {column_definition} {position}'), 
-	array(__('Add index or key', PLUGIN_SLUG), 'ADD {index_or_key} {index_name} ({index_col_name})'), 
-	array(__('Add foreign key', PLUGIN_SLUG), 'ADD FOREIGN KEY {index_name} ({index_col_name}) {reference_definition}'), 
-	array(__('Alter default', PLUGIN_SLUG), 'ALTER {col_name} {default_definition}'), 
-	array(__('Change column', PLUGIN_SLUG), 'CHANGE {old_col_name} {column_definition} {position}'), 
-	array(__('Modify column', PLUGIN_SLUG), 'MODIFY {column_definition} {position}'), 
-	array(__('Drop column or keys', PLUGIN_SLUG), 'DROP {column_or_keys}'), 
-	array(__('Switch keys', PLUGIN_SLUG), '{switch_definition} KEYS'), 
+	array(__('Add column', CDBT_PLUGIN_SLUG), 'ADD COLUMN {column_definition} {position}'), 
+	array(__('Add index or key', CDBT_PLUGIN_SLUG), 'ADD {index_or_key} {index_name} ({index_col_name})'), 
+	array(__('Add foreign key', CDBT_PLUGIN_SLUG), 'ADD FOREIGN KEY {index_name} ({index_col_name}) {reference_definition}'), 
+	array(__('Alter default', CDBT_PLUGIN_SLUG), 'ALTER {col_name} {default_definition}'), 
+	array(__('Change column', CDBT_PLUGIN_SLUG), 'CHANGE {old_col_name} {column_definition} {position}'), 
+	array(__('Modify column', CDBT_PLUGIN_SLUG), 'MODIFY {column_definition} {position}'), 
+	array(__('Drop column or keys', CDBT_PLUGIN_SLUG), 'DROP {column_or_keys}'), 
+	array(__('Switch keys', CDBT_PLUGIN_SLUG), '{switch_definition} KEYS'), 
 );
 
 // role section

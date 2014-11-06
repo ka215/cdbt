@@ -44,14 +44,14 @@ function cdbt_render_list_page($table=null, $mode=null, $_cdbt_token=null, $opti
 		}
 		list($result, $value) = $cdbt->get_table_comment($table_name);
 		if ($result) {
-			$title = sprintf(__('%s table (table comment: %s)', PLUGIN_SLUG), $table_name, $value);
+			$title = sprintf(__('%s table (table comment: %s)', CDBT_PLUGIN_SLUG), $table_name, $value);
 		} else {
-			$title = sprintf(__('%s table', PLUGIN_SLUG), $table_name);
+			$title = sprintf(__('%s table', CDBT_PLUGIN_SLUG), $table_name);
 		}
 		$information_html = '';
-		if (wp_verify_nonce($_cdbt_token, PLUGIN_SLUG .'_'. $mode)) {
+		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
 			$list_index_row = $list_rows = $pagination = null;
-			$nonce_field = wp_nonce_field(PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
+			$nonce_field = wp_nonce_field(CDBT_PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
 			
 			$limit = $per_page;
 			$offset = ($page_num - 1) * $limit;
@@ -79,16 +79,16 @@ function cdbt_render_list_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				} else {
 					$total_data = 0;
 				}
-				$total_data_info = $total_data > 0 ? sprintf(__('Total %d items', PLUGIN_SLUG), $total_data) : '';
+				$total_data_info = $total_data > 0 ? sprintf(__('Total %d items', CDBT_PLUGIN_SLUG), $total_data) : '';
 			}
 			
-			$page_slug = PLUGIN_SLUG;
+			$page_slug = CDBT_PLUGIN_SLUG;
 			$controller_block_base = '<form method="post" class="controller-form" role="form">%s</form>';
 			$current_sort_by = (isset($sort_by) && !empty($sort_by)) ? $sort_by : '';
 			$current_order_by = (isset($sort_order) && !empty($sort_order)) ? $sort_order : 'DESC';
 			$data_info = (isset($total_data_info) && !empty($total_data_info)) ? '<div class="navbar-inherit list-adjust"><span class="label label-info">'. $total_data_info .'</span></div>' : '';
 			if (isset($action) && $action == 'search' && isset($total_data) && $total_data > 0) {
-				$hits_message = $total_data == 1 ? __('1 row matched', PLUGIN_SLUG) : sprintf(__('%d rows matched', PLUGIN_SLUG), $total_data);
+				$hits_message = $total_data == 1 ? __('1 row matched', CDBT_PLUGIN_SLUG) : sprintf(__('%d rows matched', CDBT_PLUGIN_SLUG), $total_data);
 				$search_hits = <<<HITS
 			<div class="search-hits tooltip left">
 				<div class="tooltip-arrow"></div>
@@ -99,8 +99,8 @@ HITS;
 				$search_hits = '';
 			}
 			$search_key = (!isset($search_key)) ? '' : $search_key;
-			$search_key_placeholder = __('Search keyword', PLUGIN_SLUG);
-			$search_button_label = __('Search', PLUGIN_SLUG);
+			$search_key_placeholder = __('Search keyword', CDBT_PLUGIN_SLUG);
+			$search_button_label = __('Search', CDBT_PLUGIN_SLUG);
 			$search_form = <<<SEARCH
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		$data_info
@@ -138,7 +138,7 @@ NAV;
 				foreach ($data as $record) {
 					if ($list_num == (1 + (($page_num - 1) * $per_page))) {
 						$list_index_row = '<thead><tr>';
-						$list_index_row .= ($is_display_list_num) ? '<th>'. __('No.', PLUGIN_SLUG) .'</th>' : '';
+						$list_index_row .= ($is_display_list_num) ? '<th>'. __('No.', CDBT_PLUGIN_SLUG) .'</th>' : '';
 						foreach ($record as $key => $val) {
 							if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 								continue;
@@ -194,8 +194,8 @@ NAV;
 				}
 				
 				$pagination = ($total_data > $per_page) ? cdbt_create_pagination(intval($page_num), intval($per_page), $total_data, $mode) : null;
-				$btn_cancel = __('Cancel', PLUGIN_SLUG);
-				$btn_run = __('Yes, run', PLUGIN_SLUG);
+				$btn_cancel = __('Cancel', CDBT_PLUGIN_SLUG);
+				$btn_run = __('Yes, run', CDBT_PLUGIN_SLUG);
 				$modal_container = <<<MODAL
 <!-- /* Modal */ -->
 <div class="modal fade confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true">
@@ -218,18 +218,18 @@ MODAL;
 				$display_html = sprintf($list_html, $title, $information_html.$controller_block, $list_index_row, '<tbody>' . $list_rows . '</tbody>', $pagination . $modal_container);
 			} else {
 				if (isset($action) && $action == 'search') {
-					$msg_str = sprintf(__('No data to match for "%s".', PLUGIN_SLUG), $search_key);
+					$msg_str = sprintf(__('No data to match for "%s".', CDBT_PLUGIN_SLUG), $search_key);
 				} else {
-					$msg_str = __('Data is none.', PLUGIN_SLUG);
+					$msg_str = __('Data is none.', CDBT_PLUGIN_SLUG);
 					$add_close_btn = false;
 				}
-				$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', PLUGIN_SLUG) .'</span></button>';
+				$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', CDBT_PLUGIN_SLUG) .'</span></button>';
 				$information_html = '<div class="alert alert-info">'. $close_btn . $msg_str .'</div>';
 				$display_html = sprintf($list_html, $title, $controller_block, '', '', $information_html);
 			}
 		}
 	} else {
-		$display_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', PLUGIN_SLUG) .'</div>';
+		$display_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', CDBT_PLUGIN_SLUG) .'</div>';
 	}
 	
 	return $display_html;

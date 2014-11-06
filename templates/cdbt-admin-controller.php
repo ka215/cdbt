@@ -589,23 +589,23 @@ cdbt_create_console_footer(((!empty($msg) && $msg[0] != 'success') ? $informatio
 
 function cdbt_create_tab_content($tab_name, $nonce, $inherit_values=null) {
 	global $wpdb, $cdbt;
-	$cdbt_options = get_option(PLUGIN_SLUG);
+	$cdbt_options = get_option(CDBT_PLUGIN_SLUG);
 	$controller_table = count($cdbt_options['tables']) > 0 ? $cdbt_options['tables'][0]['table_name'] : null;
 	$content_html = null;
-	$nonce_field = wp_nonce_field(PLUGIN_SLUG .'_admin', '_cdbt_token', true, false);
+	$nonce_field = wp_nonce_field(CDBT_PLUGIN_SLUG .'_admin', '_cdbt_token', true, false);
 	switch ($tab_name) {
 		case 'general': 
 			// save to plugin option.
-			require_once PLUGIN_TMPL_DIR . DS . 'cdbt-admin-general.php';
+			require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-admin-general.php';
 			break;
 		case 'create': 
 			// create database table.
-			require_once PLUGIN_TMPL_DIR . DS . 'cdbt-admin-create.php';
-			require_once PLUGIN_TMPL_DIR . DS . 'cdbt-admin-table-creator.php';
+			require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-admin-create.php';
+			require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-admin-table-creator.php';
 			break;
 		case 'tables': 
 			// enable tables list
-			require_once PLUGIN_TMPL_DIR . DS . 'cdbt-admin-tables.php';
+			require_once CDBT_PLUGIN_TMPL_DIR . CDBT_DS . 'cdbt-admin-tables.php';
 			break;
 		default: 
 			break;
@@ -615,9 +615,9 @@ function cdbt_create_tab_content($tab_name, $nonce, $inherit_values=null) {
 
 function cdbt_translate_tab_name($tab_name){
 	$translate_tab_name = array(
-		'general' => __('General setting', PLUGIN_SLUG), 
-		'create' => __('Create table', PLUGIN_SLUG), 
-		'tables' => __('Enable tables list', PLUGIN_SLUG), 
+		'general' => __('General setting', CDBT_PLUGIN_SLUG), 
+		'create' => __('Create table', CDBT_PLUGIN_SLUG), 
+		'tables' => __('Enable tables list', CDBT_PLUGIN_SLUG), 
 	);
 	return $translate_tab_name[$tab_name];
 }

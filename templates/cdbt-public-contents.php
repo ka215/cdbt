@@ -30,7 +30,7 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 		}
 		$element_class = empty($classes) || !is_array($classes) ? '' : ' class="'. implode(' ', $classes) .'"';
 		$content_html = '<table'. $element_class .'>%s</table>';
-		if (wp_verify_nonce($_cdbt_token, PLUGIN_SLUG .'_'. $mode)) {
+		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
 			$view_cols = !empty($display_cols) ? implode(',', $display_cols) : '*';
 			if (!empty($narrow_keyword)) {
 				foreach ($narrow_keyword as $key => $val) {
@@ -78,14 +78,14 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 				$in_contents = ($display_index_row ? $list_index_row : '') . "\n<tbody>\n" . implode("\n", $last_data) . "\n</tbody>\n";
 				$content_html = sprintf($content_html, $in_contents);
 			} else {
-				$msg_str = __('Data is none.', PLUGIN_SLUG);
+				$msg_str = __('Data is none.', CDBT_PLUGIN_SLUG);
 				$add_close_btn = false;
-				$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', PLUGIN_SLUG) .'</span></button>';
+				$close_btn = (isset($add_close_btn) && !$add_close_btn) ? '' : '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', CDBT_PLUGIN_SLUG) .'</span></button>';
 				$content_html = '<div class="alert alert-info">'. $close_btn . $msg_str .'</div>';
 			}
 		}
 	} else {
-		$content_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', PLUGIN_SLUG) .'</div>';
+		$content_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', CDBT_PLUGIN_SLUG) .'</div>';
 	}
 	
 	return $content_html;

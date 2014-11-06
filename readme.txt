@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
 Tested up to: 4.0.0
-Stable tag: 1.1.7
+Stable tag: 1.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,11 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 1.1.8 =
+* Have modified to unique name that each component name in HTML and all function name in JavaScript, jQuery event handling such that does not conflict. (during work)
+* Changed loading the default bootstrap to via CDN from current assets. (during work)
+* Have unique reduction to grant a prefix to the constant name of the plug-core, was modified to be able to avoid a conflict of constants.
 
 = 1.1.7 =
 * Added a shortcode "cdbt-extract" that view lists of specifying number from the results of sorting and searching the data in the table.

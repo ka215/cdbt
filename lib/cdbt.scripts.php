@@ -1,7 +1,7 @@
 <?php
 function cdbt_create_javascript() {
-	$media_nonce = wp_create_nonce(PLUGIN_SLUG . '_media');
-	$ajax_nonce = wp_create_nonce(PLUGIN_SLUG . '_ajax');
+	$media_nonce = wp_create_nonce(CDBT_PLUGIN_SLUG . '_media');
+	$ajax_nonce = wp_create_nonce(CDBT_PLUGIN_SLUG . '_ajax');
 	$action_nonce = wp_create_nonce("cdbt_ajax_core");
 	
 	if (is_admin()) {
@@ -68,9 +68,9 @@ jQuery(document).ready(function($){
 		if (typeof target_ids == 'object') {
 			if (target_ids.length > 0) {
 				$('.controller-form input[name="ID"]').val(target_ids.join(','));
-				show_modal('<?php _e('Deleting confirmation', PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', target_ids.join(',')), '<?php _e('Delete', PLUGIN_SLUG); ?>');
+				show_modal('<?php _e('Deleting confirmation', CDBT_PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', target_ids.join(',')), '<?php _e('Delete', CDBT_PLUGIN_SLUG); ?>');
 			} else {
-				show_modal('<?php _e('Alert', PLUGIN_SLUG); ?>', '<?php _e('Checked items is none!', PLUGIN_SLUG); ?>', '');
+				show_modal('<?php _e('Alert', CDBT_PLUGIN_SLUG); ?>', '<?php _e('Checked items is none!', CDBT_PLUGIN_SLUG); ?>', '');
 			}
 		}
 	});
@@ -84,7 +84,7 @@ jQuery(document).ready(function($){
 			$('.controller-form input[name="page_num"]').val('');
 			$('.controller-form input[name="sort_by"]').val('');
 			$('.controller-form input[name="sort_order"]').val('DESC');
-			show_modal('<?php _e('Alert', PLUGIN_SLUG); ?>', '<?php _e('Search keyword is none!', PLUGIN_SLUG); ?>', '');
+			show_modal('<?php _e('Alert', CDBT_PLUGIN_SLUG); ?>', '<?php _e('Search keyword is none!', CDBT_PLUGIN_SLUG); ?>', '');
 			$('.modal.confirmation').modal('show');
 		}
 	});
@@ -159,7 +159,7 @@ jQuery(document).ready(function($){
 			url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
 			data: post_data
 		}).done(function(res){
-			show_modal('<?php _e('Download binary files', PLUGIN_SLUG); ?>', res, '');
+			show_modal('<?php _e('Download binary files', CDBT_PLUGIN_SLUG); ?>', res, '');
 			$('.modal.confirmation').modal('show');
 		}).always(function(){
 			btn.removeClass('btn-primary').button('reset');
@@ -170,12 +170,12 @@ jQuery(document).ready(function($){
 		$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
 		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
 		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
-		show_modal('<?php _e('Deleting confirmation', PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-id')), '<?php _e('Delete', PLUGIN_SLUG); ?>');
+		show_modal('<?php _e('Deleting confirmation', CDBT_PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-id')), '<?php _e('Delete', CDBT_PLUGIN_SLUG); ?>');
 	});
 	
 	$('#entry-submit').on('click', function(){
 		var btn = $(this);
-		btn.button('<?php _e('loading', PLUGIN_SLUG); ?>');
+		btn.button('<?php _e('loading', CDBT_PLUGIN_SLUG); ?>');
 		$(this).parents('form').children('input[name="action"]').val($(this).attr('data-action'));
 		$(this).parents('form').submit();
 	});
@@ -183,11 +183,11 @@ jQuery(document).ready(function($){
 	$('footer').children('div').each(function(){
 		if ($(this).hasClass('modal-kicker')) {
 			if ($(this).hasClass('show-run')) {
-				var run_process = ($(this).attr('data-run-label') == '') ? '<?php _e('Yes, run', PLUGIN_SLUG); ?>' : $(this).attr('data-run-label');
+				var run_process = ($(this).attr('data-run-label') == '') ? '<?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?>' : $(this).attr('data-run-label');
 			} else {
 				var run_process = '';
 			}
-			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', $(this).html(), run_process, $(this).attr('data-hidden-callback'));
+			show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', $(this).html(), run_process, $(this).attr('data-hidden-callback'));
 			$('.modal.confirmation').modal('show');
 			$(this).remove();
 		}
@@ -207,7 +207,7 @@ jQuery(document).ready(function($){
 				} else 
 				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-export') {
 					$('#cdbt_managed_tables').children('input[name="section"]').val('run');
-					var url = '<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>?action=cdbt_media&tablename='+$('#cdbt_managed_tables input[name="target_table"]').val()+'&token=<?php echo wp_create_nonce(PLUGIN_SLUG . '_csv_export'); ?>';
+					var url = '<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>?action=cdbt_media&tablename='+$('#cdbt_managed_tables input[name="target_table"]').val()+'&token=<?php echo wp_create_nonce(CDBT_PLUGIN_SLUG . '_csv_export'); ?>';
 					$('.modal.confirmation').modal('hide');
 					location.href = url;
 				} else {
@@ -235,7 +235,7 @@ jQuery(document).ready(function($){
 					var hash_string = window.location.hash.substr(1) || $('.tab-pane.active').attr('id');
 					if (hash_string == 'cdbt-create') {
 						$('input[name="is_incorporate_table"]').val('false');
-						$('#cdbt_incorporate_table').html('<option value="" option-index="true"><?php _e('Incorporate Already Exists Table', PLUGIN_SLUG); ?></option>');
+						$('#cdbt_incorporate_table').html('<option value="" option-index="true"><?php _e('Incorporate Already Exists Table', CDBT_PLUGIN_SLUG); ?></option>');
 					} else {
 						var url = location.href + '#' + hash_string;
 						location.assign(url);
@@ -294,7 +294,7 @@ jQuery(document).ready(function($){
 	$('#cdbt_incorporate_table').on('click', function(e) {
 		//e.stopImmediatePropagation();
 		if ($(this).attr('data-proc') != 'loaded') {
-			$(this).children('option[option-index="true"]').text("<?php echo __('Now searching...', PLUGIN_SLUG); ?>");
+			$(this).children('option[option-index="true"]').text("<?php echo __('Now searching...', CDBT_PLUGIN_SLUG); ?>");
 			var post_data = {
 				action: 'cdbt_ajax_core', 
 				mode: $(this).attr('data-action'), 
@@ -309,9 +309,9 @@ jQuery(document).ready(function($){
 				$('#cdbt_incorporate_table').attr('data-proc', 'loaded').append(res).blur();
 				var message = '';
 				if ($('#cdbt_incorporate_table').children('option').length > 1) {
-					message = "<?php _e('Select an incorporate table', PLUGIN_SLUG); ?>";
+					message = "<?php _e('Select an incorporate table', CDBT_PLUGIN_SLUG); ?>";
 				} else {
-					message = "<?php _e('Can be incorporated table was none', PLUGIN_SLUG); ?>";
+					message = "<?php _e('Can be incorporated table was none', CDBT_PLUGIN_SLUG); ?>";
 				}
 				$('#cdbt_incorporate_table').children('option[option-index="true"]').text(message);
 				$('#cdbt_incorporate_table').focus();
@@ -394,7 +394,7 @@ jQuery(document).ready(function($){
 	});
 	
 	function set_alter_table_presets_sql(preset_id) {
-		$('.popover-content').html("<?php _e('Preset Loading Now...', PLUGIN_SLUG); ?>");
+		$('.popover-content').html("<?php _e('Preset Loading Now...', CDBT_PLUGIN_SLUG); ?>");
 		var post_data = {
 			action: 'cdbt_ajax_core', 
 			mode: 'load_preset', 
@@ -556,13 +556,13 @@ jQuery(document).ready(function($){
 			if (parse_str[1] == 'data-import') {
 				var html = '<?php
 $translate_text = array(
-	__('1. Download template csv file to import data.', PLUGIN_SLUG), 
-	__('It will be downloaded csv file is included only index row. You should be add in it the import data.', PLUGIN_SLUG), 
-	__('Download CSV', PLUGIN_SLUG), 
-	__('2. Upload csv file including import data.', PLUGIN_SLUG), 
-	__('If invalid file will be uploaded, it will not import data.', PLUGIN_SLUG), 
+	__('1. Download template csv file to import data.', CDBT_PLUGIN_SLUG), 
+	__('It will be downloaded csv file is included only index row. You should be add in it the import data.', CDBT_PLUGIN_SLUG), 
+	__('Download CSV', CDBT_PLUGIN_SLUG), 
+	__('2. Upload csv file including import data.', CDBT_PLUGIN_SLUG), 
+	__('If invalid file will be uploaded, it will not import data.', CDBT_PLUGIN_SLUG), 
 );
-$dl_nonce = wp_create_nonce(PLUGIN_SLUG . '_csv_tmpl_download');
+$dl_nonce = wp_create_nonce(CDBT_PLUGIN_SLUG . '_csv_tmpl_download');
 $html =<<<EOH
 <form method="post" id="data-import-form" class="import-form" enctype="multipart/form-data" role="form">
 	<input type="hidden" name="import-table" value="%s">
@@ -580,7 +580,7 @@ $html =<<<EOH
 EOH;
 echo preg_replace('/\n|\r|\t/', '', $html);
 				?>'.replace('%s', $(this).attr('data-table'));
-				show_modal('<?php _e('Import procedures', PLUGIN_SLUG); ?>', html, '<?php _e('Import now!', PLUGIN_SLUG); ?>');
+				show_modal('<?php _e('Import procedures', CDBT_PLUGIN_SLUG); ?>', html, '<?php _e('Import now!', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 				$(document).on('click', '.confirmation .modal-footer .btn-primary', function(e) {
 					e.preventDefault();
@@ -593,18 +593,18 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 						$('#data-import-form').submit();
 					} else {
 						$('.upload_note .alert-text').remove();
-						$('.upload_note').append('<div class="alert-text"><?php _e('You are trying to upload a not CSV file.', PLUGIN_SLUG); ?></div>');
+						$('.upload_note').append('<div class="alert-text"><?php _e('You are trying to upload a not CSV file.', CDBT_PLUGIN_SLUG); ?></div>');
 					}
 				});
 			}
 			if (parse_str[1] == 'data-export') {
-				var msg = '<?php _e('Will export data of "%s" table. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
-				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Export now!', PLUGIN_SLUG); ?>');
+				var msg = '<?php _e('Will export data of "%s" table. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', msg, '<?php _e('Export now!', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 			}
 			if (parse_str[1] == 'alter-table') {
-				var msg = '<?php _e('Will modify schema of "%s" table. This handle is same that recreating the table. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
-				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Start modify', PLUGIN_SLUG); ?>');
+				var msg = '<?php _e('Will modify schema of "%s" table. This handle is same that recreating the table. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', msg, '<?php _e('Start modify', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 				$(document).on('click', '.confirmation .modal-footer .btn-primary', function(e) {
 					e.preventDefault();
@@ -615,13 +615,13 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 				});
 			}
 			if (parse_str[1] == 'truncate-table') {
-				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
-				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');
+				var msg = '<?php _e('Will truncate and initialize data of "%s" table. After this handled cannot resume. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 			}
 			if (parse_str[1] == 'drop-table') {
-				var msg = '<?php _e('Will delete a "%s" table. After this handled cannot resume. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
-				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', PLUGIN_SLUG); ?>');
+				var msg = '<?php _e('Will delete a "%s" table. After this handled cannot resume. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-table'));
+				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 			}
 			if (parse_str[1] == 'choise-current-table') {
@@ -649,10 +649,10 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 		if ($(this).text().indexOf('image/') > 0) {
 			var src = '<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>?action=cdbt_media&id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&token=<?php echo $media_nonce; ?>';
 			var img = '<img src="'+src+'" width="100%" class="img-thumbnail">';
-			show_modal('<?php _e('Stored image', PLUGIN_SLUG); ?>', img, '');
+			show_modal('<?php _e('Stored image', CDBT_PLUGIN_SLUG); ?>', img, '');
 			$('.modal.confirmation').modal('show');
 		} else {
-			show_modal('<?php _e('Stored binary file', PLUGIN_SLUG); ?>', decodeURI($(this).attr('data-origin-file')), '');
+			show_modal('<?php _e('Stored binary file', CDBT_PLUGIN_SLUG); ?>', decodeURI($(this).attr('data-origin-file')), '');
 			$('.modal.confirmation').modal('show');
 		}
 	});
@@ -674,7 +674,7 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 			}).done(function(res){
 				var res = res.split(',');
 				if (res[0] == 'error') {
-					show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', res[1], '');
+					show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', res[1], '');
 					$('.modal.confirmation').modal('show');
 				} else {
 					location.reload();
@@ -683,7 +683,7 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 			});
 			
 		} else {
-			show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', '<?php _e('Request host address is none.', PLUGIN_SLUG); ?>', '');
+			show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', '<?php _e('Request host address is none.', CDBT_PLUGIN_SLUG); ?>', '');
 			$('.modal.confirmation').modal('show');
 		}
 	});
@@ -704,7 +704,7 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 		}).done(function(res){
 			var res = res.split(',');
 			if (res[0] == 'error') {
-				show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', res[1], '');
+				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', res[1], '');
 				$('.modal.confirmation').modal('show');
 			} else {
 				location.reload();
@@ -788,24 +788,24 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 			target_obj.removeAttr('disabled');
 			if (type_val == 'Array') {
 				if (type_format == 'enum' || type_format == 'set') {
-					target_obj.val('').attr('placeholder', '<?php _e('Candidate value 1, Candidate value 2, ...', PLUGIN_SLUG); ?>');
+					target_obj.val('').attr('placeholder', '<?php _e('Candidate value 1, Candidate value 2, ...', CDBT_PLUGIN_SLUG); ?>');
 					controll_col_attribute(parse_str[2], 'none');
 				} else if (type_format == 'decimal') {
-					target_obj.val('10,0').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', PLUGIN_SLUG); ?>');
+					target_obj.val('10,0').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', CDBT_PLUGIN_SLUG); ?>');
 					controll_col_attribute(parse_str[2], 'numgrp');
 				} else {
-					target_obj.val('').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', PLUGIN_SLUG); ?>');
+					target_obj.val('').attr('placeholder', '<?php _e('Integer of length, Integer of decimals', CDBT_PLUGIN_SLUG); ?>');
 					controll_col_attribute(parse_str[2], 'numgrp');
 				}
 			} else if (type_val == 'int') {
-				target_obj.val('').attr('placeholder', '<?php _e('Integer of length', PLUGIN_SLUG); ?>');
+				target_obj.val('').attr('placeholder', '<?php _e('Integer of length', CDBT_PLUGIN_SLUG); ?>');
 				if (type_format == 'varchar' || type_format == 'char') {
 					controll_col_attribute(parse_str[2], 'bingrp');
 				} else {
 					controll_col_attribute(parse_str[2], 'numgrp');
 				}
 			} else {
-				target_obj.val(type_val).attr('placeholder', '<?php _e('Integer of length', PLUGIN_SLUG); ?>');
+				target_obj.val(type_val).attr('placeholder', '<?php _e('Integer of length', CDBT_PLUGIN_SLUG); ?>');
 				controll_col_attribute(parse_str[2], 'numgrp');
 			}
 		}
@@ -970,9 +970,9 @@ jQuery(document).ready(function($){
 		if (typeof target_ids == 'object') {
 			if (target_ids.length > 0) {
 				$('.controller-form input[name="ID"]').val(target_ids.join(','));
-				show_modal('<?php _e('Deleting confirmation', PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', target_ids.join(',')), '<?php _e('Delete', PLUGIN_SLUG); ?>');
+				show_modal('<?php _e('Deleting confirmation', CDBT_PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', target_ids.join(',')), '<?php _e('Delete', CDBT_PLUGIN_SLUG); ?>');
 			} else {
-				show_modal('<?php _e('Alert', PLUGIN_SLUG); ?>', '<?php _e('Checked items is none!', PLUGIN_SLUG); ?>', '');
+				show_modal('<?php _e('Alert', CDBT_PLUGIN_SLUG); ?>', '<?php _e('Checked items is none!', CDBT_PLUGIN_SLUG); ?>', '');
 			}
 		}
 	});
@@ -986,7 +986,7 @@ jQuery(document).ready(function($){
 			$('.controller-form input[name="page_num"]').val('');
 			$('.controller-form input[name="sort_by"]').val('');
 			$('.controller-form input[name="sort_order"]').val('DESC');
-			show_modal('<?php _e('Alert', PLUGIN_SLUG); ?>', '<?php _e('Search keyword is none!', PLUGIN_SLUG); ?>', '');
+			show_modal('<?php _e('Alert', CDBT_PLUGIN_SLUG); ?>', '<?php _e('Search keyword is none!', CDBT_PLUGIN_SLUG); ?>', '');
 			$('.modal.confirmation').modal('show');
 		}
 	});
@@ -1042,17 +1042,17 @@ jQuery(document).ready(function($){
 			var tbl_name = $('.navbar .container-fluid input[name="table"]').val();
 			var src = '<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>?action=cdbt_media&id='+$(this).attr('data-id')+'&filename='+$(this).attr('data-origin-file')+'&table='+tbl_name+'&token=<?php echo $media_nonce; ?>';
 			var img = '<img src="'+src+'" width="100%" class="img-thumbnail">';
-			show_modal('<?php _e('Stored image', PLUGIN_SLUG); ?>', img, '');
+			show_modal('<?php _e('Stored image', CDBT_PLUGIN_SLUG); ?>', img, '');
 			$('.modal.confirmation').modal('show');
 		} else {
-			show_modal('<?php _e('Stored binary file', PLUGIN_SLUG); ?>', decodeURI($(this).attr('data-origin-file')), '');
+			show_modal('<?php _e('Stored binary file', CDBT_PLUGIN_SLUG); ?>', decodeURI($(this).attr('data-origin-file')), '');
 			$('.modal.confirmation').modal('show');
 		}
 	});
 	
 	$('#entry-submit').on('click', function(){
 		var btn = $(this);
-		btn.button('<?php _e('loading', PLUGIN_SLUG); ?>');
+		btn.button('<?php _e('loading', CDBT_PLUGIN_SLUG); ?>');
 		$(this).parents('form').children('input[name="action"]').val($(this).attr('data-action'));
 		$(this).parents('form').submit();
 	});
@@ -1086,7 +1086,7 @@ jQuery(document).ready(function($){
 			url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
 			data: post_data
 		}).done(function(res){
-			show_modal('<?php _e('Download binary files', PLUGIN_SLUG); ?>', res, '');
+			show_modal('<?php _e('Download binary files', CDBT_PLUGIN_SLUG); ?>', res, '');
 			$('.modal.confirmation').modal('show');
 		}).always(function(){
 			btn.removeClass('btn-primary').button('reset');
@@ -1097,7 +1097,7 @@ jQuery(document).ready(function($){
 		$('.controller-form input[name="mode"]').val($(this).attr('data-mode'));
 		$('.controller-form input[name="action"]').val($(this).attr('data-action'));
 		$('.controller-form input[name="ID"]').val($(this).attr('data-id'));
-		show_modal('<?php _e('Deleting confirmation', PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-id')), '<?php _e('Delete', PLUGIN_SLUG); ?>');
+		show_modal('<?php _e('Deleting confirmation', CDBT_PLUGIN_SLUG); ?>', '<?php _e('ID: %s of data will be deleted. Would you like?', CDBT_PLUGIN_SLUG); ?>'.replace('%s', $(this).attr('data-id')), '<?php _e('Delete', CDBT_PLUGIN_SLUG); ?>');
 	});
 	
 	var chk_modal_position = $('.modal.confirmation').parent();
@@ -1107,11 +1107,11 @@ jQuery(document).ready(function($){
 	
 	if (typeof $('.modal-kicker').children() != 'undefined' && $('.modal-kicker').html() != '' && $('.modal-kicker').text() != '') {
 		if ($('.modal-kicker').hasClass('show-run')) {
-			var run_process = ($('.modal-kicker').attr('data-run-label') == '') ? '<?php _e('Yes, run', PLUGIN_SLUG); ?>' : $('.modal-kicker').attr('data-run-label');
+			var run_process = ($('.modal-kicker').attr('data-run-label') == '') ? '<?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?>' : $('.modal-kicker').attr('data-run-label');
 		} else {
 			var run_process = '';
 		}
-		show_modal('<?php _e('Please confirm', PLUGIN_SLUG); ?>', $('.modal-kicker').html(), run_process);
+		show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', $('.modal-kicker').html(), run_process);
 		$('.modal.confirmation').modal('show');
 		$('.modal-kicker').remove();
 	}

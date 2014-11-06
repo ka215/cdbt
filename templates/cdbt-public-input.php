@@ -20,9 +20,9 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 	if ($result && !empty($table_name) && !empty($table_schema)) {
 		$is_update_mode = (isset($ID) && !empty($ID)) ? true : false;
 		if ($is_update_mode) {
-			$title_str = sprintf(__('Update to %s table', PLUGIN_SLUG), $table_name);
+			$title_str = sprintf(__('Update to %s table', CDBT_PLUGIN_SLUG), $table_name);
 		} else {
-			$title_str = sprintf(__('Regist to %s table', PLUGIN_SLUG), $table_name);
+			$title_str = sprintf(__('Regist to %s table', CDBT_PLUGIN_SLUG), $table_name);
 		}
 		$page_title = '<h3 class="dashboard-title">'. $title_str .'</h3>';
 		foreach ($table_schema as $col_name => $col_schema) {
@@ -43,7 +43,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					}
 					$info_msg = null;
 				} else {
-					$info_msg = __('No data applicable.', PLUGIN_SLUG);
+					$info_msg = __('No data applicable.', CDBT_PLUGIN_SLUG);
 				}
 			} else {
 				$action = 'confirm';
@@ -66,12 +66,12 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					${$k} = rawurldecode($origin_bin_data);
 			}
 		}
-		if (wp_verify_nonce($_cdbt_token, PLUGIN_SLUG .'_'. $mode)) {
+		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
 			$form_html = '<div>%s<form method="post" id="'. $table_name .'" enctype="multipart/form-data" role="form">';
 			$form_html .= ($is_update_mode) ? '<input type="hidden" name="'. $primary_key_name .'" value="'. $ID .'" />' : '';
 			$form_html .= '<input type="hidden" name="mode" value="input" />';
 			$form_html .= '<input type="hidden" name="action" value="'. $action .'" />';
-			$form_html .= wp_nonce_field(PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
+			$form_html .= wp_nonce_field(CDBT_PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
 			$form_html .= '%s</form></div>';
 			$form_objects = array();
 			$post_values = $validate_values = array();
@@ -98,11 +98,11 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				}
 			}
 			if ($is_update_mode) {
-				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('update data', PLUGIN_SLUG), __('now updating...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send');
-				$form_button .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Cancel', PLUGIN_SLUG) . '</a>';
+				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('update data', CDBT_PLUGIN_SLUG), __('now updating...', CDBT_PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send');
+				$form_button .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Cancel', CDBT_PLUGIN_SLUG) . '</a>';
 				$form_button .= '</div></div>';
 			} else {
-				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('entry data', PLUGIN_SLUG), __('now sending...', PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
+				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('entry data', CDBT_PLUGIN_SLUG), __('now sending...', CDBT_PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
 			}
 			$form_objects[] = $form_button;
 			
@@ -119,7 +119,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					$err_list = null;
 					foreach ($validate_values as $key => $val) {
 						$key = (!empty($table_schema[$key]['logical_name'])) ? $table_schema[$key]['logical_name'] : $key;
-						$err_list .= sprintf(__("<li>%s is %s.</li>\n", PLUGIN_SLUG), $key, $val);
+						$err_list .= sprintf(__("<li>%s is %s.</li>\n", CDBT_PLUGIN_SLUG), $key, $val);
 					}
 					$info_msg = '<div class="alert alert-warning"><ul>'. $err_list .'</ul></div>';
 				}
@@ -127,19 +127,19 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			
 			if ((isset($insert_id) && (bool)$insert_id) || (isset($update_id) && (bool)$update_id)) {
 				if ($is_update_mode) {
-					$complete_msg = sprintf(__('Data update successful. Data %s is : %s', PLUGIN_SLUG), $primary_key_name, $update_id);
+					$complete_msg = sprintf(__('Data update successful. Data %s is : %s', CDBT_PLUGIN_SLUG), $primary_key_name, $update_id);
 				} else {
-					$complete_msg = sprintf(__('Completed new add data. Data %s is : %s', PLUGIN_SLUG), $primary_key_name, $insert_id);
+					$complete_msg = sprintf(__('Completed new add data. Data %s is : %s', CDBT_PLUGIN_SLUG), $primary_key_name, $insert_id);
 				}
 				$display_html = sprintf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>', $page_title, $complete_msg);
-				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', PLUGIN_SLUG) . '</a>';
+				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', CDBT_PLUGIN_SLUG) . '</a>';
 			} else {
 				if (isset($action) && $action == 'confirm') {
 					if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
 						if ($is_update_mode) {
-							$err_msg = sprintf(__('Did not update the data %s: %s. Please check if there is a change item.', PLUGIN_SLUG), $primary_key_name, $ID);
+							$err_msg = sprintf(__('Did not update the data %s: %s. Please check if there is a change item.', CDBT_PLUGIN_SLUG), $primary_key_name, $ID);
 						} else {
-							$err_msg = __('Failed to add the data.', PLUGIN_SLUG);
+							$err_msg = __('Failed to add the data.', CDBT_PLUGIN_SLUG);
 						}
 						$info_msg = '<div class="alert alert-danger">'. $err_msg .'</div>';
 					}
@@ -157,8 +157,8 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 	<div class="modal-kicker">$message</div>
 </div>
 MKICK;
-				$btn_cancel = __('Cancel', PLUGIN_SLUG);
-				$btn_run = __('Yes, run', PLUGIN_SLUG);
+				$btn_cancel = __('Cancel', CDBT_PLUGIN_SLUG);
+				$btn_run = __('Yes, run', CDBT_PLUGIN_SLUG);
 				$modal_container = <<<MODAL
 <!-- /* Modal */ -->
 <div class="modal fade confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true">
@@ -181,10 +181,10 @@ MODAL;
 				$display_html = sprintf($form_html, $page_title, implode("\n", $form_objects) . $modal_kicker . $modal_container);
 			}
 		} else {
-			$display_html = '<div class="alert alert-danger">'. __('Invild access!', PLUGIN_SLUG) .'</div>';
+			$display_html = '<div class="alert alert-danger">'. __('Invild access!', CDBT_PLUGIN_SLUG) .'</div>';
 		}
 	} else {
-		$display_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', PLUGIN_SLUG) .'</div>';
+		$display_html = '<div class="alert alert-info">'. __('The enabled tables is not exists currently.<br />Please create tables.', CDBT_PLUGIN_SLUG) .'</div>';
 	}
 	
 	return $display_html;
