@@ -715,8 +715,13 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 /*
  * for Table Creator
  */
+	$('li.preset').delegate('input,textarea,select', 'click', function(e){
+		e.target.focus();
+	});
 	$('#col_add_preset').on('click', function(){
-		var new_row = $('li.preset').clone();
+		var new_row = $('li.preset').clone().delegate('input,textarea,select', 'click', function(e){
+			e.target.focus();
+		});
 		var add_num = $('#sortable').children('li').length;
 		new_row.removeClass('preset').addClass('addnew');
 		new_row.children('label').each(function(){

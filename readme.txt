@@ -64,8 +64,7 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 1.1.8 =
-* Have modified to unique name that each component name in HTML and all function name in JavaScript, jQuery event handling such that does not conflict. (during work)
-* Changed loading the default bootstrap to via CDN from current assets. (during work)
+* Resolved the problem that sortable content (on the Table Creator) of jQuery UI in some browsers, such as Firefox can be selected.
 * Have unique reduction to grant a prefix to the constant name of the plug-core, was modified to be able to avoid a conflict of constants.
 
 = 1.1.7 =

@@ -288,8 +288,9 @@ class CustomDatabaseTables {
 		$cdbt_plugin_page = add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), plugin_dir_url(__FILE__) . 'assets/img/undo.png');
 		wp_parse_str($_SERVER['QUERY_STRING'], $this->query);
 		add_action("admin_head-$cdbt_plugin_page", array($this, 'admin_header'));
-		add_action("load-$cdbt_plugin_page", array($this, 'admin_assets'));
-		add_action("admin_footer-$cdbt_plugin_page", array($this, 'admin_footer'));
+		//add_action("load-$cdbt_plugin_page", array($this, 'admin_assets'));
+		add_action("admin_enqueue_scripts", array($this, 'admin_assets'));
+		add_action("admin_footer-$cdbt_plugin_page", array($this, 'admin_footer'), 999);
 		add_action('admin_notice', array($this, 'admin_notice'));
 	}
 	
