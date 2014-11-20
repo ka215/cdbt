@@ -873,29 +873,38 @@ class CustomDatabaseTables {
 	 */
 	function get_data($table_name, $columns='*', $conditions=null, $order=array('created'=>'desc'), $limit=null, $offset=null) {
 		global $wpdb;
+		list(, , $table_schema) = $this->get_table_schema($table_name);
 		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
 		$where_clause = $order_clause = $limit_clause = null;
 		if (!empty($conditions)) {
 			$i = 0;
 			foreach ($conditions as $key => $val) {
-				if ($i == 0) {
-					$where_clause = "WHERE `$key` = '$val' ";
+				if (array_key_exists($key, $table_schema)) {
+					if ($i == 0) {
+						$where_clause = "WHERE `$key` = '$val' ";
+					} else {
+						$where_clause .= "AND `$key` = '$val' ";
+					}
+					$i++;
 				} else {
-					$where_clause .= "AND `$key` = '$val' ";
+					continue;
 				}
-				$i++;
 			}
 		}
 		if (!empty($order)) {
 			$i = 0;
 			foreach ($order as $key => $val) {
-				$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
-				if ($i == 0) {
-					$order_clause = "ORDER BY `$key` $val ";
+				if (array_key_exists($key, $table_schema)) {
+					$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
+					if ($i == 0) {
+						$order_clause = "ORDER BY `$key` $val ";
+					} else {
+						$order_clause .= ", `$key` $val ";
+					}
+					$i++;
 				} else {
-					$order_clause .= ", `$key` $val ";
+					continue;
 				}
-				$i++;
 			}
 		}
 		if (!empty($limit)) {
@@ -929,18 +938,24 @@ class CustomDatabaseTables {
 	 */
 	function find_data($table_name, $table_schema=null, $search_key, $columns, $order=array('created'=>'desc'), $limit=null, $offset=null) {
 		global $wpdb;
+		if (empty($table_schema)) 
+			list(, , $table_schema) = $this->get_table_schema($table_name);
 		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
 		$where_clause = $order_clause = $limit_clause = null;
 		if (!empty($order)) {
 			$i = 0;
 			foreach ($order as $key => $val) {
-				$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
-				if ($i == 0) {
-					$order_clause = "ORDER BY `$key` $val ";
+				if (array_key_exists($key, $table_schema)) {
+					$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
+					if ($i == 0) {
+						$order_clause = "ORDER BY `$key` $val ";
+					} else {
+						$order_clause .= ", `$key` $val ";
+					}
+					$i++;
 				} else {
-					$order_clause .= ", `$key` $val ";
+					continue;
 				}
-				$i++;
 			}
 		}
 		if (!empty($limit)) {
@@ -950,8 +965,6 @@ class CustomDatabaseTables {
 		$search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
 		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
 		if (!empty($keywords)) {
-			if (empty($table_schema)) 
-				list(, , $table_schema) = $this->get_table_schema($table_name);
 			$primary_key_name = null;
 			foreach ($table_schema as $col_name => $col_scm) {
 				if (empty($primary_key_name) && $col_scm['primary_key']) {
