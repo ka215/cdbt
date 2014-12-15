@@ -12,7 +12,7 @@ class CustomDataBaseTables_Ajax {
 		return self::$instance;
 	}
 	
-	private function __costruct() {
+	private function __construct() {
 		// Do nothing
 	}
 	
