@@ -539,7 +539,7 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					$msg = array('warning', __('Is invalid call to drop table.', self::DOMAIN));
 				}
 			}
-			if ($handle == 'choise-current-table') {
+			if ($handle == 'choose-current-table') {
 				$prev_current_table = get_option(self::DOMAIN . '_current_table');
 				$this->current_table = $target_table;
 				update_option(self::DOMAIN . '_current_table', $this->current_table);

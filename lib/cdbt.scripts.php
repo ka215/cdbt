@@ -624,9 +624,9 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 				show_modal('<?php _e('Please confirm', CDBT_PLUGIN_SLUG); ?>', msg, '<?php _e('Yes, run', CDBT_PLUGIN_SLUG); ?>');
 				$('.modal.confirmation').modal('show');
 			}
-			if (parse_str[1] == 'choise-current-table') {
+			if (parse_str[1] == 'choose-current-table') {
 				selected_id = $(this).attr('id');
-				$('.current-exists-tables button[id$="choise-current-table"]').each(function() {
+				$('.current-exists-tables button[id$="choose-current-table"]').each(function() {
 					if ($(this).attr('id') == selected_id) {
 						$(this).button('selected');
 					} else {
@@ -858,6 +858,8 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 					} else if (elms['type_val'] == 'Array') {
 						typeformat += '('+elms['default_val']+')';
 						elms['default_val'] = '';
+					} else if (elms['type'] == 'bool') {
+						// add nothing
 					} else {
 						if (elms['type_length'] != '') {
 							typeformat += '('+elms['type_length']+')';
@@ -871,8 +873,15 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 					col_sql += ' '+elms['attribute'].toUpperCase();
 				if (elms['not_null'] != '') 
 					col_sql += ' '+elms['not_null'].toUpperCase();
-				if (elms['default_val'] != '') 
-					col_sql += " DEFAULT '"+elms['default_val']+"'";
+				if (elms['default_val'] != '') {
+					var delimit = (elms['type'] == 'int' || elms['type'] == 'bool') ? '' : "'";
+					if (elms['type'] == 'bool') {
+						var default_value = (Number(elms['default_val']) === 'NaN' || Number(elms['default_val']) != 1) ? 0 : 1;
+					} else {
+						var default_value = delimit+elms['default_val']+delimit;
+					}
+					col_sql += " DEFAULT " + default_value;
+				}
 				if (elms['auto_inc'] != '') 
 					col_sql += ' '+elms['auto_inc'].toUpperCase();
 				if (elms['key'] != '') {

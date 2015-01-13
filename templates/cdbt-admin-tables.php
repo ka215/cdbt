@@ -16,9 +16,9 @@ if (count($cdbt_options['tables']) > 1) {
 		__('Data Import', CDBT_PLUGIN_SLUG), 
 		__('Data Export', CDBT_PLUGIN_SLUG), 
 		__('Change Table Schema', CDBT_PLUGIN_SLUG), 
-		__('Truncate table', CDBT_PLUGIN_SLUG), 
-		__('Drop table', CDBT_PLUGIN_SLUG), 
-		__('Choise Current table', CDBT_PLUGIN_SLUG), 
+		__('Truncate Table', CDBT_PLUGIN_SLUG), 
+		__('Drop Table', CDBT_PLUGIN_SLUG), 
+		__('Choose Current Table', CDBT_PLUGIN_SLUG), 
 	);
 	$thead_th = '';
 	foreach ($index_label as $th_text) {
@@ -27,10 +27,10 @@ if (count($cdbt_options['tables']) > 1) {
 	$enable_handle = array(
 		'data-import' => array('enable' => true, 'label' => __('Data Import', CDBT_PLUGIN_SLUG)), 
 		'data-export' => array('enable' => true, 'label' => __('Data Export', CDBT_PLUGIN_SLUG)), 
-		'alter-table' => array('enable' => true, 'label' => __('Alter table', CDBT_PLUGIN_SLUG)), 
-		'truncate-table' => array('enable' => true, 'label' => __('Truncate table', CDBT_PLUGIN_SLUG)), 
-		'drop-table' => array('enable' => true, 'label' => __('Drop table', CDBT_PLUGIN_SLUG)), 
-		'choise-current-table' => array('enable' => true, 'label' => __('Set Current table', CDBT_PLUGIN_SLUG)), 
+		'alter-table' => array('enable' => true, 'label' => __('Alter Table', CDBT_PLUGIN_SLUG)), 
+		'truncate-table' => array('enable' => true, 'label' => __('Truncate Table', CDBT_PLUGIN_SLUG)), 
+		'drop-table' => array('enable' => true, 'label' => __('Drop Table', CDBT_PLUGIN_SLUG)), 
+		'choose-current-table' => array('enable' => true, 'label' => __('Set Current Table', CDBT_PLUGIN_SLUG)), 
 	);
 	$table_rows = null;
 	if (!empty($load_tables)) {
@@ -56,7 +56,7 @@ if (count($cdbt_options['tables']) > 1) {
 				foreach ($enable_handle as $handle_name => $handle_info) {
 					$add_attr = (!$handle_info['enable']) ? ' disabled="disabled"' : '';
 					$add_class = '';
-					if ($handle_name == 'choise-current-table') {
+					if ($handle_name == 'choose-current-table') {
 						$add_attr .= ' data-selected-text="'. __('Currently selected', CDBT_PLUGIN_SLUG). '"';
 						if ($is_current) {
 							$add_class = ' active';
