@@ -430,25 +430,38 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 					if (cdbt_check_current_table_valid($this->current_table)) {
 						$allow_mimes = array('application/vnd.ms-excel', 'application/octet-stream', 'text/plain', 'text/csv', 'text/tsv');
 						if (in_array($_FILES['csv_file']['type'], $allow_mimes) && $_FILES['csv_file']['size'] > 0) {
-							$data = file_get_contents($_FILES['csv_file']['tmp_name']);
-							if (function_exists('mb_convert_encoding')) {
-								$data = mb_convert_encoding($data, 'UTF-8', 'UTF-8, UTF-7, ASCII, EUC-JP,SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP, ISO-8859-1');
-							}
 							$import_data = array();
-							foreach (explode("\n", trim($data)) as $i => $row) {
-								$parse_row = explode(',', trim($row));
-								if ($i == 0) {
-									$index_cols = array();
-									foreach ($parse_row as $col_value) {
-										$index_cols[] = preg_replace('/^"(.*)"$/iU', '$1', trim($col_value));
+							if (($handle = fopen($_FILES['csv_file']['tmp_name'], "r")) !== false) {
+								$ci = 0;
+								$headers = array();
+								while (($buff = fgetcsv($handle, 0, ",", '"')) !== false) { // '
+									$line = array();
+									$exception_cnt = 0;
+									foreach ($buff as $idx => $val) {
+										if ($ci == 0) {
+											$headers[] = $val;
+										} elseif (count($buff) == count($headers)) {
+											$line[$headers[$idx]] = $val;
+										} else {
+											if (preg_match('/\\\"/', $val)) {
+												$exception_cnt++;
+												list($pre_val, $sur_val) = preg_split('/\\\"/', $val);
+												$line[$headers[$idx]] = $pre_val . '\\"';
+												if (preg_match('/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})/', $sur_val, $matches)) {
+													$line[$headers[$idx+1]] = $matches[1];
+												} else {
+													$line[$headers[$idx+1]] = $sur_val;
+												}
+											} else {
+												$line[$headers[$idx+$exception_cnt]] = $val;
+											}
+										}
 									}
-								} else {
-									$row_data = array();
-									foreach ($index_cols as $j => $col_name) {
-										$row_data[$col_name] = preg_replace('/^"(.*)"$/iU', '$1', trim($parse_row[$j]));
-									}
-									$import_data[] = $row_data;
+									if ($ci > 0) 
+										$import_data[] = $line;
+									$ci++;
 								}
+								fclose($handle);
 							}
 							list($result, $message) = $this->import_table('', $import_data);
 							$msg = array(($result ? 'success' : 'warning'), $message);

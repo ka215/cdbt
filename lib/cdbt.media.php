@@ -64,21 +64,19 @@ class CustomDataBaseTables_Media {
 			$table_name = $_REQUEST['tablename'];
 			list($result, $data) = $cdbt->export_table($table_name, true);
 			if ($result) {
-				$csv = array();
+				$export_data = array();
 				foreach ($data as $row) {
-					$line = array();
+					$headers = array();
 					foreach ($row as $val) {
 						if (function_exists('mb_convert_encoding')) {
 							$val = mb_convert_encoding($val, 'SJIS', 'UTF-8, UTF-7, ASCII, EUC-JP,SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP, ISO-8859-1');
 						}
-						$line[] = '"'. $val .'"';
+						$headers[] = $val;
 					}
-					$csv[] = implode(',', $line);
+					$export_data[] = $headers;
 				}
-				$csv = implode("\r\n", $csv);
-				header('Content-Type: application/octet-stream');
-				header('Content-Disposition: attachment; filename=' . $table_name . '.csv');
-				die($csv);
+				$this->export_csv($export_data, $table_name . '.csv', true);
+				die();
 			} else {
 				header('Location: ' . $_SERVER['HTTP_REFERER']);
 			}
@@ -86,7 +84,7 @@ class CustomDataBaseTables_Media {
 			$table_name = $_REQUEST['tablename'];
 			list($result, $data) = $cdbt->export_table($table_name, false);
 			if ($result) {
-				$csv = array();
+				$export_data = array();
 				foreach ($data as $row) {
 					$line = array();
 					foreach ($row as $val) {
@@ -103,14 +101,12 @@ class CustomDataBaseTables_Media {
 						if (function_exists('mb_convert_encoding')) {
 							$val = mb_convert_encoding($val, 'SJIS', 'UTF-8, UTF-7, ASCII, EUC-JP,SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP, ISO-8859-1');
 						}
-						$line[] = '"'. $val .'"';
+						$line[] = $val;
 					}
-					$csv[] = implode(',', $line);
+					$export_data[] = $line;
 				}
-				$csv = implode("\r\n", $csv);
-				header('Content-Type: application/octet-stream');
-				header('Content-Disposition: attachment; filename=' . $table_name . '.csv');
-				die($csv);
+				$this->export_csv($export_data, $table_name . '.csv', true);
+				die();
 			} else {
 				header('Location: ' . $_SERVER['HTTP_REFERER']);
 			}
@@ -120,6 +116,22 @@ class CustomDataBaseTables_Media {
 	
 	public function cdbt_file_not_found() {
 		header('HTTP', true, 404);
+	}
+	
+	public function export_csv($data, $filename, $attachment = false) {
+		if ($attachment) {
+			header( 'Content-Type: application/octet-stream' );
+			header( 'Content-Disposition: attachment; filename=' . $filename );
+			$fp = fopen('php://output', 'w');
+		} else {
+			$fp = fopen($filename, 'w');
+		}
+		
+		foreach ($data as $line) {
+			fputcsv($fp, $line);
+		}
+		
+		fclose($fp);
 	}
 	
 }

@@ -1043,9 +1043,10 @@ class CustomDatabaseTables {
 	 * @param string $table_name (must containing prefix of table)
 	 * @param array $data
 	 * @param array $table_schema default null
+	 * @param bool $date_init default true
 	 * @return int $insert_id
 	 */
-	function insert_data($table_name, $data, $table_schema=null) {
+	function insert_data($table_name, $data, $table_schema=null, $date_init=true) {
 		global $wpdb;
 		if (empty($table_schema)) 
 			list(, , $table_schema) = $this->get_table_schema($table_name);
@@ -1061,9 +1062,9 @@ class CustomDatabaseTables {
 				$primary_key_count++;
 			}
 			if ($key == 'created') 
-				$is_exists_created = true;
+				$is_exists_created = $date_init;
 			if ($key == 'updated') 
-				$is_exists_updated = true;
+				$is_exists_updated = $date_init;
 		}
 		if (!empty($primary_key_name)) {
 			if ($primary_key_a_i) {
@@ -1072,9 +1073,9 @@ class CustomDatabaseTables {
 				$primary_key_value = $data[$primary_key_name];
 			}
 		}
-		if ($is_exists_created) 
+		if ($is_exists_created || empty($data['created'])) 
 			$data['created'] = date('Y-m-d H:i:s', time());
-		if ($is_exists_updated) 
+		if ($is_exists_updated || empty($data['updated'])) 
 			unset($data['updated']);
 		$format = array();
 		foreach ($data as $column_name => $value) {
@@ -1458,17 +1459,27 @@ class CustomDatabaseTables {
 				$diff_ary = array_diff_assoc(array_keys($table_schema), array_keys($import_data[0]));
 				if (empty($diff_ary)) {
 					$insert_ids = array();
+					$local_index = 1;
 					foreach ($import_data as $one_data) {
 						foreach ($table_schema as $column_name => $column_schema) {
-							if (!preg_match('/^(ID|created|updated)$/i', $column_name)) {
+							if ($column_schema['primary_key']) {
+								if ($column_schema['extra'] == 'auto_increment') {
+									unset($one_data[$column_name]);
+								} elseif (empty($one_data[$column_name])) {
+									$one_data[$column_name] = $local_index;
+								}
+							} elseif (!preg_match('/^(created|updated)$/i', $column_name)) {
 								$validate_result = $this->validate_data($column_schema, $one_data[$column_name]);
 								if (!array_shift($validate_result))
 									$one_data[$column_name] = '';
 							} else {
-								unset($one_data[$column_name]);
+								if (empty($one_data[$column_name])) {
+									unset($one_data[$column_name]);
+								}
 							}
 						}
-						$insert_ids[] = $this->insert_data($table_name, $one_data, $table_schema);
+						$insert_ids[] = $this->insert_data($table_name, $one_data, $table_schema, false);
+						$local_index++;
 					}
 					$result = array(true, sprintf(__('Data of %d was imported.', self::DOMAIN), count($insert_ids)));
 				} else {
