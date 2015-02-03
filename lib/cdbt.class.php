@@ -274,8 +274,7 @@ class CustomDatabaseTables {
 	 */
 	function add_action_links($links, $file){
 		if ($file == self::DOMAIN . '/cdbt.php') {
-			$links[] = '<a href="'. admin_url('options-general.php?page=' . self::DOMAIN) .'">'. __('Settings') .'</a>';
-			// $links[] = '<a href="http://www.ka2.org/custom-database-tables/pro/" target="_blank">'. __('Upgrade', self::DOMAIN) .'</a>';
+			array_unshift($links, '<a href="'. admin_url('options-general.php?page=' . self::DOMAIN) .'">'. __('Settings') .'</a>');
 		}
 		return $links;
 	}
@@ -285,7 +284,7 @@ class CustomDatabaseTables {
 	 * @return void
 	 */
 	function create_admin(){
-		$cdbt_plugin_page = add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom Database Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), plugin_dir_url(__FILE__) . 'assets/img/undo.png');
+		$cdbt_plugin_page = add_options_page(__('Custom Database Tables Option: ', self::DOMAIN), __('Custom DB Tables', self::DOMAIN), 'manage_options', self::DOMAIN, array($this, 'admin_controller'), '');
 		wp_parse_str($_SERVER['QUERY_STRING'], $this->query);
 		add_action("admin_head-$cdbt_plugin_page", array($this, 'admin_header'));
 		//add_action("load-$cdbt_plugin_page", array($this, 'admin_assets'));
