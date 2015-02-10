@@ -23,7 +23,8 @@ jQuery(document).ready(function($){
 	
 	$('.alert').on('closed.bs.alert', function(e) {
 		if ($.QueryString['mode'] == 'list' || $.QueryString['mode'] == 'edit') {
-			location.reload();
+			location.href = $('a.active').attr('href');
+			//location.reload();
 		} else {
 			if ($.QueryString['mode'] == 'input') {
 				if ($.QueryString['action'] == 'update') {
@@ -32,7 +33,8 @@ jQuery(document).ready(function($){
 					removeCookie('cdbt_update_referrer');
 					location.href = data.pop();
 				} else {
-					location.reload();
+					location.href = $('a.active').attr('href');
+					//location.reload();
 				}
 			}
 		}
@@ -939,7 +941,7 @@ jQuery(document).ready(function($){
 	$('.alert').on('closed.bs.alert', function(e) {
 		var current_mode = $('.controller-form input[name="mode"]').val();
 		if (current_mode == 'list' || current_mode == 'edit') {
-			location.reload();
+			//location.reload();
 		} else {
 			if (current_mode == 'input') {
 				if ($('.controller-form input[name="action"]').val() == 'update') {

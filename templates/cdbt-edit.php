@@ -41,7 +41,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		if (isset($action) && $action == 'delete') {
 			$IDs = explode(',', $ID);
 			if (is_array($IDs) && !empty($IDs)) {
-				$information_html_base = '<div class="alert alert-info"><ul>%s</ul></div>';
+				$information_html_base = '<div class="alert alert-info">%s<ul>%s</ul></div>';
 				$deleted_IDs = array();
 				foreach ($IDs as $ID) {
 					$is_deleted = $this->delete_data($table_name, intval($ID));
@@ -55,7 +55,8 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 						$delete_id_list .= sprintf('<li><p class="text-warning">%s %s.</p></li>', __('Failed to delete data of ID:', self::DOMAIN), $deleted_ID);
 					}
 				}
-				$information_html = sprintf($information_html_base, $delete_id_list);
+				$del_close_btn = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">'. __('Close', self::DOMAIN) .'</span></button>';
+				$information_html = sprintf($information_html_base, $del_close_btn, $delete_id_list);
 			}
 		}
 		$list_index_row = $list_rows = $pagination = null;
