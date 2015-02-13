@@ -4,6 +4,9 @@ function cdbt_create_javascript() {
 	$ajax_nonce = wp_create_nonce(CDBT_PLUGIN_SLUG . '_ajax');
 	$action_nonce = wp_create_nonce("cdbt_ajax_core");
 	
+     /* ***************************************************
+	/ JavaScript for WordPress administration panel
+     / **************************************************** */
 	if (is_admin()) {
 		// header("Content-type: application/x-javascript");
 ?>
@@ -202,7 +205,8 @@ jQuery(document).ready(function($){
 		modal_obj.children('.modal-body').html(body);
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(e){
+//			modal_obj.find('.run-process').click(function(e){
+			modal_obj.find('.run-process').parent('button').on('click', function(e) {
 				e.preventDefault();
 				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-import') {
 					// console.info('import proc.');
@@ -225,7 +229,7 @@ jQuery(document).ready(function($){
 					});
 				}
 			});
-			modal_obj.find('.cancel-close').click(function(e){
+			modal_obj.find('.cancel-close').parent('button').on('click', function(e) {
 				//e.preventDefault();
 				var query_string = window.location.search.substr(1).split('&') || '';
 				var queries = [];
@@ -921,6 +925,9 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 });
 <?php
 	} else {
+     /* ***************************************************
+	/ JavaScript for WordPress of WEB front-end
+     / **************************************************** */
 		global $cdbt;
 		//header("Content-type: application/x-javascript");
 ?>
@@ -1138,7 +1145,7 @@ jQuery(document).ready(function($){
 		modal_obj.children('.modal-body').html(body);
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
-			modal_obj.find('.run-process').click(function(){
+			modal_obj.find('.run-process').parent('button').on('click', function(){
 				$('form[role="form"]').each(function(){
 					if ($(this).hasClass('controller-form')) {
 						$('.controller-form').submit();
@@ -1163,7 +1170,9 @@ jQuery(document).ready(function($){
 });
 <?php
 	}
-	// Common
+     /* ***************************************************
+	/ JavaScript in common use in the WEB front-end and WordPress administration panel
+     / **************************************************** */
 ?>
 function setCookie(ck_name, ck_value, expiredays) {
     // SetCookie

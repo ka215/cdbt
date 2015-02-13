@@ -1457,7 +1457,7 @@ class CustomDatabaseTables {
 		$reg_base = '/^(ALTER[\s]{1,}TABLE[\s}{1,}'. $table_name .'{\s]{0,})(.*)$/iU';
 		if (preg_match($reg_base, $org_sql, $matches)) {
 			
-			$fixed_sql = $matches[1] . preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
+			$fixed_sql = $matches[1] .' '. preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
 			$result = array(true, $fixed_sql);
 		} else {
 			$result = array(false, null);

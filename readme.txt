@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
 Tested up to: 4.1.0
-Stable tag: 1.1.11
+Stable tag: 1.1.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,10 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 1.1.12 =
+* Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.
+* Fixed the improper regex in SQL validation process for alter table.
 
 = 1.1.11 =
 * Fixed the improper regex in SQL validation process. [here is issue detail](https://github.com/ka215/cdbt/issues/7)
@@ -143,3 +147,8 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Other Notes ==
 
 All official development on this plugin is on GitHub. Published version will bump here on WordPress.org. You can find the repository at [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt).
+
+
+== Upgrade Notice ==
+
+* 1.1.12 - [Important Update] Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.

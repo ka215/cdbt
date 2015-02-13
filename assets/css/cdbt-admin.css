@@ -35,11 +35,32 @@
 .current-table-schema table {
 	width: 200%;
 }
-.current-table-schema th.cell-logical_name {
+.current-table-schema table th {
+	background-color: #eee!important;
+}
+.current-table-schema table th.cell-logical_name {
 	width: 132px!important;
 }
 .current-table-schema th.cell-type_format {
 	width: 132px!important;
+}
+@-moz-document url-prefix() { 
+	.current-table-schema table {
+		border-collapse: separate!important;
+		border-spacing: 0px!important;
+	}
+	.current-table-schema table thead th, .current-table-schema table thead td {
+		border-width: 0 1px 1px 0!important;
+	}
+	.current-table-schema table thead th:last-child, .current-table-schema table thead td:last-child {
+		border-width: 0 0 1px 0!important;
+	}
+	.current-table-schema table tbody th, .current-table-schema table tbody td {
+		border-width: 1px 1px 0 0!important;
+	}
+	.current-table-schema table tbody th:last-child, .current-table-schema table tbody td:last-child {
+		border-width: 1px 0 0 0!important;
+	}
 }
 .current-table-shortcodes {
 	margin-top: 24px;
