@@ -703,7 +703,7 @@ class CustomDatabaseTables {
 		$table_name = !empty($table_name) ? $table_name : $this->current_table;
 		if ($this->check_table_exists($table_name)) {
 			// if exists table, drop table.
-			$e = $wpdb->query("DROP TABLE `". $table_name . "`");
+			$e = $wpdb->query("DROP TABLE `". $table_name ."`");
 			if ($e) {
 				$result = array(true, __('Completed to drop table.', self::DOMAIN));
 			} else {
@@ -845,7 +845,7 @@ class CustomDatabaseTables {
 		global $wpdb;
 		$table_name = !empty($table_name) ? $table_name : $this->current_table;
 		if ($this->check_table_exists($table_name)) {
-			$sql = 'SHOW CREATE TABLE `'. $table_name . '`';
+			$sql = "SHOW CREATE TABLE `". $table_name ."`";
 			$temp = $wpdb->get_results($sql);
 			$temp = array_shift($temp);
 			foreach ($temp as $key => $data) {
@@ -1218,12 +1218,12 @@ class CustomDatabaseTables {
 	 */
 	function validate_data($column_schema, $data) {
 		if ($column_schema['not_null'] && $column_schema['default'] == null) {
-			if (empty($data)) 
+			if (strval($data) != '0' && empty($data)) 
 				return array(false, __('empty', self::DOMAIN));
 		}
 		if (!empty($data)) {
 			if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
-				if (strtolower($column_schema['type_format']) != 'tinyint(1)') {
+				if (strtolower($column_schema['type_format']) != 'tinyint(1)' && strtolower($column_schema['type_format']) != 'bit(1)') {
 					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean))$/i', strtolower($column_schema['type']))) {
 						$data = intval($data);
 						if (!is_int($data)) 
@@ -1236,8 +1236,13 @@ class CustomDatabaseTables {
 					}
 				} else {
 					$data = intval($data);
-					if (!preg_match('/^(\-|)[0-9]+$/', $data)) 
-						return array(false, __('not integer', self::DOMAIN));
+					if (preg_match('/^bit$/i', strtolower($column_schema['type']))) {
+						if (!is_int($data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					} else {
+						if (!preg_match('/^(\-|)[0-9]+$/', $data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					}
 				}
 				if ($column_schema['unsigned']) {
 					if ($data < 0) 
@@ -1303,7 +1308,8 @@ class CustomDatabaseTables {
 			}
 		} else {
 			if ($column_schema['not_null'])
-				return array(false, __('empty', self::DOMAIN));
+				if (strval($data) != '0' && empty($data)) 
+					return array(false, __('empty', self::DOMAIN));
 		}
 		return array(true, '');
 	}

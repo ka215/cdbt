@@ -323,9 +323,13 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 		$font_size = 13;
 		$col_width = (int)ceil(($column_schema['max_length'] * $font_size) / 60);
 		$col_width = ($col_width > 11) ? 11 : ($col_width == 1 ? 2 : $col_width);
-		$set_value = !empty($value) ? $value : $column_schema['default'];
+		if (strval($value) == '0') {
+			$set_value = $value;
+		} else {
+			$set_value = !empty($value) ? $value : $column_schema['default'];
+		}
 		$attr_id = $table_name . '-' . $column_name;
-		$label_title = (empty($column_schema['logical_name'])) ? $column_name : $column_schema['logical_name'];
+		$label_title = (empty($column_schema['logical_name'])) ? sanitize_for_php($column_name, 'decode') : $column_schema['logical_name'];
 		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">'. __('require', CDBT_PLUGIN_SLUG) .'</span>' : '';
 		$is_hidden = ($option == 'hide') ? true: false;
 		$base_component = '<div class="form-group">%s</div>';
@@ -377,6 +381,22 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 				$input_form = '<label>'. $label_title . $require_label .'</label><div class="checkbox"><label>';
 				$input_form .= '<input type="checkbox" id="'. $attr_id .'" name="'. $attr_id .'" value="1"'. $attr_checked .' />';
 				$input_form .= cdbt__($label_title) .'</label></div>';
+			} else {
+				if ($column_schema['not_null'] && empty($set_value)) 
+					$set_value = 1;
+				$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. $set_value .'">';
+			}
+			
+		} else if (strtolower($column_schema['type_format']) == 'bit(1)') {
+			// radio
+			if (!$is_hidden) {
+				$input_form = '<label>'. $label_title . $require_label .'</label><div class="radio">';
+				for ($i=1; $i>=0; $i--) {
+					$attr_checked = checked($set_value, $i, false);
+					$input_form .= '<label class="radio-inline pull-left"><input type="radio" id="'. $attr_id .'-'. $i .'" name="'. $attr_id .'" value="'. $i .'"'. $attr_checked .' />';
+					$input_form .= ($i == 1 ? cdbt__('Yes') : cdbt__('No')) .'</label>';
+				}
+				$input_form .= '</div>';
 			} else {
 				if ($column_schema['not_null'] && empty($set_value)) 
 					$set_value = 1;
@@ -542,4 +562,19 @@ function cdbt__($string) {
  */
 function cdbt_e($string) {
 	_e($string, CDBT_PLUGIN_SLUG);
+}
+
+/**
+ * sanitize strings of MySQL identifier for using on PHP
+ * @param string $string
+ * @param string $action default 'encode'
+ * @return string
+ */
+function sanitize_for_php($string, $action='encode') {
+	if ($action == 'encode') {
+		$result = preg_replace('/\.+/', '%2E', rawurlencode($string));
+	} else {
+		$result = rawurldecode(preg_replace('/(%2E)+/', '.', $string));
+	}
+	return $result;
 }

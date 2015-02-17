@@ -65,7 +65,10 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 } else {
 	cdbt_create_console_menu($_cdbt_token);
 ?>
-	<div class="alert alert-info"><?php _e('The enabled tables is not exists currently.<br />Please create tables.', self::DOMAIN); ?></div>
+	<div class="alert alert-info">
+		<?php _e('The enabled tables is not exists currently.<br />Please create tables.', self::DOMAIN); ?>
+		<div class="pull-right"><button type="button" class="btn btn-default btn-sm btn-create-table-first"><?php _e('Create Table Now!', self::DOMAIN); ?></button></div>
+	</div>
 <?php
 }
 

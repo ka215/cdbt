@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
 Tested up to: 4.1.0
-Stable tag: 1.1.12
+Stable tag: 1.1.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,14 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 1.1.13 =
+* Fixed a bug with the pagination of data list that is displayed in the shortcodes. (?)
+* Fixed a bug that can not insert data into the column that contains a comma or a space in the field name.
+* Fixed a bug that can not insert data into a column of type "bit" from the input data page.
+* Fixed a bug that had not deleted data of plugin when you will uninstall this plugin with enable of the cleanup options.
+* Added feature of the binary file (image) preview on "cdbt-extract" shortcode.
+* Added a button that can create a table immediately in the home position when the table not yet been created or the table is not specified.
 
 = 1.1.12 =
 * Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Database Tables 1.1.12\n"
-"POT-Creation-Date: 2015-02-13 11:11+0900\n"
+"Project-Id-Version: Custom Database Tables 1.1.13\n"
+"POT-Creation-Date: 2015-02-16 14:54+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -50,10 +50,10 @@ msgid "Cancel"
 msgstr ""
 
 #: ../../custom-database-tables/functions.php:294
-#: ../../custom-database-tables/lib/cdbt.scripts.php:191
-#: ../../custom-database-tables/lib/cdbt.scripts.php:625
-#: ../../custom-database-tables/lib/cdbt.scripts.php:630
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1133
+#: ../../custom-database-tables/lib/cdbt.scripts.php:200
+#: ../../custom-database-tables/lib/cdbt.scripts.php:634
+#: ../../custom-database-tables/lib/cdbt.scripts.php:639
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1150
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:264
 #: ../../custom-database-tables/templates/cdbt-public-input.php:161
 #: ../../custom-database-tables/templates/cdbt-public-list.php:198
@@ -313,25 +313,25 @@ msgstr ""
 msgid "Import data is none."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:76
-#: ../../custom-database-tables/lib/cdbt.scripts.php:178
-#: ../../custom-database-tables/lib/cdbt.scripts.php:996
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1123
+#: ../../custom-database-tables/lib/cdbt.scripts.php:85
+#: ../../custom-database-tables/lib/cdbt.scripts.php:187
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1013
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1140
 msgid "Deleting confirmation"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:76
-#: ../../custom-database-tables/lib/cdbt.scripts.php:178
-#: ../../custom-database-tables/lib/cdbt.scripts.php:996
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1123
+#: ../../custom-database-tables/lib/cdbt.scripts.php:85
+#: ../../custom-database-tables/lib/cdbt.scripts.php:187
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1013
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1140
 #, php-format
 msgid "ID: %s of data will be deleted. Would you like?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:76
-#: ../../custom-database-tables/lib/cdbt.scripts.php:178
-#: ../../custom-database-tables/lib/cdbt.scripts.php:996
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1123
+#: ../../custom-database-tables/lib/cdbt.scripts.php:85
+#: ../../custom-database-tables/lib/cdbt.scripts.php:187
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1013
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1140
 #: ../../custom-database-tables/templates/cdbt-admin-general.php:37
 #: ../../custom-database-tables/templates/cdbt-admin-general.php:43
 #: ../../custom-database-tables/templates/cdbt-edit.php:220
@@ -340,110 +340,110 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:78
-#: ../../custom-database-tables/lib/cdbt.scripts.php:92
-#: ../../custom-database-tables/lib/cdbt.scripts.php:998
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1012
+#: ../../custom-database-tables/lib/cdbt.scripts.php:87
+#: ../../custom-database-tables/lib/cdbt.scripts.php:101
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1015
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1029
 msgid "Alert"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:78
-#: ../../custom-database-tables/lib/cdbt.scripts.php:998
+#: ../../custom-database-tables/lib/cdbt.scripts.php:87
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1015
 msgid "Checked items is none!"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:92
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1012
+#: ../../custom-database-tables/lib/cdbt.scripts.php:101
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1029
 msgid "Search keyword is none!"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:167
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1112
+#: ../../custom-database-tables/lib/cdbt.scripts.php:176
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1129
 msgid "Download binary files"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:183
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1078
+#: ../../custom-database-tables/lib/cdbt.scripts.php:192
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1095
 msgid "loading"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:195
-#: ../../custom-database-tables/lib/cdbt.scripts.php:608
-#: ../../custom-database-tables/lib/cdbt.scripts.php:613
-#: ../../custom-database-tables/lib/cdbt.scripts.php:625
-#: ../../custom-database-tables/lib/cdbt.scripts.php:630
-#: ../../custom-database-tables/lib/cdbt.scripts.php:683
+#: ../../custom-database-tables/lib/cdbt.scripts.php:204
+#: ../../custom-database-tables/lib/cdbt.scripts.php:617
+#: ../../custom-database-tables/lib/cdbt.scripts.php:622
+#: ../../custom-database-tables/lib/cdbt.scripts.php:634
+#: ../../custom-database-tables/lib/cdbt.scripts.php:639
 #: ../../custom-database-tables/lib/cdbt.scripts.php:692
-#: ../../custom-database-tables/lib/cdbt.scripts.php:713
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1137
+#: ../../custom-database-tables/lib/cdbt.scripts.php:701
+#: ../../custom-database-tables/lib/cdbt.scripts.php:722
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1154
 msgid "Please confirm"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:244
+#: ../../custom-database-tables/lib/cdbt.scripts.php:253
 #: ../../custom-database-tables/templates/cdbt-admin-create.php:65
 msgid "Incorporate Already Exists Table"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:303
+#: ../../custom-database-tables/lib/cdbt.scripts.php:312
 msgid "Now searching..."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:318
+#: ../../custom-database-tables/lib/cdbt.scripts.php:327
 msgid "Select an incorporate table"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:320
+#: ../../custom-database-tables/lib/cdbt.scripts.php:329
 msgid "Can be incorporated table was none"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:403
+#: ../../custom-database-tables/lib/cdbt.scripts.php:412
 msgid "Preset Loading Now..."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:565
+#: ../../custom-database-tables/lib/cdbt.scripts.php:574
 msgid "1. Download template csv file to import data."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:566
+#: ../../custom-database-tables/lib/cdbt.scripts.php:575
 msgid ""
 "It will be downloaded csv file is included only index row. You should be add "
 "in it the import data."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:567
+#: ../../custom-database-tables/lib/cdbt.scripts.php:576
 msgid "Download CSV"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:568
+#: ../../custom-database-tables/lib/cdbt.scripts.php:577
 msgid "2. Upload csv file including import data."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:569
+#: ../../custom-database-tables/lib/cdbt.scripts.php:578
 msgid "If invalid file will be uploaded, it will not import data."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:589
+#: ../../custom-database-tables/lib/cdbt.scripts.php:598
 msgid "Import procedures"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:589
+#: ../../custom-database-tables/lib/cdbt.scripts.php:598
 msgid "Import now!"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:602
+#: ../../custom-database-tables/lib/cdbt.scripts.php:611
 msgid "You are trying to upload a not CSV file."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:607
+#: ../../custom-database-tables/lib/cdbt.scripts.php:616
 #, php-format
 msgid "Will export data of \"%s\" table. Would you like?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:608
+#: ../../custom-database-tables/lib/cdbt.scripts.php:617
 msgid "Export now!"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:612
+#: ../../custom-database-tables/lib/cdbt.scripts.php:621
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:499
 #, php-format
 msgid ""
@@ -451,11 +451,11 @@ msgid ""
 "table. Would you like?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:613
+#: ../../custom-database-tables/lib/cdbt.scripts.php:622
 msgid "Start modify"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:624
+#: ../../custom-database-tables/lib/cdbt.scripts.php:633
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:511
 #, php-format
 msgid ""
@@ -463,38 +463,38 @@ msgid ""
 "resume. Would you like?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:629
+#: ../../custom-database-tables/lib/cdbt.scripts.php:638
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:528
 #, php-format
 msgid ""
 "Will delete a \"%s\" table. After this handled cannot resume. Would you like?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:658
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1068
+#: ../../custom-database-tables/lib/cdbt.scripts.php:667
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1085
 msgid "Stored image"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:661
-#: ../../custom-database-tables/lib/cdbt.scripts.php:1071
+#: ../../custom-database-tables/lib/cdbt.scripts.php:670
+#: ../../custom-database-tables/lib/cdbt.scripts.php:1088
 msgid "Stored binary file"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:692
+#: ../../custom-database-tables/lib/cdbt.scripts.php:701
 msgid "Request host address is none."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:802
+#: ../../custom-database-tables/lib/cdbt.scripts.php:816
 msgid "Candidate value 1, Candidate value 2, ..."
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:805
-#: ../../custom-database-tables/lib/cdbt.scripts.php:808
+#: ../../custom-database-tables/lib/cdbt.scripts.php:819
+#: ../../custom-database-tables/lib/cdbt.scripts.php:822
 msgid "Integer of length, Integer of decimals"
 msgstr ""
 
-#: ../../custom-database-tables/lib/cdbt.scripts.php:812
-#: ../../custom-database-tables/lib/cdbt.scripts.php:819
+#: ../../custom-database-tables/lib/cdbt.scripts.php:826
+#: ../../custom-database-tables/lib/cdbt.scripts.php:833
 msgid "Integer of length"
 msgstr ""
 
@@ -1274,7 +1274,7 @@ msgid "Data is none."
 msgstr ""
 
 #: ../../custom-database-tables/templates/cdbt-edit.php:244
-#: ../../custom-database-tables/templates/cdbt-index.php:68
+#: ../../custom-database-tables/templates/cdbt-index.php:69
 #: ../../custom-database-tables/templates/cdbt-input.php:138
 #: ../../custom-database-tables/templates/cdbt-list.php:209
 #: ../../custom-database-tables/templates/cdbt-public-contents.php:88
@@ -1337,7 +1337,11 @@ msgstr ""
 msgid "Available shortcodes"
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:72
+#: ../../custom-database-tables/templates/cdbt-index.php:70
+msgid "Create Table Now!"
+msgstr ""
+
+#: ../../custom-database-tables/templates/cdbt-index.php:75
 #, php-format
 msgid ""
 "Custom DataBase Tables is provided an extensive %sdocumentations%s. It "
@@ -1345,36 +1349,36 @@ msgid ""
 "well as documentation for further details about how to use for programmers."
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:73
+#: ../../custom-database-tables/templates/cdbt-index.php:76
 #, php-format
 msgid "If you wonder how you can help the project, just %sread this%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:74
+#: ../../custom-database-tables/templates/cdbt-index.php:77
 #, php-format
 msgid ""
 "Custom DataBase Table is free of charge and is released under the same "
 "license as WordPress, the %sGPL%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:75
+#: ../../custom-database-tables/templates/cdbt-index.php:78
 #, php-format
 msgid ""
 "You will also find useful information in the %ssupport forum%s. However "
 "don&apos;t forget to make a search before posting a new topic."
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:76
+#: ../../custom-database-tables/templates/cdbt-index.php:79
 msgid ""
 "Finally if you like this plugin or if it helps your business, donations to "
 "the author are greatly appreciated."
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:82
+#: ../../custom-database-tables/templates/cdbt-index.php:85
 msgid "The safer, easier way to pay online!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/cdbt-index.php:90
+#: ../../custom-database-tables/templates/cdbt-index.php:93
 msgid "About Custom DataBase Tables"
 msgstr ""
 
