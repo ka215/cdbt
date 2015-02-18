@@ -77,26 +77,30 @@
 	display: block;
 	font-weight: 500;
 }
-.cdbt-shortcode, .example-sql, .confirm-sql {
+.cdbt-shortcode, .example-sql, .confirm-sql, .raw-api-url {
 	margin-left: .75em;
 	padding: 2px 4px 4px;
 	font-size: 90%;
+	line-height: 150%;
 	color: #ab254e;
 	background-color: #f0f0f0;
 	white-space: nowrap;
 	border: solid 1px #ddd;
 	border-radius: 4px;
 }
-
-.cdbt-shortcode.full-code, .confirm-sql {
-	display: none;
+.cdbt-shortcode.full-code, .confirm-sql, .raw-api-url {
+	display: block;
 	white-space: -moz-pre-wrap;
 	white-space: pre-wrap;
 	word-wrap: break-word;
 }
+.cdbt-shortcode.full-code {
+	display: none;
+}
 .cdbt-shortcode.shortest-code {
 	display: inline-block;
 }
+
 .example-sql, .confirm-sql {
 	display: block;
 	margin-right: .75em;
