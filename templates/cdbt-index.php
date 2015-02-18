@@ -55,9 +55,75 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$offset++;
 	}
 	$sc_html = '<div class="current-table-shortcodes"><h4><span class="glyphicon glyphicon-expand"></span> %s</h4><ul>%s</ul></div>';
-	$sc_list = '<li><label>'. __('Shortcode to display list view of table data:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-view table="'. $table_name .'"&#93; </code></li>';
-	$sc_list .= '<li><label>'. __('Shortcode to display table data entry form:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-entry table="'. $table_name .'"&#93; </code></li>';
-	$sc_list .= '<li><label>'. __('Shortcode to display edit view of table data:', self::DOMAIN) .'</label><code class="cdbt-shortcode"> &#91;cdbt-edit table="'. $table_name .'" entry_page="entry-page[*]"&#93; </code><p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> '. __('The value of entry_page attribute should be post-id or post-name of entry page.', self::DOMAIN) .'</p></li>';
+	$sc_store = array(
+		'cdbt-view' => array(
+			'introduce' => __('Shortcode to display list view of table data:', self::DOMAIN), 
+			'helper' => '', 
+			'table' => '{$table_name}', 
+			'bootstrap_style' => 'true', 
+			'display_title' => 'true', 
+			'display_search' => 'true', 
+			'display_list_num' => 'true', 
+			'enable_sort' => 'true', 
+			'exclude_cols' => 'column_name1,column_name2,...', 
+			'add_class' => '', 
+		), 
+		'cdbt-entry' => array(
+			'introduce' => __('Shortcode to display table data entry form:', self::DOMAIN), 
+			'helper' => '', 
+			'table' => '{$table_name}', 
+			'bootstrap_style' => 'true', 
+			'display_title' => 'true', 
+			'hidden_cols' => 'column_name1,column_name2,...', 
+			'add_class' => '', 
+		), 
+		'cdbt-edit' => array(
+			'introduce' => __('Shortcode to display edit view of table data:', self::DOMAIN), 
+			'helper' => __('The value of entry_page attribute should be post-id or post-name of entry page.', self::DOMAIN), 
+			'table' => '{$table_name}', 
+			'entry_page' => '{entry-page[*]}', 
+			'bootstrap_style' => 'true', 
+			'display_title' => 'true', 
+			'display_list_num' => 'true', 
+			'enable_sort' => 'true', 
+			'exclude_cols' => 'column_name1,column_name2,...', 
+			'add_class' => '', 
+		), 
+		'cdbt-extract' => array(
+			'introduce' => __('Shortcode for outputting a list of user-defined arbitrary display format:', self::DOMAIN), 
+			'helper' => '', 
+			'table' => '{$table_name}', 
+			'bootstrap_style' => 'true', 
+			'display_index_row' => 'true', 
+			'narrow_keyword' => 'column_name1:keyword1,column_name2:keyword2,...', 
+			'display_cols' => 'column_name1,column_name2,...', 
+			'order_cols' => 'column_name3,column_name2,...', 
+			'sort_order' => 'column_name1:desc,column_name2:asc,...', 
+			'limit_items' => '5', 
+			'add_class' => '', 
+		), 
+	);
+	$sc_list = '';
+	foreach ($sc_store as $sc_name => $sc_attr) {
+		$helper_tag = !empty($sc_attr['helper']) ? '<p class="text-info"><span class="glyphicon glyphicon-exclamation-sign"></span> '. $sc_attr['helper'] .'</p>' : '';
+		$require_atts = $optional_atts = array();
+		foreach ($sc_attr as $attr_name => $attr_value) {
+			if (!in_array($attr_name, array('introduce', 'helper'))) {
+				if (preg_match('/^\{(.*)\}$/iU', $attr_value, $matches) && array_key_exists(1, $matches)) {
+					$value_string = preg_match('/^\$/', $matches[1]) ? ${trim($matches[1], '$')} : $matches[1];
+					$require_atts[] = sprintf("%s=\"%s\"", $attr_name, $value_string);
+				} else {
+					$optional_atts[] = sprintf("%s=\"%s\"", $attr_name, $attr_value);
+				}
+			}
+		}
+		$sc_require_attr = implode(' ', $require_atts);
+		$sc_optional_attr = implode(' ', $optional_atts);
+		$shortest_code = sprintf('<code id="%s-short" class="cdbt-shortcode shortest-code"> &#91;%s %s&#93; </code>', $sc_name, $sc_name, $sc_require_attr);
+		$full_code = sprintf('<code id="%s-full" class="cdbt-shortcode full-code"> &#91;%s %s %s&#93; </code>', $sc_name, $sc_name, $sc_require_attr, $sc_optional_attr);
+		$btn_change_code = sprintf('<button sc-id="%s" class="btn btn-default btn-xs btn-change-code" data-toggle-label="%s" data-current="short">%s</button>', $sc_name, __('Shortest', self::DOMAIN), __('Full Code', self::DOMAIN));
+		$sc_list .= sprintf('<li><label>%s %s</label>%s%s%s</li>', $sc_attr['introduce'], $btn_change_code, $shortest_code, $full_code, $helper_tag);
+	}
 	$shortcodes = sprintf($sc_html, __('Available shortcodes', self::DOMAIN), $sc_list);
 	
 	printf($schm_html, $title, $schm_index_row, '<tbody>'. $schm_rows . '</tbody>', $shortcodes);

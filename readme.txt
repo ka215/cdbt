@@ -64,12 +64,13 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 1.1.13 =
-* Fixed a bug with the pagination of data list that is displayed in the shortcodes. (?)
+* Added a feature that switched to full or shorten code at display example of shortcode on the home position.
+* Added a feature of the binary file (image) preview on "cdbt-extract" shortcode.
+* Added a button that can create a table immediately in the home position when the table not yet been created or the table is not specified.
+* Adjusted the user interface in some page and shortcodes.
 * Fixed a bug that can not insert data into the column that contains a comma or a space in the field name.
 * Fixed a bug that can not insert data into a column of type "bit" from the input data page.
 * Fixed a bug that had not deleted data of plugin when you will uninstall this plugin with enable of the cleanup options.
-* Added feature of the binary file (image) preview on "cdbt-extract" shortcode.
-* Added a button that can create a table immediately in the home position when the table not yet been created or the table is not specified.
 
 = 1.1.12 =
 * Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.

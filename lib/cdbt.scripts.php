@@ -226,7 +226,6 @@ jQuery(document).ready(function($){
 		modal_obj.children('.modal-body').html(body);
 		if (run_process != '') {
 			modal_obj.find('.run-process').text(run_process).show();
-//			modal_obj.find('.run-process').click(function(e){
 			modal_obj.find('.run-process').parent('button').on('click', function(e) {
 				e.preventDefault();
 				if ($('#cdbt_managed_tables input[name="handle"]').val() == 'data-import') {
@@ -745,6 +744,23 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 		setCookie('shortcut_tab', true, 0);
 		var direct_url = $('.console-menu .btn-group a').eq(1).attr('href');
 		location.href = direct_url;
+	});
+	
+	$('.btn-change-code').on('click', function() {
+		var current_label = $(this).text();
+		var next_toggle = $(this).attr('data-current') == 'short' ? 'full' : 'short';
+		var change_to = $(this).attr('sc-id') + '-' + next_toggle;
+		$('code[id^="' + $(this).attr('sc-id') + '"]').hide();
+		if (next_toggle == 'full') {
+			$('#' + change_to).show().css({ display: 'block' });
+		} else {
+			$('#' + change_to).show();
+		}
+		$('#' + change_to).trigger('focus');
+		$(this).attr('data-current', next_toggle);
+		$(this).attr('data-current', next_toggle);
+		$(this).text($(this).attr('data-toggle-label'));
+		$(this).attr('data-toggle-label', current_label);
 	});
 	
 /* ******************************************************

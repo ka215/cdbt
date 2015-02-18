@@ -79,13 +79,23 @@
 }
 .cdbt-shortcode, .example-sql, .confirm-sql {
 	margin-left: .75em;
-	padding: 2px 4px;
+	padding: 2px 4px 4px;
 	font-size: 90%;
 	color: #ab254e;
 	background-color: #f0f0f0;
 	white-space: nowrap;
 	border: solid 1px #ddd;
 	border-radius: 4px;
+}
+
+.cdbt-shortcode.full-code, .confirm-sql {
+	display: none;
+	white-space: -moz-pre-wrap;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+.cdbt-shortcode.shortest-code {
+	display: inline-block;
 }
 .example-sql, .confirm-sql {
 	display: block;
