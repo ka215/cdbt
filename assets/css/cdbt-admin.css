@@ -198,6 +198,7 @@ select#cdbt_db_engine {
 	margin-top: 14px;
 }
 .search-hits {
+	display: none;
 	top: 14px;
 	opacity: 1;
 }

@@ -576,7 +576,12 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 	$tabs_content_html = '<div class="tab-content">%s</div><!-- /.tab-content -->';
 	foreach ($tabs as $tab_name => $active) {
 		$nav_active_class = ($active) ? 'active' : '';
-		$nav_tabs_list .= sprintf('<li class="%s"><a href="#cdbt-%s" data-toggle="tab">%s</a></li>', $nav_active_class, $tab_name, cdbt_translate_tab_name($tab_name));
+		if (isset($handle) && $handle == 'alter-table') {
+			$tab_name_base = $tab_name == 'create' ? cdbt_translate_tab_name('alter') : cdbt_translate_tab_name($tab_name);
+		} else {
+			$tab_name_base = cdbt_translate_tab_name($tab_name);
+		}
+		$nav_tabs_list .= sprintf('<li class="%s"><a href="#cdbt-%s" data-toggle="tab">%s</a></li>', $nav_active_class, $tab_name, $tab_name_base);
 		$tabs_content .= sprintf('<div class="tab-pane %s" id="cdbt-%s">%s</div>', $nav_active_class, $tab_name, cdbt_create_tab_content($tab_name, $_cdbt_token, $inherit_values));
 	}
 	if (!empty($msg)) {
@@ -630,6 +635,7 @@ function cdbt_translate_tab_name($tab_name){
 	$translate_tab_name = array(
 		'general' => __('General setting', CDBT_PLUGIN_SLUG), 
 		'create' => __('Create table', CDBT_PLUGIN_SLUG), 
+		'alter' => __('Modify table', CDBT_PLUGIN_SLUG), 
 		'tables' => __('Enable tables list', CDBT_PLUGIN_SLUG), 
 	);
 	return $translate_tab_name[$tab_name];

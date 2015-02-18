@@ -35,6 +35,7 @@
 	left: 219px;
 }
 .search-hits {
+	display: none;
 	top: 14px;
 	opacity: 1;
 }

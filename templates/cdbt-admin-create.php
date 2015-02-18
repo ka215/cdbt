@@ -57,7 +57,7 @@ if ($handle == 'alter-table') {
 $db_engine_options = sprintf('<option value="InnoDB"%s>InnoDB</option><option value="MyISAM"%s>MyISAM</option>', selected($db_engine, 'InnoDB', false), selected($db_engine, 'MyISAM', false));
 
 // translate text
-$tab_name_label = ($handle == 'create-table') ? cdbt_translate_tab_name($tab_name) : __('Modify table', CDBT_PLUGIN_SLUG);
+$tab_name_label = ($handle == 'create-table') ? cdbt_translate_tab_name($tab_name) : cdbt_translate_tab_name('alter');
 $submit_label = ($handle == 'create-table') ? __('Create table', CDBT_PLUGIN_SLUG) : __('Modify table', CDBT_PLUGIN_SLUG);
 $cancel_label = __('Cancel', CDBT_PLUGIN_SLUG);
 $table_name_label = __('Table Name', CDBT_PLUGIN_SLUG);
