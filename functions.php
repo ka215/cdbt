@@ -518,11 +518,7 @@ function cdbt_str_truncate($string, $length=40, $suffix='...', $collapse=false) 
  * @return boolean
  */
 function cdbt_compare_var($var, $compare=null) {
-	if ((string)$var === (string)$compare) {
-		return true;
-	} else {
-		return false;
-	}
+	return (string)$var === (string)$compare;
 }
 
 /**
