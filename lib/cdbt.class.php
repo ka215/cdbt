@@ -325,7 +325,8 @@ class CustomDatabaseTables {
 	 */
 	function admin_header(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
-			//
+			// Action hook for add_action('cdbt_admin_header')
+			do_action('cdbt_admin_header');
 		}
 	}
 	
@@ -352,6 +353,8 @@ class CustomDatabaseTables {
 					'jquery-ui-autocomplete' => null, 
 				)
 			);
+			// Filter hook for add_filter('cdbt_admin_assets')
+			$cdbt_admin_assets = apply_filters('cdbt_admin_assets', $cdbt_admin_assets);
 			foreach ($cdbt_admin_assets as $asset_type => $asset_instance) {
 				if ($asset_type == 'styles') {
 					foreach ($asset_instance as $asset_name => $asset_values) {
@@ -376,6 +379,8 @@ class CustomDatabaseTables {
 	 */
 	function admin_footer(){
 		if (array_key_exists('page', $this->query) && $this->query['page'] == self::DOMAIN) {
+			// Action hook for add_action('cdbt_admin_footer')
+			do_action('cdbt_admin_footer');
 			cdbt_create_javascript();
 		}
 	}
@@ -389,6 +394,8 @@ class CustomDatabaseTables {
 			$notice_base = '<div class="%s"><ul>%s</ul></div>';
 			if (!empty($this->error)) {
 				$notice_list = '';
+				// Filter hook for add_filter('cdbt_admin_error')
+				$this->error = apply_filters('cdbt_admin_error', $error=$this->error);
 				foreach ($this->error as $error) {
 					$notice_list .= '<li>' . $error . '</li>';
 				}
@@ -396,6 +403,8 @@ class CustomDatabaseTables {
 			}
 			if (!empty($this->message)) {
 				$notice_list = '';
+				// Filter hook for add_filter('cdbt_admin_notice')
+				$this->message = apply_filters('cdbt_admin_notice', $message=$this->message);
 				foreach ($this->message as $message) {
 					$notice_list .= '<li>' . $message . '</li>';
 				}
