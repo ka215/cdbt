@@ -1,16 +1,16 @@
-# [Custom DataBase Tables](http://cdbt.ka2.org/)
+# Custom DataBase Tables
 
-Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
+Custom DB Tables called "__CDBT__" is plugin of WordPress. This plugin is able to create new tables on database of WordPress as you like. Also, the input and output and editing data to created tables, as importing and exporting by CSV can be done easily from the GUI tool on the admin panel of WordPress. In addition, you can provide the functionality to the data input and editing from the Web front-end by using some shortcodes or API.
 
-* Release version source: [http://wordpress.org/plugins/custom-database-tables/](http://downloads.wordpress.org/plugin/custom-database-tables.1.0.0.zip)
+* Public SVN Repository: [http://wordpress.org/plugins/custom-database-tables/](https://wordpress.org/support/plugin/custom-database-tables)
 * Home Page: [http://cdbt.ka2.org/](http://cdbt.ka2.org/)
 * Twitter: [@ka2bowy](https://twitter.com/ka2bowy)
-* Forum: [support forum](http://ka2.org/cdbt-forum/forum/support-forum/)
+* Forum: [support forum](http://ka2.org/cdbt-forum/forum/support-forum/) or [WordPress.org](https://wordpress.org/support/plugin/custom-database-tables)
 * Donate link: [donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=)
 
 ## Installation
 
-Install after downloaded from WordPress administrator's panel or [download here](https://github.com/ka215/cdbt) and put the plugins directory.
+Install after downloaded from WordPress admin panel or [download here](https://github.com/ka215/cdbt) and put the plugins directory.
 
 How to install WordPress provisions are as follows.
 
@@ -20,23 +20,22 @@ How to install WordPress provisions are as follows.
 
 That's it. Now you can easily start creating custom table in database of WordPress
 
-## Configuration
+## Usage
 
-Navigate to the Custom DB Tables submenu in setting menu of WordPress administrator's panel.
+Navigate to the Custom DB Tables submenu in setting menu of WordPress admin panel.
 
 First of all, please try to create the database required for the first.
 
-[Please see the tutorial for more use of the plugin](http://ka2.org/cdbt/tutorials/).
+[Please see the tutorial for more use of the plugin](http://ka2.org/cdbt/tutorials/) (Sorry, Japanese only)
 
 ## Documentation
 
-### [Plugin Documentation](http://ka2.org/cdbt/documentation/)
+### [Plugin Documentation](http://ka2.org/cdbt/documentation/) (Sorry, Japanese only)
 
 * [Plugin configuration files](http://ka2.org/cdbt/documentation/plugin-files/)
 * [Plugin methods](http://ka2.org/cdbt/documentation/methods/)
 * [Plugin APIs](http://ka2.org/cdbt/documentation/apis/)
 * [Plugin shortcodes](http://ka2.org/cdbt/documentation/shortcodes/)
-
 
 ## Features
 
@@ -53,13 +52,31 @@ First of all, please try to create the database required for the first.
 * You can modify table. (alter table)
 * Using API functions can connect to CRUD of plugin core.
 
+## License
+
+GPLv2
+
 ## Contributing
 
-If you thought this plugin felt to be useful, you want to cooperate in the development, or would like to contribute, I'm very happy that you make a donation to me. 
-The magnitude of the amount of the donation is not a problem. 
-Your feelings will become motivation of myself to develop this plugin.
+1. Fork it
+* Create your feature branch (`git checkout -b my-new-feature`)
+* Install the dependencies and run gulp (`npm i && gulp`)
+* Commit your changes (`git commit -am 'Add some feature'`)
+* Push to the branch (`git push origin my-new-feature`)
+* Create new Pull Request
+2. Donate
+  If you thought this plugin felt to be useful, you want to cooperate in the development, or would like to contribute, I'm very happy that you make a donation to me. The magnitude of the amount of the donation is not a problem. Your feelings will become motivation of myself to develop this plugin.
+
+
+
+## Thanks to the following:
+
+* [Bootstrap](http://getbootstrap.com/) for the foundation of UI/UX.
+* [phpMyAdmin](http://www.phpmyadmin.net/) for the inspiration.
 
 ## Support
 
 I've prepared a [support forum](http://ka2.org/cdbt-forum/forum/support-forum/). 
 Please to slip issuance in here questions about plugin.
+
+Crafted by [ka2](http://ka2.org/) ([@ka2bowy](https://twitter.com/ka2bowy)).
