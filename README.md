@@ -59,13 +59,13 @@ GPLv2
 ## Contributing
 
 1. Fork it
-* Create your feature branch (`git checkout -b my-new-feature`)
-* Install the dependencies and run gulp (`npm i && gulp`)
-* Commit your changes (`git commit -am 'Add some feature'`)
-* Push to the branch (`git push origin my-new-feature`)
-* Create new Pull Request
+  * Create your feature branch (`git checkout -b my-new-feature`)
+  * Install the dependencies and run gulp (`npm i && gulp`)
+  * Commit your changes (`git commit -am 'Add some feature'`)
+  * Push to the branch (`git push origin my-new-feature`)
+  * Create new Pull Request
 2. Donate
-  If you thought this plugin felt to be useful, you want to cooperate in the development, or would like to contribute, I'm very happy that you make a donation to me. The magnitude of the amount of the donation is not a problem. Your feelings will become motivation of myself to develop this plugin.
+  * If you thought this plugin felt to be useful, you want to cooperate in the development, or would like to contribute, I'm very happy that you make a donation to me. The magnitude of the amount of the donation is not a problem. Your feelings will become motivation of myself to develop this plugin.
 
 
 
