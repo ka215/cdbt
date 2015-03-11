@@ -618,3 +618,31 @@ function cdbt_verify_binary($raw_data, $include_bin_data=false) {
 	}
 	return $response;
 }
+
+/**
+ * load for using css framework
+ * 
+ * @param string $cssfw (optional)
+ * @return void
+ */
+function cdbt_load_css_framework($cssfw=null) {
+	if ($cssfw == 'bootstrap') {
+		global $cdbt;
+		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
+		wp_register_style('cdbt-custom-style', $cdbt->dir_url . '/assets/css/cdbt-style.css', array(), $cdbt->version, 'all');
+		wp_enqueue_style('cdbt-common-style');
+		wp_enqueue_style('cdbt-custom-style');
+		wp_register_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', array(), null, false);
+		wp_enqueue_script('cdbt-common-script');
+	}
+}
+
+/**
+ * discription
+ * 
+ * @param - -
+ * @return - -
+ */
+function new_function() {
+	// for New Featrue
+}
