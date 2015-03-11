@@ -111,6 +111,32 @@ class CustomDataBaseTables_Ajax {
 						die('error,'. __('Currently valid API key is not exists.', CDBT_PLUGIN_SLUG));
 					}
 					break;
+				case 'run_query': 
+					$stored_queries = get_option(CDBT_PLUGIN_SLUG . '_stored_queries');
+					$query_id = $_POST['qid'];
+					if (array_key_exists($query_id, $stored_queries)) {
+						$stored_query = html_entity_decode($stored_queries[$query_id]);
+						if (preg_match('/^(insert|update)\s.*$/iU', $stored_query, $matches) && array_key_exists(1, $matches)) {
+							$query_type = strtolower($matches[1]);
+							if (!in_array($query_type, array('insert', 'update'))) 
+								die(__('Specified query is invalid', CDBT_PLUGIN_SLUG));
+						}
+						$response = $cdbt->run_query($stored_query);
+						if ($query_type == 'insert') {
+							if ($response) {
+								global $wpdb;
+								$message = sprintf(__('Successfully registered data. To registered the data ID: %s', CDBT_PLUGIN_SLUG), $wpdb->insert_id);
+							} else {
+								$message = __('Could not register data.', CDBT_PLUGIN_SLUG);
+							}
+						} else {
+							$message = $response ? __('Successfully updated data.', CDBT_PLUGIN_SLUG) : __('Could not update data.', CDBT_PLUGIN_SLUG);
+						}
+						die($message);
+					} else {
+						die(__('Saving query was not found.', CDBT_PLUGIN_SLUG));
+					}
+					break;
 				default: 
 					die(__('Invalid access!', CDBT_PLUGIN_SLUG));
 					break;

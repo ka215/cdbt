@@ -1229,6 +1229,52 @@ jQuery(document).ready(function($){
 		}
 	}
 	
+	$('a[id^="cdbt-submit-"], button[id^="cdbt-submit-"]').on('click', function(e) {
+		var current_element = $(this).attr('id');
+		if ($(this).attr('data-onclick') != undefined) {
+			if (eval("typeof "+$(this).attr('data-onclick')) == 'function') {
+				eval($(this).attr('data-onclick')+".call(this, $(this))");
+			}
+		}
+		var post_data = {
+			action: 'cdbt_ajax_core', 
+			mode: 'run_query', 
+			qid: current_element.replace('cdbt-submit-', ''), 
+			token: '<?php echo $ajax_nonce; ?>', 
+			'_ajax_nonce': '<?php echo $action_nonce; ?>' 
+		}
+		$.ajax({
+			type: 'POST', 
+			url: "<?php echo esc_js(esc_url_raw(admin_url('admin-ajax.php', is_ssl() ? 'https' : 'http'))); ?>", 
+			data: post_data
+		}).done(function(res){
+			if ($('.modal').size() > 0) {
+				show_modal('<?php _e('Download binary files', CDBT_PLUGIN_SLUG); ?>', res, '');
+				$('.modal.confirmation').modal('show').on('hide.bs.modal', function(e) {
+					if ($('#'+current_element).attr('data-final') != undefined) {
+						if (eval("typeof "+$('#'+current_element).attr('data-final')) == 'function') {
+							eval($('#'+current_element).attr('data-final')+".call(this, $('#'+current_element))");
+						}
+					}
+				});
+			} else {
+				alert($('<div>').html(res).text());
+				if ($('#'+current_element).attr('data-final') != undefined) {
+					if (eval("typeof "+$('#'+current_element).attr('data-final')) == 'function') {
+						eval($('#'+current_element).attr('data-final')+".call(this, $('#'+current_element))");
+					}
+				}
+			
+			}
+		}).always(function(res){
+			if ($('#'+current_element).attr('data-callback') != undefined) {
+				if (eval("typeof "+$('#'+current_element).attr('data-callback')) == 'function') {
+					eval($('#'+current_element).attr('data-callback')+".call(this, res, $('#'+current_element))");
+				}
+			}
+		});
+	});
+
 });
 <?php
 	}
@@ -1273,6 +1319,18 @@ function removeCookie(ck_name) {
 	var path = '/';
 	if (!ck_name || document.cookie.indexOf(ck_name + '=') != -1) { return; }
 	document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
+}
+// sample for [cdbt-submit]
+function myfunc(obj){
+	console.info(obj);
+}
+function disable_button(res, obj){
+	console.info(res);
+	console.info(obj);
+	obj[0].style.visibility = 'hidden';
+}
+function ajax_close(obj){
+	location.reload();
 }
 </script>
 <?php
