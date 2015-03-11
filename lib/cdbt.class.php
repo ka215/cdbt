@@ -265,6 +265,7 @@ class CustomDatabaseTables {
 			add_option($revision_option, $this->options, '', 'no');
 		}
 		delete_option(self::DOMAIN . '_current_table');
+		delete_option(self::DOMAIN . '_stored_queries');
 		$this->log_info('cdbt plugin deactivated.');
 	}
 	
@@ -1188,6 +1189,16 @@ class CustomDatabaseTables {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * run the custom query
+	 * @param string $query
+	 * @return mixed
+	 */
+	function run_query($query) {
+		global $wpdb;
+		return $wpdb->query($query);
 	}
 	
 	/**
