@@ -3,8 +3,8 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
-Tested up to: 4.1.0
-Stable tag: 1.1.13
+Tested up to: 4.1.1
+Stable tag: 1.1.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,18 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 1.1.14 =
+* Added a new shortcode of "cdbt-submit" to submit custom insert and update queries from web front-end.
+* Added a protected method of run_query() for running custom queries.
+* Added an attribute "image_render" for direct viewing the images stored in database on outputted list by "cdbt-extract".
+* Added a new method of update_where() to update with where clause that customizable of conditions.
+* Changed to be able to omit the "entry-page" attribute from shortcode of "cdbt-edit".
+* Adjusted a such etcetera as changing the dependencies of each class.
+* Modified a shortcode of "cdbt-extract" as become no error and skip process if that attributes has not exists column.
+* Fixed a bug that shortcode of "cdbt-extract" can not show modal for image preview.
+* Fixed a bug that was defining a "null" as strings when set a null in default value of column of varchar on the table-creator.
+* Fixed a bug that was removed the already have saved binary data when edited other columns in same record.
 
 = 1.1.13 =
 * Added a feature that switched to full or shorten code at display example of shortcode on the home position.
@@ -159,5 +171,7 @@ All official development on this plugin is on GitHub. Published version will bum
 
 
 == Upgrade Notice ==
+
+* 1.1.14 - [Important Update] xxx
 
 * 1.1.12 - [Important Update] Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.
