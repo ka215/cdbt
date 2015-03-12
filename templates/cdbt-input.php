@@ -30,7 +30,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			if (!empty($data)) {
 				foreach ($data as $column_name => $column_value) {
 //					${$table_name.'-'.$column_name} = $column_value;
-					${$table_name.'-'.sanitize_for_php($column_name)} = $column_value;
+					${$table_name.'-'.cdbt_sanitize_for_php($column_name)} = $column_value;
 				}
 				$info_msg = null;
 			} else {
@@ -68,12 +68,12 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$post_values = $validate_values = array();
 		foreach ($table_schema as $column_name => $column_schema) {
 //			$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
-			$value = isset(${$table_name.'-'.sanitize_for_php($column_name)}) ? ${$table_name.'-'.sanitize_for_php($column_name)} : '';
+			$value = isset(${$table_name.'-'.cdbt_sanitize_for_php($column_name)}) ? ${$table_name.'-'.cdbt_sanitize_for_php($column_name)} : '';
 			$option = null;
 			if (!$is_update_mode && $column_name == 'created')
 				$option = 'none';
 //			$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $option);
-			$form_objects[] = cdbt_create_form($table_name, sanitize_for_php($column_name), $column_schema, $value, $option);
+			$form_objects[] = cdbt_create_form($table_name, cdbt_sanitize_for_php($column_name), $column_schema, $value, $option);
 			
 			$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 			if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
