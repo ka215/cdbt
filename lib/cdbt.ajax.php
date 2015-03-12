@@ -1,5 +1,5 @@
 <?php
-class CustomDataBaseTables_Ajax {
+class CustomDataBaseTables_Ajax extends CustomDatabaseTables {
 	
 	private static $instance;
 	
@@ -12,7 +12,8 @@ class CustomDataBaseTables_Ajax {
 		return self::$instance;
 	}
 	
-	private function __construct() {
+//	private function __construct() {
+	public function __construct() {
 		// Do nothing
 	}
 	
@@ -121,7 +122,8 @@ class CustomDataBaseTables_Ajax {
 							if (!in_array($query_type, array('insert', 'update'))) 
 								die(__('Specified query is invalid', CDBT_PLUGIN_SLUG));
 						}
-						$response = $cdbt->run_query($stored_query);
+//						$response = $cdbt->run_query($stored_query);
+						$response = $this->run_query($stored_query);
 						if ($query_type == 'insert') {
 							if ($response) {
 								global $wpdb;
