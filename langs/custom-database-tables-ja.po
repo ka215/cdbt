@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Database Tables 1.1.13\n"
+"Project-Id-Version: Custom Database Tables 1.1.14\n"
 "POT-Creation-Date: 2015-03-12 16:37+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
