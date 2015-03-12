@@ -657,9 +657,15 @@ class CustomDatabaseTables {
 			case 'update_data': 
 				$result = $this->update_data($target_table, $primary_key_value, $data, null);
 				break;
+			case 'update_where': 
+				$result = $this->update_where($target_table, $where_conditions, $data, null);
+				break;
 			case 'delete_data': 
 				$result = $this->delete_data($target_table, $primary_key_value);
 				break;
+//			case 'run_query': 
+//				$result = $this->run_query($query);
+//				break;
 			default: 
 				$result = false;
 				break;
@@ -1114,7 +1120,7 @@ class CustomDatabaseTables {
 	}
 	
 	/**
-	 * update data
+	 * update data (for primary key based)
 	 * @param string $table_name (must containing prefix of table)
 	 * @param int $primary_key_value
 	 * @param array $data
@@ -1192,11 +1198,65 @@ class CustomDatabaseTables {
 	}
 	
 	/**
+	 * update data (for where clause based)
+	 * @param string $table_name (must containing prefix of table)
+	 * @param string $where_conditions
+	 * @param array $data
+	 * @param array $table_schema (optional) default null
+	 * @return boolean
+	 */
+	function update_where($table_name, $where_conditions, $data, $table_schema=null) {
+		global $wpdb;
+		if (empty($table_schema)) 
+			list(, , $table_schema) = $this->get_table_schema($table_name);
+		$is_exists_created = $is_exists_updated = false;
+		foreach ($table_schema as $key => $val) {
+			if ($key == 'created') 
+				$is_exists_created = true;
+			if ($key == 'updated') 
+				$is_exists_updated = true;
+		}
+		//if ($is_exists_created && array_key_exists('created', $data)) 
+		//	unset($data['created']);
+		if ($is_exists_updated && array_key_exists('updated', $data)) 
+			unset($data['updated']);
+		
+		if (!empty($where_conditions)) {
+			if (preg_match_all('/\s{0,}\"(.*)\"\s{0,}/iU', $where_conditions, $matches) && array_key_exists(1, $matches)) {
+				foreach ($matches[1] as $stick) {
+					$where_conditions = str_replace('"'. $stick .'"', "'$stick'", $where_conditions);
+				}
+			}
+			$where_clause = 'WHERE ' . $where_conditions;
+		} else {
+			$where_clause = '';
+		}
+		
+		$set_clauses = array();
+		foreach ($data as $column_name => $value) {
+			if (array_key_exists($column_name, $table_schema)) {
+				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+$/', $value)) {
+					// is integer format
+					$set_clauses[] = sprintf('`%s` = %d', esc_sql($column_name), intval($value));
+				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $value)) {
+					// is double format
+					$set_clauses[] = sprintf('`%s` = %f', esc_sql($column_name), floatval($value));
+				} else {
+					// is string format
+					$set_clauses[] = sprintf("`%s` = '%s'", esc_sql($column_name), strval($value));
+				}
+			}
+		}
+		$sql = sprintf('UPDATE `%s` SET %s %s;', $table_name, implode(', ', $set_clauses), $where_clause);
+		return (boolean)$wpdb->query($sql);
+	}
+	
+	/**
 	 * run the custom query
 	 * @param string $query
 	 * @return mixed
 	 */
-	function run_query($query) {
+	protected function run_query($query) {
 		global $wpdb;
 		return $wpdb->query($query);
 	}
