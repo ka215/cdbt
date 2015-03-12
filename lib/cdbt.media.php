@@ -1,5 +1,5 @@
 <?php
-class CustomDataBaseTables_Media {
+class CustomDataBaseTables_Media extends CustomDatabaseTables {
 	
 	private static $instance;
 	
@@ -12,7 +12,8 @@ class CustomDataBaseTables_Media {
 		return self::$instance;
 	}
 	
-	private function __construct() {
+//	private function __construct() {
+	public function __construct() {
 		// Do nothing
 	}
 	

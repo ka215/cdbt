@@ -30,7 +30,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			if (!empty($data)) {
 				foreach ($data as $column_name => $column_value) {
 //					${$table_name.'-'.$column_name} = $column_value;
-					${$table_name.'-'.sanitize_for_php($column_name)} = $column_value;
+					${$table_name.'-'.cdbt_sanitize_for_php($column_name)} = $column_value;
 				}
 				$info_msg = null;
 			} else {
@@ -53,8 +53,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 				'hash' => md5($bin_data), 
 			));
 		} else {
-			if (!empty($origin_bin_data)) 
-				${$k} = rawurldecode($origin_bin_data);
+			${$k} = null;
 		}
 	}
 	if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
@@ -68,12 +67,12 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		$post_values = $validate_values = array();
 		foreach ($table_schema as $column_name => $column_schema) {
 //			$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
-			$value = isset(${$table_name.'-'.sanitize_for_php($column_name)}) ? ${$table_name.'-'.sanitize_for_php($column_name)} : '';
+			$value = isset(${$table_name.'-'.cdbt_sanitize_for_php($column_name)}) ? ${$table_name.'-'.cdbt_sanitize_for_php($column_name)} : '';
 			$option = null;
 			if (!$is_update_mode && $column_name == 'created')
 				$option = 'none';
 //			$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $option);
-			$form_objects[] = cdbt_create_form($table_name, sanitize_for_php($column_name), $column_schema, $value, $option);
+			$form_objects[] = cdbt_create_form($table_name, cdbt_sanitize_for_php($column_name), $column_schema, $value, $option);
 			
 			$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 			if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
@@ -87,8 +86,13 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		if (!empty($post_values)) {
 			if (empty($validate_values)) {
 				if ($is_update_mode) {
-					if ($action == 'confirm') 
+					if ($action == 'confirm') {
+						foreach ($post_values as $column => $value) {
+							if (empty($value)) 
+								unset($post_values[$column]);
+						}
 						$update_id = $this->update_data($table_name, $ID, $post_values, $table_schema);
+					}
 				} else {
 					if ($action == 'confirm') 
 						$insert_id = $this->insert_data($table_name, $post_values, $table_schema);

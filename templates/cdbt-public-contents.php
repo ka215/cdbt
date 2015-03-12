@@ -8,11 +8,10 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 		}
 	} else {
 		$bootstrap_style = $display_index_row = true;
-		$narrow_keyword = '';
+		$narrow_keyword = $image_render = $add_class = '';
 		$display_cols = $order_cols = array();
 		$sort_order = array('created'=>'desc');
 		$limit_items = 5;
-		$add_class = '';
 	}
 	
 	list($result, $table_name, $table_schema) = $cdbt->get_table_schema($table);
@@ -38,10 +37,38 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 			}
 		}
 		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
-			$view_cols = !empty($display_cols) ? implode(',', $display_cols) : '*';
+			$view_cols = '*';
+			if (!empty($display_cols)) {
+				foreach ($display_cols as $i => $colname) {
+					if (!array_key_exists($colname, $table_schema))
+						unset($display_cols[$i]);
+				}
+				if (!in_array($primary_key_column, $display_cols)) {
+					$view_cols = "{$primary_key_column}," . implode(',', $display_cols);
+				} else {
+					$view_cols = implode(',', $display_cols);
+				}
+			}
+			if (!empty($order_cols)) {
+				foreach ($order_cols as $i => $colname) {
+					if (!array_key_exists($colname, $table_schema))
+						unset($order_cols[$i]);
+				}
+			}
+			if (!empty($sort_order)) {
+				foreach ($sort_order as $colname => $order) {
+					if (!array_key_exists($colname, $table_schema))
+						unset($sort_order[$colname]);
+				}
+			}
 			if (!empty($narrow_keyword)) {
 				foreach ($narrow_keyword as $key => $val) {
 					$is_find = is_int($key) ? true : false;
+					if (!$is_find) {
+						// if specific column is not exist
+						if (!array_key_exists($key, $table_schema)) 
+							unset($narrow_keyword[$key]);
+					}
 					break;
 				}
 				if (!$is_find) {
@@ -55,6 +82,7 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 			
 			if (!empty($data) && is_array($data)) {
 				$row = 1;
+				$binary_files = 0;
 				$last_data = array();
 				foreach ($data as $record) {
 					$last_data_line = '<tr>';
@@ -62,26 +90,39 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 						$list_index_row = '<thead><tr>';
 					}
 					$is_include_binary_file = false;
-					$binary_files = 0;
 					if (!empty($order_cols)) {
 						$data_id = intval($record->$primary_key_column);
 						foreach ($order_cols as $order_col) {
+							if (!in_array($order_col, $display_cols)) 
+								continue;
 							if ($row == 1 && array_key_exists($order_col, $table_schema)) {
 								$index_name = !empty($table_schema[$order_col]['logical_name']) ? $table_schema[$order_col]['logical_name'] : $order_col;
 								$list_index_row .= '<th id="index-'. $order_col .'">'. $index_name .'</th>';
 							}
-							$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($record->$order_col, 0, 24))) ? true : false;
+							$chk_binary = cdbt_verify_binary($record->$order_col, true);
+							$is_binary = is_array($chk_binary);
 							$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
 							if ($is_binary) {
-								eval('$tmp = array(' . trim(preg_replace('/(a:\d+:{|(|;)s:\d+:|(|;)i:|"$)/', ",", substr($record->$order_col, 0, strpos($record->$order_col, 'bin_data'))), ',,') . ');');
-								foreach ($tmp as $i => $val) {
-									if ($val == 'origin_file') $origin_file = $tmp[intval($i)+1];
-									if ($val == 'mine_type') $mine_type = $tmp[intval($i)+1];
-									if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
-								}
 								$binary_files++;
+								
+								$bin_content = '';
+								if (in_array($image_render, array('rounded', 'circle', 'thumbnail', 'responsive', 'minimum', 'modal'))) {
+									if (!empty($chk_binary['bin_base64'])) {
+										$bin_content = '<img src="data:'. $chk_binary['mine_type'] .';base64,'. $chk_binary['bin_base64'] .'" alt="'. $chk_binary['origin_file'] .'" class="img-'. $image_render .' center-block">';
+										if ($image_render == 'minimum' || $image_render == 'modal') {
+											$column_value = sprintf('<a href="#" class="binary-file" data-id="%d" data-origin-file="%s">%s</a>', $data_id, $chk_binary['origin_file'], $bin_content);
+										} else {
+											$column_value = $bin_content;
+										}
+									}
+								}
+								if ($bin_content == '') {
+									$bin_content = '<span class="glyphicon glyphicon-paperclip"></span> '. $chk_binary['mine_type'] .' ('. ceil($chk_binary['file_size']/1024) .'KB)';
+									$column_value = sprintf('<a href="#" class="binary-file" data-id="%d" data-origin-file="%s">%s</a>', $data_id, $chk_binary['origin_file'], $bin_content);
+								}
+							} else {
+								$column_value = $record->$order_col;
 							}
-							$column_value = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : $record->$order_col;
 							
 							$last_data_line .= '<td>'. $column_value .'</td>';
 						}
@@ -89,22 +130,34 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 						foreach ($record as $column_name => $column_value) {
 							if ($column_name == $primary_key_column) 
 								$data_id = intval($column_value);
+							if (!in_array($column_name, $display_cols)) {
+								continue;
+							}
 							if ($row == 1 && array_key_exists($column_name, $table_schema)) {
 								$index_name = !empty($table_schema[$column_name]['logical_name']) ? $table_schema[$column_name]['logical_name'] : $column_name;
 								$list_index_row .= '<th id="index-'. $column_name .'">'. $index_name .'</th>';
 							}
-							$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($column_value, 0, 24))) ? true : false;
+							$chk_binary = cdbt_verify_binary($column_value, true);
+							$is_binary = is_array($chk_binary);
 							$is_include_binary_file = ($is_binary) ? true : $is_include_binary_file;
 							if ($is_binary) {
-								eval('$tmp = array(' . trim(preg_replace('/(a:\d+:{|(|;)s:\d+:|(|;)i:|"$)/', ",", substr($column_value, 0, strpos($column_value, 'bin_data'))), ',,') . ');');
-								foreach ($tmp as $i => $val) {
-									if ($val == 'origin_file') $origin_file = $tmp[intval($i)+1];
-									if ($val == 'mine_type') $mine_type = $tmp[intval($i)+1];
-									if ($val == 'file_size') $file_size = $tmp[intval($i)+1];
-								}
 								$binary_files++;
+								$bin_content = '';
+								if (in_array($image_render, array('rounded', 'circle', 'thumbnail', 'responsive', 'minimum', 'modal'))) {
+									if (!empty($chk_binary['bin_base64'])) {
+										$bin_content = '<img src="data:'. $chk_binary['mine_type'] .';base64,'. $chk_binary['bin_base64'] .'" alt="'. $chk_binary['origin_file'] .'" class="img-'. $image_render .' center-block">';
+										if ($image_render == 'minimum' || $image_render == 'modal') {
+											$column_value = sprintf('<a href="#" class="binary-file" data-id="%d" data-origin-file="%s">%s</a>', $data_id, $chk_binary['origin_file'], $bin_content);
+										} else {
+											$column_value = $bin_content;
+										}
+									}
+								}
+								if ($bin_content == '') {
+									$bin_content = '<span class="glyphicon glyphicon-paperclip"></span> '. $chk_binary['mine_type'] .' ('. ceil($chk_binary['file_size']/1024) .'KB)';
+									$column_value = sprintf('<a href="#" class="binary-file" data-id="%d" data-origin-file="%s">%s</a>', $data_id, $chk_binary['origin_file'], $bin_content);
+								}
 							}
-							$column_value = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $data_id .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : $column_value;
 							
 							$last_data_line .= '<td>'. $column_value .'</td>';
 						}

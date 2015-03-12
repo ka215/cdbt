@@ -62,8 +62,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					'hash' => md5($bin_data), 
 				));
 			} else {
-				if (!empty($origin_bin_data)) 
-					${$k} = rawurldecode($origin_bin_data);
+				${$k} = null;
 			}
 		}
 		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
@@ -109,8 +108,13 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			if (!empty($post_values)) {
 				if (empty($validate_values)) {
 					if ($is_update_mode) {
-						if ($action == 'confirm') 
+						if ($action == 'confirm') {
+							foreach ($post_values as $column => $value) {
+								if (empty($value)) 
+									unset($post_values[$column]);
+							}
 							$update_id = $cdbt->update_data($table_name, $ID, $post_values, $table_schema);
+						}
 					} else {
 						if ($action == 'confirm') 
 							$insert_id = $cdbt->insert_data($table_name, $post_values, $table_schema);

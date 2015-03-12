@@ -5,6 +5,7 @@
 
 /**
  * Create pagination
+ *
  * @param int $page_num
  * @param int $per_page
  * @param int $total_data
@@ -94,6 +95,7 @@ EOS;
 
 /**
  * get level of current login user
+ *
  * @return int
  */
 function cdbt_current_user_level() {
@@ -117,6 +119,7 @@ function cdbt_current_user_level() {
 
 /**
  * check role if current login user can use current table 
+ *
  * @param string $mode
  * @param string $table (optional) default null
  * @return boolean
@@ -144,6 +147,7 @@ function cdbt_check_current_table_role($mode, $table=null) {
 
 /**
  * check whether current table enable
+ *
  * @param string $table_name (optional) default null
  * @return boolean
  */
@@ -166,6 +170,7 @@ function cdbt_check_current_table_valid($table_name=null) {
 
 /**
  * get all options of table
+ *
  * @param string $table_name (optional) default null
  * @return array|boolean
  */
@@ -186,6 +191,7 @@ function cdbt_get_options_table($table_name=null) {
 
 /**
  * output console's header menu area
+ *
  * @param string $nonce
  * @return void
  */
@@ -261,6 +267,7 @@ function cdbt_create_console_menu($nonce) {
 
 /**
  * output console's footer buttons and defined modal
+ *
  * @param string $message default null
  * @param boolean $run default false
  * @param string $run_label default null
@@ -301,6 +308,7 @@ function cdbt_create_console_footer($message=null, $run=false, $run_label=null, 
 
 /**
  * automatically create an input form based on a column schema
+ *
  * @param string $table_name (must containing prefix of table)
  * @param string $culumn_name
  * @param array $culumn_schema
@@ -457,6 +465,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 
 /**
  * generate a button object of the bootstrap
+ *
  * @param string $btn_type default 'button'
  * @param string|array $btn_value (If $btn_type is "stateful", second arg in array is used for string that will change after clicked button.)
  * @param string $btn_id (optional) (eq. id attribute value in button tag)
@@ -487,6 +496,7 @@ function cdbt_create_button($btn_type='button', $btn_value, $btn_id=null, $btn_c
 
 /**
  * truncate strings by specific length
+ *
  * @param string $string
  * @param int $length default 40
  * @param string $suffix (optional) default '...'
@@ -513,8 +523,9 @@ function cdbt_str_truncate($string, $length=40, $suffix='...', $collapse=false) 
 
 /**
  * compare the variable
- * @param mixed(string|int|boolean) $var
- * @param mixed(string|int|boolean) $compare
+ *
+ * @param mixed (string|int|boolean) $var
+ * @param mixed (string|int|boolean) $compare
  * @return boolean
  */
 function cdbt_compare_var($var, $compare=null) {
@@ -523,6 +534,7 @@ function cdbt_compare_var($var, $compare=null) {
 
 /**
  * return boolean
+ *
  * @param string $string
  * @return boolean
  */
@@ -544,6 +556,7 @@ function cdbt_get_boolean($string) {
 
 /**
  * return translated strings
+ *
  * @param string $string
  * @return string
  */
@@ -553,6 +566,7 @@ function cdbt__($string) {
 
 /**
  * output for echo translated strings
+ *
  * @param string $string
  * @return void
  */
@@ -562,15 +576,73 @@ function cdbt_e($string) {
 
 /**
  * sanitize strings of MySQL identifier for using on PHP
+ *
  * @param string $string
  * @param string $action default 'encode'
  * @return string
  */
-function sanitize_for_php($string, $action='encode') {
+function cdbt_sanitize_for_php($string, $action='encode') {
 	if ($action == 'encode') {
 		$result = preg_replace('/\.+/', '%2E', rawurlencode($string));
 	} else {
 		$result = rawurldecode(preg_replace('/(%2E)+/', '.', $string));
 	}
 	return $result;
+}
+
+/**
+ * verify whether passed value is binary data
+ *
+ * @param string $raw_data
+ * @param boolean $include_bin_data (optional) true if want to include of binary data body encoded base64 (but image only) in return value
+ * @return mixed (boolean|array) false if not binary. Or, array of parsed binary data
+ */
+function cdbt_verify_binary($raw_data, $include_bin_data=false) {
+	$is_binary = (preg_match('/^a:\d:\{s:11:\"origin_file\"\;$/i', substr($raw_data, 0, 24))) ? true : false;
+	if ($is_binary) {
+		$response = array();
+		eval('$tmp = array(' . trim(preg_replace('/(a:\d+:{|(|;)s:\d+:|(|;)i:|"$)/', ",", substr($raw_data, 0, strpos($raw_data, 'bin_data'))), ',,') . ');');
+		foreach ($tmp as $i => $val) {
+			if ($val == 'origin_file')	$response[$val] = $tmp[intval($i)+1];
+			if ($val == 'mine_type')	$response[$val] = $tmp[intval($i)+1];
+			if ($val == 'file_size') 	$response[$val] = $tmp[intval($i)+1];
+		}
+		if (preg_match('/^image\/.*/i', $response['mine_type'])) {
+			$unpack_bin = unserialize($raw_data);
+			$response['bin_base64'] =  base64_encode($unpack_bin['bin_data']);
+		} else {
+			$response['bin_base64'] = '';
+		}
+	} else {
+		$response = false;
+	}
+	return $response;
+}
+
+/**
+ * load for using css framework
+ * 
+ * @param string $cssfw (optional)
+ * @return void
+ */
+function cdbt_load_css_framework($cssfw=null) {
+	if ($cssfw == 'bootstrap') {
+		global $cdbt;
+		wp_register_style('cdbt-common-style', $cdbt->dir_url . '/assets/css/cdbt-main.min.css', array(), $cdbt->version, 'all');
+		wp_register_style('cdbt-custom-style', $cdbt->dir_url . '/assets/css/cdbt-style.css', array(), $cdbt->version, 'all');
+		wp_enqueue_style('cdbt-common-style');
+		wp_enqueue_style('cdbt-custom-style');
+		wp_register_script('cdbt-common-script', $cdbt->dir_url . '/assets/js/scripts.min.js', array(), null, false);
+		wp_enqueue_script('cdbt-common-script');
+	}
+}
+
+/**
+ * discription
+ * 
+ * @param - -
+ * @return - -
+ */
+function new_function() {
+	// for New Featrue
 }
