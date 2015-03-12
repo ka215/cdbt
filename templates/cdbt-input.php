@@ -53,8 +53,7 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 				'hash' => md5($bin_data), 
 			));
 		} else {
-			if (!empty($origin_bin_data)) 
-				${$k} = rawurldecode($origin_bin_data);
+			${$k} = null;
 		}
 	}
 	if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
@@ -87,8 +86,13 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 		if (!empty($post_values)) {
 			if (empty($validate_values)) {
 				if ($is_update_mode) {
-					if ($action == 'confirm') 
+					if ($action == 'confirm') {
+						foreach ($post_values as $column => $value) {
+							if (empty($value)) 
+								unset($post_values[$column]);
+						}
 						$update_id = $this->update_data($table_name, $ID, $post_values, $table_schema);
+					}
 				} else {
 					if ($action == 'confirm') 
 						$insert_id = $this->insert_data($table_name, $post_values, $table_schema);
