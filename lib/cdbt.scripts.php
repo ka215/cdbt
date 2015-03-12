@@ -936,7 +936,11 @@ echo preg_replace('/\n|\r|\t/', '', $html);
 						}
 						var default_value = 'b'+delimit+bit_value+delimit;
 					} else {
-						var default_value = delimit+elms['default_val']+delimit;
+						if (elms['default_val'].toLowerCase() == 'null') {
+							var default_value = elms['default_val'];
+						} else {
+							var default_value = delimit+elms['default_val']+delimit;
+						}
 					}
 					col_sql += " DEFAULT " + default_value;
 				}
