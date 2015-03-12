@@ -211,9 +211,9 @@ function cdbt_submit_custom_query($atts, $content='') {
 	if (preg_match('/^(insert|update)\s(.*)$/iU', $query, $matches)) {
 		$query_action = strtolower($matches[1]);
 		if ($query_action == 'insert' && !cdbt_check_current_table_role('input', $table)) 
-			return sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('input', CDBT_PLUGIN_SLUG));
+			$err_permission = sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('input', CDBT_PLUGIN_SLUG));
 		if ($query_action == 'update' && !cdbt_check_current_table_role('edit', $table)) 
-			return sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('edit', CDBT_PLUGIN_SLUG));
+			$err_permission = sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('edit', CDBT_PLUGIN_SLUG));
 	} else {
 		return __('Can not use your specified query', CDBT_PLUGIN_SLUG);
 	}
@@ -274,16 +274,21 @@ function cdbt_submit_custom_query($atts, $content='') {
 		add_option(CDBT_PLUGIN_SLUG . '_stored_queries', array($hash_id => $prepared_query), '', 'no');
 	}
 	$template_content = $type == 'link' ? '<a href="#" id="%s" class="%s" %s>%s</a>' : '<button type="button" id="%s" class="btn %s" %s>%s</button>';
-	$content_id = "cdbt-submit-{$hash_id}";
-	$add_class = ($type != 'link' && empty($add_class)) ? 'btn-primary' : $add_class;
 	$attributes = array();
-	//$attributes[] = sprintf('data-query="%s"', $query_data);
-	if (!empty($onclick)) 
-		$attributes[] = sprintf('data-onclick="%s"', $onclick);
-	if (!empty($callback)) 
-		$attributes[] = sprintf('data-callback="%s"', $callback);
-	if (!empty($final)) 
-		$attributes[] = sprintf('data-final="%s"', $final);
+	if (isset($err_permission) && !empty($err_permission)) {
+		$content_id = "cdbt-submit";
+		$attributes[] = sprintf('title="%s"', $err_permission);
+		$attributes[] = 'disabled="disabled"';
+	} else {
+		$content_id = "cdbt-submit-{$hash_id}";
+		if (!empty($onclick)) 
+			$attributes[] = sprintf('data-onclick="%s"', $onclick);
+		if (!empty($callback)) 
+			$attributes[] = sprintf('data-callback="%s"', $callback);
+		if (!empty($final)) 
+			$attributes[] = sprintf('data-final="%s"', $final);
+	}
+	$add_class = ($type != 'link' && empty($add_class)) ? 'btn-primary' : $add_class;
 	$render_content = sprintf($template_content, $content_id, $add_class, implode(' ', $attributes), $label);
 	
 	return $render_content;
