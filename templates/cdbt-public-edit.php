@@ -45,6 +45,23 @@ function cdbt_render_edit_page($table=null, $mode=null, $_cdbt_token=null, $opti
 				}
 			}
 		}
+	} else {
+		// if entry_page is undefined
+		$post_types = get_post_types( array('public'=>true, '_builtin'=>false), 'names', 'and' );
+		if (is_array($post_types)) {
+			array_unshift($post_types, 'post', 'page');
+		}
+		$pattern = get_shortcode_regex();
+		$posts = get_posts( array('numberposts'=>-1, 'post_type'=>$post_types, 'orderby'=>'ID', 'order'=>'DESC') );
+		foreach ($posts as $one_post) {
+			if (preg_match_all('/'. $pattern .'/s', $one_post->post_content, $matches) && array_key_exists(2, $matches) && in_array('cdbt-entry', $matches[2])) {
+				if (preg_match('/table=(\'|\")'. $table .'(\'|\")/iU', $matches[0][0])) {
+					$is_entry_page = true;
+					$entry_page_url = str_replace(get_option('siteurl'), '', get_permalink($one_post->ID));
+					break;
+				}
+			}
+		}
 	}
 	
 	list($result, $table_name, $table_schema) = $cdbt->get_table_schema($table);
