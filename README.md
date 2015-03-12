@@ -54,7 +54,7 @@ First of all, please try to create the database required for the first.
 
 ## License
 
-GPLv2
+GPLv2 or later
 
 ## Contributing
 
