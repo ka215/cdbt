@@ -126,7 +126,7 @@ function cdbt_display_extract_data($atts, $content='') {
 		'order_cols' => array(), // example: "col3,col2,col1,..."
 		'sort_order' => array('created'=>'desc'), // eq. hash example: "updated:desc,ID:asc,..."
 		'limit_items' => 5, 
-		'image_render' => '', 
+		'image_render' => '', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
 		'add_class' => '', 
 	), $atts));
 	global $cdbt;
