@@ -76,10 +76,12 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			$post_values = $validate_values = array();
 			foreach ($table_schema as $column_name => $column_schema) {
 				$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
+//				$value = isset(${$table_name.'-'.cdbt_sanitize_for_php($column_name)}) ? ${$table_name.'-'.cdbt_sanitize_for_php($column_name)} : '';
 				$option = null;
 				if (!empty($hidden_cols)) {
 					foreach ($hidden_cols as $col) {
 						if ($col == $column_name) {
+//						if ($col == cdbt_sanitize_for_php($column_name)) {
 							$option = 'hide';
 							break;
 						}
@@ -88,6 +90,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				if (!$is_update_mode && $column_name == 'created')
 					$option = 'none';
 				$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $option);
+//				$form_objects[] = cdbt_create_form($table_name, cdbt_sanitize_for_php($column_name), $column_schema, $value, $option);
 				
 				$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 				if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
