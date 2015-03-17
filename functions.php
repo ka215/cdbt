@@ -337,7 +337,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 			$set_value = !empty($value) ? $value : $column_schema['default'];
 		}
 		$attr_id = $table_name . '-' . $column_name;
-		$label_title = (empty($column_schema['logical_name'])) ? sanitize_for_php($column_name, 'decode') : $column_schema['logical_name'];
+		$label_title = (empty($column_schema['logical_name'])) ? cdbt_sanitize_for_php($column_name, 'decode') : $column_schema['logical_name'];
 		$require_label = ($column_schema['not_null']) ? ' <span class="label label-warning">'. __('require', CDBT_PLUGIN_SLUG) .'</span>' : '';
 		$is_hidden = ($option == 'hide') ? true: false;
 		$base_component = '<div class="form-group">%s</div>';

@@ -3,7 +3,7 @@
   Plugin Name: Custom Database Tables
   Plugin URI: http://cdbt.ka2.org/
   Description: This plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.
-  Version: 1.1.14
+  Version: 1.1.15
   Author: ka2
   Author URI: http://cdbt.ka2.org
   Copyright: 2015 monauralsound (email : ka2@ka2.org)
@@ -30,7 +30,7 @@
 */
 ?>
 <?php
-define('CDBT_PLUGIN_VERSION', '1.1.14');
+define('CDBT_PLUGIN_VERSION', '1.1.15');
 define('CDBT_DB_VERSION', (float)1.2);
 define('CDBT_PLUGIN_SLUG', 'custom-database-tables');
 
