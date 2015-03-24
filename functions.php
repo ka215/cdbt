@@ -331,6 +331,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 		$font_size = 13;
 		$col_width = (int)ceil(($column_schema['max_length'] * $font_size) / 60);
 		$col_width = ($col_width > 11) ? 11 : ($col_width == 1 ? 2 : $col_width);
+		$value = is_array($value) ? implode(',', $value) : $value;
 		if (strval($value) == '0') {
 			$set_value = $value;
 		} else {
@@ -397,6 +398,7 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 			
 		} else if (strtolower($column_schema['type_format']) == 'bit(1)') {
 			// radio
+			$set_value = bindec(preg_replace('/^b\'([01]{1,})\'$/i', '$1', $set_value));
 			if (!$is_hidden) {
 				$input_form = '<label>'. $label_title . $require_label .'</label><div class="radio">';
 				for ($i=1; $i>=0; $i--) {
@@ -448,9 +450,14 @@ function cdbt_create_form($table_name, $column_name, $column_schema, $value, $op
 				if (!$is_hidden) {
 					$placeholder = sprintf(__('Enter %s', CDBT_PLUGIN_SLUG), $label_title);
 					$input_type = (preg_match('/(password|passwd)/i', strtolower($column_name))) ? 'password' : 'text';
-					$input_type = (preg_match('/(int|numeric|float|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
+					$input_type = (preg_match('/(int|numeric|float|double|decimal|bit)/i', strtolower($column_schema['type_format']))) ? 'number' : $input_type;
 					$input_form = '<div class="row"><div class="col-xs-'. $col_width .'"><label for="'. $attr_id .'">'. $label_title . $require_label .'</label>';
-					$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. esc_html($set_value) .'" />';
+					if ($input_type == 'number' && preg_match('/bit/i', strtolower($column_schema['type_format']))) {
+						$set_value = (preg_match('/^b\'([01]{1,})\'$/i', $set_value, $matches) && isset($matches) && array_key_exists(1, $matches)) ? bindec($matches[1]) : intval($set_value);
+					} else {
+						$set_value = esc_html($set_value);
+					}
+					$input_form .= '<input type="'. $input_type .'" class="form-control" id="'. $attr_id .'" name="'. $attr_id .'" placeholder="'. $placeholder .'" value="'. $set_value .'" />';
 					$input_form .= '</div></div>';
 				} else {
 					$input_form = '<input type="hidden" id="'. $attr_id .'" name="'. $attr_id .'" value="'. esc_html($set_value) .'">';

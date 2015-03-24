@@ -39,7 +39,8 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				$data = array_shift($data);
 				if (!empty($data)) {
 					foreach ($data as $column_name => $column_value) {
-						${$table_name.'-'.$column_name} = $column_value;
+//						${$table_name.'-'.$column_name} = $column_value;
+						${$table_name.'-'.cdbt_sanitize_for_php($column_name)} = $column_value;
 					}
 					$info_msg = null;
 				} else {
@@ -67,7 +68,13 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 		}
 		if (wp_verify_nonce($_cdbt_token, CDBT_PLUGIN_SLUG .'_'. $mode)) {
 			$form_html = '<div>%s<form method="post" id="'. $table_name .'" enctype="multipart/form-data" role="form">';
-			$form_html .= ($is_update_mode) ? '<input type="hidden" name="'. $primary_key_name .'" value="'. $ID .'" />' : '';
+			if ($is_update_mode) {
+				$form_html .= '<input type="hidden" name="'. $primary_key_name .'" value="'. $ID .'" />';
+				if (!isset($edit_page_url) && isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+					$edit_page_url = !isset($edit_page_url) ? $_SERVER['HTTP_REFERER'] : $edit_page_url;
+					$form_html .= '<input type="hidden" name="edit_page_url" value="'. $edit_page_url .'" />';
+				}
+			}
 			$form_html .= '<input type="hidden" name="mode" value="input" />';
 			$form_html .= '<input type="hidden" name="action" value="'. $action .'" />';
 			$form_html .= wp_nonce_field(CDBT_PLUGIN_SLUG .'_'. $mode, '_cdbt_token', true, false);
@@ -75,13 +82,13 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			$form_objects = array();
 			$post_values = $validate_values = array();
 			foreach ($table_schema as $column_name => $column_schema) {
-				$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
-//				$value = isset(${$table_name.'-'.cdbt_sanitize_for_php($column_name)}) ? ${$table_name.'-'.cdbt_sanitize_for_php($column_name)} : '';
+//				$value = isset(${$table_name.'-'.$column_name}) ? ${$table_name.'-'.$column_name} : '';
+				$value = isset(${$table_name.'-'.cdbt_sanitize_for_php($column_name)}) ? ${$table_name.'-'.cdbt_sanitize_for_php($column_name)} : '';
 				$option = null;
 				if (!empty($hidden_cols)) {
 					foreach ($hidden_cols as $col) {
-						if ($col == $column_name) {
-//						if ($col == cdbt_sanitize_for_php($column_name)) {
+//						if ($col == $column_name) {
+						if ($col == cdbt_sanitize_for_php($column_name)) {
 							$option = 'hide';
 							break;
 						}
@@ -89,8 +96,8 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 				}
 				if (!$is_update_mode && $column_name == 'created')
 					$option = 'none';
-				$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $option);
-//				$form_objects[] = cdbt_create_form($table_name, cdbt_sanitize_for_php($column_name), $column_schema, $value, $option);
+//				$form_objects[] = cdbt_create_form($table_name, $column_name, $column_schema, $value, $option);
+				$form_objects[] = cdbt_create_form($table_name, cdbt_sanitize_for_php($column_name), $column_schema, $value, $option);
 				
 				$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 				if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
@@ -101,7 +108,7 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			}
 			if ($is_update_mode) {
 				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('update data', CDBT_PLUGIN_SLUG), __('now updating...', CDBT_PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send');
-				$form_button .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Cancel', CDBT_PLUGIN_SLUG) . '</a>';
+				$form_button .= '<a href="'. $edit_page_url .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-remove"></span> ' . __('Cancel', CDBT_PLUGIN_SLUG) . '</a>';
 				$form_button .= '</div></div>';
 			} else {
 				$form_button = '<div class="center-block on-bottom-margin entry-button-block"><div class="text-left">' . cdbt_create_button('stateful', array(__('entry data', CDBT_PLUGIN_SLUG), __('now sending...', CDBT_PLUGIN_SLUG)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
@@ -113,14 +120,19 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 					if ($is_update_mode) {
 						if ($action == 'confirm') {
 							foreach ($post_values as $column => $value) {
-								if (empty($value)) 
+								if (empty($value) && !preg_match('/^[0]$/', $value)) 
 									unset($post_values[$column]);
 							}
 							$update_id = $cdbt->update_data($table_name, $ID, $post_values, $table_schema);
 						}
 					} else {
-						if ($action == 'confirm') 
+						if ($action == 'confirm') {
+							foreach ($post_values as $column => $value) {
+								if (empty($value) && !preg_match('/^[0]$/', $value)) 
+									unset($post_values[$column]);
+							}
 							$insert_id = $cdbt->insert_data($table_name, $post_values, $table_schema);
+						}
 					}
 				} else {
 					$err_list = null;
@@ -135,11 +147,13 @@ function cdbt_render_input_page($table=null, $mode=null, $_cdbt_token=null, $opt
 			if ((isset($insert_id) && (bool)$insert_id) || (isset($update_id) && (bool)$update_id)) {
 				if ($is_update_mode) {
 					$complete_msg = sprintf(__('Data update successful. Data %s is : %s', CDBT_PLUGIN_SLUG), $primary_key_name, $update_id);
+					$callback_url = $edit_page_url;
 				} else {
 					$complete_msg = sprintf(__('Completed new add data. Data %s is : %s', CDBT_PLUGIN_SLUG), $primary_key_name, $insert_id);
+					$callback_url = $_wp_http_referer;
 				}
 				$display_html = sprintf('%s<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>%s</div>', $page_title, $complete_msg);
-				$display_html .= '<a href="'. $_wp_http_referer .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', CDBT_PLUGIN_SLUG) . '</a>';
+				$display_html .= '<a href="'. $callback_url .'" class="btn btn-default" style="margin-left: 1em;"><span class="glyphicon glyphicon-repeat"></span> ' . __('Continue', CDBT_PLUGIN_SLUG) . '</a>';
 			} else {
 				if (isset($action) && $action == 'confirm') {
 					if ((isset($insert_id) && !(bool)$insert_id) || (isset($update_id) && !(bool)$update_id)) {
