@@ -244,7 +244,8 @@ class CustomDatabaseTables {
 		} else {
 			$this->current_table = '';
 		}
-		date_default_timezone_set($this->options['timezone']);
+		if (isset($this->options['timezone']) && !empty($this->options['timezone']))
+			date_default_timezone_set($this->options['timezone']);
 		
 		if (get_option(self::DOMAIN) !== false) {
 			update_option(self::DOMAIN, $this->options);
