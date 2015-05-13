@@ -77,8 +77,12 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 			$post_values[$column_name] = (is_array($value)) ? implode(',', $value) : $value;
 			if (!preg_match('/^('. $primary_key_name .'|created|updated)$/i', $column_name)) {
 				$validate_result = $this->validate_data($column_schema, $value);
-				if (!array_shift($validate_result)) 
+				if (!array_shift($validate_result)) {
 					$validate_values[$column_name] = array_pop($validate_result);
+				} else {
+					$verified_value = array_pop($validate_result);
+					$post_values[$column_name] = (is_array($verified_value)) ? implode(',', $verified_value) : $verified_value;
+				}
 			}
 		}
 		$form_objects[] = '<div class="center-block on-bottom-margin"><div class="text-left">' . cdbt_create_button('stateful', array(__('submit data', self::DOMAIN), __('now sending...', self::DOMAIN)), 'entry-submit', 'primary', 'confirm', 'send') . '</div></div>';
@@ -88,14 +92,19 @@ if ($result && !empty($table_name) && !empty($table_schema)) {
 				if ($is_update_mode) {
 					if ($action == 'confirm') {
 						foreach ($post_values as $column => $value) {
-							if (empty($value)) 
+							if (empty($value) && !preg_match('/^[0]$/', $value)) 
 								unset($post_values[$column]);
 						}
 						$update_id = $this->update_data($table_name, $ID, $post_values, $table_schema);
 					}
 				} else {
-					if ($action == 'confirm') 
+					if ($action == 'confirm') {
+						foreach ($post_values as $column => $value) {
+							if (empty($value) && !preg_match('/^[0]$/', $value)) 
+								unset($post_values[$column]);
+						}
 						$insert_id = $this->insert_data($table_name, $post_values, $table_schema);
+					}
 				}
 			} else {
 				$err_list = null;

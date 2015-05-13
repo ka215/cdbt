@@ -244,7 +244,8 @@ class CustomDatabaseTables {
 		} else {
 			$this->current_table = '';
 		}
-		date_default_timezone_set($this->options['timezone']);
+		if (isset($this->options['timezone']) && !empty($this->options['timezone']))
+			date_default_timezone_set($this->options['timezone']);
 		
 		if (get_option(self::DOMAIN) !== false) {
 			update_option(self::DOMAIN, $this->options);
@@ -1294,104 +1295,151 @@ class CustomDatabaseTables {
 	 * data verification by column schema
 	 * @param array $column_schema
 	 * @param string $data
-	 * @return array
+	 * @return array notes: [0] => validation result (boolean), [1] => verified value (mixed) if result is true, or message of error
 	 */
 	function validate_data($column_schema, $data) {
-		if ($column_schema['not_null'] && $column_schema['default'] == null) {
-			if (strval($data) != '0' && empty($data)) 
-				return array(false, __('empty', self::DOMAIN));
-		}
-		if (!empty($data)) {
-			if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
-				if (strtolower($column_schema['type_format']) != 'tinyint(1)' && strtolower($column_schema['type_format']) != 'bit(1)') {
-					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean))$/i', strtolower($column_schema['type']))) {
-						$data = intval($data);
-						if (!is_int($data)) 
-							return array(false, __('not integer', self::DOMAIN));
-					} else {
-						$data = floatval($data);
-						if ($data != 0 && !cdbt_get_boolean(preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $data))) {
-							return array(false, __('not integer', self::DOMAIN));
-						}
-					}
-				} else {
-					$data = intval($data);
-					if (preg_match('/^bit$/i', strtolower($column_schema['type']))) {
-						if (!is_int($data)) 
-							return array(false, __('not integer', self::DOMAIN));
-					} else {
-						if (!preg_match('/^(\-|)[0-9]+$/', $data)) 
-							return array(false, __('not integer', self::DOMAIN));
-					}
-				}
-				if ($column_schema['unsigned']) {
-					if ($data < 0) 
-						return array(false, __('not a positive number', self::DOMAIN));
-				}
-			}
-			if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
-				if (!is_string($data)) 
-					return array(false, __('invalid strings', self::DOMAIN));
-			}
-			if (preg_match('/^(enum|set)(.*?)$/i', strtolower($column_schema['type_format']), $matches)) {
-				$eval_string = '$items = array' . $matches[2] . ';';
-				eval($eval_string);
-				if (!empty($data)) {
-					if (!is_array($data)) 
-						$data = explode(',', $data);
-					foreach ($data as $tmp) {
-						if (!in_array($tmp, $items)) {
-							return array(false, __('invalid value', self::DOMAIN));
-						}
-					}
-				}
-			}
-			$reg_date = '([1-9][0-9]{3})\D?(0[1-9]{1}|1[0-2]{1})\D?(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})\D?';
-			$reg_time = '(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?';
-			$reg_year = '([1-9][0-9]{3})\D?';
-			if (preg_match('/^(datetime|timestamp)$/i', strtolower($column_schema['type']))) {
-				if (!preg_match('/^'. $reg_date . $reg_time .'$/', $data)) 
-					return array(false, __('invalid format', self::DOMAIN));
-			}
-			if (strtolower($column_schema['type']) == 'date') {
-				if (!preg_match('/^'. $reg_date .'$/', $data)) 
-					return array(false, __('invalid format', self::DOMAIN));
-			}
-			if (strtolower($column_schema['type']) == 'time') {
-				if (!preg_match('/^'. $reg_time .'$/i', $data)) 
-					return array(false, __('invalid format', self::DOMAIN));
-			}
-			if (strtolower($column_schema['type']) == 'year') {
-				if (!preg_match('/^'. $reg_year .'$/i', $data)) 
-					return array(false, __('invalid format', self::DOMAIN));
-			}
-			if (is_array($data)) {
-				foreach ($data as $value) {
-					if (function_exists('mb_strlen')) {
-						$length = mb_strlen((string)$value);
-					} else {
-						$length = strlen((string)$value);
-					}
-					if ($length > intval($column_schema['max_length'])) {
-						return array(false, __('max length over', self::DOMAIN));
-					}
-				}
-			} else if (!preg_match('/^(datetime|timestamp|date|time|year)$/i', strtolower($column_schema['type']))) {
-				if (function_exists('mb_strlen')) {
-					$length = mb_strlen((string)$data);
-				} else {
-					$length = strlen((string)$data);
-				}
-				if ($length > intval($column_schema['max_length'])) {
-					return array(false, __('max length over', self::DOMAIN));
-				}
-			}
+		$validate_base = $this->matched_column_type(strtolower($column_schema['type']));
+		if (empty($data) && !preg_match('/^[0]$/', $data)) {
+			$based_data = null;
 		} else {
-			if ($column_schema['not_null'])
-				if (strval($data) != '0' && empty($data)) 
-					return array(false, __('empty', self::DOMAIN));
+			$based_data = is_array($data) ? $data : strval($data);
 		}
-		return array(true, '');
+		if ($column_schema['not_null'] && !is_array($based_data) && is_null($based_data)) 
+			return array(false, __('empty', self::DOMAIN));
+		if ($column_schema['not_null'] && is_array($based_data) && empty($based_data)) 
+			return array(false, __('empty', self::DOMAIN));
+		// verification of $data values
+		$based_data = !is_array($based_data) && is_null($based_data) && $column_schema['default'] ? $column_schema['default'] : $based_data;
+		switch ($validate_base[0]) {
+			case 'integer':
+				if (!preg_match('/^(\-|)[0-9]{1,}(\.[0-9]{0,}|)$/', $based_data)) {
+					if (!$column_schema['not_null'] && $based_data == '') {
+						$fixed_data = null;
+					} else {
+						return array(false, __('not integer', self::DOMAIN));
+					}
+				} else {
+					if ($validate_base[1] == 'tinyint' && strtolower($column_schema['type_format']) == 'tinyint(1)') {
+						$fixed_data = intval($based_data) == 0 ? 0 : 1;
+					} else {
+						$fixed_data = intval($based_data);
+						if ($column_schema['unsigned'] && $fixed_data < 0) {
+							return array(false, __('not a positive number', self::DOMAIN));
+						}
+					}
+				}
+				break;
+			case 'float':
+				if (!preg_match('/^(\-|)[0-9]{1,}(\.[0-9]{0,}|)$/', $based_data)) {
+					if (!$column_schema['not_null'] && $based_data == '') {
+						$fixed_data = null;
+					} else {
+						return array(false, __('not integer', self::DOMAIN));
+					}
+				} else {
+					$fixed_data = floatval($based_data);
+					if ($column_schema['unsigned'] && $fixed_data < 0) {
+						return array(false, __('not a positive number', self::DOMAIN));
+					}
+				}
+				break;
+			case 'decimal':
+				if (!preg_match('/^(\-|)[0-9]{1,}(\.[0-9]{0,}|)$/', $based_data)) {
+					if (!$column_schema['not_null'] && $based_data == '') {
+						$fixed_data = null;
+					} else {
+						return array(false, __('not integer', self::DOMAIN));
+					}
+				} else {
+					if ($column_schema['unsigned'] && $fixed_data < 0) {
+						return array(false, __('not a positive number', self::DOMAIN));
+					}
+					$fixed_data = strval($based_data);
+				}
+				break;
+			case 'binary':
+				if (preg_match('/^(\-|)[0-9]{1,}(\.[0-9]{0,}|)$/', $based_data)) {
+					$fixed_data = intval($based_data);
+//				if (preg_match('/^[01]{1,64}$/', $based_data)) {
+//					$fixed_data = sprintf("b'%s'", $based_data);
+//				} elseif (preg_match('/^(\-|)[0-9]{1,}$/', $based_data)) {
+//					$fixed_data = sprintf("b'%s'", decbin(intval($based_data)));
+				} elseif (!$column_schema['not_null'] && $based_data == '') {
+					$fixed_data = null;
+				} elseif ($column_schema['default']) {
+					$fixed_data = (preg_match('/^b\'([01]{1,})\'$/i', $column_schema['default'], $matches) && isset($matches) && array_key_exists(1, $matches)) ? bindec($matches[1]) : intval($column_schema['default']);
+				} else {
+					return array(false, __('invalid', self::DOMAIN));
+				}
+				break;
+			case 'date':
+				$is_invalid = false;
+				$reg_date = '([1-9][0-9]{3})\D?(0[1-9]{1}|1[0-2]{1})\D?(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})\D?';
+				$reg_time = '(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?';
+				$reg_year = '([1-9][0-9]{3})\D?';
+				if (in_array($validate_base[1], array('datetime', 'timestamp'))) {
+					if (!preg_match('/^'. $reg_date . $reg_time .'$/', $based_data)) 
+						$is_invalid = true;
+				}
+				if ($validate_base[1] == 'date') {
+					if (!preg_match('/^'. $reg_date .'$/', $based_data)) 
+						$is_invalid = true;
+				}
+				if ($validate_base[1] == 'time') {
+					if (!preg_match('/^'. $reg_time .'$/i', $based_data)) 
+						$is_invalid = true;
+				}
+				if ($validate_base[1] == 'year') {
+					if (!preg_match('/^'. $reg_year .'$/i', $based_data)) 
+						$is_invalid = true;
+				}
+				if ($is_invalid) {
+					return array(false, __('invalid format', self::DOMAIN));
+				} else {
+					if ($validate_base[1] == 'year') {
+						$fixed_data = intval($based_data);
+					} else {
+						$fixed_data = strval($based_data);
+					}
+				}
+				break;
+			case 'char':
+				if (!is_string($data)) {
+					return array(false, __('invalid', self::DOMAIN));
+				} else {
+					$fixed_data = $based_data != '' ? strval($based_data) : null;
+				}
+				break;
+			case 'blob':
+				if (!is_string($data)) {
+					return array(false, __('invalid', self::DOMAIN));
+				} else {
+					$fixed_data = strval($based_data);
+				}
+				break;
+			case 'list':
+				if (in_array($validate_base[1], array('enum', 'set'))) {
+					$fixed_data = array();
+					eval('$items = array' . preg_replace('/(enum|set)/i', '', $column_schema['type_format']) . ';');
+					if ($validate_base[1] == 'enum' && $column_schema['not_null'] && empty($based_data)) {
+						if (in_array($column_schema['default'], $items)) {
+							$fixed_data[] = $column_schema['default'];
+						} else {
+							$fixed_data[] = $items[0];
+						}
+					}
+					$based_data = !is_array($based_data) ? explode(',', $based_data) : $based_data;
+					foreach ($based_data as $tmp) {
+						if (!in_array($tmp, $items)) {
+							if (!empty($tmp) || !is_null($column_schema['default'])) 
+								return array(false, __('invalid value', self::DOMAIN));
+						}
+					}
+					$fixed_data = $based_data;
+				}
+				break;
+		}
+		return array(true, $fixed_data);
 	}
 	
 	/**
@@ -1702,5 +1750,71 @@ class CustomDatabaseTables {
 	function incorporate_table_option() {
 		// Will be released in the next version
 	}
+
+
+
+	private function matched_column_type($type_format) {
+		$column_types = array(
+			'integer' => array(
+				'tinyint' => '[(M)][UNSIGNED][ZEROFILL]', // !unsigned ? -128 to 127 : 0 to 255
+				'smallint' => '[(M)][UNSIGNED][ZEROFILL]', // !unsigned ? -32768 to 32767 : 0 to 65535
+				'mediumint' => '[(M)][UNSIGNED][ZEROFILL]', // !unsigned ? -8388608 to 8388607 : 0 to 16777215
+				'int' => '[(M)][UNSIGNED][ZEROFILL]', // !unsigned ? -2147483648 to 2147483647 : 0 to 4294967295
+				'bigint' => '[(M)][UNSIGNED][ZEROFILL]', // !unsigned ? -9223372036854775808 to 9223372036854775807 : 0 to 18446744073709551615
+				'integer' => '[(M)][UNSIGNED][ZEROFILL]', // same int
+				'bool' => null, // same tinyint(1)
+				'boolean' => null, // same tinyint(1)
+			), 
+			'decimal' => array(
+				// e.g. M is display-maxlength, D is decimal-maxlength
+				'float' => '[(P|M,D)][UNSIGNED][ZEROFILL]', // P = 0 to 53 (25 <= P <= 53 is same double); -3.402823466E+38 to -1.175494351E-38, 0, 1.175494351E-38 to 3.402823466E+38
+				'double' => '[(M,D)][UNSIGNED][ZEROFILL]', // -1.7976931348623157E+308 to -2.2250738585072014E-308, 0 , 2.2250738585072014E-308 to 1.7976931348623157E+308
+				'dobule precision' => '[(M,D)][UNSIGNED][ZEROFILL]', // same double
+				'real' => '[(M,D)][UNSIGNED][ZEROFILL]', // same double
+				'decimal' => '[(M[,D])][UNSIGNED][ZEROFILL]', // same double as like char
+				'dec' => '[(M[,D])][UNSIGNED][ZEROFILL]', // same decimal
+				'numeric' => '[(M[,D])][UNSIGNED][ZEROFILL]', // same decimal
+				'fixed' => '[(M[,D])][UNSIGNED][ZEROFILL]', // same decimal
+			), 
+			'binary' => array(
+				'bit' => '[(M)]', // not (M) is same bit(1); value is binary string (0 or 1 only); min(M) = 1, max(M) = 64
+			), 
+			'date' => array(
+				'date' => null, 
+				'datetime' => null, 
+				'timestamp' => '[(M)]', // M==8 || M==14 ? integer : string; max(M) = 255
+				'time' => null, 
+				'year' => '[(2|4)]', // is integer
+			), 
+			'char' => array(
+				'char' => '(M)', // not (M) is same char(1)
+				'national char' => '(M)', // same char
+				'varchar' => '(M)', // min(M) = 0, max(M) = 255
+				'national varchar' => '(M)', // same varchar
+				'tinytext' => null, // maxlength = 255 byte
+				'text' => null, // maxlength = 65535 byte (64kB)
+				'mediumtext' => null, // maxlength = 16777215 byte (16MB)
+				'longtext' => null, // maxlength = 4294967295 byte (4GB)
+			), 
+			'blob' => array(
+				'tinyblob' => null, // maxlength = 255 byte
+				'blob' => null, // maxlength = 65535 byte (64kB)
+				'mediumblob' => null, // maxlength = 16777215 byte (16MB)
+				'longblob' => null, // maxlength = 4294967295 byte (4GB)
+			), 
+			'list' => array(
+				'enum' => '(array)', // max_array_items = 65535 (require unique)
+				'set' => '(array)', // max_array_items = 64
+			), 
+		);
+		foreach ($column_types as $type_group => $type_items) {
+			if (array_key_exists($type_format, $type_items)) {
+				$response = array($type_group, $type_format, $type_items[$type_format]);
+				break;
+			}
+		}
+		return isset($response) && !empty($response) ? $response : false;
+	}
+
 	
 }
