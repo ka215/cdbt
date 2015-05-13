@@ -42,13 +42,15 @@ final class Cdbt {
    */
   public $errors = false;
   
-  
+  /**
+   * Factory Method
+   */
   public static function instance() {
     
     static $instance = null;
     
     if ( null === $instance ) {
-      $instance = new Cdbt;
+      $instance = new self;
       $instance->init();
       $instance->includes();
       $instance->setup_actions();
@@ -89,23 +91,22 @@ final class Cdbt {
     
   }
   
-  
+  /**
+   * Include Worker Classes
+   */
   private function includes() {
     
     if (class_exists( 'CustomDataBaseTables\Config\CdbtConfig' )) {
-      $this->config = new \CustomDataBaseTables\Config\CdbtConfig;
-      $this->config->instance();
+      $this->config = \CustomDataBaseTables\Config\CdbtConfig::instance();
     }
     
     if (class_exists( 'CustomDataBaseTables\Shortcodes\CdbtShortcodes' )) {
-      $this->shortcodes = new \CustomDataBaseTables\Shortcodes\CdbtShortcodes;
-      $this->shortcodes->instance();
+      $this->shortcodes = \CustomDataBaseTables\Shortcodes\CdbtShortcodes::instance();
     }
     
     if (is_admin()) {
       if (class_exists( 'CustomDataBaseTables\Admin\CdbtAdmin' )) {
-        $this->admin = new \CustomDataBaseTables\Admin\CdbtAdmin;
-        $this->admin->instance();
+        $this->admin = \CustomDataBaseTables\Admin\CdbtAdmin::instance();
       }
       
     }
@@ -185,7 +186,7 @@ final class Cdbt {
   }
   
   
-  public function __destruct() { /* Do nothing here */ }
+  private function __destruct() { /* Do nothing here */ }
   
 }
 
