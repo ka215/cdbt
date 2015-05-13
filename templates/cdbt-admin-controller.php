@@ -144,9 +144,6 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 								if (preg_match('/\sENGINE=(.*)\s/iU', $create_table_sql, $matches)) {
 									$db_engine = $matches[1];
 								}
-//								if (function_exists('mb_convert_encoding')) {
-//									$create_table_sql = mb_convert_encoding($create_table_sql, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS');
-//								}
 								$new_table = array(
 									'table_name' => $this->current_table, 
 									'table_type' => 'enable_table', 
@@ -262,9 +259,6 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 						$this->current_table = (cdbt_get_boolean($inherit_values['use_wp_prefix_for_newtable']) ? $wpdb->prefix : '') . trim($inherit_values['naked_table_name']);
 						if (!$this->check_table_exists()) {
 							$create_table_sql = rawurldecode($inherit_values['substance_sql']);
-//							if (function_exists('mb_convert_encoding')) {
-//								$create_table_sql = mb_convert_encoding($create_table_sql, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS');
-//							}
 							$new_table = array(
 								'table_name' => $this->current_table, 
 								'table_type' => 'enable_table', 
@@ -370,9 +364,6 @@ if (wp_verify_nonce($_cdbt_token, self::DOMAIN .'_'. $mode)) {
 						list($result, $new_sql) = $this->get_create_table_sql($inherit_values['target_table_name']);
 						if ($result) {
 							preg_match('/ENGINE=(.*)(\s|,|$)/iU', $new_sql, $matches);
-//							if (function_exists('mb_convert_encoding')) {
-//								$new_sql = mb_convert_encoding($new_sql, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS');
-//							}
 							$inherit_values['target_table'] = $inherit_values['target_table_name'];
 							$inherit_values['create_table_sql'] = $new_sql;
 							$inherit_values['db_engine'] = $matches[1];

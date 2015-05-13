@@ -1,0 +1,35 @@
+{
+  "name": "CustomDataBaseTables",
+  "version": "2.0.0",
+  "homepage": "http://ka2.org/",
+  "authors": [
+    "ka2 <ka2@ka2.org>"
+  ],
+  "license": "GPL-2.0",
+  "private": true,
+  "dependencies": {
+    "modernizr": "~2.8.3",
+    "jquery": "~2.1.4",
+    "bootstrap-sass": "~3.3.4",
+    "font-awesome-sass": "~4.3.0"
+  },
+  "overrides": {
+    "modernizr": {
+      "main": "./modernizr.js"
+    },
+    "bootstrap-sass": {
+      "main": [
+        "./assets/stylesheets/_bootstrap.scss",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.eot",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.svg",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.ttf",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.woff",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.woff2",
+        "./assets/javascripts/bootstrap.js"
+      ]
+    },
+    "font-awesome": {
+      "main": "./assets/font-awesome/scss/_variables.scss"
+    }
+  }
+}

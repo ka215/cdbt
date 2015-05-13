@@ -186,8 +186,7 @@ NAV;
 						if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 							continue;
 						} else {
-							$output = apply_filters('cdbt_view_column_value', $val, $table_name, $key, $data_id);
-							$list_rows .= '<td>'. $output .'</td>';
+							$list_rows .= '<td>'. $val .'</td>';
 						}
 					}
 					$list_rows .= '</tr>';

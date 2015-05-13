@@ -124,8 +124,7 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 								$column_value = $record->$order_col;
 							}
 							
-							$output = apply_filters('cdbt_extract_column_value', $column_value, $table_name, $order_col, $data_id);
-							$last_data_line .= '<td>'. $output .'</td>';
+							$last_data_line .= '<td>'. $column_value .'</td>';
 						}
 					} else {
 						foreach ($record as $column_name => $column_value) {
@@ -160,8 +159,7 @@ function cdbt_render_contents($table=null, $mode=null, $_cdbt_token=null, $optio
 								}
 							}
 							
-							$output = apply_filters('cdbt_extract_column_value', $column_value, $table_name, $column_name, $data_id);
-							$last_data_line .= '<td>'. $output .'</td>';
+							$last_data_line .= '<td>'. $column_value .'</td>';
 						}
 					}
 					$last_data[] = $last_data_line . '<tr>';

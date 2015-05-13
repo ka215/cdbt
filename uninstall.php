@@ -3,7 +3,7 @@
 if (!defined('WP_UNINSTALL_PLUGIN')) 
 	exit();
 
-$option_name = defined('CDBT_PLUGIN_SLUG') ? CDBT_PLUGIN_SLUG : 'custom-database-tables';
+$option_name = defined('CDBT') ? CDBT : 'custom-database-tables';
 $cdbt_options = get_option($option_name);
 if (isset($cdbt_options['uninstall_options'])) {
 	$is_delete = $cdbt_options['uninstall_options'];

@@ -262,8 +262,7 @@ NAV;
 						if (!empty($exclude_cols) && in_array($key, $exclude_cols)) {
 							continue;
 						} else {
-							$output = apply_filters('cdbt_edit_column_value', $val, $table_name, $key, $primary_key_value);
-							$list_rows .= '<td>'. $output .'</td>';
+							$list_rows .= '<td>'. $val .'</td>';
 						}
 					}
 					$list_rows .= '<td><div class="btn-group-vertical">';

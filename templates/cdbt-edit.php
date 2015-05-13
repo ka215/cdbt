@@ -210,9 +210,7 @@ NAV;
 						}
 					}
 					$val = ($is_binary) ? '<a href="#" class="binary-file" data-id="'. $primary_key_value .'" data-origin-file="'. $origin_file .'"><span class="glyphicon glyphicon-paperclip"></span> '. $mine_type .' ('. ceil($file_size/1024) .'KB)</a>' : cdbt_str_truncate($val, 40, '...', true);
-					
-					$output = apply_filters('cdbt_edit_column_value', $val, $table_name, $key, $primary_key_value);
-					$list_rows .= '<td>'. $output .'</td>';
+					$list_rows .= '<td>'. $val .'</td>';
 				}
 				if ($mode == 'edit') {
 					$list_rows .= '<td><div class="btn-group-vertical">';

@@ -1,0 +1,60 @@
+{
+  "name": "CustomDataBaseTables",
+  "version": "2.0.0",
+  "author": "ka2 <ka2@ka2.org>",
+  "homepage": "http://ka2.org/",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ka215/cdbt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ka215/cdbt/issues"
+  },
+  "licenses": [
+    {
+      "type": "GPL-2.0",
+      "url": "http://opensource.org/licenses/GPL-2.0"
+    }
+  ],
+  "scripts": {
+    "build": "bower install && gulp",
+    "jshint": "gulp jshint",
+    "jscs": "jscs gulpfile.js assets/scripts/*.js"
+  },
+  "engines": {
+    "node": ">= 0.12.0",
+    "npm": ">=2.1.5"
+  },
+  "devDependencies": {
+    "asset-builder": "^1.0.2",
+    "browser-sync": "^2.7.1",
+    "coffee-script": "^1.8.0", 
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-changed": "^1.2.1",
+    "gulp-coffee": "^2.2.0",
+    "gulp-coffeelint": "^0.4.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-flatten": "0.0.4",
+    "gulp-if": "^1.2.5",
+    "gulp-imagemin": "^2.2.1",
+    "gulp-jshint": "^1.9.4",
+    "gulp-less": "^3.0.2",
+    "gulp-pleeease": "^1.2.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-rev": "^3.0.1",
+    "gulp-sass": "^2.0.0",
+    "gulp-sourcemaps": "^1.5.1",
+    "gulp-uglify": "^1.1.0",
+    "imagemin-pngcrush": "^4.0.0",
+    "jshint-stylish": "^1.0.1",
+    "lazypipe": "^0.2.2",
+    "merge-stream": "^0.1.7",
+    "minimist": "^1.1.1",
+    "run-sequence": "^1.0.2",
+    "traverse": "^0.6.6",
+    "wiredep": "^2.2.2"
+  }
+}

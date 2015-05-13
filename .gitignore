@@ -1,2 +1,14 @@
-log.txt
-translates.php
+# Include your project-specific ignores in this file
+# Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
+docs
+dist
+bower_components
+node_modules
+npm-debug.log
+debug.log
+outer_defined_translations.php
+
+# Temporary definition
+v1_functions.php
+lib/cdbt.*
+templates/cdbt-*
