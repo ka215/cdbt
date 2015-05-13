@@ -1,10 +1,10 @@
-=== Plugin Name ===
+=== Custom DataBase Tables ===
 Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 3.6
 Tested up to: 4.1.1
-Stable tag: 1.1.15
+Stable tag: 1.1.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,9 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 1.1.16 =
+* Fixed a bug that do not activate as a managable table on this plugin when incorporate the table that contains multi-byte characters in the sql of "CREATE TABLE".
 
 = 1.1.15 =
 * Hotfixed a bug that was some leakage to rename the function of "cdbt_sanitize_for_php()".
