@@ -4,13 +4,13 @@
       "files": [
         "scripts/cdbt-main.js"
       ],
-      "main": true
+      "bower": ["bootstrap-sass"]
     },
     "cdbt-admin.js": {
       "files": [
         "scripts/cdbt-admin.js"
       ],
-      "main": false
+      "bower": ["bootstrap-sass"]
     },
     "cdbt-main.css": {
       "files": [
@@ -20,15 +20,23 @@
     },
     "cdbt-admin.css": {
       "files": [
+        "styles/cdbt-fuelux.less",
         "styles/cdbt-admin.scss"
       ],
-      "main": false
+      "main": true
     },
     "jquery.js": {
       "bower": ["jquery"]
     },
     "modernizr.js": {
       "bower": ["modernizr"]
+    },
+    "fuelux.js": {
+      "bower": [
+        "requirejs",
+        "fuelux",
+        "moment"
+      ]
     }
   },
   "paths": {

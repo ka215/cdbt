@@ -14,7 +14,7 @@ class CdbtAdmin {
     static $instance = null;
     
     if ( null === $instance ) {
-      $instance = new CdbtAdmin;
+      $instance = new self;
       $instance->setup_globals();
       $instance->init();
       $instance->setup_actions();
@@ -23,7 +23,7 @@ class CdbtAdmin {
     return $instance;
   }
 
-  public function __construct() { /* Do nothing here */ }
+  private function __construct() { /* Do nothing here */ }
 
   public function setup_globals() {
     // Global Object
@@ -150,12 +150,12 @@ class CdbtAdmin {
     
     $assets = [
       'styles' => [
-//        'cdbt-common-style' => [ $this->core->plugin_url . 'assets/css/styles.min.css', array(), $this->core->version, 'all' ], 
-        'cdbt-admin-style' => [ $this->core->plugin_url . 'assets/css/admin-styles.css', true, $this->core->version, 'all' ], 
+//        'cdbt-main-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->core->version, 'all' ], 
+        'cdbt-admin-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->core->version, 'all' ], 
       ], 
       'scripts' => [
-//        'cdbt-common-script' => [ $this->core->plugin_url . 'assets/js/scripts.min.js', array(), null, true ], 
-        'cdbt-admin-script' => [ $this->core->plugin_url . 'assets/js/admin-scripts.js', array(), null, true ], 
+//        'cdbt-main-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
+        'cdbt-admin-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
         'jquery-ui-core' => null, 
         'jquery-ui-widget' => null, 
         'jquery-ui-mouse' => null, 
@@ -297,8 +297,10 @@ class CdbtAdmin {
             $this->register_admin_notices( "{CDBT}-error", __('Could not save options.', CDBT), 3, true );
           }
           $this->admin_notices();
+          
           break;
-        case '': 
+        case '':
+        	
           break;
         default:
           break;

@@ -16,18 +16,17 @@ class CdbtConfig {
     static $instance = null;
     
     if ( null === $instance ) {
-      $instance = new CdbtConfig;
+      $instance = new self;
       $instance->setup_globals();
       $instance->init();
-      //$instance->setup_actions();
     }
     
     return $instance;
   }
 
-  public function __construct() { /* Do nothing here */ }
+  private function __construct() { /* Do nothing here */ }
 
-  public function setup_globals() {
+  private function setup_globals() {
     // Global Object
     global $cdbt;
     $this->core = is_object($cdbt) && !empty($cdbt) ? $cdbt : \CustomDataBaseTables\Core\Cdbt::instance();
@@ -45,26 +44,12 @@ class CdbtConfig {
     if (!$this->validate_option_schema() || !$this->check_option_version()) 
       $this->upgrade_options();
     
-//var_dump($this->core->options);
-  }
-
-  private function setup_actions() {
-    /*
-    // Initial Action
-    add_action( 'admin_init', array($this, 'admin_initialize') );
-    
-    // General Actions
-    add_action( 'admin_menu', array($this, 'admin_menus') );
-    
-    // Add New Actions
-    do_action( 'cdbt_get_admin_template', array($this, 'get_admin_template') );
-    
-    // Filters
-    add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
-    */
   }
 
 
+  /**
+   * Define default options for plugin
+   */
   public function set_option_template() {
     $default_timezone = get_option( 'timezone_string', 'UTC' );
     
@@ -110,13 +95,15 @@ class CdbtConfig {
   }
 
 
+  /**
+   * Validate current options
+   */
   public function validate_option_schema() {
     $default_options = $this->set_option_template();
     $missing_options = [];
     
     foreach ($default_options as $key => $value) {
       if (!array_key_exists($key, $this->core->options)) {
-//var_dump($key . " is not exists in options.\n");
         $missing_options[$key] = $value;
       }
     }
@@ -134,6 +121,9 @@ class CdbtConfig {
   }
 
 
+  /**
+   * Check versions of current options
+   */
   public function check_option_version() {
     $not_require_upgrade = true;
     
@@ -147,6 +137,9 @@ class CdbtConfig {
   }
 
 
+  /**
+   * Firstly save options when options was not exists
+   */
   public function initialize_options() {
     $default_options = $this->set_option_template();
     
@@ -157,6 +150,9 @@ class CdbtConfig {
   }
 
 
+  /**
+   * Update the settings while complementing the items that are missing
+   */
   public function upgrade_options() {
     $default_options = $this->set_option_template();
     $new_options = [];
@@ -178,8 +174,12 @@ class CdbtConfig {
   }
 
 
+  /**
+   * As the getter method for options
+   */
   public function load_options() {
     
+    return get_option( $this->core->domain_name );
     
   }
   

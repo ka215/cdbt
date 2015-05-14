@@ -186,7 +186,7 @@ final class Cdbt {
   }
   
   
-  private function __destruct() { /* Do nothing here */ }
+  public function __destruct() { /* Do nothing here */ }
   
 }
 
