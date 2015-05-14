@@ -4,6 +4,7 @@ var argv          = require('minimist')(process.argv.slice(2)); // CLIコマン�
 var browserSync  = require('browser-sync').create(); // アセットソースの変更検知時にGulpタスクを自動実行してパブリッシュアセットへの同期を行う
 var changed      = require('gulp-changed'); // srcとdestをチェックして変更されたファイルだけStreamに流す
 var coffee       = require('gulp-coffee'); // CoffeeScriptのコンパイル
+var coffeelint   = require('gulp-coffeelint'); // CoffeeScriptの構文チェック
 var concat       = require('gulp-concat'); // 複数ファイルを結合する
 var flatten      = require('gulp-flatten'); // ファイルのディレクトリ階層を平坦化する
 var gulp         = require('gulp'); // Gulp本体
@@ -21,7 +22,7 @@ var runSequence  = require('run-sequence'); // タスクを任意の順番で（
 var sass         = require('gulp-sass'); // Sass/SCSSのコンパイル。 gulp-ruby-sass だと出力スタイルを選択できる（要Ruby+Gem環境）。
 var sourcemaps   = require('gulp-sourcemaps'); // source mapを出力する（initメソッドからwriteメソッドの間にパイプされたプラグインをマッピングする）
 var uglify       = require('gulp-uglify'); // UglifyJSを使ってJavaScriptファイルをminifyする
-var manifest = require('asset-builder')('./assets/manifest.json'); // アセット結合を定義ファイルとして一元化できる 参照: https://github.com/austinpray/asset-builder
+var manifest = require('asset-builder')('./sources/manifest.json'); // アセット結合を定義ファイルとして一元化できる 参照: https://github.com/austinpray/asset-builder
 
 // `path` - ベースアセットディレクトリのパス。末尾にスラッシュが必要
 // - `path.source` - ソースファイルのパス。初期値: `assets/`
@@ -52,6 +53,8 @@ var project = manifest.getProjectGlobs();
 
 // CLI 設定
 var enabled = {
+  // 引数 `--production` 指定時はJSのコメントはすべて削除する（comment: true）
+  comment: !argv.production, 
   // 引数 `--production` 指定時は静的アセットのリビジョンが有効化される（rev: true）
   rev: argv.production,
   // 引数 `--production` 指定時はソースマッピングを無効化する（maps: false）
@@ -122,11 +125,10 @@ var jsTasks = function(filename) {
     .pipe(function() {
       return gulpif(enabled.maps, sourcemaps.init()); // `--production`未指定時はソースマップの初期化を行わない
     })
-    .pipe(function() {
-      return gulpif('*.coffee', coffee()); // *.coffeeファイルがあれば、CoffeeScriptコンパイル
-    })
     .pipe(concat, filename)
-    .pipe(uglify, { preserveComments: 'some' })
+    .pipe(function() {
+      return gulpif(enabled.comment, uglify({ preserveComments: 'some' }), uglify()); // `--production`指定ありなしでJSのコメント削除操作を変更する
+    })
     .pipe(function() {
       return gulpif(enabled.rev, rev()); // `--production`指定時はリビジョンを有効化
     })
@@ -134,6 +136,7 @@ var jsTasks = function(filename) {
       return gulpif(enabled.maps, sourcemaps.write('.')); // `--production`未指定時はソースマップを出力しない
     })();
 };
+
 
 // ### リビジョン設定の書き込み
 // 複数のリビジョンファイルがある場合、リビジョン設定（rev manifest）に書き込みます
@@ -175,7 +178,7 @@ gulp.task('styles', ['wiredep'], function() {
 
 // ### スクリプト系タスク
 // `gulp scripts` - JSHintの実行後、コンパイル、結合、Bowerで読み込まれたJSとプロジェクト用のJSを最適化する
-gulp.task('scripts', ['jshint'], function() {
+gulp.task('scripts', ['coffee', 'jshint'], function() {
   var merged = merge();
   manifest.forEachDependency('js', function(dep) {
     merged.add(
@@ -210,13 +213,15 @@ gulp.task('images', function() {
     .pipe(browserSync.stream());
 });
 
-// ### CoffeeScript構文チェック（CoffeeLint）
-// `gulp coffeelint` - CoffeeScriptをチェックする
-gulp.task('coffeelint', function() {
-  return gulp.src('*.coffee')
+// ### CoffeeScriptコンパイル
+// coffeelint による構文チェック後にコンパイルする
+gulp.task('coffee', function() {
+  return gulp.src(path.source + 'scripts/*.coffee')
     .pipe(coffeelint())
-    .pipe(coffeelint.reporter('coffeelint-stylish'))
-    .pipe(coffeelint.reporter('fail'));
+    .pipe(coffeelint.reporter())
+    .pipe(coffeelint.reporter('fail'))
+    .pipe(coffee())
+    .pipe(gulp.dest(path.source + 'scripts'));
 });
 
 // ### JavaScript構文チェック（JSHint）
@@ -249,7 +254,7 @@ gulp.task('watch', function() {
     }
   });
   gulp.watch([path.source + 'styles/**/*'], ['styles']);
-  gulp.watch([path.source + 'scripts/**/*'], ['jshint', 'scripts']);
+  gulp.watch([path.source + 'scripts/**/*'], ['coffee', 'jshint', 'scripts']);
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'images/**/*'], ['images']);
   gulp.watch(['bower.json', 'assets/manifest.json'], ['build']);

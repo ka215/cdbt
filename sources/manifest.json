@@ -1,0 +1,44 @@
+{
+  "dependencies": {
+    "cdbt-main.js": {
+      "files": [
+        "scripts/cdbt-main.js"
+      ],
+      "main": true
+    },
+    "cdbt-admin.js": {
+      "files": [
+        "scripts/cdbt-admin.js"
+      ],
+      "main": false
+    },
+    "cdbt-main.css": {
+      "files": [
+        "styles/cdbt-main.scss"
+      ],
+      "main": true
+    },
+    "cdbt-admin.css": {
+      "files": [
+        "styles/cdbt-admin.scss"
+      ],
+      "main": false
+    },
+    "jquery.js": {
+      "bower": ["jquery"]
+    },
+    "modernizr.js": {
+      "bower": ["modernizr"]
+    },
+    "fonts": {
+      "bower": ["font-awesome-sass"]
+    }
+  },
+  "paths": {
+    "source": "sources/",
+    "dist": "assets/"
+  },
+  "config": {
+    "devUrl": "localhost"
+  }
+}

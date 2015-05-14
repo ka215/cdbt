@@ -1,0 +1,94 @@
+code, kbd, pre, samp {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #e8e8e8;
+  border-radius: 4px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #c7254e;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #e8e8e8;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.inline-description {
+  padding-left: 25px;
+}
+
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.label-default {
+  background-color: #777;
+}
+.label-primary {
+  background-color: #337ab7;
+}
+.label-success {
+  background-color: #5cb85c;
+}
+.label-info {
+  background-color: #5bc0de;
+}
+.label-warning {
+  background-color: #f0ad4e;
+}
+.label-danger {
+  background-color: #d9534f;
+}
+
+.nt {
+  color: #2f6f9f;
+}
+
+a.note-link {
+  font-size: 9px;
+  text-decoration: none;
+  color: #777;
+}
+
+a.note-link>span {
+  font-size: 19px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.foot-note {
+  margin-top: 10px;
+  margin-left: 1.5em;
+}
+
+.foot-note li {
+  color: #777;
+  margin: 0 0 10px;
+}
+
+div.plugin-meta {
+  position: absolute;
+  top: 23px;
+  right: 28px;
+  font-size: 14px;
+}
