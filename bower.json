@@ -28,8 +28,15 @@
         "./assets/javascripts/bootstrap.js"
       ]
     },
-    "font-awesome": {
-      "main": "./assets/font-awesome/scss/_variables.scss"
+    "font-awesome-sass": {
+      "main": [
+        "./assets/stylesheets/font-awesome.scss",
+        "./assets/fonts/font-awesome/fontawesome-webfont.eot",
+        "./assets/fonts/font-awesome/fontawesome-webfont.svg",
+        "./assets/fonts/font-awesome/fontawesome-webfont.ttf",
+        "./assets/fonts/font-awesome/fontawesome-webfont.woff",
+        "./assets/fonts/font-awesome/fontawesome-webfont.woff2"
+      ]
     }
   }
 }

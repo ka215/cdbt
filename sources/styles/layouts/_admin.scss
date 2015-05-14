@@ -1,0 +1,94 @@
+code, kbd, pre, samp {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: $code-string;
+  background-color: $code-back;
+  border-radius: 4px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: $code-string;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: $code-back;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.inline-description {
+  padding-left: 25px;
+}
+
+.label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.label-default {
+  background-color: $default;
+}
+.label-primary {
+  background-color: $primary;
+}
+.label-success {
+  background-color: $success;
+}
+.label-info {
+  background-color: $info;
+}
+.label-warning {
+  background-color: $warning;
+}
+.label-danger {
+  background-color: $danger;
+}
+
+.nt {
+  color: $nt;
+}
+
+a.note-link {
+  font-size: 9px;
+  text-decoration: none;
+  color: $default;
+  
+  span {
+    font-size: 19px;
+    color: #888;
+    margin-top: 2px;
+  }
+}
+
+.foot-note {
+  margin-top: 10px;
+  margin-left: 1.5em;
+  
+  li {
+    color: $default;
+    margin: 0 0 10px;
+  }
+}
+
+div.plugin-meta {
+  position: absolute;
+  top: 23px;
+  right: 28px;
+  font-size: 14px;
+}

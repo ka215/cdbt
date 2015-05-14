@@ -29,9 +29,6 @@
     },
     "modernizr.js": {
       "bower": ["modernizr"]
-    },
-    "fonts": {
-      "bower": ["font-awesome-sass"]
     }
   },
   "paths": {
