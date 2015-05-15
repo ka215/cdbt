@@ -8,7 +8,10 @@
 (function() {
   var Admin;
 
-  Admin = function() {};
+  Admin = function() {
+    $('#message').show();
+    return $('#welcome-wizard').wizard();
+  };
 
   $(document).ready(Admin);
 

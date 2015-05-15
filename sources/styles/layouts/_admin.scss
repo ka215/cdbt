@@ -1,5 +1,42 @@
+body {
+  background-color: transparent!important;
+}
+
+h3, .h3 {
+  font-size: 22px!important;
+}
+
+h4.title {
+  font-size: 20px!important;
+  padding-bottom: 2px;
+  border-bottom: 1px dotted #ccc;
+}
+
+ol, ul {
+  margin-bottom: 0;
+}
+
+/*
+dd:last-child, li:last-child {
+  margin-bottom: 2px;
+}
+*/
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+  background-color: #f0f0f0;
+}
+
 code, kbd, pre, samp {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+#message {
+  display: none;
+  
+  ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
 
 code {
@@ -24,10 +61,17 @@ pre {
   border-radius: 4px;
 }
 
-.inline-description {
-  padding-left: 25px;
+fieldset>label {
+  font-weight: 400!important;
 }
 
+.inline-help {
+  margin-top: 7px;
+  margin-bottom: 8px;
+  text-indent: 1.5em;
+}
+
+/*
 .label {
   display: inline;
   padding: .2em .6em .3em;
@@ -40,6 +84,7 @@ pre {
   vertical-align: baseline;
   border-radius: .25em;
 }
+*/
 
 .label-default {
   background-color: $default;
@@ -64,25 +109,33 @@ pre {
   color: $nt;
 }
 
+.input-mini {
+  width: 100px;
+}
+
 a.note-link {
   font-size: 9px;
   text-decoration: none;
   color: $default;
   
   span {
-    font-size: 19px;
-    color: #888;
+    font-size: 16px;
     margin-top: 2px;
   }
 }
 
 .foot-note {
   margin-top: 10px;
-  margin-left: 1.5em;
+  margin-left: -1em;
+  font-size: 85%;
   
   li {
     color: $default;
     margin: 0 0 10px;
+  }
+  
+  li span {
+    font-size: 15px;
   }
 }
 

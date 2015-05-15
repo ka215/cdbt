@@ -5,6 +5,8 @@
 ###
 Admin = ->
 
-
-
+  $('#message').show()
+  
+  $('#welcome-wizard').wizard()
+  
 $(document).ready(Admin)

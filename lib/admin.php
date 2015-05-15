@@ -119,7 +119,7 @@ class CdbtAdmin {
     wp_parse_str( $_SERVER['QUERY_STRING'], $this->query );
     
     foreach ($menus as $menu) {
-      add_action( 'admin_enqueue_scripts', array($this, 'admin_assets') );
+      add_action( 'admin_enqueue_scripts', array($this, 'admin_assets'), 99 ); // Note: priority = 99 is after the multibyte-patch plugin.
       add_action( "admin_head-$menu", array($this, 'admin_header') );
       add_action( "admin_footer-$menu", array($this, 'admin_footer') );
       add_action( 'admin_footer', array($this, 'admin_footer') );
@@ -152,16 +152,20 @@ class CdbtAdmin {
       'styles' => [
 //        'cdbt-main-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->core->version, 'all' ], 
         'cdbt-admin-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->core->version, 'all' ], 
+        'cdbt-fuelux' => [ $this->core->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
       ], 
       'scripts' => [
 //        'cdbt-main-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
+        'cdbt-modernizr' => [ $this->core->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
+        'cdbt-jquery' => [ $this->core->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
         'cdbt-admin-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
-        'jquery-ui-core' => null, 
-        'jquery-ui-widget' => null, 
-        'jquery-ui-mouse' => null, 
-        'jquery-ui-position' => null, 
-        'jquery-ui-sortable' => null, 
-        'jquery-ui-autocomplete' => null, 
+//        'cdbt-fuelux' => [ $this->core->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
+//        'jquery-ui-core' => null, 
+//        'jquery-ui-widget' => null, 
+//        'jquery-ui-mouse' => null, 
+//        'jquery-ui-position' => null, 
+//        'jquery-ui-sortable' => null, 
+//        'jquery-ui-autocomplete' => null, 
       ]
     ];
     //
@@ -267,47 +271,92 @@ class CdbtAdmin {
     if (empty( $_POST )) 
       return;
     
-    $options = get_option($this->core->domain_name);
+    $this->current_options = get_option($this->core->domain_name);
     
     if (check_admin_referer( 'cdbt_management_console-' . $this->query['page'] )) {
-      switch ($this->query['page']) {
-        case 'cdbt_options': 
-          if ( 'update' === $_POST['action'] && !empty($_POST[$this->core->domain_name]) ) {
-            $submit_options = $_POST[$this->core->domain_name];
-            
-            // sanitaize empty values
-            foreach ($submit_options as $key => $value) {
-              if (empty($value)) 
-                unset($submit_options[$key]);
-            }
-            
-            // sanitaize checkbox values
-            $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix' ];
-            foreach ($checkbox_options as $option_name) {
-              if (!array_key_exists($option_name, $submit_options)) 
-                $submit_options[$option_name] = false;
-            }
-            
-            $updated_options = array_merge($options, $submit_options);
-            
-            update_option( $this->core->domain_name, $updated_options );
-            
-            $this->register_admin_notices( "{CDBT}-notice", __('Plugin options saved.', CDBT), 3, true );
-          } else {
-            $this->register_admin_notices( "{CDBT}-error", __('Could not save options.', CDBT), 3, true );
-          }
-          $this->admin_notices();
-          
-          break;
-        case '':
-        	
-          break;
-        default:
-          break;
+      // Call the worker method of each tab in admin pages
+      if (isset($this->query['tab']) && !empty($this->query['tab'])) {
+        $current_tab = '_' . $this->query['tab'];
+      } elseif (isset($_POST['active_tab']) && !empty($_POST['active_tab'])) {
+        $current_tab = '_' . $_POST['active_tab'];
+      } else {
+        $current_tab = '';
       }
+      $worker_method = sprintf('do_%s%s', $this->query['page'], $current_tab);
+      if (method_exists($this, $worker_method)) {
+        $this->$worker_method();
+      } else {
+        // invalid access
+        $this->register_admin_notices( "{CDBT}-error", __('Invalid access this page.', CDBT), 3, true );
+      }
+    } else {
+      // invalid access
+      $this->register_admin_notices( "{CDBT}-error", __('Invalid access this page.', CDBT), 3, true );
     }
+    $this->admin_notices();
+    
   }
   
+  /**
+   * Worker logic methods
+   */
+  
+  // Page: cdbt_management_console | Tab: -
+  public function do_cdbt_management_console() {
+    // None at the moment
+  }
+  
+  // Page: cdbt_options | Tab: general_setting
+  public function do_cdbt_options_general_setting() {
+    if ( 'update' === $_POST['action'] && !empty($_POST[$this->core->domain_name]) ) {
+      
+      $submit_options = $_POST[$this->core->domain_name];
+      
+      // sanitaize empty values
+      foreach ($submit_options as $key => $value) {
+        if (empty($value)) 
+          unset($submit_options[$key]);
+      }
+      
+      // sanitaize checkbox values
+      $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix' ];
+      foreach ($checkbox_options as $option_name) {
+        if (!array_key_exists($option_name, $submit_options)) 
+          $submit_options[$option_name] = false;
+      }
+      
+      $updated_options = array_merge($this->current_options, $submit_options);
+      
+      $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
+      
+      update_option( $this->core->domain_name, $updated_options );
+      
+      $this->register_admin_notices( "{CDBT}-notice", __('Plugin options saved.', CDBT), 3, true );
+    } else {
+      $this->register_admin_notices( "{CDBT}-error", __('Could not save options.', CDBT), 3, true );
+    }
+    
+  }
+  
+  // Page: cdbt_options | Tab: debug
+  public function do_cdbt_options_debug() {
+    // None at the moment
+  }
+  
+  // Page: cdbt_tables | Tab: (any)
+  public function do_cdbt_tables_tabs() {
+    
+  }
+  
+  // Page: cdbt_shortcodes | Tab: (any)
+  public function do_cdbt_shortcodes_tabs() {
+    
+  }
+  
+  // Page: cdbt_apis | Tab: (any)
+  public function do_cdbt_apis_tabs() {
+    
+  }
   
 }
 

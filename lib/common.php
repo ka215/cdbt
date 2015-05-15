@@ -23,6 +23,28 @@ function console_hook_name( $function, $type, $display=true ) {
 }
 
 /**
+ * Utility: Filter to attribute of class in the body tag of rendered page
+ *
+ * @param mixed $classes It is `String` when "is_admin()" is true; otherwise is `Array`
+ * @return mixed $classes
+ */
+function cdbt_add_body_classes( $classes ) {
+  if (is_array($classes)) {
+    $classes[] = 'fuelux';
+    return $classes;
+  } else {
+    $classes_array = explode(' ', $classes);
+    $classes_array[] = 'fuelux';
+    return implode(' ', $classes_array);
+  }
+}
+if (is_admin()) {
+  add_filter( 'admin_body_class', __NAMESPACE__ . '\\cdbt_add_body_classes' );
+} else {
+  add_filter( 'body_class', __NAMESPACE__ . '\\cdbt_add_body_classes' );
+}
+
+/**
  * Utility: Logger for this plugin
  *
  * @param string $message
