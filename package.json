@@ -29,11 +29,11 @@
   "devDependencies": {
     "asset-builder": "^1.0.2",
     "browser-sync": "^2.7.1",
-    "coffee-script": "^1.8.0", 
+    "coffee-script": "^1.8.0",
     "del": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-changed": "^1.2.1",
-    "gulp-coffee": "^2.2.0",
+    "gulp-coffee": "^2.3.1",
     "gulp-coffeelint": "^0.4.0",
     "gulp-concat": "^2.5.2",
     "gulp-flatten": "0.0.4",
