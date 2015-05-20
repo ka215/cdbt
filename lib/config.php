@@ -26,6 +26,26 @@ class CdbtConfig {
 
   private function __construct() { /* Do nothing here */ }
 
+  public function __destruct() { /* Do nothing here */ }
+
+  public function __call( $name, $args=null ) {
+    if ( method_exists($this->core, $name) ) 
+      return $this->core->$name($args);
+    
+    return;
+  }
+
+  public function __get( $name ) {
+    if ( property_exists($this->core, $name) ) 
+      return $this->core->$name;
+    
+    return $this->$name;
+  }
+
+  public function __set( $name, $value ) {
+    $this->$name = $value;
+  }
+
   private function setup_globals() {
     // Global Object
     global $cdbt;
@@ -35,10 +55,10 @@ class CdbtConfig {
 
   private function init() {
     
-    if (empty($this->core->options)) 
-      $this->core->options = get_option( $this->core->domain_name );
+    if (empty($this->options)) 
+      $this->options = get_option( $this->domain_name );
     
-    if (empty($this->core->options)) 
+    if (empty($this->options)) 
       $this->initialize_options();
     
     if (!$this->validate_option_schema() || !$this->check_option_version()) 
@@ -54,8 +74,8 @@ class CdbtConfig {
     $default_timezone = get_option( 'timezone_string', 'UTC' );
     
     $default_options = [
-      'plugin_version' => $this->core->version, 
-      'db_version' => $this->core->db_version, 
+      'plugin_version' => $this->version, 
+      'db_version' => $this->db_version, 
       'cleaning_options' => true, 
       'uninstall_options' => false, 
       'resume_options' => false, 
@@ -103,7 +123,7 @@ class CdbtConfig {
     $missing_options = [];
     
     foreach ($default_options as $key => $value) {
-      if (!array_key_exists($key, $this->core->options)) {
+      if (!array_key_exists($key, $this->options)) {
         $missing_options[$key] = $value;
       }
     }
@@ -112,8 +132,8 @@ class CdbtConfig {
     if (empty($missing_options)) {
       return true;
     } else {
-      if (isset($this->core->debug) && $this->core->debug) 
-        $this->core->logger( sprintf(__('The missing options is as follow: %s', CDBT), implode(', ', array_keys($missing_options))) );
+      if (isset($this->debug) && $this->debug) 
+        $this->logger( sprintf(__('The missing options is as follow: %s', CDBT), implode(', ', array_keys($missing_options))) );
       
       return false;
     }
@@ -127,10 +147,10 @@ class CdbtConfig {
   public function check_option_version() {
     $not_require_upgrade = true;
     
-    if (version_compare($this->core->version, $this->core->options['plugin_version']) > 0) 
+    if (version_compare($this->version, $this->options['plugin_version']) > 0) 
       $not_require_upgrade = false;
     
-    if (version_compare($this->core->db_version, $this->core->options['db_version']) > 0) 
+    if (version_compare($this->db_version, $this->options['db_version']) > 0) 
       $not_require_upgrade = false;
     
     return $not_require_upgrade;
@@ -143,10 +163,10 @@ class CdbtConfig {
   public function initialize_options() {
     $default_options = $this->set_option_template();
     
-    add_option( $this->core->domain_name, $default_options, '', 'no' );
+    add_option( $this->domain_name, $default_options, '', 'no' );
     
     unset($default_options);
-    $this->core->options = get_option( $this->core->domain_name );
+    $this->options = get_option( $this->domain_name );
   }
 
 
@@ -158,18 +178,18 @@ class CdbtConfig {
     $new_options = [];
     
     foreach ($default_options as $key => $value) {
-      if (!array_key_exists($key, $this->core->options)) {
+      if (!array_key_exists($key, $this->options)) {
         $new_options[$key] = $value;
       } else {
-        $new_options[$key] = $this->core->options[$key];
+        $new_options[$key] = $this->options[$key];
       }
     }
     unset($key, $value);
     
-    update_option($this->core->domain_name, $new_options);
+    update_option($this->domain_name, $new_options);
     
-    if (isset($this->core->debug) && $this->core->debug) 
-      $this->core->logger( __('Plugin options has upgraded.', CDBT) );
+    if (isset($this->debug) && $this->debug) 
+      $this->logger( __('Plugin options has upgraded.', CDBT) );
     
   }
 
@@ -179,7 +199,7 @@ class CdbtConfig {
    */
   public function load_options() {
     
-    return get_option( $this->core->domain_name );
+    return get_option( $this->domain_name );
     
   }
   

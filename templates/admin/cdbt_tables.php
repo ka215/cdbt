@@ -1,12 +1,19 @@
 <?php
+$options = get_option($this->domain_name);
 $tabs = [
   'table_list' => esc_html__('Table List', CDBT), 
+  'wp_core_table' => esc_html__('Core Tables', CDBT), 
   'create_table' => esc_html__('Create Table', CDBT), 
   'modify_table' => esc_html__('Modify Table', CDBT), 
+  'table_info' => esc_html__('Table Detail', CDBT), 
 ];
 $default_tab = 'table_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
-$dynamic_tab_title = esc_html__('Edit User', CDBT);
+
+
+// 最終的に Common Utility にする関数
+
+
 
 function cdbt_admin_users_listing_value_shortcode( $html_value, $shortcode_name, $table, $col, $row ) {
   if ( 'nasmiru-list' !== $shortcode_name || 'nas_admin_info' !== $table ) 
@@ -84,23 +91,33 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
   }
 }
 
+//var_dump($options);
 ?>
 <div class="wrap">
   <h2><?php esc_html_e('CDBT Tables Management', CDBT); ?></h2>
   
-  <h3 class="nav-tab-wrapper">
-  <?php foreach ($tabs as $tab_name => $display_tab_title) : ?>
-    <a class="nav-tab<?php if ($current_tab == $tab_name) : ?> nav-tab-active<?php endif; ?>" href="<?php echo esc_url( add_query_arg('tab', $tab_name) ); ?>"><?php echo $display_tab_title; ?></a>
-  <?php endforeach; ?>
-  </h3>
+  <div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+    <?php foreach ($tabs as $tab_name => $display_tab_title) : ?>
+      <?php if ('wp_core_table' === $tab_name && !$options['enable_core_tables']) continue; ?>
+      <li role="presentation"<?php if ($current_tab == $tab_name) : ?> class="active"<?php endif; ?>><a href="<?php echo esc_url( add_query_arg('tab', $tab_name) ); ?>" role="tab"><?php echo $display_tab_title; ?></a></li>
+    <?php endforeach; ?>
+    </ul>
+  </div>
   
 <?php if ($current_tab == 'table_list') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Enabled Table List', CDBT); ?></h4>
+  <?php if ( !$this->db->get_table_list( 'enable' ) ) : ?>
+    <p>現在、プラグインで管理可能なテーブルはありません。</p>
+    <p>テーブルを新規作成する場合は、<a href="#">ここをクリック</a>してください。</p>
+    <p>既存のテーブルをプラグインに取り込む場合は、<a href="#">ここをクリック</a>してください。</p>
+  <?php else : ?>
   <form id="" name="" action="" method="post" class="">
     
     <?php echo do_shortcode('[nasmiru-list table="nas_admin_info" display_cols_order="admin_id,user_id,user_account,mail_address1,delete_flag,created,updated" operate_row="true" html_echo="true"]'); ?>
     
   </form>
+  <?php endif; ?>
 <?php endif; ?>
   
 <?php if ($current_tab == 'create_table') : ?>

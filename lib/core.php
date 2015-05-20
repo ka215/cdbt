@@ -11,11 +11,11 @@ if ( !class_exists( 'Cdbt' ) ) :
 final class Cdbt {
   
   /**
-   * Magic method?
+   * For magic method
    *
    * @var array
    */
-  private $data;
+  private $data = [];
   
   /**
    * @var mixed False when not logged in; WP_User object when logged in
@@ -63,6 +63,55 @@ final class Cdbt {
   private function __construct() { /* Do nothing here */ }
   
   
+  public function __destruct() { /* Do nothing here */ }
+  
+  
+  public function __call( $name, $args=null ) {
+    // For compatible methods with version 1.x
+    $legend_methods = [
+      'truncate_table' => 'CdbtDb', 
+      'drop_table' => 'CdbtDb', 
+      'create_table' => 'CdbtDb', 
+      'get_table_schema' => 'CdbtDb', 
+      'get_table_comment' => 'CdbtDb', 
+      'get_create_table_sql' => 'CdbtDb', 
+      'get_data' => 'CdbtDb', 
+      'find_data' => 'CdbtDb', 
+      'insert_data' => 'CdbtDb', 
+      'update_data' => 'CdbtDb', 
+      'update_where' => 'CdbtDb', 
+      'run_query' => false, // deprecated
+      'delete_data' => 'CdbtDb', 
+      'validate_data' => 'Validation', 
+      'validate_create_sql' => 'Validation', 
+      'validate_alter_sql' => 'Validation', 
+      'compare_reservation_tables' => 'CdbtDb', 
+      'import_table' => 'CdbtDb', 
+      'export_table' => 'CdbtDb', 
+      'get_table_list' => 'CdbtDb', 
+      'incorporate_table_option' => false, // deprecated
+    ];
+    if ( method_exists($this, $name) ) {
+      return $this->$name($args);
+    } elseif ( method_exists($this->util, $name)) {
+      return $this->util->$name($args);
+    } elseif ( array_key_exists($name, $legend_methods) ) {
+      if ('CdbtDb' === $legend_methods[$name]) 
+        return $this->db->$name($args);
+      
+      if ('Validation' === $legend_methods[$name]) 
+        return $this->validate->$name($args);
+      
+    }
+    
+    throw new \BadMethodCallException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
+  }
+  
+  public function __set( $name, $value ) {
+    $this->$name = $value;
+  }
+  
+  
   private function init() {
     
     // Plugin Name
@@ -96,18 +145,21 @@ final class Cdbt {
    */
   private function includes() {
     
-    if (class_exists( 'CustomDataBaseTables\Config\CdbtConfig' )) {
+    if (class_exists( 'CustomDataBaseTables\Config\CdbtConfig' )) 
       $this->config = \CustomDataBaseTables\Config\CdbtConfig::instance();
-    }
     
-    if (class_exists( 'CustomDataBaseTables\Shortcodes\CdbtShortcodes' )) {
+    if (class_exists( 'CustomDataBaseTables\Common\CdbtUtility' )) 
+      $this->util = new \CustomDataBaseTables\Common\CdbtUtility;
+    
+    if (class_exists( 'CustomDataBaseTables\DataBase\CdbtDb' )) 
+      $this->db = \CustomDataBaseTables\DataBase\CdbtDb::instance();
+    
+    if (class_exists( 'CustomDataBaseTables\Shortcodes\CdbtShortcodes' )) 
       $this->shortcodes = \CustomDataBaseTables\Shortcodes\CdbtShortcodes::instance();
-    }
     
     if (is_admin()) {
-      if (class_exists( 'CustomDataBaseTables\Admin\CdbtAdmin' )) {
+      if (class_exists( 'CustomDataBaseTables\Admin\CdbtAdmin' )) 
         $this->admin = \CustomDataBaseTables\Admin\CdbtAdmin::instance();
-      }
       
     }
     
@@ -185,8 +237,6 @@ final class Cdbt {
     
   }
   
-  
-  public function __destruct() { /* Do nothing here */ }
   
 }
 

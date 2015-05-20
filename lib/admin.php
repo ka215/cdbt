@@ -9,6 +9,8 @@ if ( !class_exists( 'CdbtAdmin' ) ) :
 
 class CdbtAdmin {
 
+  var $query = [];
+
   public static function instance() {
     
     static $instance = null;
@@ -25,6 +27,26 @@ class CdbtAdmin {
 
   private function __construct() { /* Do nothing here */ }
 
+  public function __destruct() { /* Do nothing here */ }
+
+  public function __call( $name, $args=null ) {
+    if ( method_exists($this->core, $name) ) 
+      return $this->core->$name($args);
+    
+    return;
+  }
+
+  public function __get( $name ) {
+    if ( property_exists($this->core, $name) ) 
+      return $this->core->$name;
+    
+    return $this->$name;
+  }
+
+  public function __set( $name, $value ) {
+    $this->$name = $value;
+  }
+
   public function setup_globals() {
     // Global Object
     global $cdbt;
@@ -40,7 +62,7 @@ class CdbtAdmin {
     $this->maximum_capability = apply_filters( 'cdbt_admin_maximum_capability', 'activate_plugins' ); // -> Administrator, and Super Admin
     
     // Paths
-    $this->admin_template_dir = apply_filters( 'cdbt_admin_template_dir', $this->core->plugin_dir . 'templates/admin/' );
+    $this->admin_template_dir = apply_filters( 'cdbt_admin_template_dir', $this->plugin_dir . 'templates/admin/' );
     
   }
 
@@ -61,7 +83,7 @@ class CdbtAdmin {
   }
 
   public function admin_initialize() {
-    register_setting( 'cdbt_management_console', $this->core->domain_name );
+    register_setting( 'cdbt_management_console', $this->domain_name );
   }
 
   public function admin_menus() {
@@ -70,8 +92,8 @@ class CdbtAdmin {
     $menus = [];
     
     $menus[] = add_menu_page( 
-      __('CDBT Management Console', $this->core->domain_name), 
-      __('CDBT', $this->core->domain_name), 
+      __('CDBT Management Console', $this->domain_name), 
+      __('CDBT', $this->domain_name), 
       $operating_capability, 
       'cdbt_management_console', 
       array($this, 'admin_page_render'), 
@@ -81,8 +103,8 @@ class CdbtAdmin {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT Tables Management', $this->core->domain_name), 
-      __('Tables', $this->core->domain_name), 
+      __('CDBT Tables Management', $this->domain_name), 
+      __('Tables', $this->domain_name), 
       $operating_capability, 
       'cdbt_tables', 
       array($this, 'admin_page_render') 
@@ -90,8 +112,8 @@ class CdbtAdmin {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT Shortcodes Management', $this->core->domain_name), 
-      __('Shortcodes', $this->core->domain_name), 
+      __('CDBT Shortcodes Management', $this->domain_name), 
+      __('Shortcodes', $this->domain_name), 
       $operating_capability, 
       'cdbt_shortcodes', 
       array($this, 'admin_page_render') 
@@ -99,8 +121,8 @@ class CdbtAdmin {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT APIs Management', $this->core->domain_name), 
-      __('APIs', $this->core->domain_name), 
+      __('CDBT APIs Management', $this->domain_name), 
+      __('APIs', $this->domain_name), 
       $operating_capability, 
       'cdbt_apis', 
       array($this, 'admin_page_render') 
@@ -108,8 +130,8 @@ class CdbtAdmin {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT Plugin Options', $this->core->domain_name), 
-      __('Plugin Options', $this->core->domain_name), 
+      __('CDBT Plugin Options', $this->domain_name), 
+      __('Plugin Options', $this->domain_name), 
       $operating_capability, 
       'cdbt_options', 
       array($this, 'admin_page_render') 
@@ -150,16 +172,16 @@ class CdbtAdmin {
     
     $assets = [
       'styles' => [
-//        'cdbt-main-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->core->version, 'all' ], 
-        'cdbt-admin-style' => [ $this->core->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->core->version, 'all' ], 
-        'cdbt-fuelux' => [ $this->core->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+//        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->version, 'all' ], 
+        'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->version, 'all' ], 
+        'cdbt-fuelux' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
       ], 
       'scripts' => [
-//        'cdbt-main-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
-        'cdbt-modernizr' => [ $this->core->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
-        'cdbt-jquery' => [ $this->core->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
-        'cdbt-admin-script' => [ $this->core->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
-//        'cdbt-fuelux' => [ $this->core->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
+//        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
+        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
+//        'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
 //        'jquery-ui-core' => null, 
 //        'jquery-ui-widget' => null, 
 //        'jquery-ui-mouse' => null, 
@@ -198,7 +220,7 @@ class CdbtAdmin {
   public function admin_footer() {
     // Fire this hook when append into <body> tag (just before </body>) on the all admin pages
     if (array_key_exists('page', $this->query) && preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
-      printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->core->version );
+      printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->version );
     
     printf( "<script>jQuery(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
   }
@@ -227,22 +249,22 @@ class CdbtAdmin {
   }
   
   private function register_admin_notices( $code="{CDBT}-error", $message, $expire_seconds=10, $is_init=false ) {
-    if (!$this->core->errors || $is_init) 
-      $this->core->errors = new \WP_Error();
+    if (!$this->errors || $is_init) 
+      $this->errors = new \WP_Error();
     
-    if (is_object($this->core->errors)) {
-      $this->core->errors->add( $code, $message );
-      set_transient( $code, $this->core->errors->get_error_messages(), $expire_seconds );
+    if (is_object($this->errors)) {
+      $this->errors->add( $code, $message );
+      set_transient( $code, $this->errors->get_error_messages(), $expire_seconds );
     }
     
-    // return $this->core->errors;
+    // return $this->errors;
   }
   
   public function modify_plugin_action_links( $links, $file ) {
-    if (plugin_basename($this->core->plugin_main_file) !== $file) 
+    if (plugin_basename($this->plugin_main_file) !== $file) 
       return $links;
     
-    if (false === $this->core->plugin_enabled) 
+    if (false === $this->plugin_enabled) 
       return $links;
     
     $prepend_new_links = $append_new_links = array();
@@ -250,15 +272,15 @@ class CdbtAdmin {
     $prepend_new_links['settings'] = sprintf(
       '<a href="%s">%s</a>', 
       add_query_arg([ 'page' => 'cdbt_management_console' ], admin_url('admin.php')), 
-      esc_html__( 'Settings', $this->core->domain_name )
+      esc_html__( 'Settings', $this->domain_name )
     );
     
     unset($links['edit']);
     
     $append_new_links['edit'] = sprintf(
       '<a href="%s">%s</a>', 
-      add_query_arg([ 'file' => plugin_basename($this->core->plugin_main_file) ], admin_url('plugin-editor.php')), 
-      esc_html__( 'Edit', $this->core->domain_name )
+      add_query_arg([ 'file' => plugin_basename($this->plugin_main_file) ], admin_url('plugin-editor.php')), 
+      esc_html__( 'Edit', $this->domain_name )
     );
     
     return array_merge($prepend_new_links, $links, $append_new_links);
@@ -271,7 +293,7 @@ class CdbtAdmin {
     if (empty( $_POST )) 
       return;
     
-    $this->current_options = get_option($this->core->domain_name);
+    $this->current_options = get_option($this->domain_name);
     
     if (check_admin_referer( 'cdbt_management_console-' . $this->query['page'] )) {
       // Call the worker method of each tab in admin pages
@@ -308,9 +330,9 @@ class CdbtAdmin {
   
   // Page: cdbt_options | Tab: general_setting
   public function do_cdbt_options_general_setting() {
-    if ( 'update' === $_POST['action'] && !empty($_POST[$this->core->domain_name]) ) {
+    if ( 'update' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
       
-      $submit_options = $_POST[$this->core->domain_name];
+      $submit_options = $_POST[$this->domain_name];
       
       // sanitaize empty values
       foreach ($submit_options as $key => $value) {
@@ -329,7 +351,7 @@ class CdbtAdmin {
       
       $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
       
-      update_option( $this->core->domain_name, $updated_options );
+      update_option( $this->domain_name, $updated_options );
       
       $this->register_admin_notices( "{CDBT}-notice", __('Plugin options saved.', CDBT), 3, true );
     } else {
