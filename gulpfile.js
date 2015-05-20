@@ -1,6 +1,5 @@
 // ## Globals
 var argv          = require('minimist')(process.argv.slice(2)); // CLIコマンドの引数をGulp側で受け取れるようになる
-//var autoprefixer = require('gulp-autoprefixer'); // ベンダープレフィックスを自動付与してくれる -> gulp-pleeease でできる
 var browserSync  = require('browser-sync').create(); // アセットソースの変更検知時にGulpタスクを自動実行してパブリッシュアセットへの同期を行う
 var changed      = require('gulp-changed'); // srcとdestをチェックして変更されたファイルだけStreamに流す
 var coffee       = require('gulp-coffee'); // CoffeeScriptのコンパイル
@@ -14,7 +13,6 @@ var jshint       = require('gulp-jshint'); // JavaScript構文チェッカー（
 var lazypipe     = require('lazypipe'); // 複数のタスクをグループ化して、別々のタスクで利用可能にする（同じタスク記述を増やさずにスッキリ書けるようになる）
 var less         = require('gulp-less'); // LESSのコンパイル 
 var merge        = require('merge-stream'); // タスク内の複数ストリームをマージする -> event-stream の mergeメソッドの方が良いかも
-//var minifyCss    = require('gulp-minify-css'); // CSSをミニファイ化してくれる -> gulp-pleeease でできる
 var please   = require('gulp-pleeease'); // gulp-autoprefixer と gulp-minify-css より高機能なプラグイン
 var plumber      = require('gulp-plumber'); // Stream中のエラーによってタスクが強制停止するのを防止する（watch中のエラーによりプロセス停止を抑止するために使われることが多い）
 var rev          = require('gulp-rev'); // ビルド時にアセットファイル名を変更する（リビジョン番号を追加する）
@@ -178,7 +176,7 @@ gulp.task('styles', ['wiredep'], function() {
 
 // ### スクリプト系タスク
 // `gulp scripts` - JSHintの実行後、コンパイル、結合、Bowerで読み込まれたJSとプロジェクト用のJSを最適化する
-gulp.task('scripts', ['coffee', 'jshint'], function() {
+gulp.task('scripts', ['jshint'], function() { // 'coffee' は削除
   var merged = merge();
   manifest.forEachDependency('js', function(dep) {
       merged.add(
@@ -254,10 +252,10 @@ gulp.task('watch', function() {
     }
   });
   gulp.watch([path.source + 'styles/**/*'], ['styles']);
-  gulp.watch([path.source + 'scripts/**/*'], ['coffee', 'jshint', 'scripts']);
+  gulp.watch([path.source + 'scripts/**/*'], ['jshint', 'scripts']); // 'coffee' は削除
   gulp.watch([path.source + 'fonts/**/*'], ['fonts']);
   gulp.watch([path.source + 'images/**/*'], ['images']);
-  gulp.watch(['bower.json', 'assets/manifest.json'], ['build']);
+  gulp.watch(['bower.json', 'sources/manifest.json'], ['build']);
 });
 
 // ### ビルド
@@ -284,7 +282,7 @@ gulp.task('wiredep', function() {
 });
 
 // ### Gulp
-// `gulp` - Run a complete build. To compile for production run `gulp --production`.
+// `gulp` - 完全なビルドを実行する。商用環境へのコンパイル時は `gulp --production` を実行する。
 gulp.task('default', ['clean'], function() {
   gulp.start('build');
 });

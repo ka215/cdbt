@@ -38,6 +38,12 @@
         "./assets/fonts/font-awesome/fontawesome-webfont.woff",
         "./assets/fonts/font-awesome/fontawesome-webfont.woff2"
       ]
+    },
+    "requirejs": {
+      "main": ""
+    },
+    "bootstrap": {
+      "main": ""
     }
   }
 }

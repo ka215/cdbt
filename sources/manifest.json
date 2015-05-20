@@ -4,7 +4,11 @@
       "files": [
         "scripts/cdbt-main.js"
       ],
-      "bower": ["bootstrap"]
+      "bower": [
+        "bootstrap",
+        "fuelux",
+        "moment"
+      ]
     },
     "cdbt-admin.js": {
       "files": [
@@ -41,9 +45,7 @@
       ]
     },
     "fuelux.css": {
-      "bower": [
-        "fuelux"
-      ]
+      "bower": ["fuelux"]
     }
   },
   "paths": {
@@ -51,6 +53,6 @@
     "dist": "assets/"
   },
   "config": {
-    "devUrl": "localhost"
+    "devUrl": "localhost:8000"
   }
 }
