@@ -9,16 +9,21 @@ $libraly_dir = plugin_dir_path(__FILE__) . $libraly_dir_name;
 
 $lib_includes = [];
 
-$files = scandir($libraly_dir);
-foreach ($files as $key => $value) {
-  if (!in_array($value, [ '.', '..' ])) {
-    if (!is_dir($libraly_dir . '/' . $value)) {
-      if (preg_match('/^cdbt\..*$/iU', $value)) continue;
-      $lib_includes[] = $libraly_dir . '/' . $value;
-    }
-  }
+$files = [
+  'utils.php',     // Common utility class. Base class, and this class is available at single
+  'core.php',     // Plugin core class
+  'config.php',   // Configuration class
+  'db.php',        // Database class with wrapping wpdb
+  'tmpl.php',      // Trait for dynamic rendering templates
+  'extras.php',   // Trait for enhancements (for customization)
+  'main.php',     // Entry point class for web frontend
+  'admin.php',    // Entry point class for admin panels
+  'init.php'        // Instance factory & plugin activater
+];
+foreach ($files as $file) {
+  $lib_includes[] = $libraly_dir . '/' . $file;
 }
-unset($libraly_dir_name, $libraly_dir, $files, $key, $value);
+unset($libraly_dir_name, $libraly_dir, $files, $file);
 
 foreach ($lib_includes as $file) {
   if (!file_exists($file)) {

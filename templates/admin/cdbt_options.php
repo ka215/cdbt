@@ -1,5 +1,5 @@
 <?php
-$options = get_option($this->core->domain_name);
+$options = get_option($this->domain_name);
 $tabs = [
   'general_setting' => esc_html__('General Setting', CDBT), 
   'debug' => esc_html__('Debug', CDBT), 
@@ -32,7 +32,7 @@ if (!array_key_exists('default_per_records', $options)) $options['default_per_re
 $default_action = 'update';
 ?>
 <div class="wrap">
-  <h2><?php esc_html_e('CDBT Plugin Options', $this->core->domain_name); ?></h2>
+  <h2><?php esc_html_e('CDBT Plugin Options', $this->domain_name); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -45,7 +45,7 @@ $default_action = 'update';
       <div role="tabpanel" class="tab-pane active">
 <?php if ($current_tab == 'general_setting') : ?>
   <div class="well-sm">
-    <p class="text-info"><?php /* esc_html_e('The "Custom DataBase Tables" is ...', $this->core->domain_name); */ ?>
+    <p class="text-info"><?php /* esc_html_e('The "Custom DataBase Tables" is ...', $this->domain_name); */ ?>
       この設定ページでは、「Custom DataBase Tables」プラグインの動作全体に影響する<strong>共通設定</strong>を編集できます。<br>
     </p>
   </div>
@@ -62,7 +62,7 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-1">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[cleaning_options]" type="checkbox" value="1" <?php checked('1', $options['cleaning_options']); ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[cleaning_options]" type="checkbox" value="1" <?php checked('1', $options['cleaning_options']); ?>>
               <span class="checkbox-label">共通設定を保存する時に、データベースに存在しないテーブル設定を削除するなど、設定値のクリーニングを行う。</span>
             </label>
           </div>
@@ -73,7 +73,7 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-4">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[uninstall_options]" type="checkbox" value="1" <?php checked('1', $options['uninstall_options']); ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[uninstall_options]" type="checkbox" value="1" <?php checked('1', $options['uninstall_options']); ?>>
               <span class="checkbox-label">このプラグインをアンインストールする時に、プラグインに関わるすべての設定情報を削除する（作成したテーブルは削除されません）。</span>
             </label>
           </div>
@@ -84,7 +84,7 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-7">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[resume_options]" type="checkbox" value="1" <?php checked('1', $options['resume_options']); ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[resume_options]" type="checkbox" value="1" <?php checked('1', $options['resume_options']); ?>>
               <span class="checkbox-label">過去のプラグイン設定から管理対象テーブルを再設定します。ただし、復元時にデータベースに存在していないテーブルは復旧できません。</span>
             </label>
           </div>
@@ -95,8 +95,8 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-10">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[enable_core_tables]" type="checkbox" value="1" <?php checked('1', $options['enable_core_tables']); ?>>
-              <span class="checkbox-label">WordPressのコアテーブルを管理対象テーブルにします。テーブル管理から、データの閲覧、登録、編集、インポート／エクスポートが行えるようになります。 <?php \CustomDataBaseTables\Common\during_trial('enable_core_tables'); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[enable_core_tables]" type="checkbox" value="1" <?php checked('1', $options['enable_core_tables']); ?>>
+              <span class="checkbox-label">WordPressのコアテーブルを管理対象テーブルにします。テーブル管理から、データの閲覧、登録、編集、インポート／エクスポートが行えるようになります。 <?php $this->during_trial( 'enable_core_tables' ); ?></span>
             </label>
           </div>
         </div>
@@ -106,8 +106,8 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-15">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[debug_mode]" type="checkbox" value="1" <?php checked('1', $options['debug_mode']); ?>>
-              <span class="checkbox-label">デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力されます。不具合の調査を行う時などに利用してください。 <?php \CustomDataBaseTables\Common\during_trial('debug_mode'); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_mode]" type="checkbox" value="1" <?php checked('1', $options['debug_mode']); ?>>
+              <span class="checkbox-label">デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力されます。不具合の調査を行う時などに利用してください。 <?php $this->during_trial( 'debug_mode' ); ?></span>
             </label>
           </div>
         </div>
@@ -119,7 +119,7 @@ $default_action = 'update';
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-21">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->core->domain_name; ?>[use_wp_prefix]" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[use_wp_prefix]" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
               <span class="checkbox-label">新しいテーブルを作成する時にテーブル名にWordPressの設定（wp-config.php）で定義されているテーブル接頭辞<code><?php global $wpdb; echo $wpdb->prefix; ?></code>を自動付与する。</span>
             </label>
             <p class="help-block">なお、この設定はテーブル作成時に個別に変更可能です。</p>
@@ -130,7 +130,7 @@ $default_action = 'update';
         <label for="option-item-22" class="col-sm-2 control-label">テーブルの文字コード</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-22">
-            <input type="text" name="<?php echo $this->core->domain_name; ?>[charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -140,14 +140,14 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルの文字コードの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php \CustomDataBaseTables\Common\during_trial('default_charset'); ?></p>
+          <p class="help-block">このプラグインで作成するテーブルの文字コードの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_charset' ); ?></p>
         </div>
       </div>
       <div class="form-group">
         <label for="option-item-23" class="col-sm-2 control-label">データ登録時のタイムゾーン</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-4 pull-left" data-initialize="combobox" id="option-item-23">
-            <input type="text" name="<?php echo $this->core->domain_name; ?>[timezone]" value="<?php esc_attr_e($options['timezone']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[timezone]" value="<?php esc_attr_e($options['timezone']); ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -159,7 +159,7 @@ $default_action = 'update';
           </div>
           <p class="help-block inline-help"> 現在利用中のMySQLデータベースのタイムゾーン: <code><?php echo apply_filters( 'sanitize_option_timezone_string', $options['timezone'], 'timezone_string'); ?></code></p>
           <div class="clearfix">
-            <p class="help-block">このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイムゾーンに応じて値をローカライズします。<?php \CustomDataBaseTables\Common\during_trial('localize_timezone'); ?></p>
+            <p class="help-block">このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイムゾーンに応じて値をローカライズします。<?php $this->during_trial( 'localize_timezone' ); ?></p>
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ $default_action = 'update';
         <label for="option-item-24" class="col-sm-2 control-label">初期データベースエンジン</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-24">
-            <input type="text" name="<?php echo $this->core->domain_name; ?>[default_db_engine]" value="<?php esc_attr_e($options['default_db_engine']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[default_db_engine]" value="<?php esc_attr_e($options['default_db_engine']); ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -177,20 +177,20 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルのデータベースエンジンの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php \CustomDataBaseTables\Common\during_trial('default_db_engine'); ?></p>
+          <p class="help-block">このプラグインで作成するテーブルのデータベースエンジンの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_db_engine' ); ?></p>
         </div>
       </div>
       <div class="form-group">
         <label for="option-item-25" class="col-sm-2 control-label">初期表示レコード数</label>
         <div class="col-sm-10">
           <div class="spinbox disits-3" data-initialize="spinbox" id="option-item-25">
-            <input type="text" name="<?php echo $this->core->domain_name; ?>[default_per_records]" value="<?php echo intval($options['default_per_records']); ?>" class="form-control input-mini spinbox-input">
+            <input type="text" name="<?php echo $this->domain_name; ?>[default_per_records]" value="<?php echo intval($options['default_per_records']); ?>" class="form-control input-mini spinbox-input">
             <div class="spinbox-buttons btn-group btn-group-vertical">
               <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
               <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php \CustomDataBaseTables\Common\during_trial('default_per_records'); ?></p>
+          <p class="help-block">このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
         </div>
       </div>
 
@@ -281,7 +281,7 @@ input.large-text, textarea.large-text { width: 99%; }
       </div>
       <div class="form-group">
         <div class="col-sm-2">
-          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-right" value="<?php _e('Save Changes', $this->core->domain_name); ?>">
+          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-right" value="<?php _e('Save Changes', $this->domain_name); ?>">
         </div>
       </div>
     </form>
@@ -292,7 +292,7 @@ input.large-text, textarea.large-text { width: 99%; }
       <input type="hidden" id="_wpnonce" name="_wpnonce" value="">
       <input type="hidden" name="_wp_http_referer" value="">
       <p class="resume" style="position: relative; top: -60px; left: 140px;">
-        <input type="submit" name="resume" id="resume" class="button button-default" value="<?php _e('Resume Tables', $this->core->domain_name); ?>">
+        <input type="submit" name="resume" id="resume" class="button button-default" value="<?php _e('Resume Tables', $this->domain_name); ?>">
       </p>
     </form>
 -->

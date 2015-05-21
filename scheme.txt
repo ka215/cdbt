@@ -1,0 +1,24 @@
+
+　　　　　　　　functions.php : ライブラリのオートロード
+　　　　　　　　　　  ↓
+エンドポイント → cdbt.php : プラグインのメインファイル
+                        ↓
+　　　　　　　　CustomDataBaseTables\MainClass\init() : lib/init.php # プラグインの初期化処理。クラスのインスタンス化、グローバル変数へのセット等
+                        ↓
+                  < 管理画面かどうか >
+                        ├→ （YES） CustomDataBaseTables\MainClass\Admin; : lib/admin.php # 管理画面用finalクラス。コンストラクタに実行権限なく、ファクトリメソッドにてインスタンス化する。
+                        └→ （NO）   CustomDataBaseTables\MainClass\Frontend; : lib/main.php # フロントエンド用finalクラス。コンストラクタに実行権限なく、ファクトリメソッドにてインスタンス化する。
+
+※ Admin、Frontend ともに Core クラスの継承クラス
+CustomDataBaseTables\Common\Core; lib/core.php # プラグインのコアクラス。Utilityクラスを継承している。コンストラクタなし（外部から直接インスタンス化できない）
+
+※ Utility クラスはプラグインに依存しない完全な独立クラス
+CustomDataBaseTables\Common\Utility; lib/utils.php # 継承なし。単体でインスタンス化可能。
+
+※ Admin、Frontend ともに trait で必要なライブラリを use する。 use順は
+CustomDataBaseTables\Common\Config; lib/config.php # プラグイン用の設定系trait
+CustomDataBaseTables\Common\DataBase; lib/db.php # プラグイン用のデータベースtrait。内部でwpdbをラップする
+CustomDataBaseTables\Common\Extras; lib/extras.php # 拡張用のtrait
+
+※ 画面表示用のテンプレート群は必要に応じて都度 trait でuseする。
+CustomDataBaseTables\Template\*; templates/*.php

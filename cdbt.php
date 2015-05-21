@@ -36,4 +36,5 @@ define('CDBT', 'custom-database-tables'); // This plugin domain name
 
 require_once plugin_dir_path(__FILE__) . 'functions.php';
 
-CustomDatabaseTables\Core\cdbt( 'set_global' );
+CustomDatabaseTables\Lib\factory( 'set_global' );
+

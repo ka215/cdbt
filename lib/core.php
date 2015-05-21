@@ -1,21 +1,16 @@
 <?php
 
-namespace CustomDataBaseTables\Core;
+namespace CustomDataBaseTables\Lib;
 
-if ( !class_exists( 'Cdbt' ) ) :
+if ( !class_exists( 'CdbtCore' ) ) :
 /**
  * Main Plugin Core Class
  * 
- * @since CustomDataBaseTables (r******)
+ * @since CustomDataBaseTables v2.0.0
+ *
+ * @see CustomDataBaseTables\Lib\Utility
  */
-final class Cdbt {
-  
-  /**
-   * For magic method
-   *
-   * @var array
-   */
-  private $data = [];
+class CdbtCore extends CdbtUtility {
   
   /**
    * @var mixed False when not logged in; WP_User object when logged in
@@ -43,29 +38,12 @@ final class Cdbt {
   public $errors = false;
   
   /**
-   * Factory Method
+   * @var boolean True is if debug mode
    */
-  public static function instance() {
-    
-    static $instance = null;
-    
-    if ( null === $instance ) {
-      $instance = new self;
-      $instance->init();
-      $instance->includes();
-      $instance->setup_actions();
-    }
-    
-    return $instance;
-  }
+  public $debug = false;
   
   
-  private function __construct() { /* Do nothing here */ }
-  
-  
-  public function __destruct() { /* Do nothing here */ }
-  
-  
+/*
   public function __call( $name, $args=null ) {
     // For compatible methods with version 1.x
     $legend_methods = [
@@ -106,13 +84,10 @@ final class Cdbt {
     
     throw new \BadMethodCallException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
   }
-  
-  public function __set( $name, $value ) {
-    $this->$name = $value;
-  }
+*/
   
   
-  private function init() {
+  protected function core_init() {
     
     // Plugin Name
     $this->domain_name = CDBT;
@@ -125,6 +100,7 @@ final class Cdbt {
     // Paths
     $this->file = __FILE__;
     $this->plugin_lib_dir = apply_filters( 'cdbt_plugin_lib_dir_name', 'lib' );
+    $this->plugin_templates_dir = apply_filters( 'cdbt_plugin_templates_dir_name', 'templates' );
     $this->plugin_dir = apply_filters( 'cdbt_plugin_dir_path', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_path( $this->file )) );
     $this->plugin_url = apply_filters( 'cdbt_plugin_dir_url', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_url( $this->file )) );
     $this->plugin_main_file = apply_filters( 'cdbt_plugin_main_file', $this->plugin_dir . 'cdbt.php' );
@@ -137,31 +113,6 @@ final class Cdbt {
     // State
     $this->plugin_enabled = false;
     
-    
-  }
-  
-  /**
-   * Include Worker Classes
-   */
-  private function includes() {
-    
-    if (class_exists( 'CustomDataBaseTables\Config\CdbtConfig' )) 
-      $this->config = \CustomDataBaseTables\Config\CdbtConfig::instance();
-    
-    if (class_exists( 'CustomDataBaseTables\Common\CdbtUtility' )) 
-      $this->util = new \CustomDataBaseTables\Common\CdbtUtility;
-    
-    if (class_exists( 'CustomDataBaseTables\DataBase\CdbtDb' )) 
-      $this->db = \CustomDataBaseTables\DataBase\CdbtDb::instance();
-    
-    if (class_exists( 'CustomDataBaseTables\Shortcodes\CdbtShortcodes' )) 
-      $this->shortcodes = \CustomDataBaseTables\Shortcodes\CdbtShortcodes::instance();
-    
-    if (is_admin()) {
-      if (class_exists( 'CustomDataBaseTables\Admin\CdbtAdmin' )) 
-        $this->admin = \CustomDataBaseTables\Admin\CdbtAdmin::instance();
-      
-    }
     
   }
   
@@ -201,52 +152,7 @@ final class Cdbt {
   }
   
   
-  private function setup_actions() {
-    
-    if (!empty($GLOBALS['pagenow']) && 'plugins.php' === $GLOBALS['pagenow'] ) 
-      add_action( 'admin_notices', array($this, 'check_plugin_notices'));
-    
-    $this->options = $this->config->load_options();
-    
-    $this->debug = $this->options['debug_mode'] ? true : false;
-    
-  }
   
-  
-  public function logger( $log_message='', $logging_type=3, $log_distination='' ) {
-    if (false === $this->debug)
-      return;
-    
-    if (!isset($log_message) || empty($log_message)) {
-      if (!is_wp_error($this->errors) || empty($this->errors->get_error_message())) 
-        return;
-      
-      $log_message = apply_filters( 'cdbt_log_message', $this->errors->get_error_message(), $this->errors );
-    }
-    
-    if (!in_array(intval($logging_type), [0, 1, 3, 4])) 
-      $logging_type = 3;
-    
-    if (empty($log_distination)) 
-      $log_distination = $this->plugin_dir . 'debug.log';
-    
-    if (false === \CustomDataBaseTables\Common\logger( $log_message, $logging_type, $log_distination )) {
-      $this->errors = new \WP_Error();
-      $this->errors->add( 'logging_error', __('Failed to logging.', $this->domain_name) );
-    }
-    
-  }
-  
-  
-}
-
-function cdbt( $type='set_global' ) {
-  if (isset($type) && $type != 'set_global' ) {
-    return Cdbt::instance();
-  } else {
-    global $cdbt;
-    $cdbt = Cdbt::instance();
-  }
 }
 
 endif; // end of class_exists()

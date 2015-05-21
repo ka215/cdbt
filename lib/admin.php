@@ -1,16 +1,21 @@
 <?php
 
-namespace CustomDataBaseTables\Admin;
+namespace CustomDataBaseTables\Lib;
 
 
 if ( !defined( 'CDBT' ) ) exit;
 
 if ( !class_exists( 'CdbtAdmin' ) ) :
 
-class CdbtAdmin {
+final class CdbtAdmin extends CdbtDB {
 
   var $query = [];
 
+  protected $wpdb;
+
+  /**
+   * Factory Method
+   */
   public static function instance() {
     
     static $instance = null;
@@ -25,36 +30,60 @@ class CdbtAdmin {
     return $instance;
   }
 
-  private function __construct() { /* Do nothing here */ }
+  public function __construct() { /* Do nothing here */ }
 
   public function __destruct() { /* Do nothing here */ }
 
   public function __call( $name, $args=null ) {
-    if ( method_exists($this->core, $name) ) 
-      return $this->core->$name($args);
-    
-    return;
+    if ( method_exists($this->wpdb, $name) ) {
+      return $this->wpdb->$name($args);
+    } elseif ( method_exists($this, $name) ) {
+      return $this->$name($args);
+    } elseif ( is_callable($this->$name) ) {
+      return call_user_func($this->$name, $args);
+    } else {
+      throw new \RuntimeException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
+    }
   }
 
   public function __get( $name ) {
-    if ( property_exists($this->core, $name) ) 
-      return $this->core->$name;
-    
-    return $this->$name;
+    if ( property_exists($this->wpdb, $name) ) {
+      return $this->wpdb->$name;
+    } elseif ( property_exists($this, $name) ) {
+      return $this->$name;
+    } else {
+      throw new \RuntimeException( sprintf( __('Property "%s" does not exist.', CDBT), $name ) );
+    }
   }
 
   public function __set( $name, $value ) {
-    $this->$name = $value;
+    $protected_members = [
+      'wpdb', 
+    ];
+    if ( in_array($name, $protected_members, true) ) 
+      return;
+    
+    $this->$name = is_callable($value) ? $value->bindTo($this, $this) : $value;
   }
 
-  public function setup_globals() {
+
+  // Import traits
+  use DynamicTemplate;
+  use CdbtExtras;
+
+
+  private function setup_globals() {
     // Global Object
-    global $cdbt;
-    $this->core = is_object($cdbt) && !empty($cdbt) ? $cdbt : \CustomDataBaseTables\Core\Cdbt::instance();
+    global $wpdb;
+    $this->wpdb = $wpdb;
     
   }
 
+
   private function init() {
+    
+    // Plugin Core Initialize
+    $this->core_init();
     
     // Capabilities
     $this->minimum_capability = apply_filters( 'cdbt_admin_minimum_capability', 'edit_posts' ); // -> Contributor
@@ -64,14 +93,26 @@ class CdbtAdmin {
     // Paths
     $this->admin_template_dir = apply_filters( 'cdbt_admin_template_dir', $this->plugin_dir . 'templates/admin/' );
     
+    // Plugin Options Initialize
+    $this->options_init();
+    
+    // DataBase Initialize
+    $this->db_init();
+    
   }
 
   private function setup_actions() {
+    
+    // Include Extensions
+    $this->includes();
     
     // Initial Action
     add_action( 'admin_init', array($this, 'admin_initialize') );
     
     // General Actions
+    if (!empty($GLOBALS['pagenow']) && 'plugins.php' === $GLOBALS['pagenow'] ) 
+      add_action( 'admin_notices', array($this, 'check_plugin_notices'));
+    
     add_action( 'admin_menu', array($this, 'admin_menus') );
     
     // Add New Actions
@@ -79,6 +120,16 @@ class CdbtAdmin {
     
     // Filters
     add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
+    add_filter( 'admin_body_class', array($this, 'add_body_classes') );
+    
+  }
+
+  /**
+   * Include Extensions
+   */
+  private function includes() {
+    
+    // Currently none
     
   }
 
@@ -98,7 +149,7 @@ class CdbtAdmin {
       'cdbt_management_console', 
       array($this, 'admin_page_render'), 
       'dashicons-admin-generic', 
-      55 // default is before appearance (55), or after tools (77), or after setting (85)
+      $this->admin_menu_position( 'top' )
     );
     
     $menus[] = add_submenu_page( 
@@ -158,9 +209,15 @@ class CdbtAdmin {
       if (file_exists($template_file_path)) {
         $this->admin_controller();
         
-        require_once( apply_filters( 'include_template-' . $this->query['page'], $template_file_path ) );
+        // require_once( apply_filters( 'include_template-' . $this->query['page'], $template_file_path ) );
+        
+        $page_render_method = 'render_' . $this->query['page'];
+        $this->set_template_file_path( apply_filters( 'include_template-' . $this->query['page'], $template_file_path ) );
+        // Define Dynamic Closure
+        $this->$page_render_method = function(){ require( $this->template_file_path ); };
+        $this->$page_render_method();
+        
       }
-      
     }
     
   }
@@ -227,11 +284,11 @@ class CdbtAdmin {
 
   public function admin_notices() {
     // Fire this hook when call to action of the admin notices (on the all admin pages)
-    if (false !== get_transient( "{CDBT}-error" )) {
-      $messages = get_transient( "{CDBT}-error" );
+    if (false !== get_transient( CDBT . '-error' )) {
+      $messages = get_transient( CDBT . '-error' );
       $classes = 'error';
-    } elseif (false !== get_transient( "{CDBT}-notice" )) {
-      $messages = get_transient( "{CDBT}-notice" );
+    } elseif (false !== get_transient( CDBT . '-notice' )) {
+      $messages = get_transient( CDBT . 'notice' );
       $classes = 'updated';
     }
     
@@ -248,7 +305,8 @@ class CdbtAdmin {
     endif;
   }
   
-  private function register_admin_notices( $code="{CDBT}-error", $message, $expire_seconds=10, $is_init=false ) {
+  private function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
+    $code = empty($code) ? CDBT . '-error' : $code;
     if (!$this->errors || $is_init) 
       $this->errors = new \WP_Error();
     
@@ -285,6 +343,23 @@ class CdbtAdmin {
     
     return array_merge($prepend_new_links, $links, $append_new_links);
   }
+  
+  private function admin_menu_position( $position='default' ) {
+    $defined_position = [
+      'top' => 3, // after dashboard
+      'default' => 55, // before appearance
+      'middle' => 77, // after tools
+      'bottom' => 85, // after setting
+    ];
+    if (array_key_exists($position, $defined_position)) {
+      $position = $defined_position[$position];
+    } else {
+      $position = intval($position) > 0 ? intval($position) : $defined_position['default'];
+    }
+    
+    return apply_filters( 'cdbt_admin_menu_position', $position );
+  }
+
 
   /**
    * Controllers of admin pages for this plugin
@@ -309,11 +384,11 @@ class CdbtAdmin {
         $this->$worker_method();
       } else {
         // invalid access
-        $this->register_admin_notices( "{CDBT}-error", __('Invalid access this page.', CDBT), 3, true );
+        $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
       }
     } else {
       // invalid access
-      $this->register_admin_notices( "{CDBT}-error", __('Invalid access this page.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
     }
     $this->admin_notices();
     
@@ -353,9 +428,9 @@ class CdbtAdmin {
       
       update_option( $this->domain_name, $updated_options );
       
-      $this->register_admin_notices( "{CDBT}-notice", __('Plugin options saved.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-notice', __('Plugin options saved.', CDBT), 3, true );
     } else {
-      $this->register_admin_notices( "{CDBT}-error", __('Could not save options.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-error', __('Could not save options.', CDBT), 3, true );
     }
     
   }

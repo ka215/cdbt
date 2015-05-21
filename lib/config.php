@@ -1,59 +1,18 @@
 <?php
 
-namespace CustomDataBaseTables\Config;
+namespace CustomDataBaseTables\Lib;
 
 
 if ( !defined( 'CDBT' ) ) exit;
 
 if ( !class_exists( 'CdbtConfig' ) ) :
 
-class CdbtConfig {
+class CdbtConfig extends CdbtCore {
 
   var $option_template = array();
 
-  public static function instance() {
-    
-    static $instance = null;
-    
-    if ( null === $instance ) {
-      $instance = new self;
-      $instance->setup_globals();
-      $instance->init();
-    }
-    
-    return $instance;
-  }
 
-  private function __construct() { /* Do nothing here */ }
-
-  public function __destruct() { /* Do nothing here */ }
-
-  public function __call( $name, $args=null ) {
-    if ( method_exists($this->core, $name) ) 
-      return $this->core->$name($args);
-    
-    return;
-  }
-
-  public function __get( $name ) {
-    if ( property_exists($this->core, $name) ) 
-      return $this->core->$name;
-    
-    return $this->$name;
-  }
-
-  public function __set( $name, $value ) {
-    $this->$name = $value;
-  }
-
-  private function setup_globals() {
-    // Global Object
-    global $cdbt;
-    $this->core = is_object($cdbt) && !empty($cdbt) ? $cdbt : \CustomDataBaseTables\Core\Cdbt::instance();
-    
-  }
-
-  private function init() {
+  protected function options_init() {
     
     if (empty($this->options)) 
       $this->options = get_option( $this->domain_name );

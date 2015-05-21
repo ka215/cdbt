@@ -107,17 +107,33 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
   
 <?php if ($current_tab == 'table_list') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Enabled Table List', CDBT); ?></h4>
-  <?php if ( !$this->db->get_table_list( 'enable' ) ) : ?>
+  <?php if ( false === ($table_list = !$this->get_table_list( 'enable' )) ) : ?>
     <p>現在、プラグインで管理可能なテーブルはありません。</p>
     <p>テーブルを新規作成する場合は、<a href="#">ここをクリック</a>してください。</p>
     <p>既存のテーブルをプラグインに取り込む場合は、<a href="#">ここをクリック</a>してください。</p>
   <?php else : ?>
   <form id="" name="" action="" method="post" class="">
     
-    <?php echo do_shortcode('[nasmiru-list table="nas_admin_info" display_cols_order="admin_id,user_id,user_account,mail_address1,delete_flag,created,updated" operate_row="true" html_echo="true"]'); ?>
+    <?php var_dump($table_list); ?>
     
   </form>
   <?php endif; ?>
+<?php endif; ?>
+  
+<?php if ($current_tab == 'wp_core_table') : ?>
+  <span class="sr-only"><h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4></span>
+  <form id="" name="" action="" method="post" class="">
+    
+<?php
+  $conponent_options = [
+    'id' => 'cdbtAdminTables', 
+    'data' => $this->core_tables, 
+  ];
+  $this->component_render('repeater', $conponent_options);
+?>
+    
+    
+  </form>
 <?php endif; ?>
   
 <?php if ($current_tab == 'create_table') : ?>

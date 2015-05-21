@@ -44,7 +44,7 @@ $wizard_step = [
       if (2 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-info alert" data-step="2">
         <h4>Current Plugin Options</h4>
-        <p><?php var_dump($this->core->options); ?></p>
+        <p><?php var_dump($this->options); ?></p>
       </div>
 <?php
       endif;
