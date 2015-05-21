@@ -12,6 +12,7 @@
     "jquery": "~2.1.4",
     "bootstrap-sass": "~3.3.4",
     "font-awesome-sass": "~4.3.0",
+    "underscore": "~1.8.3",
     "fuelux": "~3.6.5"
   },
   "overrides": {

@@ -44,6 +44,9 @@
         "moment"
       ]
     },
+    "underscore.js": {
+      "bower": ["underscore"]
+    },
     "fuelux.css": {
       "bower": ["fuelux"]
     }

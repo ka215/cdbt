@@ -1,5 +1,11 @@
 <?php
-//var_dump($this->component_options);
+// var_dump($this->component_options);
+// array `$this->component_options` scheme
+// [
+//   'id' = @string is element id [require]
+//   'pageIndex' = @integer is start page number [optional] (>= 0)
+//   'pageSize' = @integer is displayed data per page [optional] (5, 10, 20, 50, 100)
+//   'data' = @array(assoc) is listing data [require]
 
 $repeater_id = $this->component_options['id'];
 $items = [];
@@ -16,7 +22,7 @@ foreach ($this->component_options['data'] as $key => $value) {
   <div class="repeater" id="<?php echo $repeater_id; ?>">
     <div class="repeater-header">
       <div class="repeater-header-left">
-        <span class="repeater-title"><?php esc_html_e('WordPress Core Table List', CDBT); ?></span>
+        <span class="repeater-title"><?php esc_html_e('', CDBT); ?></span>
         <div class="repeater-search">
           <div class="search input-group">
             <input type="search" class="form-control" placeholder="<?php esc_html_e('Search', CDBT); ?>"/>
@@ -68,11 +74,11 @@ foreach ($this->component_options['data'] as $key => $value) {
               <span class="sr-only"><?php esc_html_e('Toggle Dropdown', CDBT); ?></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li data-value="5"><a href="#">5</a></li>
-              <li data-value="10" data-selected="true"><a href="#">10</a></li>
-              <li data-value="20"><a href="#">20</a></li>
-              <li data-value="50" data-foo="bar" data-fizz="buzz"><a href="#">50</a></li>
-              <li data-value="100"><a href="#">100</a></li>
+              <li data-value="5"<?php if (intval($this->component_options['pageSize']) <= 5): ?> data-selected="true"<?php endif; ?>><a href="#">5</a></li>
+              <li data-value="10"<?php if (intval($this->component_options['pageSize']) == 10): ?> data-selected="true"<?php endif; ?>><a href="#">10</a></li>
+              <li data-value="20"<?php if (intval($this->component_options['pageSize']) == 20): ?> data-selected="true"<?php endif; ?>><a href="#">20</a></li>
+              <li data-value="50"<?php if (intval($this->component_options['pageSize']) == 50): ?> data-selected="true"<?php endif; ?> data-foo="bar" data-fizz="buzz"><a href="#">50</a></li>
+              <li data-value="100"<?php if (intval($this->component_options['pageSize']) >= 100): ?> data-selected="true"<?php endif; ?>><a href="#">100</a></li>
             </ul>
             <input class="hidden hidden-field" name="itemsPerPage" readonly="readonly" aria-hidden="true" type="text"/>
           </div>
@@ -125,26 +131,28 @@ var repeater = function() {
     }
   ];
   
-			// define the rows in your datasource
-			var items = [];
-			var statuses = ['archived', 'active', 'draft'];
-			function getRandomStatus() {
-				var min = 0;
-				var max = 2;
-				var index = Math.floor(Math.random() * (max - min + 1)) + min;
-				return statuses[index];
-			}
+/*
+      // define the rows in your datasource
+      var items = [];
+      var statuses = ['archived', 'active', 'draft'];
+      function getRandomStatus() {
+        var min = 0;
+        var max = 2;
+        var index = Math.floor(Math.random() * (max - min + 1)) + min;
+        return statuses[index];
+      }
  
-			for(var i=1; i<=100; i++) {
-				var item = {
-					id: i,
-					name: 'item ' + i,
-					code: 'code ' + i,
-					description: 'desc ' + i,
-					status: getRandomStatus()
-				};
-				items.push(item);
-			}
+      for(var i=1; i<=100; i++) {
+        var item = {
+          id: i,
+          name: 'item ' + i,
+          code: 'code ' + i,
+          description: 'desc ' + i,
+          status: getRandomStatus()
+        };
+        items.push(item);
+      }
+*/
   items = <?php echo json_encode($items); ?>
 
   
@@ -186,6 +194,13 @@ var repeater = function() {
   // the API handles filtering, sorting, searching, etc.
   function customDataSource(options, callback) {
     // set options
+    console.info(options);
+<?php if (isset($this->component_options['pageIndex']) && intval($this->component_options['pageIndex']) >= 0 ) : ?>
+    options.pageIndex = <?php echo intval($this->component_options['pageIndex']); ?>;
+<?php endif; ?>
+<?php if (isset($this->component_options['pageSize']) && intval($this->component_options['pageSize']) > 0 ) : ?>
+    options.pageSize = <?php echo intval($this->component_options['pageSize']); ?>;
+<?php endif; ?>
     var pageIndex = options.pageIndex;
     var pageSize = options.pageSize;
 
@@ -239,6 +254,42 @@ var repeater = function() {
     });
 */
 
+    // sort by
+    data = _.sortBy(data, function(item) {
+      return item[options.sortProperty];
+    });
+    
+    // sort direction
+    if (options.sortDirection === 'desc') {
+      data = data.reverse();
+    }
+    
+    // filter
+    if (options.filter && options.filter.value !== 'all') {
+      data = _.filter(data, function(item) {
+        return item.status === options.filter.value;
+      });
+    }
+    
+    // search
+    if (options.search && options.search.length > 0) {
+      var searchedData = [];
+      var searchTerm = options.search.toLowerCase();
+      
+      _.each(data, function(item) {
+        var values = _.values(item);
+        var found = _.find(values, function(val) {
+          
+          if(val.toString().toLowerCase().indexOf(searchTerm) > -1) {
+            searchedData.push(item);
+            return true;
+          }
+        });
+      });
+      
+      data = searchedData;
+    }
+    
     var totalItems = data.length;
     var totalPages = Math.ceil(totalItems / pageSize);
     var startIndex = (pageIndex * pageSize) + 1;

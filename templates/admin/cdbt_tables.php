@@ -121,12 +121,14 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
 <?php endif; ?>
   
 <?php if ($current_tab == 'wp_core_table') : ?>
-  <span class="sr-only"><h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4></span>
+  <h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4>
   <form id="" name="" action="" method="post" class="">
     
 <?php
   $conponent_options = [
     'id' => 'cdbtAdminTables', 
+    'pageIndex' => 0, 
+    'pageSize' => 20, 
     'data' => $this->core_tables, 
   ];
   $this->component_render('repeater', $conponent_options);
