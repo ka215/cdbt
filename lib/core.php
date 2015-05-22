@@ -101,6 +101,7 @@ class CdbtCore extends CdbtUtility {
     $this->file = __FILE__;
     $this->plugin_lib_dir = apply_filters( 'cdbt_plugin_lib_dir_name', 'lib' );
     $this->plugin_templates_dir = apply_filters( 'cdbt_plugin_templates_dir_name', 'templates' );
+    $this->plugin_assets_dir = apply_filters( 'cdbt_plugin_assets_dir_name', 'assets' );
     $this->plugin_dir = apply_filters( 'cdbt_plugin_dir_path', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_path( $this->file )) );
     $this->plugin_url = apply_filters( 'cdbt_plugin_dir_url', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_url( $this->file )) );
     $this->plugin_main_file = apply_filters( 'cdbt_plugin_main_file', $this->plugin_dir . 'cdbt.php' );

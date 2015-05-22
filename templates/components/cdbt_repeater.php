@@ -1,23 +1,122 @@
 <?php
-// var_dump($this->component_options);
-// array `$this->component_options` scheme
-// [
-//   'id' = @string is element id [require]
-//   'pageIndex' = @integer is start page number [optional] (>= 0)
-//   'pageSize' = @integer is displayed data per page [optional] (5, 10, 20, 50, 100)
-//   'data' = @array(assoc) is listing data [require]
+/**
+ * Repeater Options array `$this->component_options` scheme
+ * [
+ * 'id' => @string is element id [require]
+ * 'enableFilter' => @boolean Switching filter dropdown is hidden if `false`; default `true` [optional]
+ * 'filters' => @array(assoc) is listing data [optional] array key is data-value, array value is display label
+ * 'enableView' => @boolean Switching view button is hidden if `false`; default `true` [optional]
+ * 'defaultView' => @mixed is view type of default [optional] (-1 (default), 'list', 'thumbnail')
+ * 'listSelectable' => @mixed can not select items of default [option] (false (default), 'single', 'multi')
+ * 'staticHeight' => @mixed is auto height of default [optional] (-1 (default), true, false, integer)
+ * 'pageIndex' = @integer is start page number [optional] (>= 0)
+ * 'pageSize' = @integer is displayed data per page [optional] (5, 10, 20, 50, 100)
+ * 'columns' => @array(assoc) is listing label [require]
+ * 'data' = @array(assoc) is listing data [require]
+ */
 
-$repeater_id = $this->component_options['id'];
-$items = [];
-$i = 0;
-foreach ($this->component_options['data'] as $key => $value) {
-  $i++;
-  $items[] = [
-    'id' => $i,
-    'name' => $value,
-    'code' => $key,
-  ];
+// Parse options
+// `id` section
+if (isset($this->component_options['id']) && !empty($this->component_options['id'])) {
+  $repeater_id = esc_attr__($this->component_options['id']);
+} else {
+  return;
 }
+
+// `filter` section
+$enable_filter = isset($this->component_options['enableFilter']) && false === $this->component_options['enableFilter'] ? false : true;
+
+if (empty($this->component_options['filters'])) {
+  $enable_filter = false;
+} else {
+  $filters_list = [];
+  foreach ($this->component_options['filters'] as $value => $label) {
+    $filters_list = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $value, $label );
+  }
+}
+
+// `view` section
+$enable_view = isset($this->component_options['enableView']) && false === $this->component_options['enableView'] ? false : true;
+
+if (isset($this->component_options['defaultView']) && in_array($this->component_options['defaultView'], [ 'list', 'thumbnail' ])) {
+  $default_view = $this->component_options['defaultView'];
+} else {
+  $default_view = 'list';
+}
+
+// `listSelectable` section
+if (isset($this->component_options['listSelectable']) && in_array($this->component_options['listSelectable'], [ 'single', 'multi' ])) {
+  $list_selectable = "'" . esc_attr__($this->component_options['listSelectable']) . "'";
+} else {
+  $list_selectable = 'false';
+}
+
+// `staticHeight` section
+$static_height = -1;
+if (isset($this->component_options['staticHeight'])) {
+  if (in_array($this->component_options['staticHeight'], [ true, false ])) {
+    $static_height = $this->component_options['staticHeight'] ? 'true' : 'false';
+  } elseif (intval($this->component_options['staticHeight']) > 0) {
+    $static_height = intval($this->component_options['staticHeight']);
+  }
+}
+
+// `pageIndex` section
+if (isset($this->component_options['pageIndex']) && intval($this->component_options['pageIndex']) >= 0) {
+  $page_index = intval($this->component_options['pageIndex']);
+} else {
+  $page_index = 0;
+}
+
+// `pageSize` section
+if (isset($this->component_options['pageSize']) && intval($this->component_options['pageSize']) > 0) {
+  $page_size = intval($this->component_options['pageSize']);
+  if (!in_array($page_size, [5, 10, 20, 50, 100])) {
+    $insert_position = 0;
+    if (5 < $page_size && $page_size < 10) 
+      $insert_position = 1;
+    if (10 < $page_size && $page_size < 20) 
+      $insert_position = 2;
+    if (20 < $page_size && $page_size < 50) 
+      $insert_position = 3;
+    if (50 < $page_size && $page_size < 100) 
+      $insert_position = 4;
+    if (100 < $page_size) 
+      $insert_position = 5;
+  } else {
+    $insert_position = -1;
+  }
+} else {
+  $page_size = 10;
+  $insert_position = -1;
+}
+if ($insert_position >= 0) {
+  $insert_page_size_line = sprintf( '<li data-value="%d" data-selected="true"><a href="#">%d</a></li>', $page_size, $page_size );
+}
+
+// `columns` section
+if (!isset($this->component_options['columns']) || empty($this->component_options['columns'])) {
+  return;
+} else {
+  $columns = [];
+  foreach ($this->component_options['columns'] as $setting) {
+    $columns[] = [
+      'label' => __($setting['label'], CDBT), 
+      'property' => $setting['property'], 
+      'sortable' => isset($setting['sortable']) && $setting['sortable'] ? true : false,
+    ];
+  }
+}
+
+
+// `data` section
+if (!isset($this->component_options['data']) || empty($this->component_options['data'])) {
+  return;
+} else {
+  $items = $this->component_options['data'];
+}
+
+// Render the Repeater
 ?>
   <div class="repeater" id="<?php echo $repeater_id; ?>">
     <div class="repeater-header">
@@ -36,6 +135,7 @@ foreach ($this->component_options['data'] as $key => $value) {
         </div>
       </div>
       <div class="repeater-header-right">
+      <?php if ($enable_filter) : ?>
         <div class="btn-group selectlist repeater-filters" data-resize="auto">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="selected-label">&nbsp;</span>
@@ -44,19 +144,21 @@ foreach ($this->component_options['data'] as $key => $value) {
           </button>
           <ul class="dropdown-menu" role="menu">
             <li data-value="all" data-selected="true"><a href="#"><?php esc_html_e('all', CDBT); ?></a></li>
-            <li data-value="some"><a href="#"><?php esc_html_e('some', CDBT); ?></a></li>
-            <li data-value="others"><a href="#"><?php esc_html_e('others', CDBT); ?></a></li>
+            <?php echo implode("\n", $filters_list); ?>
           </ul>
           <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
         </div>
+      <?php endif; ?>
+      <?php if ($enable_view) : ?>
         <div class="btn-group repeater-views" data-toggle="buttons">
-          <label class="btn btn-default active">
+          <label class="btn btn-default<?php if ('list' === $default_view) : ?> active<?php endif; ?>">
             <input name="repeaterViews" type="radio" value="list"><span class="glyphicon glyphicon-list"></span>
           </label>
-          <label class="btn btn-default">
+          <label class="btn btn-default<?php if ('thumbnail' === $default_view) : ?> active<?php endif; ?>">
             <input name="repeaterViews" type="radio" value="thumbnail"><span class="glyphicon glyphicon-th"></span>
           </label>
         </div>
+      <?php endif; ?>
       </div>
     </div>
     <div class="repeater-viewport">
@@ -74,11 +176,17 @@ foreach ($this->component_options['data'] as $key => $value) {
               <span class="sr-only"><?php esc_html_e('Toggle Dropdown', CDBT); ?></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li data-value="5"<?php if (intval($this->component_options['pageSize']) <= 5): ?> data-selected="true"<?php endif; ?>><a href="#">5</a></li>
-              <li data-value="10"<?php if (intval($this->component_options['pageSize']) == 10): ?> data-selected="true"<?php endif; ?>><a href="#">10</a></li>
-              <li data-value="20"<?php if (intval($this->component_options['pageSize']) == 20): ?> data-selected="true"<?php endif; ?>><a href="#">20</a></li>
-              <li data-value="50"<?php if (intval($this->component_options['pageSize']) == 50): ?> data-selected="true"<?php endif; ?> data-foo="bar" data-fizz="buzz"><a href="#">50</a></li>
-              <li data-value="100"<?php if (intval($this->component_options['pageSize']) >= 100): ?> data-selected="true"<?php endif; ?>><a href="#">100</a></li>
+              <?php if ($insert_position === 0) echo $insert_page_size_line; ?>
+              <li data-value="5"<?php if ($page_size === 5) : ?> data-selected="true"<?php endif; ?>><a href="#">5</a></li>
+              <?php if ($insert_position === 1) echo $insert_page_size_line; ?>
+              <li data-value="10"<?php if ($page_size === 10) : ?> data-selected="true"<?php endif; ?>><a href="#">10</a></li>
+              <?php if ($insert_position === 2) echo $insert_page_size_line; ?>
+              <li data-value="20"<?php if ($page_size === 20) : ?> data-selected="true"<?php endif; ?>><a href="#">20</a></li>
+              <?php if ($insert_position === 3) echo $insert_page_size_line; ?>
+              <li data-value="50"<?php if ($page_size === 50) : ?> data-selected="true"<?php endif; ?>><a href="#">50</a></li>
+              <?php if ($insert_position === 4) echo $insert_page_size_line; ?>
+              <li data-value="100"<?php if ($page_size === 100) : ?> data-selected="true"<?php endif; ?>><a href="#">100</a></li>
+              <?php if ($insert_position === 5) echo $insert_page_size_line; ?>
             </ul>
             <input class="hidden hidden-field" name="itemsPerPage" readonly="readonly" aria-hidden="true" type="text"/>
           </div>
@@ -91,10 +199,10 @@ foreach ($this->component_options['data'] as $key => $value) {
             <span class="glyphicon glyphicon-chevron-left"></span>
             <span class="sr-only"><?php esc_html_e('Previous Page', CDBT); ?></span>
           </button>
-          <label class="page-label" id="myPageLabel"><?php esc_html_e('Page', CDBT); ?></label>
+          <label class="page-label" id="cdbtPageLabel"><?php esc_html_e('Page', CDBT); ?></label>
           <div class="repeater-primaryPaging active">
             <div class="input-group input-append dropdown combobox">
-              <input type="text" class="form-control" aria-labelledby="myPageLabel">
+              <input type="text" class="form-control" aria-labelledby="cdbtPageLabel">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
@@ -104,7 +212,7 @@ foreach ($this->component_options['data'] as $key => $value) {
               </div>
             </div>
           </div>
-          <input type="text" class="form-control repeater-secondaryPaging" aria-labelledby="myPageLabel">
+          <input type="text" class="form-control repeater-secondaryPaging" aria-labelledby="cdbtPageLabel">
           <span><?php printf(esc_html__('of %1$s', CDBT), '<span class="repeater-pages"></span>'); ?></span>
           <button type="button" class="btn btn-default btn-sm repeater-next">
             <span class="glyphicon glyphicon-chevron-right"></span>
@@ -118,6 +226,7 @@ foreach ($this->component_options['data'] as $key => $value) {
 var repeater = function() {
 
   // define the columns in your datasource
+/*
   var columns = [
     {
       label: 'Name &amp; Description',
@@ -130,6 +239,8 @@ var repeater = function() {
       sortable: true
     }
   ];
+*/
+  var columns = <?php echo json_encode($columns); ?>
   
 /*
       // define the rows in your datasource
@@ -153,7 +264,7 @@ var repeater = function() {
         items.push(item);
       }
 */
-  items = <?php echo json_encode($items); ?>
+  var items = <?php echo json_encode($items); ?>
 
   
   function customColumnRenderer(helpers, callback) {
@@ -194,13 +305,6 @@ var repeater = function() {
   // the API handles filtering, sorting, searching, etc.
   function customDataSource(options, callback) {
     // set options
-    console.info(options);
-<?php if (isset($this->component_options['pageIndex']) && intval($this->component_options['pageIndex']) >= 0 ) : ?>
-    options.pageIndex = <?php echo intval($this->component_options['pageIndex']); ?>;
-<?php endif; ?>
-<?php if (isset($this->component_options['pageSize']) && intval($this->component_options['pageSize']) > 0 ) : ?>
-    options.pageSize = <?php echo intval($this->component_options['pageSize']); ?>;
-<?php endif; ?>
     var pageIndex = options.pageIndex;
     var pageSize = options.pageSize;
 
@@ -314,23 +418,33 @@ var repeater = function() {
 
   }
   
-  // initialize the repeater
+  // 初期化処理 - initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
-    list_selectable: false, // (single | multi)
-    list_noItemsHTML: 'nothing to see here... move along',
+    list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
+    list_noItemsHTML: '<?php esc_html_e( 'nothing to see here... move along', CDBT); ?>',
     
-    // override the column output via a custom renderer.
-    // this will allow you to output custom markup for each column.
+    // カスタムレンダラを介して列出力をオーバーライドする - override the column output via a custom renderer.
+    // これにより各列の出力のカスタムマークアップが可能になる - this will allow you to output custom markup for each column.
     list_columnRendered: customColumnRenderer,
     
-    // override the row output via a custom renderer.
-    // this example will use this to add an "id" attribute to each row.
+    // カスタムレンダラを介して行出力をオーバーライドする - override the row output via a custom renderer.
+    // この例では、各行に「id」属性を追加するために使用している - this example will use this to add an "id" attribute to each row.
     list_rowRendered: customRowRenderer,
     
-    // setup your custom datasource to handle data retrieval;
-    // responsible for any paging, sorting, filtering, searching logic
-    dataSource: customDataSource
+    // データ検索処理のためのデータソースをセットアップする - setup your custom datasource to handle data retrieval;
+    // 任意のページング、ソート、フィルタリング、検索ロジックを担当する - responsible for any paging, sorting, filtering, searching logic
+    dataSource: customDataSource,
+    
+    // 初期ビューの設定。デフォルトは -1。「.repeater-views」要素の値を設定する。
+    defaultView: '<?php echo $default_view; ?>', // 'list' or 'thumbnail'
+    
+    //dropPagingCap: 3, 
+    
+    <?php if ($static_height !== -1) printf('staticHeight: %s,', $static_height); ?>
+    
+    thumbnail_template: '<div class="thumbnail repeater-thumbnail {{thumbnail_class}}" style="background: {{thumbnail_bgcolor}};"><img height="{{thumbnail_height}}" src="{{thumbnail_src}}" width="{{thumbnail_width}}"><span>{{thumbnail_title}}</span></div>',
+    
   });
 
 };
