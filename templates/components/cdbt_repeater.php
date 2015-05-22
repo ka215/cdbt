@@ -99,12 +99,23 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
   return;
 } else {
   $columns = [];
-  foreach ($this->component_options['columns'] as $setting) {
-    $columns[] = [
+  $numric_properties = [];
+  foreach ($this->component_options['columns'] as $i => $setting) {
+    $columns[$i] = [
       'label' => __($setting['label'], CDBT), 
       'property' => $setting['property'], 
       'sortable' => isset($setting['sortable']) && $setting['sortable'] ? true : false,
     ];
+    if (isset($setting['sortDirection']) && in_array(strtolower($setting['sortDirection']), [ 'asc', 'desc' ])) 
+      $columns[$i]['sortDirection'] = $setting['sortDirection'];
+    if (isset($setting['dataNumric']) && true === $setting['dataNumric']) {
+      // $columns[$i]['dataNumric'] = $setting['dataNumric'];
+      $numric_properties[] = $columns[$i]['property'];
+    }
+    if (isset($setting['className']) && !empty($setting['className'])) 
+      $columns[$i]['className'] = $setting['className'];
+    if (isset($setting['width']) && intval($setting['width']) > 0) 
+      $columns[$i]['width'] = intval($setting['width']);
   }
 }
 
@@ -360,7 +371,20 @@ var repeater = function() {
 
     // sort by
     data = _.sortBy(data, function(item) {
+<?php if (!empty($numric_properties)) : 
+    $conditions = [];
+    foreach ($numric_properties as $property) {
+      $conditions[] = sprintf("options.sortProperty === '%s'", $property);
+    }
+?>
+      if (<?php echo implode(' || ', $conditions); ?>) {
+        return parseFloat(item[options.sortProperty]);
+      } else {
+        return item[options.sortProperty];
+      }
+<?php else : ?>
       return item[options.sortProperty];
+<?php endif; ?>
     });
     
     // sort direction

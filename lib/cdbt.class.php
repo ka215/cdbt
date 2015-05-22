@@ -681,10 +681,6 @@ class CustomDatabaseTables {
 	 * @return string
 	 */
 	function check_table_exists($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		$is_tbl_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name));
-		return $is_tbl_exists;
 	}
 	
 	/**
@@ -772,60 +768,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function get_table_schema($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		if ($this->check_table_exists($table_name)) {
-			$sql = $wpdb->prepare("SELECT 
-				COLUMN_NAME,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE,
-				CHARACTER_MAXIMUM_LENGTH,CHARACTER_OCTET_LENGTH,
-				NUMERIC_PRECISION,NUMERIC_SCALE,
-				COLUMN_TYPE,COLUMN_KEY,EXTRA,COLUMN_COMMENT 
-				FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s 
-				ORDER BY ORDINAL_POSITION", 
-				DB_NAME, $table_name
-			);
-			$table_schema = array();
-			foreach ($wpdb->get_results($sql) as $column_schema) {
-				$is_int_column = (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
-				$is_chr_column = (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
-				$is_date_column = (preg_match('/^(date(|time)|time(|stamp)|year)$/i', strtolower($column_schema->DATA_TYPE)) ? true : false);
-				$table_schema[$column_schema->COLUMN_NAME] = array(
-					'logical_name' => $column_schema->COLUMN_COMMENT, 
-					'max_length' => null, 
-					'octet_length' => intval($column_schema->CHARACTER_OCTET_LENGTH), 
-					'not_null' => (strtoupper($column_schema->IS_NULLABLE) == 'NO' ? true : false), 
-					'default' => $column_schema->COLUMN_DEFAULT, 
-					'type' => $column_schema->DATA_TYPE, 
-					'type_format' => $column_schema->COLUMN_TYPE, 
-					'primary_key' => (strtoupper($column_schema->COLUMN_KEY) == 'PRI' ? true : false), 
-					'column_key' => $column_schema->COLUMN_KEY, 
-					'unsigned' => (preg_match('/unsigned/i', strtolower($column_schema->COLUMN_TYPE)) ? true : false),
-					'extra' => $column_schema->EXTRA, 
-				);
-				if ($is_int_column) {
-					$total_length = intval($column_schema->NUMERIC_PRECISION) + intval($column_schema->NUMERIC_SCALE);
-					$table_schema[$column_schema->COLUMN_NAME]['max_length'] = $table_schema[$column_schema->COLUMN_NAME]['octet_length'] = $total_length;
-				}
-				if ($is_chr_column) {
-					$table_schema[$column_schema->COLUMN_NAME]['max_length'] = intval($column_schema->CHARACTER_MAXIMUM_LENGTH);
-				}
-				if ($is_date_column) {
-					if ($column_schema->DATA_TYPE == 'year') 
-						$string_length = strlen('YYYY');
-					if ($column_schema->DATA_TYPE == 'time')
-						$string_length = strlen('HH:MM:SS');
-					if ($column_schema->DATA_TYPE == 'date')
-						$string_length = strlen('YYYY-MM-DD');
-					if ($column_schema->DATA_TYPE == 'datetime' || $column_schema->DATA_TYPE == 'timestamp')
-						$string_length = strlen('YYYY-MM-DD HH:MM:SS');
-					$table_schema[$column_schema->COLUMN_NAME]['max_length'] = $string_length;
-				}
-			}
-			$result = array(true, $table_name, $table_schema);
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**
@@ -887,54 +829,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function get_data($table_name, $columns='*', $conditions=null, $order=array('created'=>'desc'), $limit=null, $offset=null) {
-		global $wpdb;
-		list(, , $table_schema) = $this->get_table_schema($table_name);
-		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
-		$where_clause = $order_clause = $limit_clause = null;
-		if (!empty($conditions)) {
-			$i = 0;
-			foreach ($conditions as $key => $val) {
-				if (array_key_exists($key, $table_schema)) {
-					if ($i == 0) {
-						$where_clause = "WHERE `$key` = '$val' ";
-					} else {
-						$where_clause .= "AND `$key` = '$val' ";
-					}
-					$i++;
-				} else {
-					continue;
-				}
-			}
-		}
-		if (!empty($order)) {
-			$i = 0;
-			foreach ($order as $key => $val) {
-				if (array_key_exists($key, $table_schema)) {
-					$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
-					if ($i == 0) {
-						$order_clause = "ORDER BY `$key` $val ";
-					} else {
-						$order_clause .= ", `$key` $val ";
-					}
-					$i++;
-				} else {
-					continue;
-				}
-			}
-		}
-		if (!empty($limit)) {
-			$limit_clause = "LIMIT ";
-			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
-		}
-		$sql = sprintf(
-			"SELECT %s FROM `%s` %s %s %s", 
-			$select_clause, 
-			$table_name, 
-			$where_clause, 
-			$order_clause, 
-			$limit_clause 
-		);
-		return $wpdb->get_results($sql);
 	}
 	
 	/**
@@ -1650,46 +1544,6 @@ class CustomDatabaseTables {
 	 * @return mixed
 	 */
 	function get_table_list($narrow_type='enable') {
-		global $wpdb;
-		$res = $wpdb->get_results('SHOW TABLES', 'ARRAY_N');
-		$table_list = array();
-		foreach ($res as $i => $one_res) {
-			$table_list[] = $one_res[0];
-		}
-		if (!empty($table_list)) {
-			if ($narrow_type == 'unreserved' || $narrow_type == 'unmanageable') {
-				foreach ($table_list as $i => $table_name) {
-					if ($this->compare_reservation_tables($table_name)) {
-						unset($table_list[$i]);
-					}
-				}
-				if ($narrow_type == 'unmanageable') {
-					foreach ($table_list as $i => $table_name) {
-						foreach ($this->options['tables'] as $j => $table_data) {
-							if (cdbt_compare_var($table_name, $table_data['table_name'])) {
-								unset($table_list[$i]);
-								break;
-							}
-						}
-					}
-				}
-			} else if ($narrow_type == 'enable') {
-				foreach ($table_list as $i => $table_name) {
-					$is_enable = false;
-					foreach ($this->options['tables'] as $j => $table_data) {
-						if (cdbt_compare_var($table_name, $table_data['table_name'])) {
-							$is_enable = true;
-							break;
-						}
-					}
-					if (!$is_enable) 
-						unset($table_list[$i]);
-				}
-			}
-			return $table_list;
-		} else {
-			return false;
-		}
 	}
 	
 

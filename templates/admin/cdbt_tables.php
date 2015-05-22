@@ -125,36 +125,7 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
   <form id="" name="" action="" method="post" class="">
     
 <?php
-  $datasource = [];
-  $index = 0;
-  asort($this->core_tables);
-  foreach ($this->core_tables as $base_name => $table_name) {
-    $index++;
-    $datasource[] = [
-      'id' => $index, 
-      'table_name' => $table_name, 
-      'logical_name' => $base_name, 
-      'records' => null, 
-      'info' => null, 
-      'table_controls' => null, 
-//      'import' => null, 
-//      'export' => null, 
-//      'duplicate' => null, 
-//      'modify' => null, 
-//      'drop' => null, 
-      'data_controls' => null, 
-//      'truncate' => null, 
-//      'view' => null, 
-//      'entry' => null, 
-//      'edit' => null, 
-      'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
-      'thumbnail_title' => $table_name, // optional
-      'thumbnail_bgcolor' => 'tranceparent', // optional
-      'thumbnail_width' => 64, // optional
-      'thumbnail_height' => 64, // optional
-      'thumbnail_class' => null, // optional
-    ];
-  }
+  $datasource = $this->create_datasorce($this->core_tables);
   $conponent_options = [
     'id' => 'cdbtAdminTables', 
     'pageIndex' => 0, 
@@ -163,7 +134,7 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
 //      [ 'label' => 'ID', 'property' => 'id', 'sortable' => false, 'sortDirection' => 'asc', 'className' => null, 'width' => null ], 
       [ 'label' => 'TableName', 'property' => 'table_name', 'sortable' => true, 'sortDirection' => 'asc', 'className' => null, 'width' => null ], 
 //      [ 'label' => 'TableComment', 'property' => 'logical_name', 'sortable' => true, 'sortDirection' => null, 'className' => null, 'width' => null ], 
-      [ 'label' => 'Records', 'property' => 'records', 'sortable' => true, 'sortDirection' => null, 'className' => null, 'width' => 100 ], 
+      [ 'label' => 'Records', 'property' => 'records', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'className' => 'text-right', 'width' => 100 ], 
       [ 'label' => 'Information', 'property' => 'info', 'sortable' => false, 'sortDirection' => null, 'className' => null, 'width' => null ], 
 // Manage Table
       [ 'label' => 'Table Controls', 'property' => 'table_controls', 'sortable' => false, 'sortDirection' => null, 'className' => null, 'width' => null ], 

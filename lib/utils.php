@@ -29,6 +29,8 @@ class CdbtUtility {
   /**
    * Logger for this plugin
    *
+   * @since v2.0.0
+   *
    * @param string $message
    * @param integer $logging_type 0: php system logger, 1: mail to $distination, 3: overwriting file of $distination (default), 4: to SAPI handler
    * @param string $distination
@@ -57,11 +59,11 @@ class CdbtUtility {
     $log_message = sprintf("[%s] %s\n", $current_datetime, $message);
     
     if (3 == intval($logging_type)) {
-      $distination = empty($message) || '' === trim($distination) ? str_replace('lib/', 'debug.log', plugin_dir_path(__FILE__)) : $distination;
-      $distination = apply_filters( 'cdbt_log_distination_path', $distination );
+      $this->log_distination_path = empty($message) || '' === trim($distination) ? str_replace('lib/', 'debug.log', plugin_dir_path(__FILE__)) : $distination;
+      $this->log_distination_path = apply_filters( 'cdbt_log_distination_path', $this->log_distination_path );
     }
     
-    if (false === error_log( $log_message, $logging_type, $distination )) {
+    if (false === error_log( $log_message, $logging_type, $this->log_distination_path )) {
       $this->errors = new \WP_Error();
       $this->errors->add( 'logging_error', __('Failed to logging.', $this->domain_name) );
       return false;
@@ -73,6 +75,8 @@ class CdbtUtility {
 
   /**
    * Outputting the hook information to the javascript console at the time of each hook call.
+   *
+   * @since v2.0.0
    *
    * @param string $functon callback function name of hook
    * @param string $type 'Action' or 'Filter'
@@ -88,10 +92,15 @@ class CdbtUtility {
   }
 
   /**
-   * 
-   * 
+   * Flatten the array or object that has nested
+   *
+   * @since v2.0.0
+   *
+   * @param mixed $data Array or Object
+   * @param boolean $return_array Return an array if `true`, otherwise an object
+   * @return mixed $data Array or Object specified by `return_array`
    */
-  public function array_flatten( $data, $assoc=true ) {
+  public function array_flatten( $data, $return_array=true ) {
     if (is_object($data)) 
       $data = json_decode(json_encode($data), true);
     
@@ -100,14 +109,21 @@ class CdbtUtility {
         $data = array_reduce($data, 'array_merge', []);
     }
     
-    return $assoc ? (array) $data : (object) $data;
+    return $return_array ? (array) $data : (object) $data;
   }
-  
+
   /**
-   * 
-   * 
+   * Reference sequence is whether the associative array
+   *
+   * @since v2.0.0
+   *
+   * @param array $data This variable should be expected array
+   * @return boolean
    */
   public function is_assoc( &$data ) {
+    if (!is_array($data)) 
+      return false;
+    
     reset($data);
     list($k) = each($data);
     return $k !== 0;

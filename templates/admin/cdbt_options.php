@@ -299,8 +299,13 @@ input.large-text, textarea.large-text { width: 99%; }
   </div>
 <?php endif; ?>
   
-<?php if ($current_tab == 'general_setting') : ?>
+<?php if ($current_tab == 'debug') : 
+  if (!isset($this->log_distination_path)) 
+    $this->log_distination_path = $this->plugin_dir . 'debug.log';
+?>
   
+  <p>デバッグログの表示</p>
+  <textarea name="debug-log" rows="20" style="width: 80%;"><?php echo file_get_contents($this->log_distination_path); ?></textarea>
   
 <?php endif; ?>
   
