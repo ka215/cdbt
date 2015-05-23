@@ -9,12 +9,22 @@ if ( !class_exists( 'CdbtAdmin' ) ) :
 
 final class CdbtAdmin extends CdbtDB {
 
+  /**
+   * Member is stored current queries
+   *
+   * @param array
+   */
   var $query = [];
 
+  /**
+   * Protected menber for wrapping of wpdb object
+   */
   protected $wpdb;
 
   /**
-   * Factory Method
+   * Instance factory method as entry point of plugin.
+   *
+   * @since 2.0.0
    */
   public static function instance() {
     
@@ -30,6 +40,9 @@ final class CdbtAdmin extends CdbtDB {
     return $instance;
   }
 
+ /**
+  * Define magic methods as follow;
+  */
   public function __construct() { /* Do nothing here */ }
 
   public function __destruct() { /* Do nothing here */ }
@@ -63,27 +76,49 @@ final class CdbtAdmin extends CdbtDB {
     if ( in_array($name, $protected_members, true) ) 
       return;
     
-    $this->$name = is_callable($value) ? $value->bindTo($this, $this) : $value;
+    if (is_callable($value)) {
+      // Whether closure is or
+      $ref_func = new \ReflectionFunction($value);
+      $this->$name = $ref_func->isClosure() ? $value->bindTo($this, $this) : $value;
+    } else {
+      $this->$name = $value;
+    }
   }
 
 
-  // Import traits
+  /**
+   * Imported traits.
+   * (Required php version 5.4 more)
+   *
+   * @since 2.0.0
+   */
   use DynamicTemplate;
   use CdbtExtras;
 
 
+  /**
+   * Wrapping global object of wordpress
+   *
+   * @since 2.0.0
+   */
   private function setup_globals() {
-    // Global Object
+    
     global $wpdb;
     $this->wpdb = $wpdb;
     
   }
 
 
+  /**
+   * 
+   *
+   * @since 2.0.0
+   */
   private function init() {
     
     // Plugin Core Initialize
     $this->core_init();
+    $this->core_actions();
     
     // Capabilities
     $this->minimum_capability = apply_filters( 'cdbt_admin_minimum_capability', 'edit_posts' ); // -> Contributor
@@ -101,6 +136,12 @@ final class CdbtAdmin extends CdbtDB {
     
   }
 
+
+  /**
+   * 
+   *
+   * @since 2.0.0
+   */
   private function setup_actions() {
     
     // Include Extensions
@@ -124,8 +165,11 @@ final class CdbtAdmin extends CdbtDB {
     
   }
 
+
   /**
    * Include Extensions
+   *
+   * @since -
    */
   private function includes() {
     
@@ -133,10 +177,22 @@ final class CdbtAdmin extends CdbtDB {
     
   }
 
+
+  /**
+   * Initialize for inserting plugin option settings into admin panel of wordpress
+   *
+   * @since 2.0.0
+   */
   public function admin_initialize() {
     register_setting( 'cdbt_management_console', $this->domain_name );
   }
 
+
+  /**
+   * Define plugin option settings menu
+   *
+   * @since 2.0.0
+   */
   public function admin_menus() {
     $operating_capability = $this->minimum_capability;
     
@@ -199,9 +255,15 @@ final class CdbtAdmin extends CdbtDB {
       add_action( 'admin_notices', array($this, 'admin_notices') );
     }
   }
-  
+
+
+  /**
+   * Render page after load the page templates using closure
+   *
+   * @since 2.0.0
+   */
   public function admin_page_render() {
-    // render the admin pages defined at admin_menus()
+    // render the admin pages defined at `admin_menus()`
     if (isset($this->query['page']) && !empty($this->query['page'])) {
       
       $template_file_path = sprintf('%s%s.php', $this->admin_template_dir, $this->query['page']);
@@ -209,6 +271,7 @@ final class CdbtAdmin extends CdbtDB {
       if (file_exists($template_file_path)) {
         $this->admin_controller();
         
+        // Deprecated old process
         // require_once( apply_filters( 'include_template-' . $this->query['page'], $template_file_path ) );
         
         $page_render_method = 'render_' . $this->query['page'];
@@ -221,7 +284,13 @@ final class CdbtAdmin extends CdbtDB {
     }
     
   }
-  
+
+
+  /**
+   * Define used assets at admin panel and register
+   *
+   * @since 2.0.0
+   */
   public function admin_assets() {
     // Fire this hook when register CSS and JavaScript to admin panel (on the all admin page)
     if (!array_key_exists('page', $this->query) || !preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
@@ -270,21 +339,38 @@ final class CdbtAdmin extends CdbtDB {
     }
   }
 
+
+  /**
+   * Fire this hook when append into <head> tag on the admin pages for this plugin
+   *
+   * @since 2.0.0
+   */
   public function admin_header() {
-    // Fire this hook when append into <head> tag on the admin pages for this plugin
+    
+    // Currently none
     
   }
 
+
+  /**
+   * Fire this hook when append into <body> tag (just before </body>) on the all admin pages
+   *
+   * @since 2.0.0
+   */
   public function admin_footer() {
-    // Fire this hook when append into <body> tag (just before </body>) on the all admin pages
     if (array_key_exists('page', $this->query) && preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
       printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->version );
     
     printf( "<script>jQuery(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
   }
 
+
+  /**
+   * Fire this hook when call to action of the admin notices (on the all admin pages)
+   *
+   * @since 2.0.0
+   */
   public function admin_notices() {
-    // Fire this hook when call to action of the admin notices (on the all admin pages)
     if (false !== get_transient( CDBT . '-error' )) {
       $messages = get_transient( CDBT . '-error' );
       $classes = 'error';
@@ -305,7 +391,13 @@ final class CdbtAdmin extends CdbtDB {
 <?php
     endif;
   }
-  
+
+
+  /**
+   * Register the notice messages on the admin panel 
+   *
+   * @since 2.0.0
+   */
   private function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
     $code = empty($code) ? CDBT . '-error' : $code;
     if (!$this->errors || $is_init) 
@@ -318,7 +410,13 @@ final class CdbtAdmin extends CdbtDB {
     
     // return $this->errors;
   }
-  
+
+
+  /**
+   * Override some contents at plugins page (`plugins.php`) in the admin panel
+   *
+   * @since 2.0.0
+   */
   public function modify_plugin_action_links( $links, $file ) {
     if (plugin_basename($this->plugin_main_file) !== $file) 
       return $links;
@@ -364,6 +462,8 @@ final class CdbtAdmin extends CdbtDB {
 
   /**
    * Controllers of admin pages for this plugin
+   *
+   * @since 2.0.0
    */
   public function admin_controller() {
     if (empty( $_POST )) 
@@ -394,17 +494,27 @@ final class CdbtAdmin extends CdbtDB {
     $this->admin_notices();
     
   }
-  
+
   /**
    * Worker logic methods
+   * -------------------------------------------------------------------------
    */
-  
-  // Page: cdbt_management_console | Tab: -
+
+  /**
+   * Page: cdbt_management_console | Tab: -
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_management_console() {
     // None at the moment
   }
-  
-  // Page: cdbt_options | Tab: general_setting
+
+
+  /**
+   * Page: cdbt_options | Tab: general_setting
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_options_general_setting() {
     if ( 'update' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
       
@@ -435,23 +545,43 @@ final class CdbtAdmin extends CdbtDB {
     }
     
   }
-  
-  // Page: cdbt_options | Tab: debug
+
+
+  /**
+   * Page: cdbt_options | Tab: debug
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_options_debug() {
     // None at the moment
   }
-  
-  // Page: cdbt_tables | Tab: (any)
+
+
+  /**
+   * Page: cdbt_tables | Tab: (any)
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_tables_tabs() {
     
   }
-  
-  // Page: cdbt_shortcodes | Tab: (any)
+
+
+  /**
+   * Page: cdbt_shortcodes | Tab: (any)
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_shortcodes_tabs() {
     
   }
-  
-  // Page: cdbt_apis | Tab: (any)
+
+
+  /**
+   * Page: cdbt_apis | Tab: (any)
+   *
+   * @since 2.0.0
+   */
   public function do_cdbt_apis_tabs() {
     
   }

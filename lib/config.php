@@ -6,12 +6,23 @@ namespace CustomDataBaseTables\Lib;
 if ( !defined( 'CDBT' ) ) exit;
 
 if ( !class_exists( 'CdbtConfig' ) ) :
-
+/**
+ * Plugin Configurations Class for CustomDataBaseTables
+ * 
+ * @since 2.0.0
+ *
+ * @see CustomDataBaseTables\Lib\CdbtCore
+ */
 class CdbtConfig extends CdbtCore {
 
   var $option_template = array();
 
 
+  /**
+   * Initialize of the plugin options if options does not exist or loaded options
+   *
+   * @since 2.0.0
+   */
   protected function options_init() {
     
     if (empty($this->options)) 
@@ -28,6 +39,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * Define default options for plugin
+   *
+   * @since 2.0.0
    */
   public function set_option_template() {
     $default_timezone = get_option( 'timezone_string', 'UTC' );
@@ -76,6 +89,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * Validate current options
+   *
+   * @since 2.0.0
    */
   public function validate_option_schema() {
     $default_options = $this->set_option_template();
@@ -102,6 +117,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * Check versions of current options
+   *
+   * @since 2.0.0
    */
   public function check_option_version() {
     $not_require_upgrade = true;
@@ -118,6 +135,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * Firstly save options when options was not exists
+   *
+   * @since 2.0.0
    */
   public function initialize_options() {
     $default_options = $this->set_option_template();
@@ -131,6 +150,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * Update the settings while complementing the items that are missing
+   *
+   * @since 2.0.0
    */
   public function upgrade_options() {
     $default_options = $this->set_option_template();
@@ -155,6 +176,8 @@ class CdbtConfig extends CdbtCore {
 
   /**
    * As the getter method for options
+   *
+   * @since 2.0.0
    */
   public function load_options() {
     

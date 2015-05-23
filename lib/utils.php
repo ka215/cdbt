@@ -29,7 +29,7 @@ class CdbtUtility {
   /**
    * Logger for this plugin
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param string $message
    * @param integer $logging_type 0: php system logger, 1: mail to $distination, 3: overwriting file of $distination (default), 4: to SAPI handler
@@ -76,7 +76,7 @@ class CdbtUtility {
   /**
    * Outputting the hook information to the javascript console at the time of each hook call.
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param string $functon callback function name of hook
    * @param string $type 'Action' or 'Filter'
@@ -94,7 +94,7 @@ class CdbtUtility {
   /**
    * Flatten the array or object that has nested
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param mixed $data Array or Object
    * @param boolean $return_array Return an array if `true`, otherwise an object
@@ -115,7 +115,7 @@ class CdbtUtility {
   /**
    * Reference sequence is whether the associative array
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param array $data This variable should be expected array
    * @return boolean

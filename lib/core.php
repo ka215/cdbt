@@ -4,11 +4,11 @@ namespace CustomDataBaseTables\Lib;
 
 if ( !class_exists( 'CdbtCore' ) ) :
 /**
- * Main Plugin Core Class
+ * Main Plugin Core Class for CustomDataBaseTables
  * 
- * @since CustomDataBaseTables v2.0.0
+ * @since 2.0.0
  *
- * @see CustomDataBaseTables\Lib\Utility
+ * @see CustomDataBaseTables\Lib\CdbtUtility
  */
 class CdbtCore extends CdbtUtility {
   
@@ -86,7 +86,11 @@ class CdbtCore extends CdbtUtility {
   }
 */
   
-  
+  /**
+   * Initialize plugin core
+   *
+   * @since 2.0.0
+   */
   protected function core_init() {
     
     // Plugin Name
@@ -118,6 +122,24 @@ class CdbtCore extends CdbtUtility {
   }
   
   
+  /**
+   * Plugin activation and deactivation actions 
+   *
+   * @since 2.0.0
+   */
+  protected function core_actions() {
+    
+    register_activation_hook		( $this->plugin_main_file, array(&$this, 'plugin_activate' ) );
+    register_deactivation_hook	( $this->plugin_main_file, array(&$this, 'plugin_deactivation' ) );
+    
+  }
+  
+  
+  /**
+   * Operating environment check for this plugin
+   *
+   * @since 2.0.0
+   */
   public function check_plugin_notices() {
     
     $php_min_version = '5.4';
@@ -152,6 +174,38 @@ class CdbtCore extends CdbtUtility {
     deactivate_plugins( $this->plugin_main_file );
   }
   
+  
+  /**
+   * Fire an action at the time this plugin has activated.
+   *
+   * since 2.0.0
+   */
+  public function plugin_activate() {
+    if ($this->plugin_enabled) 
+      return;
+    
+    $this->plugin_enabled = true;
+    $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has activated.', CDBT));
+    $this->logger( $message );
+    
+    // as you fun
+  }
+  
+  /**
+   * Fire an action at the time this plugin was deactivation.
+   *
+   * since 2.0.0
+   */
+  public function plugin_deactivation() {
+    if (!$this->plugin_enabled) 
+      return;
+    
+    $this->plugin_enabled = false;
+    $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has been deactivation.', CDBT));
+    $this->logger( $message );
+    
+    // as you fun
+  }
   
   
 }
