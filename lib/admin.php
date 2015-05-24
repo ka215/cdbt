@@ -7,7 +7,7 @@ if ( !defined( 'CDBT' ) ) exit;
 
 if ( !class_exists( 'CdbtAdmin' ) ) :
 
-final class CdbtAdmin extends CdbtDB {
+class CdbtAdmin extends CdbtDB {
 
   /**
    * Member is stored current queries
@@ -20,6 +20,11 @@ final class CdbtAdmin extends CdbtDB {
    * Protected menber for wrapping of wpdb object
    */
   protected $wpdb;
+
+  /**
+   * Menber of current target table name for manageable
+   */
+  //var $target_table;
 
   /**
    * Instance factory method as entry point of plugin.
@@ -92,6 +97,7 @@ final class CdbtAdmin extends CdbtDB {
    *
    * @since 2.0.0
    */
+  use CdbtAjax;
   use DynamicTemplate;
   use CdbtExtras;
 
@@ -130,9 +136,14 @@ final class CdbtAdmin extends CdbtDB {
     
     // Plugin Options Initialize
     $this->options_init();
+    if ($this->options['debug_mode']) 
+      $this->debug = true;
     
     // DataBase Initialize
     $this->db_init();
+    
+    // Ajax Initialize
+    $this->ajax_init();
     
   }
 
@@ -173,18 +184,24 @@ final class CdbtAdmin extends CdbtDB {
    */
   private function includes() {
     
-    // Currently none
+    if (class_exists( $validator_class = __NAMESPACE__ . '\CdbtValidator')) 
+      $this->validate = new $validator_class;
     
   }
 
 
   /**
    * Initialize for inserting plugin option settings into admin panel of wordpress
+   * And initialize sessions
    *
    * @since 2.0.0
    */
   public function admin_initialize() {
+    
     register_setting( 'cdbt_management_console', $this->domain_name );
+    
+    $this->cdbt_sessions = $_SESSION;
+    
   }
 
 
@@ -249,6 +266,7 @@ final class CdbtAdmin extends CdbtDB {
     
     foreach ($menus as $menu) {
       add_action( 'admin_enqueue_scripts', array($this, 'admin_assets'), 99 ); // Note: priority = 99 is after the multibyte-patch plugin.
+      add_action( 'cdbt_admin_localize_script', array($this, 'admin_localize_script') );
       add_action( "admin_head-$menu", array($this, 'admin_header') );
       add_action( "admin_footer-$menu", array($this, 'admin_footer') );
       add_action( 'admin_footer', array($this, 'admin_footer') );
@@ -334,8 +352,25 @@ final class CdbtAdmin extends CdbtDB {
             wp_register_script( $asset_name, $asset_values[0], $asset_values[1], $asset_values[2], $asset_values[3] );
           
           wp_enqueue_script( $asset_name );
+          
         }
+        // Fire after execution of `wp_enqueue_script()`
+        // Action for passing a variable to javascript
+        // 
+        // @since 2.0.0
+        do_action( 'cdbt_admin_localize_script', $asset_data );
+        
       }
+    }
+  }
+
+
+  public function admin_localize_script( $asset_data ) {
+    if ( array_key_exists( 'cdbt-admin-script', $asset_data ) ) {
+      wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', [
+        'is_debug' => $this->debug ? 'true' : 'false', 
+        'ajax_nonce' => wp_create_nonce($this->domain_name . '_' . $this->plugin_ajax_action), 
+      ]);
     }
   }
 
@@ -564,6 +599,35 @@ final class CdbtAdmin extends CdbtDB {
    */
   public function do_cdbt_tables_tabs() {
     
+  }
+
+
+  /**
+   * Page: cdbt_tables | Tab: create_table
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_tables_create_table() {
+    if ( 'create_table' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
+      
+      if (!isset($_POST['_wpnonce'])) {
+        var_dump('error');
+        die();
+      }
+      
+      if (!wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
+        var_dump('nonce error');
+        die();
+      }
+      
+      // Validation params
+      $source_data = $_POST[$this->domain_name];
+      if (!isset($source_data['table_name']) || empty($source_data['table_name'])) 
+        $this->register_admin_notices( CDBT . '-error', __('Table name does not exist.', CDBT), 3, true );
+      
+var_dump($this->validate->checkAlphanumeric( $source_data['table_name'] ));
+      
+    }
   }
 
 

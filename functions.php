@@ -13,11 +13,13 @@ $files = [
   'utils.php',     // Common utility class. Base class, and this class is available at single
   'core.php',     // Plugin core class
   'config.php',   // Configuration class
+  'validate.php', // Validate class for plugin inherited a common validator
   'db.php',        // Database class with wrapping wpdb
+  'ajax.php',      // Trait for using ajax
   'tmpl.php',      // Trait for dynamic rendering templates
   'extras.php',   // Trait for enhancements (for customization)
-  'main.php',     // Entry point class for web frontend
   'admin.php',    // Entry point class for admin panels
+  'main.php',     // Entry point class for web frontend
   'init.php'        // Instance factory & plugin activater
 ];
 foreach ($files as $file) {

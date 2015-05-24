@@ -2,12 +2,19 @@
 
 namespace CustomDataBaseTables\Lib;
 
+
+/**
+ * Trait of custom extensions for this plugin 
+ *
+ * @since 2.0.0
+ *
+ */
 trait CdbtExtras {
 
   /**
    * Filter to attribute of class in the body tag of rendered page
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param mixed $classes It is `String` when "is_admin()" is true; otherwise is `Array`
    * @return mixed $classes
@@ -28,7 +35,7 @@ trait CdbtExtras {
   /**
    * Condition of features during trial
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param string $feature_name
    * @return void
@@ -41,6 +48,10 @@ trait CdbtExtras {
       'localize_timezone', 
       'default_db_engine', 
       'default_per_records', 
+      'auto_add_columns', 
+      'user_permission_view', 
+      'user_permission_entry', 
+      'user_permission_edit', 
     ];
     if (in_array($feature_name, $new_features)) {
       printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );
@@ -50,10 +61,9 @@ trait CdbtExtras {
   /**
    * Create datasource of table list for repeater of fuelux
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param array $data Array of table name
-   * @param 
    * @return array $datasource Array for repeater of fuelux
    */
   public function create_datasorce( $data ) {
@@ -64,21 +74,18 @@ trait CdbtExtras {
       $index = 0;
       $is_assoc = $this->is_assoc($data);
       foreach ($data as $key => $value) {
-        $index++;
         $current_data = $this->array_flatten($this->get_data($value, 'count(*)', 'ARRAY_N'));
-        $datasource[] = [
-          'cdbt_index_id' => $is_assoc ? $index : $key, 
+        $datasource[$index] = [
+          'cdbt_index_id' => $is_assoc ? ($index + 1) : $key, 
           'table_name' => $value, 
           'logical_name' => $is_assoc ? $key : $value, 
           'records' => $current_data[0], 
-          'info' => null, 
-          'table_controls' => null, 
+          'info' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'table_info' ]))) ), // , 'table'=>$value
           'import' => null, 
           'export' => null, 
           'duplicate' => null, 
           'modify' => null, 
           'drop' => null, 
-          'data_controls' => null, 
           'truncate' => null, 
           'view' => null, 
           'entry' => null, 
@@ -90,9 +97,16 @@ trait CdbtExtras {
           'thumbnail_height' => 64, // optional
           'thumbnail_class' => null, // optional
         ];
+        $datasource[$index]['table_controls'] = '<strong>controle</strong>';
         
+        $datasource[$index]['data_controls'] = '<strong>controle</strong>';
+        
+        $index++;
       }
     }
+    
+    // Filter
+    $datasource = apply_filters( 'cdbt_fuelux_tablelist_datasource', $datasource );
     
     return $datasource;
   }
@@ -101,7 +115,7 @@ trait CdbtExtras {
   /**
    * Create scheme of datasource for repeater of fuelux
    *
-   * @since v2.0.0
+   * @since 2.0.0
    *
    * @param array $data Array of table name
    * @param 

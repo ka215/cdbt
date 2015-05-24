@@ -1,4 +1,11 @@
 <?php
+/**
+ * Template : Plugin Option Settings Page
+ * URL: `/wp-admin/admin.php?page=cdbt_options`
+ *
+ * @since 2.0.0
+ *
+ */
 $options = get_option($this->domain_name);
 $tabs = [
   'general_setting' => esc_html__('General Setting', CDBT), 
@@ -11,6 +18,7 @@ if (!$options['debug_mode']) {
   $current_tab = $default_tab;
 }
 
+/*
 $db_charsets = explode(' ', 'big5 dec8 cp850 hp8 koi8r latin1 latin2 swe7 ascii ujis sjis hebrew tis620 euckr koi8u gb2312 greek cp1250 gbk latin5 armscii8 utf8 ucs2 cp866 keybcs2 macce macroman cp852 latin7 cp1251 cp1256 cp1257 binary geostd8 cp932 eucjpms');
 sort($db_charsets);
 
@@ -19,17 +27,14 @@ sort($timezone_identifiers);
 
 $db_engines = explode(' ', 'InnoDB MyISAM');
 sort($db_engines);
-
-/* 暫定処理
-if (!array_key_exists('uninstall_options', $options)) $options['uninstall_options'] = false;
-if (!array_key_exists('resume_options', $options)) $options['resume_options'] = false;
-if (!array_key_exists('enable_core_tables', $options)) $options['enable_core_tables'] = false;
-if (!array_key_exists('debug_mode', $options)) $options['debug_mode'] = false;
-if (!array_key_exists('default_db_engine', $options)) $options['default_db_engine'] = 'InnoDB';
-if (!array_key_exists('default_per_records', $options)) $options['default_per_records'] = 10;
 */
 
 $default_action = 'update';
+
+/**
+ * Render html
+ * ---------------------------------------------------------------------------
+ */
 ?>
 <div class="wrap">
   <h2><?php esc_html_e('CDBT Plugin Options', $this->domain_name); ?></h2>
@@ -134,7 +139,7 @@ $default_action = 'update';
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-              <?php foreach ($db_charsets as $i => $charset) : ?>
+              <?php foreach ($this->db_charsets as $i => $charset) : ?>
                 <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $charset; ?></a></li>
               <?php endforeach; ?>
               </ul>
@@ -151,7 +156,7 @@ $default_action = 'update';
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-              <?php foreach ($timezone_identifiers as $i => $timezone) : ?>
+              <?php foreach ($this->timezone_identifiers as $i => $timezone) : ?>
                 <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $timezone; ?></a></li>
               <?php endforeach; ?>
               </ul>
@@ -171,7 +176,7 @@ $default_action = 'update';
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-              <?php foreach ($db_engines as $i => $db_engine) : ?>
+              <?php foreach ($this->db_engines as $i => $db_engine) : ?>
                 <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $db_engine; ?></a></li>
               <?php endforeach; ?>
               </ul>

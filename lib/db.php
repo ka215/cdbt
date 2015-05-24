@@ -9,10 +9,17 @@ if ( !class_exists( 'CdbtDB' ) ) :
 /**
  * Database operation class for plugins
  *
- * @since CustomDataBaseTables v2.0.0
+ * @since 2.0.0
+ *
+ * @see CustomDataBaseTables\Lib\CdbtConfig
  */
 class CdbtDB extends CdbtConfig {
 
+  /**
+   * Initialize settings of database and tables for this plugin (non-save to database)
+   *
+   * @since 2.0.0
+   */
   protected function db_init() {
     
     // Group of tables that are reserved in wordpress
@@ -35,6 +42,7 @@ class CdbtDB extends CdbtConfig {
   
   /**
    * Methods operate database with wrapping the wpdb
+   * -------------------------------------------------------------------------
    */
   
   /**

@@ -15,7 +15,11 @@
  * 'data' = @array(assoc) is listing data [require]
  */
 
-// Parse options
+/**
+ * Parse options
+ * ---------------------------------------------------------------------------
+ */
+
 // `id` section
 if (isset($this->component_options['id']) && !empty($this->component_options['id'])) {
   $repeater_id = esc_attr__($this->component_options['id']);
@@ -100,6 +104,8 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
 } else {
   $columns = [];
   $numric_properties = [];
+  $custom_columns = [];
+  //$custom_rows = [];
   foreach ($this->component_options['columns'] as $i => $setting) {
     $columns[$i] = [
       'label' => __($setting['label'], CDBT), 
@@ -108,14 +114,22 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
     ];
     if (isset($setting['sortDirection']) && in_array(strtolower($setting['sortDirection']), [ 'asc', 'desc' ])) 
       $columns[$i]['sortDirection'] = $setting['sortDirection'];
-    if (isset($setting['dataNumric']) && true === $setting['dataNumric']) {
-      // $columns[$i]['dataNumric'] = $setting['dataNumric'];
+    
+    if (isset($setting['dataNumric']) && true === $setting['dataNumric']) 
       $numric_properties[] = $columns[$i]['property'];
-    }
+    
     if (isset($setting['className']) && !empty($setting['className'])) 
       $columns[$i]['className'] = $setting['className'];
+    
     if (isset($setting['width']) && intval($setting['width']) > 0) 
       $columns[$i]['width'] = intval($setting['width']);
+    
+    if (isset($setting['customColumnRenderer']) && !empty($setting['customColumnRenderer'])) 
+      $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'];
+    
+//    if (isset($setting['customRowRenderer']) && !empty($setting['customRowRenderer'])) 
+//      $custom_rows[$columns[$i]['property']] = $setting['customRowRenderer'];
+    
   }
 }
 
@@ -127,7 +141,11 @@ if (!isset($this->component_options['data']) || empty($this->component_options['
   $items = $this->component_options['data'];
 }
 
-// Render the Repeater
+
+/**
+ * Render the Repeater
+ * ---------------------------------------------------------------------------
+ */
 ?>
   <div class="repeater" id="<?php echo $repeater_id; ?>">
     <div class="repeater-header">
@@ -293,6 +311,15 @@ var repeater = function() {
         // let's combine name and description into a single column
         customMarkup = '<div style="font-size:12px;">' + rowData.name + '</div><div class="small text-muted">' + rowData.description + '</div>';
         break;
+<?php if (!empty($custom_columns)) :
+  foreach ($custom_columns as $column => $custom_content) :
+?>
+      case '<?php echo $column; ?>':
+        customMarkup = <?php echo $custom_content; ?>;
+        break;
+<?php 
+  endforeach;
+endif; ?>
       default:
         // otherwise, just use the existing text value
         customMarkup = helpers.item.text();

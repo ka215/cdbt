@@ -2,20 +2,35 @@
 
 namespace CustomDataBaseTables\Lib;
 
+
+/**
+ * Trait for creating dynamic any html templates
+ *
+ * @since 2.0.0
+ *
+ */
 trait DynamicTemplate {
   
   private $template_file_path;
   
   private $component_options;
   
-  // For this methods that render each template is dynamically generated as a closure.
+  /**
+   * For this methods that render each template is dynamically generated as a closure.
+   *
+   * @since 2.0.0
+   */
   public function set_template_file_path( $template_file_path ) {
     
     $this->template_file_path = $template_file_path;
     
   }
   
-  
+  /**
+   * Dynamically method for rendering any components in html page
+   *
+   * @since 2.0.0
+   */
   public function component_render( $component_name, $options=null ) {
     $template_file_name = sprintf('cdbt_%s.php', $component_name);
     

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Template : Plugin Option Settings Page
+ * URL: `/wp-admin/admin.php?page=cdbt_options`
+ *
+ * @since 2.0.0
+ *
+ */
+
 $wizard_step = [
   'default' => 1, 
   'current' => isset($_REQUEST['wizard_step']) && !empty($_REQUEST['wizard_step']) && intval($_REQUEST['wizard_step']) > 0 ? intval($_REQUEST['wizard_step']) : 1, 
@@ -10,6 +18,11 @@ $wizard_step = [
     __('Step4', CDBT), 
   ]
 ];
+
+/**
+ * Render html
+ * ---------------------------------------------------------------------------
+ */
 ?>
 <div class="wrap">
   <h2><?php esc_html_e('CDBT Management Console', CDBT); ?></h2>

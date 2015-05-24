@@ -43,6 +43,12 @@ class CdbtCore extends CdbtUtility {
   public $debug = false;
   
   
+  /**
+   * @var array Store the session information for this plugin
+   */
+  protected $cdbt_sessions;
+  
+  
 /*
   public function __call( $name, $args=null ) {
     // For compatible methods with version 1.x
@@ -118,6 +124,8 @@ class CdbtCore extends CdbtUtility {
     // State
     $this->plugin_enabled = false;
     
+    // Ajax Action name
+    $this->plugin_ajax_action = apply_filters( 'cdbt_plugin_ajax_action', 'cdbt_ajax_handler' );
     
   }
   
@@ -129,11 +137,18 @@ class CdbtCore extends CdbtUtility {
    */
   protected function core_actions() {
     
+    add_action( 'init', array($this, 'init_cdbt_sessions') );
+    
     register_activation_hook		( $this->plugin_main_file, array(&$this, 'plugin_activate' ) );
     register_deactivation_hook	( $this->plugin_main_file, array(&$this, 'plugin_deactivation' ) );
     
   }
   
+  
+  protected function init_cdbt_sessions() {
+    if (!session_id()) 
+      session_start();
+  }
   
   /**
    * Operating environment check for this plugin

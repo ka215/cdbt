@@ -14,10 +14,19 @@ if ( !class_exists( 'CdbtConfig' ) ) :
  * @see CustomDataBaseTables\Lib\CdbtCore
  */
 class CdbtConfig extends CdbtCore {
-
+  
   var $option_template = array();
-
-
+  
+  var $db_charsets;
+  
+  var $timezone_identifiers;
+  
+  var $db_engines;
+  
+  var $user_roles;
+  
+  var $user_capabilities;
+  
   /**
    * Initialize of the plugin options if options does not exist or loaded options
    *
@@ -33,6 +42,25 @@ class CdbtConfig extends CdbtCore {
     
     if (!$this->validate_option_schema() || !$this->check_option_version()) 
       $this->upgrade_options();
+    
+    // Define base variables for plugin options
+    $this->db_charsets = explode(' ', 'big5 dec8 cp850 hp8 koi8r latin1 latin2 swe7 ascii ujis sjis hebrew tis620 euckr koi8u gb2312 greek cp1250 gbk latin5 armscii8 utf8 ucs2 cp866 keybcs2 macce macroman cp852 latin7 cp1251 cp1256 cp1257 binary geostd8 cp932 eucjpms');
+    sort($this->db_charsets);
+    
+    $this->timezone_identifiers = \DateTimeZone::listIdentifiers();
+    sort($this->timezone_identifiers);
+    
+    $this->db_engines = [ 'InnoDB', 'MyISAM' ];
+    sort($this->db_engines);
+    
+    $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
+    
+    $this->user_capabilities['subscriber'] = explode(' ', 'read');
+    $this->user_capabilities['contributor'] = array_merge(explode(' ', 'edit_posts delete_posts'), $this->user_capabilities['subscriber']);
+    $this->user_capabilities['author'] = array_merge(explode(' ', 'edit_published_posts upload_files publish_posts delete_published_posts'), $this->user_capabilities['contributor']);
+    $this->user_capabilities['editor'] = array_merge(explode(' ', 'moderate_comments manage_categories manage_links edit_others_posts edit_pages edit_others_pages edit_published_pages publish_pages delete_pages delete_others_pages delete_published_pages delete_others_posts delete_private_posts edit_private_posts read_private_posts delete_private_pages edit_private_pages read_private_pages unfiltered_html'), $this->user_capabilities['author']);
+    $this->user_capabilities['administrator'] = array_merge(explode(' ', 'activate_plugins create_users delete_plugins delete_themes delete_users edit_files edit_plugins edit_theme_options edit_themes edit_users export import install_plugins install_themes list_users manage_options promote_users remove_users switch_themes update_core update_plugins update_themes edit_dashboard'), $this->user_capabilities['editor']);
+    $this->user_capabilities['super_admin'] = array_merge(explode(' ', 'manage_network manage_sites manage_network_users manage_network_plugins manage_network_themes manage_network_options'), $this->user_capabilities['administrator']);
     
   }
 

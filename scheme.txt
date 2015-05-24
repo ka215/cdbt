@@ -1,24 +1,40 @@
+# Custom DataBase Tables システム構造
 
-　　　　　　　　functions.php : ライブラリのオートロード
-　　　　　　　　　　  ↓
-エンドポイント → cdbt.php : プラグインのメインファイル
-                        ↓
-　　　　　　　　CustomDataBaseTables\MainClass\init() : lib/init.php # プラグインの初期化処理。クラスのインスタンス化、グローバル変数へのセット等
-                        ↓
-                  < 管理画面かどうか >
-                        ├→ （YES） CustomDataBaseTables\MainClass\Admin; : lib/admin.php # 管理画面用finalクラス。コンストラクタに実行権限なく、ファクトリメソッドにてインスタンス化する。
-                        └→ （NO）   CustomDataBaseTables\MainClass\Frontend; : lib/main.php # フロントエンド用finalクラス。コンストラクタに実行権限なく、ファクトリメソッドにてインスタンス化する。
-
-※ Admin、Frontend ともに Core クラスの継承クラス
-CustomDataBaseTables\Common\Core; lib/core.php # プラグインのコアクラス。Utilityクラスを継承している。コンストラクタなし（外部から直接インスタンス化できない）
-
-※ Utility クラスはプラグインに依存しない完全な独立クラス
-CustomDataBaseTables\Common\Utility; lib/utils.php # 継承なし。単体でインスタンス化可能。
-
-※ Admin、Frontend ともに trait で必要なライブラリを use する。 use順は
-CustomDataBaseTables\Common\Config; lib/config.php # プラグイン用の設定系trait
-CustomDataBaseTables\Common\DataBase; lib/db.php # プラグイン用のデータベースtrait。内部でwpdbをラップする
-CustomDataBaseTables\Common\Extras; lib/extras.php # 拡張用のtrait
-
-※ 画面表示用のテンプレート群は必要に応じて都度 trait でuseする。
-CustomDataBaseTables\Template\*; templates/*.php
+custom-database-tables/
+│
+├cdbt.php 		<-- プラグインメインファイル（エントリポイント）
+├functions.php 	<-- ライブラリローダー
+││
+│└lib/
+│  ├utils.php		<-- 基底クラス「CdbtUtility」。共用ユーティリティ定義
+│  ├core.php		<-- プラグインコアクラス「CdbtCore」。「CdbtUtility」を継承する
+│  ├config.php	<-- プラグイン設定クラス「CdbtConfig」。「CdbtCore」を継承する
+│  ├validate.php	<-- 各種バリデーションクラス「CdbtValidator」。validate.php内部で「CommonValidator」を継承する独立したクラス
+│  ├db.php		<-- プラグイン用データベース制御クラス「CdbtDB」。「CdbtConfig」を継承する
+│  ├─┬ajax.php	<-- AJAX制御用トレイト
+│  │  ├tmpl.php	<-- テンプレート制御用トレイト。動的テンプレート読み込みクロージャあり
+│  │  ├shortcode.php	<-- ショートコード制御用トレイト。
+│  │  ├webapi.php	<-- WEBAPI制御用トレイト。
+│  │  └extras.php	<-- プラグイン拡張用トレイト
+│  ├admin.php		<-- 管理画面用finalクラス「CdbtAdmin」。「CdbtDB」を継承する
+│  ├main.php		<-- フロントエンド用finalクラス「CdbtFrontend」。「CdbtDB」を継承する
+│  └init.php		<-- インスタンスファクトリ（ディスパッチャ）
+│
+├templates/
+│  │
+│  ├admin/
+│  │  ├cdbt_management_console.php
+│  │  ├cdbt_tables.php
+│  │  ├cdbt_shortcodes.php
+│  │  ├cdbt_apis.php
+│  │  └cdbt_options.php
+│  ├components/
+│  │  ├cdbt_repeater.php
+│  │  ├
+│  │  └
+│  └shortcodes/
+│  　  ├
+│  　  └
+│
+├langs/
+└sources/
