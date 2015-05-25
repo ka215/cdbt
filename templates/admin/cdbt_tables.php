@@ -271,19 +271,19 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
         <div class="col-sm-10">
           <div class="checkbox" id="automatically-add-columns1">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="ID"<?php if (isset($session_vars)) { if (in_array('ID', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="ID"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('ID', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
               <span class="checkbox-label">先頭にプライマリキーの「ID」カラムを追加する（自動採番式のサロゲートキー）</span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns2">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="created"<?php if (isset($session_vars)) { if (in_array('created', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="created"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('created', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>">
               <span class="checkbox-label">データ登録日時を格納する「created」カラムを追加する</span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns3">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="updated"<?php if (isset($session_vars)) { if (in_array('updated', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="updated"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('updated', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
               <span class="checkbox-label">データ更新日時を格納する「updated」カラムを追加する</span>
             </label>
           </div>
@@ -298,8 +298,8 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
               <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab"><?php _e('Table Creator', CDBT); ?></a></li>
             </ul>
             <div class="tab-content">
-              <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="create-table-create_table_sql" name="<?php echo $this->domain_name; ?>[create_table_sql]" class="form-control" rows="10" placeholder="Create Table SQL"><?php if (isset($session_vars)) echo esc_textarea($session_vars[$this->domain_name]['create_table_sql']); ?></textarea></div>
-              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_create_table_sql" class="form-control" rows="10" disabled="disabled"><?php if (isset($session_vars)) echo esc_textarea($session_vars[$this->domain_name]['create_table_sql']); ?></textarea></div>
+              <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="create-table-create_table_sql" name="<?php echo $this->domain_name; ?>[create_table_sql]" class="form-control" rows="10" placeholder="Create Table SQL"><?php if (isset($session_vars)) echo esc_textarea(stripslashes_deep($session_vars[$this->domain_name]['create_table_sql'])); ?></textarea></div>
+              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_create_table_sql" class="form-control" rows="10" disabled="disabled"><?php if (isset($session_vars)) echo esc_textarea(stripslashes_deep($session_vars[$this->domain_name]['create_table_sql'])); ?></textarea></div>
             </div>
             <div class="sql-support-button pull-right">
               <button type="button" id="create-sql-support" class="btn btn-default btn-xs"><?php _e('Make Template', CDBT); /* 設定値から雛形を作る - Make a template from the set value */ ?></button>

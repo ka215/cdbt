@@ -84,10 +84,52 @@ class CdbtDB extends CdbtConfig {
     
     $result = $this->wpdb->get_var($this->wpdb->prepare("SHOW TABLES LIKE %s", $table_name));
     
-    return $table_name == $result;
+    return $table_name === $result;
   }
   
   
+  /**
+   * Create table
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @param string $sql Validated SQL statement for creating new table [require]
+   * @return boolean
+   */
+  function create_table( $table_name=null, $sql=null ) {
+    if (empty($table_name) || empty($sql)) {
+      $message = __('Parameters required for table creation is missing.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
+    // Check whether a table that trying to create does not already exist
+    if ($this->check_table_exists( $table_name )) {
+      $message = __('Can not create a table because the table already exists.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    dbDelta($sql);
+    if (!empty($this->wpdb->last_error) && !$this->check_table_exists($table_name)) {
+      $message = __('Failed to create table.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
+    $this->wpdb->flush();
+    $message = sprintf( __('Created a new table "%s".', CDBT), $table_name );
+    $this->logger( $message );
+    return true;
+    
+  }
+
+
+
+
   /**
    * Get table schema
    *

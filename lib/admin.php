@@ -706,13 +706,22 @@ class CdbtAdmin extends CdbtDB {
       }
       
       // Check SQL statements for creating table
-      $result = $this->validate->validate_create_sql( $source_data['table_name'], $source_data['create_table_sql'], $source_data );
+      $source_data['create_table_sql'] = stripslashes_deep($source_data['create_table_sql']);
+      $result = $this->validate->validate_create_sql( $source_data['table_name'], $source_data['create_table_sql'] );
       if (true !== $result) {
         $this->register_admin_notices( CDBT . '-error', $result, 3, true );
         return;
       }
       
-var_dump('OK!');
+      // Run create table
+      if ($this->create_table( $source_data['table_name'], $source_data['create_table_sql'] )) {
+        $this->register_admin_notices( CDBT . '-notice', sprintf( __('Created a new table "%s".', CDBT), $source_data['table_name'] ), 3, true );
+        $this->destroy_session();
+        return;
+      } else {
+        $this->register_admin_notices( CDBT . '-error', __('Failed to create table.', CDBT), 3, true );
+        return;
+      }
       
     }
   }
