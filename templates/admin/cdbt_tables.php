@@ -181,9 +181,10 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
   
 <?php if ($current_tab == 'create_table') : 
 
-$db_charsets = explode(' ', 'big5 dec8 cp850 hp8 koi8r latin1 latin2 swe7 ascii ujis sjis hebrew tis620 euckr koi8u gb2312 greek cp1250 gbk latin5 armscii8 utf8 ucs2 cp866 keybcs2 macce macroman cp852 latin7 cp1251 cp1256 cp1257 binary geostd8 cp932 eucjpms');
-sort($db_charsets);
-
+if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab])) {
+  $session_vars = $this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab];
+//  var_dump($session_vars);
+}
 
 ?>
   <div class="well-sm">
@@ -208,34 +209,34 @@ sort($db_charsets);
       </div>
       
       <div class="form-group">
-        <label for="create-table-table_name" class="col-sm-2 control-label">テーブル名<h6><span class="label label-danger">require</span></h6></label>
+        <label for="create-table-table_name" class="col-sm-2 control-label"><?php _e('Table Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
         <div class="col-sm-10">
           <div class="input-group col-sm-5" id="create-table-table_name">
             <div class="input-group-addon<?php if ('1' === $options['use_wp_prefix']) : ?> active<?php endif; ?>"><?php echo $this->wpdb->prefix; ?></div>
-            <input id="instance_table_name" name="instance_table_name" type="text" value="" class="form-control" placeholder="Table Name">
-            <input name="<?php echo $this->domain_name; ?>[table_name]" type="hidden" value="" class="sr-only">
+            <input id="instance_table_name" name="instance_table_name" type="text" value="<?php if (isset($session_vars)) echo $session_vars['instance_table_name']; ?>" class="form-control" placeholder="Table Name">
+            <input name="<?php echo $this->domain_name; ?>[table_name]" type="hidden" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['table_name']; ?>" class="sr-only">
           </div>
-          <p id="live_preview" class="help-block col-sm-5"> 設定名プレビュー: <code>tablename</code></p>
+          <p id="live_preview" class="help-block col-sm-10"> <?php _e('Live preview of setting name:', CDBT); ?> <code>tablename</code></p>
           <div class="checkbox" id="instance_prefix_switcher">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="instance_prefix_switcher" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
+              <input class="sr-only" name="instance_prefix_switcher" type="checkbox" value="1" <?php if (isset($session_vars)) { checked('1', intval(isset($session_vars['instance_prefix_switcher']))); } else { checked('1', $options['use_wp_prefix']); } ?>>
               <span class="checkbox-label">WordPressの設定（wp-config.php）で定義されているテーブル接頭辞を使う。</span>
             </label>
           </div>
         </div>
       </div><!-- /create-table-table_name -->
       <div class="form-group">
-        <label for="create-table-table_comment" class="col-sm-2 control-label">テーブルコメント</label>
+        <label for="create-table-table_comment" class="col-sm-2 control-label"><?php _e('Table Comment', CDBT); ?></label>
         <div class="col-sm-5">
-          <input id="create-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="" class="form-control" placeholder="Table Comment">
+          <input id="create-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['table_comment']; ?>" class="form-control" placeholder="Table Comment">
           <p class="help-block">テーブルコメントは論理名として表示名などに使われます。</p>
         </div>
       </div><!-- /create-table-table_comment -->
       <div class="form-group">
-        <label for="create-table-table_charset" class="col-sm-2 control-label">テーブルの文字コード<h6><span class="label label-danger">require</span> <?php $this->during_trial( 'default_charset' ); ?></h6></label>
+        <label for="create-table-table_charset" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?><h6> <?php $this->during_trial( 'default_charset' ); ?></h6></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-table_charset">
-            <input type="text" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php if (isset($session_vars)) { esc_attr_e($session_vars[$this->domain_name]['table_charset']); } else { esc_attr_e($this->charset); } ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -245,13 +246,14 @@ sort($db_charsets);
               </ul>
             </div>
           </div>
+          <p class="help-block">指定しない場合、現在のデータベースの初期値: <code><?php echo $this->db_default_charset; ?></code>が設定されます。</p>
         </div>
       </div><!-- /create-table-table_charset -->
       <div class="form-group">
-        <label for="create-table-table_db_engine" class="col-sm-2 control-label">データベースエンジン<h6><span class="label label-danger">require</span></h6></label>
+        <label for="create-table-table_db_engine" class="col-sm-2 control-label"><?php _e('DB Engine', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-table_db_engine">
-            <input type="text" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php esc_attr_e($options['default_db_engine']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php if (isset($session_vars)) { esc_attr_e($session_vars[$this->domain_name]['table_db_engine']); } else { esc_attr_e($this->db_default_engine); } ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -261,46 +263,50 @@ sort($db_charsets);
               </ul>
             </div>
           </div>
+          <p class="help-block">指定しない場合、現在のデータベースの初期値: <code><?php echo $this->db_default_engine; ?></code>が設定されます。</p>
         </div>
       </div><!-- /create-table-table_db_engine -->
       <div class="form-group">
-        <label for="automatically-add-columns" class="col-sm-2 control-label">自動追加カラム<h6><span class="label label-danger">require</span> <?php $this->during_trial( 'auto_add_columns' ); ?></h6></label>
+        <label for="automatically-add-columns" class="col-sm-2 control-label"><?php _e('Automatically Add Columns', CDBT); ?><h6> <?php $this->during_trial( 'auto_add_columns' ); ?></h6></label>
         <div class="col-sm-10">
           <div class="checkbox" id="automatically-add-columns1">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically-add-columns][]" type="checkbox" value="ID" checked="checked">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="ID"<?php if (isset($session_vars)) { if (in_array('ID', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
               <span class="checkbox-label">先頭にプライマリキーの「ID」カラムを追加する（自動採番式のサロゲートキー）</span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns2">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically-add-columns][]" type="checkbox" value="updated" checked="checked">
-              <span class="checkbox-label">データ更新日時を格納する「updated」カラムを追加する</span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="created"<?php if (isset($session_vars)) { if (in_array('created', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>">
+              <span class="checkbox-label">データ登録日時を格納する「created」カラムを追加する</span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns3">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically-add-columns][]" type="checkbox" value="created" checked="checked">
-              <span class="checkbox-label">データ登録日時を格納する「created」カラムを追加する</span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="updated"<?php if (isset($session_vars)) { if (in_array('updated', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <span class="checkbox-label">データ更新日時を格納する「updated」カラムを追加する</span>
             </label>
           </div>
         </div>
       </div><!-- /create-table-automatically-add-columns -->
       <div class="form-group">
-        <label for="create-table-create_table_sql" class="col-sm-2 control-label">テーブル作成SQL<h6><span class="label label-danger">require</span></h6></label>
+        <label for="create-table-create_table_sql" class="col-sm-2 control-label"><?php _e('Create Table SQL', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
         <div class="col-sm-9">
           <div role="tabpanel">
             <ul class="nav nav-tabs" role="tablist">
-              <li role="presentation" class="active"><a href="#direct_sql" aria-controls="direct_sql" role="tab" data-toggle="tab">Direct Edit SQL</a></li>
-              <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab">Table Creator</a></li>
+              <li role="presentation" class="active"><a href="#direct_sql" aria-controls="direct_sql" role="tab" data-toggle="tab"><?php _e('Direct Edit SQL', CDBT); ?></a></li>
+              <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab"><?php _e('Table Creator', CDBT); ?></a></li>
             </ul>
             <div class="tab-content">
-              <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="create-table-create_table_sql" name="<?php echo $this->domain_name; ?>[create-table-sql]" class="form-control" rows="10" placeholder="Create Table SQL"></textarea></div>
-              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_create_table_sql" class="form-control" rows="10" disabled="disabled"></textarea></div>
+              <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="create-table-create_table_sql" name="<?php echo $this->domain_name; ?>[create_table_sql]" class="form-control" rows="10" placeholder="Create Table SQL"><?php if (isset($session_vars)) echo esc_textarea($session_vars[$this->domain_name]['create_table_sql']); ?></textarea></div>
+              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_create_table_sql" class="form-control" rows="10" disabled="disabled"><?php if (isset($session_vars)) echo esc_textarea($session_vars[$this->domain_name]['create_table_sql']); ?></textarea></div>
+            </div>
+            <div class="sql-support-button pull-right">
+              <button type="button" id="create-sql-support" class="btn btn-default btn-xs"><?php _e('Make Template', CDBT); /* 設定値から雛形を作る - Make a template from the set value */ ?></button>
             </div>
           </div>
           <p class="help-block">
-            SQL文の例: <br>
+            <?php _e('Example of SQL Statements:', CDBT); ?> <br>
             <pre><code>CREATE TABLE prefix_new_table ( `account_name` varchar(64) NOT NULL COMMENT 'アカウント名',  `gender` enum('female','male') DEFAULT NULL COMMENT '性別' )</code></pre>
           </p>
         </div>
@@ -322,7 +328,7 @@ sort($db_charsets);
         <label for="create-table-max_show_records" class="col-sm-2 control-label">最大表示データ数</label>
         <div class="col-sm-10">
           <div class="spinbox disits-3" data-initialize="spinbox" id="create-table-max_show_records">
-            <input type="text" name="<?php echo $this->domain_name; ?>[max_show_records]" value="<?php echo intval($options['default_per_records']); ?>" class="form-control input-mini spinbox-input">
+            <input type="text" name="<?php echo $this->domain_name; ?>[max_show_records]" value="<?php if (isset($session_vars)) { echo intval($session_vars[$this->domain_name]['max_show_records']); } else { echo intval($options['default_per_records']); } ?>" class="form-control input-mini spinbox-input">
             <div class="spinbox-buttons btn-group btn-group-vertical">
               <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
               <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
@@ -335,7 +341,7 @@ sort($db_charsets);
         <label for="create-table-user_permission_view" class="col-sm-2 control-label">テーブルデータ閲覧を許可するユーザー</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_view">
-            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="guest" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="<?php if (isset($session_vars)) { esc_html_e($session_vars[$this->domain_name]['user_permission_view']); } else { echo 'guest'; } ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -352,7 +358,7 @@ sort($db_charsets);
         <label for="create-table-user_permission_entry" class="col-sm-2 control-label">テーブルデータ登録を許可するユーザー</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_entry">
-            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="contributor" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="<?php if (isset($session_vars)) { echo esc_html_e($session_vars[$this->domain_name]['user_permission_entry']); } else { echo 'contributor'; } ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -369,7 +375,7 @@ sort($db_charsets);
         <label for="create-table-user_permission_edit" class="col-sm-2 control-label">テーブルデータ編集を許可するユーザー</label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_edit">
-            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="editor" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="<?php if (isset($session_vars)) { echo esc_html_e($session_vars[$this->domain_name]['user_permission_edit']); } else { echo 'editor'; } ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">

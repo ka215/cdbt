@@ -185,7 +185,7 @@ class CdbtAdmin extends CdbtDB {
   private function includes() {
     
     if (class_exists( $validator_class = __NAMESPACE__ . '\CdbtValidator')) 
-      $this->validate = new $validator_class;
+      $this->validate = $validator_class::instance();
     
   }
 
@@ -201,6 +201,56 @@ class CdbtAdmin extends CdbtDB {
     register_setting( 'cdbt_management_console', $this->domain_name );
     
     $this->cdbt_sessions = $_SESSION;
+    
+  }
+
+
+  /**
+   * For updating a session
+   *
+   * @since 2.0.0
+   *
+   * @param string $session_key [optional] Update all sessions if session key does not specify
+   */
+  public function update_session( $session_key=null ) {
+    
+    if (empty($session_key)) {
+      // global sessions
+      $this->cdbt_sessions = array_merge($this->cdbt_sessions, array_diff($_SESSION, $this->cdbt_sessions));
+    } else {
+      // local page sessions
+      $this->cdbt_sessions[$session_key] = $_SESSION;
+      foreach ($this->cdbt_sessions as $key => $value) {
+        if ($session_key !== $key) 
+          unset($this->cdbt_sessions[$key]);
+      }
+    }
+    $_SESSION = [];
+//    var_dump($this->cdbt_sessions);
+//    var_dump($_SESSION);
+    
+  }
+
+
+  /**
+   * Destroy a session
+   *
+   * @since 2.0.0
+   *
+   * @param string $session_key [optional] Destroy all sessions if session key does not specify
+   */
+  public function destroy_session( $session_key=null ) {
+    
+    if (empty($session_key)) {
+      // global sessions
+      $_SESSION = [];
+      $this->cdbt_sessions = [];
+      session_write_close();
+    } else {
+      // local page sessions
+      unset($_SESSION[$session_key]);
+      unset($this->cdbt_sessions[$_SESSION[$session_key]]);
+    }
     
   }
 
@@ -357,7 +407,6 @@ class CdbtAdmin extends CdbtDB {
         // Fire after execution of `wp_enqueue_script()`
         // Action for passing a variable to javascript
         // 
-        // @since 2.0.0
         do_action( 'cdbt_admin_localize_script', $asset_data );
         
       }
@@ -365,11 +414,17 @@ class CdbtAdmin extends CdbtDB {
   }
 
 
+  /**
+   * Fire after execution of `wp_enqueue_script()` for passing a variable to javascript
+   *
+   * @since 2.0.0
+   */
   public function admin_localize_script( $asset_data ) {
     if ( array_key_exists( 'cdbt-admin-script', $asset_data ) ) {
       wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', [
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_nonce' => wp_create_nonce($this->domain_name . '_' . $this->plugin_ajax_action), 
+//        'get_text' => json_encode([ 'ID' => __('ID', CDBT), 'created' => __('created', CDBT), 'updated' => __('updated', CDBT) ]), 
       ]);
     }
   }
@@ -478,6 +533,11 @@ class CdbtAdmin extends CdbtDB {
     return array_merge($prepend_new_links, $links, $append_new_links);
   }
   
+  /**
+   * Define position inserted plugin menu in admin panel.
+   *
+   * @since 2.0.0
+   */
   private function admin_menu_position( $position='default' ) {
     $defined_position = [
       'top' => 3, // after dashboard
@@ -517,13 +577,17 @@ class CdbtAdmin extends CdbtDB {
       }
       $worker_method = sprintf('do_%s%s', $this->query['page'], $current_tab);
       if (method_exists($this, $worker_method)) {
+        $_SESSION = $_POST;
+        $this->update_session( $worker_method );
         $this->$worker_method();
       } else {
         // invalid access
+        $this->destroy_session( $worker_method );
         $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
       }
     } else {
       // invalid access
+      $this->destroy_session();
       $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
     }
     $this->admin_notices();
@@ -610,22 +674,45 @@ class CdbtAdmin extends CdbtDB {
   public function do_cdbt_tables_create_table() {
     if ( 'create_table' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
       
-      if (!isset($_POST['_wpnonce'])) {
-        var_dump('error');
-        die();
-      }
-      
-      if (!wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
-        var_dump('nonce error');
-        die();
+      if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
+        $this->register_admin_notices( CDBT . '-error', __('Illegal access is.', CDBT), 3, true );
+        return;
       }
       
       // Validation params
       $source_data = $_POST[$this->domain_name];
-      if (!isset($source_data['table_name']) || empty($source_data['table_name'])) 
-        $this->register_admin_notices( CDBT . '-error', __('Table name does not exist.', CDBT), 3, true );
+      $errors = [];
       
-var_dump($this->validate->checkAlphanumeric( $source_data['table_name'] ));
+      // Check the required item is whether it is empty
+      $check_items = [ 'table_name', 'table_charset', 'table_db_engine', 'create_table_sql' ];
+      foreach ($check_items as $item_key) {
+        if (!isset($source_data[$item_key]) || empty($source_data[$item_key])) 
+          $errors[] = sprintf( __('%s does not exist.', CDBT), __($item_key, CDBT) );
+      }
+      if (!empty($errors)) {
+        $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
+        return;
+      }
+      
+      // Check the single byte characters
+      $check_items = [ 'table_name', 'table_charset', 'table_db_engine' ];
+      foreach ($check_items as $item_key) {
+        if (!$this->validate->checkSingleByte( $source_data[$item_key] )) 
+          $errors[] = sprintf(__('Contains characters which cannot be used in %s.', CDBT), __($item_key, CDBT) );
+      }
+      if (!empty($errors)) {
+        $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
+        return;
+      }
+      
+      // Check SQL statements for creating table
+      $result = $this->validate->validate_create_sql( $source_data['table_name'], $source_data['create_table_sql'], $source_data );
+      if (true !== $result) {
+        $this->register_admin_notices( CDBT . '-error', $result, 3, true );
+        return;
+      }
+      
+var_dump('OK!');
       
     }
   }

@@ -19,6 +19,8 @@ class CdbtConfig extends CdbtCore {
   
   var $db_charsets;
   
+  var $db_collations;
+  
   var $timezone_identifiers;
   
   var $db_engines;
@@ -44,14 +46,8 @@ class CdbtConfig extends CdbtCore {
       $this->upgrade_options();
     
     // Define base variables for plugin options
-    $this->db_charsets = explode(' ', 'big5 dec8 cp850 hp8 koi8r latin1 latin2 swe7 ascii ujis sjis hebrew tis620 euckr koi8u gb2312 greek cp1250 gbk latin5 armscii8 utf8 ucs2 cp866 keybcs2 macce macroman cp852 latin7 cp1251 cp1256 cp1257 binary geostd8 cp932 eucjpms');
-    sort($this->db_charsets);
-    
     $this->timezone_identifiers = \DateTimeZone::listIdentifiers();
     sort($this->timezone_identifiers);
-    
-    $this->db_engines = [ 'InnoDB', 'MyISAM' ];
-    sort($this->db_engines);
     
     $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
     

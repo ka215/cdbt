@@ -29,10 +29,31 @@ class CdbtDB extends CdbtConfig {
     $this->core_tables = $this->wpdb->tables('all');
     
     // Database charset
-    $this->charset = $this->charset; // default `utf8` or new `utf8mb4`
+    foreach (@$this->wpdb->get_results('show character set;') as $charset) {
+      $this->db_charsets[] = $charset->Charset;
+      $key = 'Default collation';
+      $this->db_collations[] = $charset->$key;
+    }
     
-    // Database collate
-    $this->collate = $this->collate; // default `utf8_general_ci` or new `utf8mb4_unicode_ci`
+    // Database currently default charset (value of `character_set_database`)
+    $tmp = $this->array_flatten(@$this->wpdb->get_results("show variables like 'character_set_database';", 'ARRAY_A'));
+    $this->db_default_charset = $tmp['Value'];
+    
+    // Currently charset of WordPress
+    $this->charset = $this->wpdb->charset;
+    
+    // Currently default collate of WordPress
+    $this->collate = $this->wpdb->collate;
+    
+    // Database engines
+    foreach (@$this->wpdb->get_results('show engines;') as $engine) {
+      if (in_array(strtolower($engine->Support), [ 'yes', 'default' ])) {
+        $this->db_engines[] = $engine->Engine;
+        // Database currently default engine
+        if ('default' === strtolower($engine->Support)) 
+          $this->db_default_engine = $engine->Engine;
+      }
+    }
     
     // Showing of database errors
     $this->show_errors = true;

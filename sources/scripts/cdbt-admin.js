@@ -30,6 +30,11 @@ $(function() {
   }
   
   /**
+   * 
+   */
+  
+  
+  /**
    * Common display notice handler
    */
   $('#message').show();
@@ -137,6 +142,7 @@ $(function() {
         table_name = $('#create-table-table_name div.input-group-addon').text() + table_name;
       }
       $('#live_preview code').text(table_name);
+      $('input[name="custom-database-tables[table_name]"]').val(table_name);
     };
     $('#instance_table_name').on('change keypress keyup paste', function(){
       livePreview($(this).val());
@@ -155,6 +161,45 @@ $(function() {
       prefixSwitcher( $('#instance_prefix_switcher').checkbox('isChecked') );
     });
     prefixSwitcher( $('#instance_prefix_switcher').checkbox('isChecked') );
+    
+    // Make a template from the set value
+    $('#create-sql-support').on('click', function(){
+      
+      // use underscore.js
+      var sql_template = _.template("CREATE TABLE <%= tableName %> ( <%= columnDefinition %> ) <%= tableOptions %>;");
+      
+      var table_name = '', table_options = [], columns = [], keyindex = [];
+      if ('' !== $('input[name="custom-database-tables[table_name]"]').val()) {
+        table_name = '`' + $('input[name="custom-database-tables[table_name]"]').val() + '`';
+      }
+      
+      if ('' !== $('input[name="custom-database-tables[table_db_engine]"]').val()) {
+        table_options.push( 'ENGINE=' + $('input[name="custom-database-tables[table_db_engine]"]').val() );
+      }
+      if ('' !== $('input[name="custom-database-tables[table_charset]"]').val()) {
+        table_options.push( 'DEFAULT CHARSET=' + $('input[name="custom-database-tables[table_charset]"]').val() );
+      }
+      if ('' !== $('input[name="custom-database-tables[table_comment]"]').val()) {
+        table_options.push( 'COMMENT=\'' + $('input[name="custom-database-tables[table_comment]"]').val() + '\'' );
+      }
+      
+      if ($('#automatically-add-columns1').checkbox('isChecked')) {
+        columns.push( '`ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT \'ID\'' );
+        keyindex.push( 'PRIMARY KEY (`ID`)' );
+        table_options.push( 'AUTO_INCREMENT=1' );
+      }
+      if ($('#automatically-add-columns2').checkbox('isChecked')) {
+        columns.push( '`created` datetime NOT NULL DEFAULT \'0000-00-00 00:00:00\' COMMENT \'Created Datetime\'' );
+      }
+      if ($('#automatically-add-columns3').checkbox('isChecked')) {
+        columns.push( '`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT \'Updated Datetime\'' );
+      }
+      columns = columns.concat(keyindex);
+      
+      $('#create-table-create_table_sql').val( sql_template({ tableName: table_name, columnDefinition: "\n" + columns.join(",\n"), tableOptions: "\n" + table_options.join(' ')  }) );
+      
+    });
+    
     
     
   }

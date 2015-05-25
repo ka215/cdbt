@@ -5,6 +5,7 @@ var changed      = require('gulp-changed'); // srcとdestをチェックして�
 var coffee       = require('gulp-coffee'); // CoffeeScriptのコンパイル
 var coffeelint   = require('gulp-coffeelint'); // CoffeeScriptの構文チェック
 var concat       = require('gulp-concat'); // 複数ファイルを結合する
+var exec        = require('gulp-exec'); // コマンドラインのコマンドを実行する
 var flatten      = require('gulp-flatten'); // ファイルのディレクトリ階層を平坦化する
 var gulp         = require('gulp'); // Gulp本体
 var gulpif       = require('gulp-if'); // 分岐処理用。条件に合致した時にタスクを実行する
@@ -233,6 +234,19 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
+// ### assets/.gitkeepの作成
+// `gulp touch` - コンパイルビルドによって再構築された assets ディレクトリに .gitkeep ファイルを作成する（GitHub管理用）
+gulp.task('touch', function() {
+  var execOptions = {
+    distDir : path.dist,
+    touchFile : '.gitkeep'
+  };
+  var command = 'touch <%= options.distDir %><%= options.touchFile %>';
+  return gulp.src('')
+    .pipe(exec( command, execOptions ))
+    .pipe(exec.reporter());
+});
+
 // ### クリーンアップ
 // `gulp clean` - ビルドフォルダを完全に削除する
 gulp.task('clean', require('del').bind(null, [path.dist]));
@@ -265,6 +279,7 @@ gulp.task('build', function(callback) {
   runSequence('styles',
               'scripts',
               ['fonts', 'images'],
+              'touch',
               callback);
 });
 
