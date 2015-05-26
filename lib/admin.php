@@ -740,7 +740,9 @@ class CdbtAdmin extends CdbtDB {
     
     if ('resume_table' === $_POST['action']) {
       
-      $resume_table_list = array_diff($this->get_table_list( 'unreserved' ), $this->get_table_list( 'enable' ));
+      $enable_tables = !$this->get_table_list( 'enable' ) ? [] : $this->get_table_list( 'enable' );
+      $unreserved_tables = !$this->get_table_list( 'unreserved' ) ? [] : $this->get_table_list( 'unreserved' );
+      $resume_table_list = array_diff($unreserved_tables, $enable_tables);
       
       if (empty($resume_table_list) || !in_array($_POST[$this->domain_name]['resume_table'], $resume_table_list)) {
         $message = __('Incorporatable table does not exist.', CDBT);

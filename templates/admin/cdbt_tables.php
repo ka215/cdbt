@@ -21,8 +21,10 @@ $tabs = [
 $default_tab = 'table_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 
-//var_dump($this->cdbt_sessions);
-//var_dump($options);
+$enable_table = $this->get_table_list( 'enable' );
+$enable_table = !is_array($enable_table) ? [] : $enable_table;
+$unreserved_table = $this->get_table_list( 'unreserved' );
+$unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
 
 /**
  * Render html
@@ -43,7 +45,7 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
   
 <?php if ($current_tab == 'table_list') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Enabled Table List', CDBT); ?></h4>
-  <?php if ( 0 === count($table_list = $this->get_table_list( 'enable' )) ) : ?>
+  <?php if ( 0 === count($enable_table) ) : ?>
     <p>現在、プラグインで管理可能なテーブルはありません。</p>
     <p>テーブルを新規作成する場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>">ここをクリック</a>してください。</p>
     <p>既存のテーブルをプラグインに取り込む場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>#resume-table">ここをクリック</a>してください。</p>
@@ -51,9 +53,9 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
   <form id="" name="" action="" method="post" class="">
     
 <?php
-  $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
+//  $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
   
-  $datasource = $this->create_tablelist_datasorce($table_list);
+  $datasource = $this->create_tablelist_datasorce($enable_table);
 //var_dump($datasource);
   
   $conponent_options = $this->create_scheme_datasource( 'cdbtAdminTables', 0, 20, 'table_list', $datasource );
@@ -327,7 +329,8 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
         </p>
       </div>
       
-    <?php if ( 0 === count($resume_table_list = array_diff($this->get_table_list( 'unreserved' ), $this->get_table_list( 'enable' ))) ) : ?>
+    <?php
+    if ( 0 === count($resume_table_list = array_diff($unreserved_table, $enable_table)) ) : ?>
       
       <div class="form-group">
         <p class="well-sm col-sm-offset-2 col-sm-8">現在、プラグインに取り込めるテーブルはありません。</p>
