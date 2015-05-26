@@ -49,7 +49,15 @@ $wizard_step = [
       if (1 <= $wizard_step['display_max']) : ?>
       <div class="step-pane active sample-pane alert" data-step="1">
         <h4>`CdbtAdmin` Objests</h4>
-        <p><?php var_dump($this); ?></p>
+        <p><?php 
+
+//var_dump($this->add_new_table('wp_a'));
+
+//$this->update_options(); 
+var_dump($this->options);
+
+
+      /* var_dump($this); */ ?></p>
       </div>
 <?php
       endif;
@@ -65,7 +73,7 @@ $wizard_step = [
       if (3 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-danger alert" data-step="3">
         <h4>Design Template</h4>
-        <p>Nori grape silver beet broccoli kombu beet greens fava bean potato quandong celery. Bunya nuts black-eyed pea prairie turnip leek lentil turnip greens parsnip. Sea lettuce lettuce water chestnut eggplant winter purslane fennel azuki bean earthnut pea sierra leone bologi leek soko chicory celtuce parsley jÃ­cama salsify. </p>
+        <p><?php var_dump( $this->get_table_status( 'wp_a' ) ); ?></p>
       </div>
 <?php
       endif;

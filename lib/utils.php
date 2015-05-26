@@ -11,6 +11,11 @@ if ( !class_exists( 'CdbtUtility' ) ) :
  */
 class CdbtUtility {
 
+  /**
+   * Stored the last message at the time of logger method call as a cache
+   */
+  protected $logger_cache;
+
   public function __construct() {
     
     $this->setup_globals();
@@ -39,7 +44,9 @@ class CdbtUtility {
   public function logger( $message='', $logging_type=3, $distination='' ) {
     if ( !defined( 'CDBT' ) ) 
       return;
+    
     $options = get_option( CDBT );
+    $this->logger_cache = $message;
     
     if (!$options['debug_mode']) 
       return;

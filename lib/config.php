@@ -86,14 +86,17 @@ class CdbtConfig extends CdbtCore {
         [
           'table_name' => '', // table name
           'table_type' => 'template', // Whether "regular" or "import" or "core" or "extend"
-          'primay_key' => array(), // add new from ver.2
+          'table_comment' => '', // table comment; add new from ver.2
+          'primary_key' => array(), // add new from ver.2
           'sql' => '', // create table sql
+          'table_charset' => 'utf8', // add new from ver.2
+          'table_collation' => '', // add new from ver.2
           'db_engine' => 'InnoDB', // "InnoDB" or "MyISAM"
           'show_max_records' => 10, // default is 10
           'roles' => [ // For old ver.1.x; Leave for backward compatibility
-            'view_role' => 9, 
-            'input_role' => 9, 
-            'edit_role' => 9, 
+            'view_role' => 0, 
+            'input_role' => 1, 
+            'edit_role' => 4, 
             'admin_role' => 9, 
           ], 
           'permission' => [
@@ -104,7 +107,9 @@ class CdbtConfig extends CdbtCore {
           ], 
         ], 
       ], 
-      'api_key' => array(),
+      'api_key' => [
+        // {host_name} => {api_key}
+      ],
     ];
     
     return $default_options;
@@ -173,7 +178,8 @@ class CdbtConfig extends CdbtCore {
 
 
   /**
-   * Update the settings while complementing the items that are missing
+   * Update the settings while complementing the items that are missing.
+   * Don't use to update normally options. In that case should use the `update_options()`.
    *
    * @since 2.0.0
    */
@@ -208,6 +214,218 @@ class CdbtConfig extends CdbtCore {
     return get_option( $this->domain_name );
     
   }
+
+
+  /**
+   * Get any table setting information from the plugin option
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [optional] All the table information is subject if not specified
+   * @return mixed Normally is array; False is if can not get 
+   */
+  public function get_table_option( $table_name=null ) {
+    static $message = '';
+    static $result;
+    
+    if (empty($this->options['tables'])) {
+      $message = __('Table settings in plugin option is empty.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
+    foreach ($this->options['tables'] as $table) {
+      if (empty($table_name)) {
+        $result[$table['table_name']] = $table;
+      } else {
+        if ($table['table_name'] == $table_name) {
+          $result = $table;
+          break;
+        }
+      }
+    }
+    
+    return empty($result) ? false : $result;
+    
+  }
+
+
+  /**
+   * For updating currently option settings
+   *
+   * @since 2.0.0
+   *
+   * @param mixed $new_data [require] Array or string of updates data
+   * @param string $action [require] The `override` (default) is newly added if the same item does not exist, or `delete` is required $option_key.
+   * @param string $option_key [optional] Target option key name for updating, and an update for the entire array of options in the case of null
+   * @return boolean True if the update success, otherwise false
+   */
+  public function update_options( $new_data=[], $action='override', $option_key=null ) {
+    static $message = '';
+    static $prev_options;
+    static $new_options;
+    
+    if (empty($new_data)) 
+      $message = sprintf( __('New options is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (empty($action) || !in_array($action, [ 'override', 'add', 'delete' ])) 
+      $message = sprintf( __('Illegal action is specified to the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!empty($message)) {
+      $this->logger( $message );
+      return false;
+    }
+    
+    $prev_options = $this->options;
+    
+    if (empty($option_key)) {
+      if ( empty(array_diff(array_keys($prev_options), array_keys($new_data))) ) {
+        $new_options = $new_data;
+        if (!update_option( $this->domain_name, $new_options )) 
+        	$mesage = __('Failed to save the option.', CDBT);
+      } else {
+        $message = __('Options format is invalid.', CDBT);
+      }
+    } else {
+      if (!array_key_exists($option_key, $prev_options)) 
+        $message = __('Specified option key does not exist in option settings.', CDBT);
+      
+      $new_options = $prev_options;
+      if (is_array($new_options[$option_key])) {
+        $executed = false;
+        if ('tables' === $option_key) {
+          if ('override' === $action) {
+            foreach($new_options[$option_key] as $i => $table) {
+              if ($table['table_name'] === $new_data['table_name']) {
+                // Override data
+                $new_options[$option_key][$i] = $new_data;
+                $executed = true;
+                break;
+              }
+            }
+            if (!$executed) {
+              // Add new data
+              $new_options[$option_key][] = $new_data;
+              $executed = true;
+            }
+          }
+          if ('delete' === $action) {
+            foreach($new_options[$option_key] as $i => $table) {
+              if ($table['table_name'] === $new_data['table_name']) {
+                // Delete data
+                unset($new_options[$option_key][$i]);
+                $executed = true;
+                break;
+              }
+            }
+            if (!$executed) 
+              $message = __('Table settings for removing does not exist.', CDBT);
+          }
+        }
+        if ('api_key' === $option_key) {
+          if ('override' === $action) {
+            // Override or add data
+            array_merge($new_options[$option_key], $new_data);
+            $executed = true;
+          }
+          if ('delete' === $action) {
+            if (array_key_exists(key($new_data), $new_options[$option_key])) {
+              // Delete data
+              unset($new_options[$option_key][key($new_data)]);
+              $executed = true;
+            } else {
+              $message = __('Api key settings for removing does not exist.', CDBT);
+            }
+          }
+        }
+      } else {
+        if ('override' === $action) {
+          $new_options[$option_key] = $new_data;
+          $executed = true;
+        }
+        if ('delete' === $action) {
+        	$new_options[$option_key] = null;
+        	$executed = true;
+        }
+      }
+      if ($executed) {
+        if (!update_option( $this->domain_name, $new_options )) 
+        	$mesage = __('Failed to save the option.', CDBT);
+      } else {
+        $mesage = __('Update process of setting did not take place.', CDBT);
+      }
+    }
+    
+    if (!empty($message)) {
+      $this->logger( $message );
+      return false;
+    } else {
+      return true;
+    }
+    
+  }
+
+
+  /**
+   * Add table to option settings and save
+   *
+   * @since 2.0.0
+   *
+   * @param array $table_name [require]
+   * @param string $table_type [require] `regular` (default) or `import` or `core` or `extend`
+   * @param array $table_options [optional] For example is like specified values when create table
+   * @return boolean True if the update success, otherwise false
+   */
+  function add_new_table( $table_name=null, $table_type='regular', $table_options=null ) {
+    static $message = '';
+    
+    $primary_keys = [];
+    foreach ($this->get_table_schema($table_name) as $column => $scheme) {
+      if ($scheme['primary_key']) 
+        $primary_keys[] = $column;
+    }
+    $table_status = $this->get_table_status( $table_name );
+    $table_charset = $this->db_default_charset;
+    $show_max_records = $this->options['default_per_records'];
+    $user_permission_view = 'guest';
+    $user_permission_entry = 'contributor';
+    $user_permission_edit = 'editor';
+    if (!empty($table_options)) {
+      $table_charset = array_key_exists('table_charset', $table_options) ? $table_options['table_charset'] : $table_charset;
+      $show_max_records = array_key_exists('show_max_records', $table_options) ? $table_options['show_max_records'] : $show_max_records;
+      $user_permission_view = array_key_exists('user_permission_view', $table_options) ? $table_options['user_permission_view'] : $user_permission_view;
+      $user_permission_entry = array_key_exists('user_permission_entry', $table_options) ? $table_options['user_permission_entry'] : $user_permission_view;
+      $user_permission_edit = array_key_exists('user_permission_edit', $table_options) ? $table_options['user_permission_edit'] : $user_permission_view;
+    }
+    
+    $new_table = [
+      'table_name' => $table_status['Name'], 
+      'table_type' => $table_type, 
+      'table_comment' => $table_status['Comment'], 
+      'primary_key' => $primary_keys, 
+      'sql' => $this->get_create_table_sql($table_name), 
+      'table_charset' => $table_charset,
+      'table_collation' => $table_status['Collation'], 
+      'db_engine' => $table_status['Engine'], 
+      'show_max_records' => $show_max_records, 
+      'roles' => [
+        'view_role' => 0, 
+        'input_role' => 1, 
+        'edit_role' => 4, 
+        'admin_role' => 9, 
+      ], 
+      'permission' => [
+        'view_global' => [ $user_permission_view ], 
+        'entry_global' => [ $user_permission_entry ], 
+        'edit_global' => [ $user_permission_edit ], 
+      ], 
+      'entry_scheme' => [], 
+    ];
+    
+    return $this->update_options( $new_table, 'override', 'tables' );
+    
+  }
+  
   
   
 }

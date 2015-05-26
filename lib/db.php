@@ -89,29 +89,41 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
-   * Create table
+   * Create table on the database
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
    *
-   * @param string $table_name [require]
+   * @param mixed $table_data [require] Array's deprecated, but allows for compatible with version 1.x
    * @param string $sql Validated SQL statement for creating new table [require]
    * @return boolean
    */
-  function create_table( $table_name=null, $sql=null ) {
-    if (empty($table_name) || empty($sql)) {
-      $message = __('Parameters required for table creation is missing.', CDBT);
-      $this->logger( $message );
-      return false;
+  function create_table( $table_data=null, $sql=null ) {
+    static $message = '';
+    
+    if (is_array($table_data)) {
+      $table_name = isset($table_data['table_name']) ? $table_data['table_name'] : null;
+      $sql = isset($table_data['sql']) ? $table_data['sql'] : $sql;
+    } else {
+      $table_name = $table_data;
     }
+    
+    if (empty($table_name)) 
+      $message = sprintf( __('Table name does not exist at the time of "%s" call.', CDBT), __FUNCTION );
+    
+    if (empty($sql)) 
+      $message = sprintf( __('SQL to create table does not exist at the time of "%s" call.', CDBT), __FUNCTION );
     
     // Check whether a table that trying to create does not already exist
-    if ($this->check_table_exists( $table_name )) {
+    if ($this->check_table_exists( $table_name )) 
       $message = __('Can not create a table because the table already exists.', CDBT);
+    
+    if (!empty($message)) {
       $this->logger( $message );
       return false;
     }
     
+    // Table creation process
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta($sql);
     if (!empty($this->wpdb->last_error) && !$this->check_table_exists($table_name)) {
@@ -126,12 +138,10 @@ class CdbtDB extends CdbtConfig {
     return true;
     
   }
-
-
-
-
+  
+  
   /**
-   * Get table schema
+   * Get table schema from database
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
@@ -213,6 +223,111 @@ class CdbtDB extends CdbtConfig {
     return $table_schema;
     
   }
+  
+  
+  /**
+   * Get a SQL statement to create table
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @return mixed SQL statement strings if got that, otherwise false
+   */
+  function get_create_table_sql( $table_name=null ) {
+    static $message = '';
+    
+    if (empty($table_name)) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $this->logger( $message );
+      return false;
+    }
+    
+    if ($this->check_table_exists($table_name)) {
+      $result = $this->array_flatten($this->wpdb->get_results( sprintf( 'SHOW CREATE TABLE `%s`;', esc_sql($table_name) ), ARRAY_A));
+      if (isset($result['Create Table'])) 
+        return $result['Create Table'];
+    }
+    
+    $message = __('Getting a SQL statement to create table has failed.', CDBT);
+    $this->logger( $message );
+    return false;
+    
+  }
+  
+  
+  /**
+   * Get table comment
+   * This method became the wrapper of new method `get_table_status()`.
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Deprecated
+   *
+   * @param string $table_name [require]
+   * @return mixed Table comment string if could get that, otherwise false
+   */
+  function get_table_comment( $table_name=null ) {
+    
+    return $this->get_table_status( $table_name, 'Comment' );
+    
+  }
+
+
+  /**
+   * Get table status
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param mixed $state_name [optional] Array of some table state name, or string of single state name
+   * @return mixed Array of table status if could get that, or string of single state, otherwise false
+   */
+  function get_table_status( $table_name=null, $state_name=null ) {
+    static $message = '';
+    
+    if (empty($table_name)) 
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!$this->check_table_exists($table_name)) 
+      $message = __('Specified table does not exist.', CDBT);
+    
+    $result = $this->array_flatten($this->wpdb->get_results( $this->wpdb->prepare( 'SHOW TABLE STATUS LIKE %s;', esc_sql($table_name) ), ARRAY_A ));
+    if (!is_array($result) || empty($result) || empty(array_values($result))) 
+      $message = __('Table status does not exist.', CDBT);
+    
+    if (!empty($message)) {
+      $this->logger( $message );
+      return false;
+    }
+    
+    if (empty($state_name)) 
+      return $result;
+    
+    if (is_array($state_name)) {
+      $custom_result = [];
+      foreach ($state_name as $state) {
+        if (array_key_exists($state, $result)) 
+          $custom_result[$state] = $result[$state];
+      }
+      if (!empty($custom_result)) 
+        return  $custom_result;
+    }
+    
+    if (is_string($state_name)) {
+      $custom_result = false;
+      if (array_key_exists($state_name, $result)) 
+        $custom_result = $result[$state_name];
+      if (false !== $custom_result) 
+        return $custom_result;
+    }
+    
+    $message = __('Specified table state name does not exist.', CDBT);
+    $this->logger( $message );
+    return false;
+    
+  }
+  
+  
   
   
   

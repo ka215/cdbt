@@ -733,33 +733,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function create_table($table_data) {
-		global $wpdb;
-		if (!empty($table_data['table_name'])) {
-			$table_name =  $table_data['table_name'];
-		} else {
-			preg_match('/^create\stable\s(|`)(.*)(|`)\s\(.*/iU', $table_data['sql'], $matches);
-			$table_name = trim($matches[2]);
-		}
-		if (!$this->check_table_exists($table_name)) {
-			// if not exists table, create table.
-			//$create_sql = $wpdb->prepare($table_data['sql'], $table_data['db_engine'], $this->options['charset']);
-			$create_sql = $table_data['sql'];
-			if (isset($create_sql) && !empty($create_sql)) {
-				require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-				dbDelta($create_sql);
-				if (!empty($wpdb->last_error) && !$this->check_table_exists($table_name)) {
-					$result = array(false, __('Failed to create table.', self::DOMAIN));
-				} else {
-					$result = array(true, __('New table was created.', self::DOMAIN));
-					$wpdb->flush();
-				}
-			} else {
-				$result = array(false, __('Create table sql is none.', self::DOMAIN));
-			}
-		} else {
-			$result = array(false, __('This table is already created.', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**
@@ -776,22 +749,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function get_table_comment($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		if ($this->check_table_exists($table_name)) {
-			$sql = $wpdb->prepare("SHOW TABLE STATUS LIKE %s", $table_name);
-			foreach ($wpdb->get_results($sql) as $data) {
-				if (!empty($data->Comment)) {
-					$result = array(true, $data->Comment);
-					break;
-				} else {
-					$result = array(false, __('Table comment is none', self::DOMAIN));
-				}
-			}
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**
@@ -800,22 +757,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function get_create_table_sql($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		if ($this->check_table_exists($table_name)) {
-			$sql = "SHOW CREATE TABLE `". $table_name ."`";
-			$temp = $wpdb->get_results($sql);
-			$temp = array_shift($temp);
-			foreach ($temp as $key => $data) {
-				if ($key == 'Create Table') {
-					$result = array(true, $data);
-					break;
-				}
-			}
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**

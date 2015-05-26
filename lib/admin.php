@@ -465,7 +465,7 @@ class CdbtAdmin extends CdbtDB {
       $messages = get_transient( CDBT . '-error' );
       $classes = 'error';
     } elseif (false !== get_transient( CDBT . '-notice' )) {
-      $messages = get_transient( CDBT . 'notice' );
+      $messages = get_transient( CDBT . '-notice' );
       $classes = 'updated';
     }
     
@@ -636,7 +636,7 @@ class CdbtAdmin extends CdbtDB {
       
       $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
       
-      update_option( $this->domain_name, $updated_options );
+      $this->update_options( $updated_options );
       
       $this->register_admin_notices( CDBT . '-notice', __('Plugin options saved.', CDBT), 3, true );
     } else {
@@ -672,13 +672,21 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_tables_create_table() {
-    if ( 'create_table' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
-      
-      if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
-        $this->register_admin_notices( CDBT . '-error', __('Illegal access is.', CDBT), 3, true );
-        return;
-      }
-      
+    static $message = '';
+    
+    if (!in_array($_POST['action'], [ 'create_table', 'resume_table' ]) || empty($_POST[$this->domain_name]) ) {
+      $message = __('Illegal access is.', CDBT);
+    } else
+    if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
+      $message = __('You do not have access privileges on this page.', CDBT);
+    }
+    
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
+    
+    if ('create_table' === $_POST['action']) {
       // Validation params
       $source_data = $_POST[$this->domain_name];
       $errors = [];
@@ -714,16 +722,55 @@ class CdbtAdmin extends CdbtDB {
       }
       
       // Run create table
-      if ($this->create_table( $source_data['table_name'], $source_data['create_table_sql'] )) {
-        $this->register_admin_notices( CDBT . '-notice', sprintf( __('Created a new table "%s".', CDBT), $source_data['table_name'] ), 3, true );
-        $this->destroy_session();
-        return;
+      $is_created = $this->create_table( $source_data['table_name'], $source_data['create_table_sql'] );
+      if ($is_created) {
+        if ($this->add_new_table( $source_data['table_name'], 'regular', $source_data )) {
+          $notice_class = CDBT . '-notice';
+          $this->destroy_session();
+        } else {
+          $notice_class = CDBT . '-error';
+        }
       } else {
-        $this->register_admin_notices( CDBT . '-error', __('Failed to create table.', CDBT), 3, true );
+        $notice_class = CDBT . '-error';
+      }
+      $this->register_admin_notices( $notice_class, $this->logger_cache, 3, true );
+      return;
+      
+    }
+    
+    if ('resume_table' === $_POST['action']) {
+      
+      $resume_table_list = array_diff($this->get_table_list( 'unreserved' ), $this->get_table_list( 'enable' ));
+      
+      if (empty($resume_table_list) || !in_array($_POST[$this->domain_name]['resume_table'], $resume_table_list)) {
+        $message = __('Incorporatable table does not exist.', CDBT);
+        $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+        $this->destroy_session();
         return;
       }
       
+      $resume_table_name = $_POST[$this->domain_name]['resume_table'];
+      $resume_table_options = [];
+      //
+      // Filter the sub-option of the table to resume
+      //
+      $resume_table_options = apply_filters( 'cdbt_resume_table_options', $resume_table_options, $resume_table_name );
+      
+      if ($this->add_new_table( $resume_table_name, 'regular', $resume_table_options )) {
+        $message = __( 'Table incorporation has been completed successfully.', CDBT );
+        $notice_class = CDBT . '-notice';
+      } else {
+        $message = __( 'Failed the table incorporation.', CDBT );
+        $notice_class = CDBT . '-error';
+      }
+      
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      $this->logger( $message );
+      $this->destroy_session();
+      return;
+      
     }
+    
   }
 
 
