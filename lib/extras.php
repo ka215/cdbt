@@ -160,9 +160,9 @@ trait CdbtExtras {
       if ('table_list' === $columns) {
         // For customColumnRenderer() in the repeater script
         $custom_column_content = "'<div><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-cog\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-sliders\"></i></a>";
         $custom_column_content .= "</div><div class=\"btn-group operate-data-btn-group\" role=\"group\" aria-label=\"operateDataButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-list-alt\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-eye\"></i></a>";
         $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"entry\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Entry Data', CDBT) ."\"><span class=\"sr-only\">". __('Entry Data', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
         $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Edit Data', CDBT) ."\"><span class=\"sr-only\">". __('Edit Data', CDBT) ."</span><i class=\"fa fa-pencil-square-o\"></i></a>";
         $custom_column_content .= "</div></div>'";
@@ -177,7 +177,7 @@ trait CdbtExtras {
             'sortable' => true, 
             'sortDirection' => 'asc', 
             'className' => null, 
-            'width' => 200, 
+            'width' => 240, 
             'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\">'+rowData.table_name+'</a></div><div class=\"small text-muted cdbt-repeater-left-sub\">'+rowData.logical_name+'</div>'"
           ], 
           [ 'label' => __('Records', CDBT), 

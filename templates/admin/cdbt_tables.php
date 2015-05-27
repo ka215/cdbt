@@ -14,9 +14,6 @@ $tabs = [
   'modify_table' => esc_html__('Modify Table', CDBT), 
   'operate_table' => esc_html__('Operate Table', CDBT), 
   'operate_data' => esc_html__('Operate Data', CDBT), 
-//  'view_data' => esc_html__('View Data', CDBT), 
-//  'entry_data' => esc_html__('Entry Data', CDBT), 
-//  'edit_data' => esc_html__('Edit Data', CDBT), 
 ];
 $default_tab = 'table_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
@@ -25,6 +22,9 @@ $enable_table = $this->get_table_list( 'enable' );
 $enable_table = !is_array($enable_table) ? [] : $enable_table;
 $unreserved_table = $this->get_table_list( 'unreserved' );
 $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
+
+$selectable_table = $options['enable_core_tables'] ? array_merge($enable_table, $this->core_tables) : $enable_table;
+sort($selectable_table);
 
 /**
  * Render html
@@ -50,14 +50,10 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
     <p>テーブルを新規作成する場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>">ここをクリック</a>してください。</p>
     <p>既存のテーブルをプラグインに取り込む場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>#resume-table">ここをクリック</a>してください。</p>
   <?php else : ?>
-  <form id="" name="" action="" method="post" class="">
     
 <?php
-//  $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
   
   $datasource = $this->create_tablelist_datasorce($enable_table);
-//var_dump($datasource);
-//  $reject_columns = [ 'avg_row_length', 'data_length', 'create_time' ];
   
   $conponent_options = $this->create_scheme_datasource( 'cdbtAdminTables', 0, 20, 'table_list', $datasource );
   
@@ -65,13 +61,11 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
   
 ?>
     
-  </form>
   <?php endif; ?>
 <?php endif; ?>
   
 <?php if ($current_tab == 'wp_core_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4>
-  <form id="cdbt-call-ajax">
     
 <?php
   $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
@@ -83,8 +77,6 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
 ?>
     
-    <input type="hidden" name="cdbt_ajax_url" value="<?php echo $ajax_url; ?>">
-  </form>
 <?php endif; ?>
   
 <?php if ($current_tab == 'create_table') : 
@@ -379,10 +371,71 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
 <?php endif; ?>
   
 <?php if ($current_tab == 'operate_table') : ?>
-  <h4 class="tab-annotation"><?php esc_html_e('Operate Table', CDBT); ?></h4>
-    
-    <?php var_dump( $this->cdbt_sessions[$current_tab] ); ?>
-    
+  
+<?php
+  
+  $default_action = '';
+  $target_table = '';
+  if (isset($this->cdbt_sessions[$current_tab]) && !empty($this->cdbt_sessions[$current_tab])) {
+    if (array_key_exists('default_action', $this->cdbt_sessions[$current_tab])) 
+      $default_action = $this->cdbt_sessions[$current_tab]['default_action'];
+    if (array_key_exists('target_table', $this->cdbt_sessions[$current_tab])) 
+      $target_table = $this->cdbt_sessions[$current_tab]['target_table'];
+  }
+//var_dump( $this->cdbt_sessions[$current_tab] );
+  
+?>
+  
+  <nav class="navbar navbar-default" style="margin-top: 1em;">
+    <div class="container-fluid">
+      <form id="operate-table-selector" class="navbar-form navbar-left">
+        <div class="form-group">
+          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="operate-table-target_table">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+              <span class="selected-label"></span>
+              <span class="caret"></span>
+              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+            <?php foreach ($selectable_table as $table) : ?>
+              <li data-value="<?php echo $table; ?>"<?php if ($target_table === $table) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $table; ?></a></li>
+            <?php endforeach; ?>
+            </ul>
+            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[operate_target_table]" readonly="readonly" aria-hidden="true" type="text"/>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-default">操作テーブルを変更</button>
+      </form>
+      <form id="operate-table-actions" class="navbar-form navbar-right">
+        <button type="button" class="btn btn-default<?php if ('detail' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-detail" title="詳細表示"><span class="sr-only">詳細表示</span><i class="fa fa-list-alt"></i></button>
+        <button type="button" class="btn btn-default<?php if ('import' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-import" title="インポート"><span class="sr-only">インポート</span><i class="fa fa-upload"></i></button>
+        <button type="button" class="btn btn-default<?php if ('export' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-export" title="エクスポート"><span class="sr-only">エクスポート</span><i class="fa fa-download"></i></button>
+        <button type="button" class="btn btn-default<?php if ('duplicate' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-duplicate" title="テーブル複製"><span class="sr-only">テーブル複製</span><i class="fa fa-files-o"></i></button>
+        <button type="button" class="btn btn-default<?php if ('truncate' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-truncate" title="データ初期化"><span class="sr-only">データ初期化</span><i class="fa fa-history"></i></button>
+        <button type="button" class="btn btn-default<?php if ('modify' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-modify" title="テーブル編集"><span class="sr-only">テーブル編集</span><i class="fa fa-wrench"></i></button>
+        <button type="button" class="btn btn-default<?php if ('backup' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-backup" title="バックアップ" disabled="disabled"><span class="sr-only">バックアップ</span><i class="fa fa-archive"></i></button>
+        <button type="button" class="btn btn-default<?php if ('drop' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-drop" title="テーブル削除"><span class="sr-only">テーブル削除</span><i class="fa fa-trash-o"></i></button>
+      </form>
+    </div>
+  </nav>
+  
+<?php if (empty($default_action)) : ?>
+  
+  <div class="well-sm">
+    <p class="text-info">
+      このセクションでは指定のテーブルに対して様々な操作を行うことができます。実行したい操作ボタンを押してください。
+    </p>
+  </div>
+  
+<?php endif; ?>
+  
+<?php if ('detail' === $default_action) : ?>
+  
+  テーブルスキーマ情報を表示
+  
+<?php endif; ?>
+  
+  
 <?php endif; ?>
   
 <?php if ($current_tab == 'operate_data') : ?>
