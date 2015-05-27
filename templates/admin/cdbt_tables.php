@@ -57,6 +57,7 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
   
   $datasource = $this->create_tablelist_datasorce($enable_table);
 //var_dump($datasource);
+//  $reject_columns = [ 'avg_row_length', 'data_length', 'create_time' ];
   
   $conponent_options = $this->create_scheme_datasource( 'cdbtAdminTables', 0, 20, 'table_list', $datasource );
   
@@ -77,7 +78,7 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
 
   $datasource = $this->create_tablelist_datasorce($this->core_tables); // by trait `CdbtExtras`
 
-  $conponent_options = $this->create_scheme_datasource( 'cdbtWpCoreTables', 0, 20, 'table_list', $datasource );
+  $conponent_options = $this->create_scheme_datasource( 'cdbtWpCoreTables', 0, 20, 'table_list', $datasource, [ 'avg_row_length', 'data_length', 'create_time' ] );
 
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
 ?>
@@ -373,15 +374,22 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
 <?php if ($current_tab == 'modify_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Modify Table', CDBT); ?></h4>
     
+    <?php if ( !isset($this->cdbt_sessions[$current_tab]) ) { $this->destroy_session(); } ?>
     
 <?php endif; ?>
   
 <?php if ($current_tab == 'operate_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Operate Table', CDBT); ?></h4>
     
-    <?php var_dump( $this->cdbt_sessions ); ?>
+    <?php var_dump( $this->cdbt_sessions[$current_tab] ); ?>
     
 <?php endif; ?>
   
+<?php if ($current_tab == 'operate_data') : ?>
+  <h4 class="tab-annotation"><?php esc_html_e('Operate Data', CDBT); ?></h4>
     
+    <?php var_dump( $this->cdbt_sessions[$current_tab] ); ?>
+    
+<?php endif; ?>
+  
 </div><!-- /.wrap -->

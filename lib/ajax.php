@@ -13,6 +13,7 @@ trait CdbtAjax {
 
   /**
    * Define action hooks of Ajax call
+   * cf. $plugin_ajax_action is `cdbt_ajax_handler`
    *
    * @since 2.0.0
    **/
@@ -40,6 +41,7 @@ trait CdbtAjax {
 
   /**
    * Method of the handling of Ajax call
+   * 
    *
    * @since 2.0.0
    **/
@@ -86,20 +88,42 @@ trait CdbtAjax {
    * -------------------------------------------------------------------------
   
   /**
-   *
+   * Set the session before the callback processing as a URL redirection
    *
    * @since 2.0.0
+   *
+   * @param array $args [require] Array of data for setting to session
+   * @return string $callback Like a javascript function
    */
-  public function ajax_event_update_target_table( $args ) {
+  public function ajax_event_setup_session( $args ) {
     
-var_dump($args['target_table']);
-    if (isset($args['target_table'])) 
-      $_SESSION['target_table'] = $args['target_table'];
-    
-    if (isset($args['callback_url'])) 
-      die( sprintf(";;location.href = '%s';", $args['callback_url']) );
+    if (isset($args) && !empty($args)) {
+      if (isset($args['session_key']) && !empty($args['session_key'])) {
+        $session_key = $args['session_key'];
+        unset($args['session_key']);
+        
+        $this->destroy_session( $session_key );
+        
+        foreach ($args as $key => $value) {
+        	if (in_array($key, [ 'action', 'event', '_wpnonce' ])) {
+        	  continue;
+        	}
+        	
+          if ('callback_url' === $key) {
+            $callback = sprintf( "location.href = '%s';", $value );
+          }
+          
+          $_SESSION[$session_key][$key] = $value;
+        }
+        
+        if (isset($callback)) 
+          die( $callback );
+        
+      }
+    }
     
     $this->ajax_error();
+    
   }
 
 

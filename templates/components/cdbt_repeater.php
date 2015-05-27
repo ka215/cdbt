@@ -108,7 +108,7 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
   //$custom_rows = [];
   foreach ($this->component_options['columns'] as $i => $setting) {
     $columns[$i] = [
-      'label' => __($setting['label'], CDBT), 
+      'label' => $setting['label'], 
       'property' => $setting['property'], 
       'sortable' => isset($setting['sortable']) && $setting['sortable'] ? true : false,
     ];
@@ -133,6 +133,7 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
   }
 }
 
+//var_dump($columns);
 
 // `data` section
 if (!isset($this->component_options['data']) || empty($this->component_options['data'])) {
@@ -141,6 +142,7 @@ if (!isset($this->component_options['data']) || empty($this->component_options['
   $items = $this->component_options['data'];
 }
 
+//var_dump($items);
 
 /**
  * Render the Repeater
@@ -307,10 +309,10 @@ var repeater = function() {
     // only override the output for specific columns.
     // will default to output the text value of the row item
     switch(column) {
-      case 'name':
-        // let's combine name and description into a single column
-        customMarkup = '<div style="font-size:12px;">' + rowData.name + '</div><div class="small text-muted">' + rowData.description + '</div>';
-        break;
+//      case 'name':
+//        // let's combine name and description into a single column
+//        customMarkup = '<div style="font-size:12px;">' + rowData.name + '</div><div class="small text-muted">' + rowData.description + '</div>';
+//        break;
 <?php if (!empty($custom_columns)) :
   foreach ($custom_columns as $column => $custom_content) :
 ?>
@@ -334,7 +336,11 @@ endif; ?>
   function customRowRenderer(helpers, callback) {
     // let's get the id and add it to the "tr" DOM element
     var item = helpers.item;
-    item.attr('id', 'row' + helpers.rowData.id);
+<?php
+  if (isset($this->component_options['customRowScripts']) && !empty($this->component_options['customRowScripts'])) :
+    echo implode("\n", $this->component_options['customRowScripts']);
+  endif;
+?>
     
     callback();
   }
@@ -435,6 +441,7 @@ endif; ?>
         var values = _.values(item);
         var found = _.find(values, function(val) {
           
+          if(null === val) val = false;
           if(val.toString().toLowerCase().indexOf(searchTerm) > -1) {
             searchedData.push(item);
             return true;

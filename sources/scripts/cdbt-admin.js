@@ -23,6 +23,7 @@ $(function() {
    * Localize the variables passed from wordpress
    */
   $.isDebug = 'true' === cdbt_admin_vars.is_debug ? true : false;
+  $.ajaxUrl = cdbt_admin_vars.ajax_url;
   $.ajaxNonce = cdbt_admin_vars.ajax_nonce;
   if ($.isDebug) {
     // check debug mode
@@ -51,6 +52,31 @@ $(function() {
    */
   if (typeof repeater !== 'undefined') {
     repeater();
+    
+    var locationToOperation = function( post_raw_data ) {
+      var post_data = {
+        'session_key': post_raw_data.sessionKey, 
+        'default_action': post_raw_data.operateAction, 
+        'target_table': post_raw_data.targetTable, 
+        'callback_url': post_raw_data.baseUrl, 
+      };
+      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    };
+    
+    if (_.contains([ 'cdbtAdminTables', 'cdbtWpCoreTables' ], $('.repeater').attr('id'))) {
+      $('.cdbt-repeater-left-main>a').on('click', function(){
+        locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_table' }) );
+      });
+      
+      $('.operate-table-btn-group>button').on('click', function(){
+        locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_table' }) );
+      });
+      
+      $('.operate-data-btn-group>button').on('click', function(){
+        locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
+      });
+    }
+    
   }
   
   /**

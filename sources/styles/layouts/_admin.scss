@@ -151,3 +151,38 @@ div.plugin-meta {
   top: 10px;
   right: 15px;
 }
+
+.operate-table-btn-group {
+  margin-right: 10px;
+}
+
+.operate-data-btn-group {
+  margin-left: 10px;
+}
+
+.cdbt-repeater-row {
+  
+  td:first-child {
+    position: relative;
+    
+    .cdbt-repeater-left-main, .cdbt-repeater-left-sub {
+      position: absolute;
+      top: 2px;
+      left: 28px;
+    }
+    
+    .cdbt-repeater-left-sub {
+      top: 26px;
+      overflow: hidden;
+    }
+  }
+  
+  &:hover {
+    border: solid 2px #e75353;
+    border-width: 2px 2px 2px 1px;
+    
+    &:first-child {
+      border-top-width: 2px;
+    }
+  }
+}

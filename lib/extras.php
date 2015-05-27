@@ -103,7 +103,8 @@ trait CdbtExtras {
           'avg_row_length' => $table_info['Avg_row_length'], 
           'data_lenght' => $table_info['Data_length'], 
           'create_time' => $table_info['Create_time'], 
-          'operate_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_table' ]))) ), 
+          'operate_table_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_table' ]))) ), 
+          'operate_data_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_data' ]))) ), 
 /*          'info' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'table_info' ]))) ), // , 'table'=>$value
           'import' => null, 
           'export' => null, 
@@ -121,9 +122,9 @@ trait CdbtExtras {
           'thumbnail_height' => 64, // optional
           'thumbnail_class' => null, // optional
         ];
-        $datasource[$index]['table_controls'] = '<strong>controle</strong>';
+//        $datasource[$index]['table_controls'] = '<strong>controle</strong>';
         
-        $datasource[$index]['data_controls'] = '<strong>controle</strong>';
+//        $datasource[$index]['data_controls'] = '<strong>controle</strong>';
         
         $index++;
       }
@@ -146,22 +147,38 @@ trait CdbtExtras {
    * @param integer $page_size [require] Default per page rows
    * @param mixed $columns [require] Array of column definitions of repeater, or string of preset name
    * @param array $datasource [require] Datasource created by `create_tablelist_datasorce()`
+   * @param array $reject_columns [optional] Array of column properties that want to reject
    * @return array $conponent_options Array for repeater of fuelux
    */
-  function create_scheme_datasource( $conponent_id='cdbtRepeater', $page_index=0, $page_size=10, $columns=null, $datasource=[] ) {
+  function create_scheme_datasource( $conponent_id='cdbtRepeater', $page_index=0, $page_size=10, $columns=null, $datasource=[], $reject_columns=[] ) {
     // 暫定処理
-    $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
+    //$ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
+    
+    $custom_row_scripts = [];
     
     if (!is_array($columns) && in_array($columns, [ 'table_list' ])) {
       if ('table_list' === $columns) {
+        // For customColumnRenderer() in the repeater script
+        $custom_column_content = "'<div><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-cog\"></i></a>";
+        $custom_column_content .= "</div><div class=\"btn-group operate-data-btn-group\" role=\"group\" aria-label=\"operateDataButtons\">";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-list-alt\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"entry\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Entry Data', CDBT) ."\"><span class=\"sr-only\">". __('Entry Data', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Edit Data', CDBT) ."\"><span class=\"sr-only\">". __('Edit Data', CDBT) ."</span><i class=\"fa fa-pencil-square-o\"></i></a>";
+        $custom_column_content .= "</div></div>'";
+        
+        // For customRowRenderer() in the repeater script
+        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.table_name);";
+        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
+        
         $columns = [
           [ 'label' => __('TableName', CDBT), 
             'property' => 'table_name', 
             'sortable' => true, 
             'sortDirection' => 'asc', 
             'className' => null, 
-            'width' => null, 
-            'customColumnRenderer' => "'<div><a href=\"'+rowData.operate_url+'\">'+rowData.table_name+'</a></div><div class=\"small text-muted\">'+rowData.logical_name+'</div>'"
+            'width' => 200, 
+            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\">'+rowData.table_name+'</a></div><div class=\"small text-muted cdbt-repeater-left-sub\">'+rowData.logical_name+'</div>'"
           ], 
           [ 'label' => __('Records', CDBT), 
             'property' => 'records', 
@@ -178,6 +195,7 @@ trait CdbtExtras {
           [ 'label' => __('Charset', CDBT), 
             'property' => 'charset', 
             'sortable' => false, 
+            'width' => 100, 
           ], 
           [ 'label' => __('Collation', CDBT), 
             'property' => 'collation', 
@@ -191,13 +209,14 @@ trait CdbtExtras {
             'property' => 'per_records', 
             'sortable' => false, 
             'dataNumric' => true, 
+            'className' => 'text-center', 
             'width' => 80, 
           ], 
-          [ 'label' => __('AvgRowLength', CDBT), 
-            'property' => 'avg_row_length', 
-            'sortable' => true, 
-            'dataNumric' => true, 
-          ], 
+//          [ 'label' => __('AvgRowLength', CDBT), 
+//            'property' => 'avg_row_length', 
+//            'sortable' => true, 
+//            'dataNumric' => true, 
+//          ], 
 //          [ 'label' => __('DataLength', CDBT), 
 //            'property' => 'data_length', 
 //            'sortable' => true, 
@@ -208,21 +227,37 @@ trait CdbtExtras {
 //            'sortable' => false, 
 //          ], 
           [ 'label' => __('Operation', CDBT), 
-            'property' => 'operate_url', 
+            'property' => 'operate_table_url', 
             'sortable' => false, 
-            'customColumnRenderer' => "'<div><a id=\"btn-'+rowData.table_name+'\" href=\"'+rowData.operate_url+'\" class=\"btn btn-default\">". __('Oparate Table', CDBT) ."</a></div>'", 
+            'className' => 'row text-center', 
+            'width' => 240, 
+            'customColumnRenderer' => $custom_column_content, 
           ], 
         ];
       }
     }
     
+    // For rejecting columns
+    if (!empty($reject_columns)) {
+      foreach ($columns as $i => $column) {
+        if (in_array($column['property'], $reject_columns )) {
+          unset($columns[$i]);
+        }
+      }
+    }
+    
     $conponent_options = [
       'id' => $conponent_id, 
+      'listSelectable' => 'single', 
       'pageIndex' => $page_index, 
       'pageSize' => $page_size, 
-      'columns' => $columns,
+      'columns' => $columns, 
       'data' => $datasource, 
     ];
+    
+    if (!empty($custom_row_scripts)) {
+      $conponent_options['customRowScripts'] = $custom_row_scripts;
+    }
     
     return $conponent_options;
     

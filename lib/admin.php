@@ -226,8 +226,6 @@ class CdbtAdmin extends CdbtDB {
       }
     }
     $_SESSION = [];
-//    var_dump($this->cdbt_sessions);
-//    var_dump($_SESSION);
     
   }
 
@@ -243,13 +241,17 @@ class CdbtAdmin extends CdbtDB {
     
     if (empty($session_key)) {
       // global sessions
-      $_SESSION = [];
       $this->cdbt_sessions = [];
+      $_SESSION = [];
       session_write_close();
     } else {
-      // local page sessions
-      unset($_SESSION[$session_key]);
-      unset($this->cdbt_sessions[$_SESSION[$session_key]]);
+      // local page (or tab) sessions
+      if (array_key_exists($session_key, $this->cdbt_sessions)) 
+        unset($this->cdbt_sessions[$session_key]);
+      
+      if (array_key_exists($session_key, $_SESSION)) 
+        unset($_SESSION[$session_key]);
+      
     }
     
   }
@@ -423,7 +425,8 @@ class CdbtAdmin extends CdbtDB {
     if ( array_key_exists( 'cdbt-admin-script', $asset_data ) ) {
       wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', [
         'is_debug' => $this->debug ? 'true' : 'false', 
-        'ajax_nonce' => wp_create_nonce($this->domain_name . '_' . $this->plugin_ajax_action), 
+        'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
+//        'ajax_nonce' => wp_create_nonce($this->domain_name . '_' . $this->plugin_ajax_action), 
 //        'get_text' => json_encode([ 'ID' => __('ID', CDBT), 'created' => __('created', CDBT), 'updated' => __('updated', CDBT) ]), 
       ]);
     }
@@ -652,16 +655,8 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_options_debug() {
+    
     // None at the moment
-  }
-
-
-  /**
-   * Page: cdbt_tables | Tab: (any)
-   *
-   * @since 2.0.0
-   */
-  public function do_cdbt_tables_tabs() {
     
   }
 
@@ -772,6 +767,42 @@ class CdbtAdmin extends CdbtDB {
       return;
       
     }
+    
+  }
+
+
+  /**
+   * Page: cdbt_tables | Tab: modify_table
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_tables_modify_table() {
+    
+    
+    
+  }
+
+
+  /**
+   * Page: cdbt_tables | Tab: operate_table
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_tables_operate_table() {
+    
+    
+    
+  }
+
+
+  /**
+   * Page: cdbt_tables | Tab: operate_data
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_tables_operate_data() {
+    
+    
     
   }
 
