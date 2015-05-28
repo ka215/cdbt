@@ -3,6 +3,7 @@
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
+//var ajaxResponse = {};
 $(function() {
   
   /**
@@ -31,9 +32,24 @@ $(function() {
   }
   
   /**
-   * 
+   * Define a global variable for retrieving the response of Ajax
    */
+  $.ajaxResponse = {};
   
+  /**
+   * Define a class for the callback
+   */
+  var CallbackClass = function() {
+    
+    this.render_modal = function(){
+      
+      $('body').append( $.ajaxResponse.responseText );
+      
+    };
+    
+    
+  };
+  var Callback = new CallbackClass();
   
   /**
    * Common display notice handler
@@ -80,6 +96,24 @@ $(function() {
   }
   
   /**
+   * Modal dialog window of Bootstrap initialize
+   */
+  var init_modal = function(){
+    var post_data = {};
+    if (arguments.length > 0) {
+      post_data = arguments[0];
+    }
+    
+    if ($('#cdbtModal').size() > 0) {
+      $('#cdbtModal').remove();
+    }
+    
+    cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
+    
+  };
+  
+  
+  /**
    * Common ajax closure
    */
   var cdbtCallAjax = function(){
@@ -90,6 +124,7 @@ $(function() {
     var method = arguments[1];
     var post_data = typeof arguments[2] !== 'undefined' ? arguments[2] : null;
     var data_type = typeof arguments[3] !== 'undefined' ? arguments[3] : 'text';
+    var callback_function = typeof arguments[4] !== 'undefined' ? arguments[4] : null;
     
     var jqXHR = $.ajax({
       async: true,
@@ -104,32 +139,45 @@ $(function() {
     });
     
     jqXHR.done(function(data, stat, xhr) {
-      console.log({
-        done: stat,
-        data: data,
-        xhr: xhr
-      });
-      //alert( xhr.responseText );
-      return data;
+      if ($.isDebug) {
+        console.log({
+          done: stat,
+          data: data,
+          xhr: xhr
+        });
+        //alert( xhr.responseText );
+      }
+      if ('script' !== data_type) {
+        $.ajaxResponse = { 'responseText': jqXHR.responseText, 'status': jqXHR.status, 'statusText': jqXHR.statusText };
+      } else {
+        return data;
+      }
+      if ('' !== callback_function) {
+        return Callback[callback_function]();
+      }
     });
     
     jqXHR.fail(function(xhr, stat, err) {
-      console.log({
-        fail: stat,
-        error: err,
-        xhr: xhr
-      });
-      //alert( xhr.responseText );
+      if ($.isDebug) {
+        console.log({
+          fail: stat,
+          error: err,
+          xhr: xhr
+        });
+        //alert( xhr.responseText );
+      }
     });
     
     jqXHR.always(function(res1, stat, res2) {
-      console.log({
-        always: stat,
-        res1: res1,
-        res2: res2
-      });
-      if (stat === 'success') {
-        //alert('Ajax Finished!');
+      if ($.isDebug) {
+        console.log({
+          always: stat,
+          res1: res1,
+          res2: res2
+        });
+        if (stat === 'success') {
+          //alert('Ajax Finished!');
+        }
       }
     });
     
@@ -138,6 +186,7 @@ $(function() {
   /**
    * `<a>` tag was clicked, then executes an AJAX processing before transition to the link destination.
    */
+/*
   $('a').on( 'click', function(e) {
     e.preventDefault();
     if (typeof $(this).attr('data-ajax-url') !== 'undefined' && $(this).attr('data-ajax-url') !== '') {
@@ -155,6 +204,7 @@ $(function() {
       location.href = $(this).attr('href');
     }
   });
+*/
   
   
   
@@ -226,6 +276,24 @@ $(function() {
       
     });
     
+  }
+  
+  if ('cdbt_tables' === $.QueryString.page && 'operate_table' === $.QueryString.tab) {
+    
+    $('button[id^="operate-table-action-"]').on('click', function() {
+      var new_action = _.last($(this).attr('id').split('-'));
+      $('input[name="custom-database-tables[operate_action]"]').val(new_action);
+      $('button[id^="operate-table-action-"]').removeClass('active');
+      $(this).addClass('active');
+      
+      if ('drop' === new_action) {
+        var post_data = {
+        };
+        init_modal( post_data );
+      }
+      
+//      $('form.navbar-form').trigger('submit');
+    });
     
     
   }

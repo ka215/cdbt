@@ -603,6 +603,29 @@ class CdbtAdmin extends CdbtDB {
    */
 
   /**
+   * Common access authentication process for the plugin management console pages
+   *
+   * @since 2.0.0
+   *
+   * @param array $allow_actions [require] Array of action names that are allowed by the current management page
+   * @return string $message Null is returned in case of authentication success
+   */
+  private function access_page_authentication( $allow_actions ) {
+    static $message = null;
+    
+    if (!in_array($_POST['action'], $allow_actions) || empty($_POST[$this->domain_name]) ) {
+      $message = __('Illegal access is.', CDBT);
+    } else
+    if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
+      $message = __('You do not have access privileges on this page.', CDBT);
+    }
+    
+    return $message;
+    
+  }
+
+
+  /**
    * Page: cdbt_management_console | Tab: -
    *
    * @since 2.0.0
@@ -618,29 +641,35 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_options_general_setting() {
-    if ( 'update' === $_POST['action'] && !empty($_POST[$this->domain_name]) ) {
-      
-      $submit_options = $_POST[$this->domain_name];
-      
-      // sanitaize empty values
-      foreach ($submit_options as $key => $value) {
-        if (empty($value)) 
-          unset($submit_options[$key]);
-      }
-      
-      // sanitaize checkbox values
-      $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix' ];
-      foreach ($checkbox_options as $option_name) {
-        if (!array_key_exists($option_name, $submit_options)) 
-          $submit_options[$option_name] = false;
-      }
-      
-      $updated_options = array_merge($this->current_options, $submit_options);
-      
-      $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
-      
-      $this->update_options( $updated_options );
-      
+    static $message = '';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'update' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
+    
+    $submit_options = $_POST[$this->domain_name];
+    
+    // sanitaize empty values
+    foreach ($submit_options as $key => $value) {
+      if (empty($value)) 
+        unset($submit_options[$key]);
+    }
+    
+    // sanitaize checkbox values
+    $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix' ];
+    foreach ($checkbox_options as $option_name) {
+      if (!array_key_exists($option_name, $submit_options)) 
+        $submit_options[$option_name] = false;
+    }
+    
+    $updated_options = array_merge($this->current_options, $submit_options);
+    
+    $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
+    
+    if ($this->update_options( $updated_options ) ) {
       $this->register_admin_notices( CDBT . '-notice', __('Plugin options saved.', CDBT), 3, true );
     } else {
       $this->register_admin_notices( CDBT . '-error', __('Could not save options.', CDBT), 3, true );
@@ -669,18 +698,14 @@ class CdbtAdmin extends CdbtDB {
   public function do_cdbt_tables_create_table() {
     static $message = '';
     
-    if (!in_array($_POST['action'], [ 'create_table', 'resume_table' ]) || empty($_POST[$this->domain_name]) ) {
-      $message = __('Illegal access is.', CDBT);
-    } else
-    if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
-      $message = __('You do not have access privileges on this page.', CDBT);
-    }
-    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'create_table', 'resume_table' ] );
     if (!empty($message)) {
       $this->register_admin_notices( CDBT . '-error', $message, 3, true );
       return;
     }
     
+    // Table creation process
     if ('create_table' === $_POST['action']) {
       // Validation params
       $source_data = $_POST[$this->domain_name];
@@ -733,6 +758,7 @@ class CdbtAdmin extends CdbtDB {
       
     }
     
+    // Table resume processing
     if ('resume_table' === $_POST['action']) {
       
       $enable_tables = !$this->get_table_list( 'enable' ) ? [] : $this->get_table_list( 'enable' );
@@ -789,6 +815,39 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_tables_operate_table() {
+    static $message = '';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'change_table' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
+    
+    // Process of changing the operation table and process of switching operation action
+    if ('change_table' === $_POST['action']) {
+      
+      $post_data = $_POST[$this->domain_name];
+      if (empty($post_data['operate_target_table'])) {
+        $this->register_admin_notices( CDBT . '-error', __('Could not change the operate table.', CDBT), 3, true );
+      } else {
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $post_data['operate_target_table'], 
+          'default_action' => 'detail', 
+          'operate_current_table' => isset($post_data['operate_current_table']) && !empty($post_data['operate_current_table']) ? $post_data['operate_current_table'] : $post_data['operate_target_table'], 
+          'operate_action' => isset($post_data['operate_action']) && !empty($post_data['operate_action']) ? $post_data['operate_action'] : 'detail', 
+        ];
+      }
+      return;
+      
+    }
+    
+    if ('change_action' === $_POST['action']) {
+      
+      var_dump($_POST);
+      
+    }
+    
     
     
     

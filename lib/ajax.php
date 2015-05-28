@@ -47,24 +47,24 @@ trait CdbtAjax {
    **/
   public function ajax_handler() {
     if (!isset($GLOBALS['_REQUEST']['_wpnonce'])) 
-      $this->ajax_error();
+      $this->ajax_error( __('Parameters for calling Ajax is not enough.', CDBT) );
     
     if (!wp_verify_nonce( $GLOBALS['_REQUEST']['_wpnonce'], $this->domain_name . '_' . $this->plugin_ajax_action )) {
       if (isset($_REQUEST['api_key']) && !empty($_REQUEST['api_key'])) {
         // verify api key
         
       } else {
-        $this->ajax_error();
+        $this->ajax_error( __('Failed authentication. Invalid Ajax call.', CDBT) );
       }
     }
     
     if (!isset($GLOBALS['_REQUEST']['event'])) 
-      $this->ajax_error();
+      $this->ajax_error( __('Ajax event is not specified.', CDBT) );
     
     $event_method = 'ajax_event_' . rtrim($GLOBALS['_REQUEST']['event']);
     
     if (!method_exists($this, $event_method)) 
-      $this->ajax_error();
+      $this->ajax_error( __('Method handling of an Ajax event does not exist.', CDBT) );
     
     $this->$event_method( $GLOBALS['_REQUEST'] );
     
@@ -72,13 +72,18 @@ trait CdbtAjax {
 
 
   /**
-   * 
+   * Error Handling of Ajax
    *
    * @since 2.0.0
+   *
+   * @param $string $error_message [optional]
    **/
-  public function ajax_error() {
+  public function ajax_error( $error_message=null ) {
     
-    die( 'ERROR!' );
+    if (empty($error_message)) 
+      $error_message = __('Error of Ajax.', CDBT);
+    
+    die( $error_message );
     
   }
 
@@ -122,10 +127,25 @@ trait CdbtAjax {
       }
     }
     
-    $this->ajax_error();
+    $this->ajax_error( __('Failed to update of the session.', CDBT) );
     
   }
-
+  
+  /**
+   * Retrieve the component of Modal dialog in via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [optional] Array of options for modal component
+   * @return string $callback as HTML document
+   */
+  public function ajax_event_retrieve_modal( $args=[] ) {
+    
+    $modal_contents = $this->component_render('modal', $args); // by trait `DynamicTemplate`
+    
+    die($modal_contents);
+    
+  }
 
 
 

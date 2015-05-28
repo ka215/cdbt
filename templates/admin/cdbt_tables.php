@@ -382,39 +382,67 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
     if (array_key_exists('target_table', $this->cdbt_sessions[$current_tab])) 
       $target_table = $this->cdbt_sessions[$current_tab]['target_table'];
   }
-//var_dump( $this->cdbt_sessions[$current_tab] );
+var_dump($this->cdbt_sessions[$current_tab]);
+  
+  // Definition of belong table type
+  if (in_array($target_table, $this->core_tables)) {
+    $belong_table_type = [ 'type_name' => 'wordpress', 'icon' => 'fa fa-wordpress' ];
+  } else
+  if (in_array($target_table, $enable_table)) {
+    $belong_table_type = [ 'type_name' => 'regular', 'icon' => 'fa fa-cubes' ];
+  } else {
+    $belong_table_type = [ 'type_name' => 'other', 'icon' => 'fa fa-database' ];
+  }
+  
+  // Definition of operatable console buttons
+  $operatable_buttons = [
+    'detail'     => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    'import'    => [ 'labal' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    'export'    => [ 'labal' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    'duplicate' => [ 'labal' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    'truncate'  => [ 'labal' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
+    'modify'    => [ 'labal' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
+    'backup'    => [ 'labal' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
+    'drop'       => [ 'labal' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
+  ];
+  
   
 ?>
   
   <nav class="navbar navbar-default" style="margin-top: 1em;">
     <div class="container-fluid">
-      <form id="operate-table-selector" class="navbar-form navbar-left">
-        <div class="form-group">
-          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="operate-table-target_table">
-            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-              <span class="selected-label"></span>
-              <span class="caret"></span>
-              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-            <?php foreach ($selectable_table as $table) : ?>
-              <li data-value="<?php echo $table; ?>"<?php if ($target_table === $table) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $table; ?></a></li>
-            <?php endforeach; ?>
-            </ul>
-            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[operate_target_table]" readonly="readonly" aria-hidden="true" type="text"/>
+      <!-- This icon represents the belonging table type -->
+      <label class="navbar-brand"><i class="<?php echo $belong_table_type['icon']; ?>"></i></label>
+      <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="navbar-form">
+        <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+        <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+        <input type="hidden" name="action" value="change_table">
+        <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+        <div class="navbar-left">
+          <div class="form-group">
+            <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="operate-table-target_table">
+              <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                <span class="selected-label"></span>
+                <span class="caret"></span>
+                <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+              <?php foreach ($selectable_table as $table) : ?>
+                <li data-value="<?php echo $table; ?>"<?php if ($target_table === $table) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $table; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+              <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[operate_target_table]" readonly="readonly" aria-hidden="true" type="text"/>
+            </div>
           </div>
+          <button type="submit" class="btn btn-default" id="operate-table-action-change_table">操作テーブルを変更</button>
         </div>
-        <button type="submit" class="btn btn-default">操作テーブルを変更</button>
-      </form>
-      <form id="operate-table-actions" class="navbar-form navbar-right">
-        <button type="button" class="btn btn-default<?php if ('detail' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-detail" title="詳細表示"><span class="sr-only">詳細表示</span><i class="fa fa-list-alt"></i></button>
-        <button type="button" class="btn btn-default<?php if ('import' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-import" title="インポート"><span class="sr-only">インポート</span><i class="fa fa-upload"></i></button>
-        <button type="button" class="btn btn-default<?php if ('export' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-export" title="エクスポート"><span class="sr-only">エクスポート</span><i class="fa fa-download"></i></button>
-        <button type="button" class="btn btn-default<?php if ('duplicate' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-duplicate" title="テーブル複製"><span class="sr-only">テーブル複製</span><i class="fa fa-files-o"></i></button>
-        <button type="button" class="btn btn-default<?php if ('truncate' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-truncate" title="データ初期化"><span class="sr-only">データ初期化</span><i class="fa fa-history"></i></button>
-        <button type="button" class="btn btn-default<?php if ('modify' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-modify" title="テーブル編集"><span class="sr-only">テーブル編集</span><i class="fa fa-wrench"></i></button>
-        <button type="button" class="btn btn-default<?php if ('backup' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-backup" title="バックアップ" disabled="disabled"><span class="sr-only">バックアップ</span><i class="fa fa-archive"></i></button>
-        <button type="button" class="btn btn-default<?php if ('drop' === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-drop" title="テーブル削除"><span class="sr-only">テーブル削除</span><i class="fa fa-trash-o"></i></button>
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_current_table]" value="<?php echo $target_table; ?>">
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $default_action; ?>">
+        <div class="navbar-right">
+        <?php foreach ($operatable_buttons as $action_name => $definitions) : ?>
+          <button type="button" class="btn btn-default<?php if ($action_name === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (!in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
+        <?php endforeach; ?>
+        </div>
       </form>
     </div>
   </nav>
@@ -431,7 +459,66 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
   
 <?php if ('detail' === $default_action) : ?>
   
-  テーブルスキーマ情報を表示
+<?php if (!empty($target_table)) :
+    $table_status = $this->get_table_status($target_table);
+    $columns_schema = $this->get_table_schema($target_table);
+    $columns_schema_index = array_keys(reset($columns_schema));
+    $row_index_number = 1;
+    
+?>
+  <div class="table-responsive">
+    <strong><i class="fa fa-square text-muted"></i> カラム情報</strong>
+    <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
+      <thead>
+        <tr class="active">
+          <th><small>#</small></th>
+          <th><small><?php _e('Column Name', CDBT); ?></small></th>
+        <?php foreach ($columns_schema_index as $columns_index_name) : ?>
+          <th class="text-center"><small><?php _e($columns_index_name, CDBT); ?></small></th>
+        <?php endforeach; ?>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($columns_schema as $column_name => $column_scheme) : ?>
+        <tr>
+          <td><small><?php echo $row_index_number; ?></small></td>
+          <td><small><?php echo $column_name; ?></small></td>
+        <?php foreach ($columns_schema_index as $columns_index_name) : ?>
+          <?php if (in_array($columns_index_name, [ 'not_null', 'primary_key', 'unsigned' ])) : ?>
+          <td class="text-center"><small><?php echo 1 === intval($column_scheme[$columns_index_name]) ? '<i class="fa fa-circle-thin text-center"></i>' : ''; ?></small></td>
+          <?php else : ?>
+          <td><small><?php echo $column_scheme[$columns_index_name]; ?></small></td>
+          <?php endif; ?>
+        <?php endforeach; ?>
+        </tr>
+      <?php $row_index_number++; endforeach; ?>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="<?php echo count($columns_schema_index) + 2; ?>" style="padding: 0;"></td></tr>
+      </tfoot>
+    </table>
+  </div>
+  
+  <div class="table-responsive">
+    <table id="table-detail" class="table table-striped table-hover table-condensed">
+      <thead>
+        <tr>
+          <th colspan="4" class="col"><i class="fa fa-square text-muted"></i> テーブル情報</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php $index_num = 0; foreach ($table_status as $key => $value) : ?>
+        <?php if (intval(fmod($index_num, 2)) === 0) : ?><tr><?php endif; ?>
+          <th class="row"><small><?php _e($key, CDBT); ?></small></th><td><small><?php echo $value; ?></small></td>
+        <?php if ($index_num > 0 && intval(fmod($index_num, 2)) === 1) : ?></tr><?php endif; ?>
+      <?php $index_num++; endforeach; ?>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="4" style="padding: 0;"></td></tr>
+      </tfoot>
+    </table>
+  </div>
+<?php endif; ?>
   
 <?php endif; ?>
   
