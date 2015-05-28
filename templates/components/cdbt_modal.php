@@ -11,6 +11,7 @@
  * 'modalKeyboard' => @boolean [optional] For default is true
  * 'modalShow' => @boolean [optional] For default is true
  * 'modalHideEvent' => @string [optional] Javascript is.
+ * 'modalShowEvent' => @string [optional] Javascript is.
  */
 
 /**
@@ -27,7 +28,7 @@ if (isset($this->component_options['id']) && !empty($this->component_options['id
 
 // `modalSize` section
 if (isset($this->component_options['modalSize']) && !empty($this->component_options['modalSize']) && in_array(strtolower($this->component_options['modalSize']), [ 'large', 'small' ])) {
-  $modal_size = esc_attr__($this->component_options['modalSize']);
+  $modal_size = ('large' === strtolower($this->component_options['modalSize'])) ? 'modal-lg' : 'modal-sm';
 } else {
   $modal_size = '';
 }
@@ -85,6 +86,14 @@ if (isset($this->component_options['modalHideEvent']) && !empty($this->component
   $modal_hide_event = 'return;';
 }
 
+// `modalShowEvent` section
+if (isset($this->component_options['modalShowEvent']) && !empty($this->component_options['modalShowEvent'])) {
+  $modal_show_event = $this->component_options['modalShowEvent'];
+} else {
+  $modal_show_event = 'return;';
+}
+
+
 /**
  * Render the Modal
  * ---------------------------------------------------------------------------
@@ -114,7 +123,9 @@ var dynamic_modal = function(){
     keyboard: <?php echo $modal_keyboard; ?>, 
     show: <?php echo $modal_show; ?>, 
   }).on('hidden.bs.modal', function(){
-    <?php echo $modal_hide_event; ?>
+    <?php echo stripslashes_deep($modal_hide_event); ?>
+  }).on('shown.bs.modal', function(){
+    <?php echo stripslashes_deep($modal_show_event); ?>
   });
 };
 dynamic_modal();

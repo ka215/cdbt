@@ -6,6 +6,10 @@
  * @since 2.0.0
  *
  */
+ 
+/**
+ * Define the various localized variables for rendering
+ */
 $options = get_option($this->domain_name);
 $tabs = [
   'table_list' => esc_html__('Table List', CDBT), 
@@ -49,43 +53,44 @@ sort($selectable_table);
     <p>現在、プラグインで管理可能なテーブルはありません。</p>
     <p>テーブルを新規作成する場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>">ここをクリック</a>してください。</p>
     <p>既存のテーブルをプラグインに取り込む場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>#resume-table">ここをクリック</a>してください。</p>
-  <?php else : ?>
-    
-<?php
+  <?php else : 
+  /**
+   * Define the localized variables for tab of `table_list`
+   */
   
   $datasource = $this->create_tablelist_datasorce($enable_table);
-  
   $conponent_options = $this->create_scheme_datasource( 'cdbtAdminTables', 0, 20, 'table_list', $datasource );
-  
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
   
-?>
-    
-  <?php endif; ?>
+    endif; ?>
 <?php endif; ?>
   
 <?php if ($current_tab == 'wp_core_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4>
     
 <?php
-  $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
-
+  /**
+   * Define the localized variables for tab of `wp_core_table`
+   */
+  
+//  $ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
   $datasource = $this->create_tablelist_datasorce($this->core_tables); // by trait `CdbtExtras`
-
   $conponent_options = $this->create_scheme_datasource( 'cdbtWpCoreTables', 0, 20, 'table_list', $datasource, [ 'avg_row_length', 'data_length', 'create_time' ] );
-
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
+  
 ?>
-    
 <?php endif; ?>
   
 <?php if ($current_tab == 'create_table') : 
-
-if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab])) {
-  // Set variables from session
-  $session_vars = $this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab];
-}
-
+  /**
+   * Define the localized variables for tab of `create_table`
+   */
+  
+  if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab])) {
+    // Set variables from session
+    $session_vars = $this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab];
+  }
+  
 ?>
   <div class="well-sm">
     <p class="text-info">
@@ -365,24 +370,47 @@ if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab
   
 <?php if ($current_tab == 'modify_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Modify Table', CDBT); ?></h4>
-    
-    <?php if ( !isset($this->cdbt_sessions[$current_tab]) ) { $this->destroy_session(); } ?>
-    
+  
+<?php
+  /**
+   * Define the localized variables for tab of `modify_table`
+   */
+  
+  if ( !isset($this->cdbt_sessions[$current_tab]) ) 
+    $this->destroy_session();
+  
+?>
 <?php endif; ?>
   
 <?php if ($current_tab == 'operate_table') : ?>
   
 <?php
+  /**
+   * Define the localized variables for tab of `modify_table`
+   */
   
-  $default_action = '';
   $target_table = '';
+  $current_action = '';
   if (isset($this->cdbt_sessions[$current_tab]) && !empty($this->cdbt_sessions[$current_tab])) {
-    if (array_key_exists('default_action', $this->cdbt_sessions[$current_tab])) 
-      $default_action = $this->cdbt_sessions[$current_tab]['default_action'];
-    if (array_key_exists('target_table', $this->cdbt_sessions[$current_tab])) 
+    
+    if (array_key_exists('operate_target_table', $this->cdbt_sessions[$current_tab])) {
+      $target_table = $this->cdbt_sessions[$current_tab]['operate_target_table'];
+    } else
+    if (array_key_exists('target_table', $this->cdbt_sessions[$current_tab])) {
       $target_table = $this->cdbt_sessions[$current_tab]['target_table'];
+    } else
+    if (array_key_exists('operate_current_table', $this->cdbt_sessions[$current_tab])) {
+      $target_table = $this->cdbt_sessions[$current_tab]['operate_current_table'];
+    }
+    
+    if (array_key_exists('operate_action', $this->cdbt_sessions[$current_tab])) {
+      $current_action = $this->cdbt_sessions[$current_tab]['operate_action'];
+    } else
+    if (array_key_exists('default_action', $this->cdbt_sessions[$current_tab])) {
+      $current_action = $this->cdbt_sessions[$current_tab]['default_action'];
+    }
+    
   }
-var_dump($this->cdbt_sessions[$current_tab]);
   
   // Definition of belong table type
   if (in_array($target_table, $this->core_tables)) {
@@ -396,7 +424,7 @@ var_dump($this->cdbt_sessions[$current_tab]);
   
   // Definition of operatable console buttons
   $operatable_buttons = [
-    'detail'     => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    'detail'      => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
     'import'    => [ 'labal' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
     'export'    => [ 'labal' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
     'duplicate' => [ 'labal' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
@@ -405,7 +433,6 @@ var_dump($this->cdbt_sessions[$current_tab]);
     'backup'    => [ 'labal' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
     'drop'       => [ 'labal' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
   ];
-  
   
 ?>
   
@@ -437,17 +464,17 @@ var_dump($this->cdbt_sessions[$current_tab]);
           <button type="submit" class="btn btn-default" id="operate-table-action-change_table">操作テーブルを変更</button>
         </div>
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_current_table]" value="<?php echo $target_table; ?>">
-        <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $default_action; ?>">
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $current_action; ?>">
         <div class="navbar-right">
         <?php foreach ($operatable_buttons as $action_name => $definitions) : ?>
-          <button type="button" class="btn btn-default<?php if ($action_name === $default_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (!in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
+          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (!in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
         <?php endforeach; ?>
         </div>
       </form>
     </div>
   </nav>
   
-<?php if (empty($default_action)) : ?>
+<?php if (empty($current_action)) : ?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -457,9 +484,10 @@ var_dump($this->cdbt_sessions[$current_tab]);
   
 <?php endif; ?>
   
-<?php if ('detail' === $default_action) : ?>
+<?php if ('detail' === $current_action) : ?>
   
-<?php if (!empty($target_table)) :
+  <?php if (!empty($target_table)) : 
+    
     $table_status = $this->get_table_status($target_table);
     $columns_schema = $this->get_table_schema($target_table);
     $columns_schema_index = array_keys(reset($columns_schema));
@@ -518,7 +546,7 @@ var_dump($this->cdbt_sessions[$current_tab]);
       </tfoot>
     </table>
   </div>
-<?php endif; ?>
+  <?php endif; ?>
   
 <?php endif; ?>
   

@@ -141,6 +141,13 @@ trait CdbtAjax {
    */
   public function ajax_event_retrieve_modal( $args=[] ) {
     
+    if (array_key_exists('insertContent', $args) && 'true' === $args['insertContent']) {
+      //
+      // Filter for modal content settings
+      //
+      $args = apply_filters( 'cdbt_dynamic_modal_options', $args );
+    }
+    
     $modal_contents = $this->component_render('modal', $args); // by trait `DynamicTemplate`
     
     die($modal_contents);

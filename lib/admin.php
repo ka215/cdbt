@@ -173,6 +173,7 @@ class CdbtAdmin extends CdbtDB {
     // Filters
     add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
     add_filter( 'admin_body_class', array($this, 'add_body_classes') );
+    add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
     
   }
 
@@ -833,18 +834,11 @@ class CdbtAdmin extends CdbtDB {
       } else {
         $this->cdbt_sessions[$_POST['active_tab']] = [
           'target_table' => $post_data['operate_target_table'], 
-          'default_action' => 'detail', 
           'operate_current_table' => isset($post_data['operate_current_table']) && !empty($post_data['operate_current_table']) ? $post_data['operate_current_table'] : $post_data['operate_target_table'], 
           'operate_action' => isset($post_data['operate_action']) && !empty($post_data['operate_action']) ? $post_data['operate_action'] : 'detail', 
         ];
       }
       return;
-      
-    }
-    
-    if ('change_action' === $_POST['action']) {
-      
-      var_dump($_POST);
       
     }
     
@@ -884,6 +878,33 @@ class CdbtAdmin extends CdbtDB {
   public function do_cdbt_apis_tabs() {
     
   }
+  
+  
+  /**
+   * Inserting contents into the modal via filter hook
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require] Original options for modal
+   * @return array $args Array that has been filtered
+   */
+  public function insert_content_to_modal( $args ) {
+    if (array_key_exists('modalTitle', $args)) {
+      switch ($args['modalTitle']) {
+        case 'drop_table': 
+        	$args['modalTitle'] = __('Delete this table', CDBT);
+          $args['modalBody'] = __('If you have deleted a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to delete the table really?', CDBT);
+        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+        	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ console.info('deleted!'); $('#cdbtModal').modal('hide'); });";
+        	break;
+        default:
+        	break;
+      }
+    }
+    
+    return $args;
+  }
+  
   
 }
 

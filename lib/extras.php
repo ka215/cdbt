@@ -40,7 +40,7 @@ trait CdbtExtras {
    * @param string $feature_name
    * @return void
    */
-  function during_trial( $feature_name ) {
+  public function during_trial( $feature_name ) {
     $new_features = [
       'enable_core_tables', 
       'debug_mode', 
@@ -150,9 +150,7 @@ trait CdbtExtras {
    * @param array $reject_columns [optional] Array of column properties that want to reject
    * @return array $conponent_options Array for repeater of fuelux
    */
-  function create_scheme_datasource( $conponent_id='cdbtRepeater', $page_index=0, $page_size=10, $columns=null, $datasource=[], $reject_columns=[] ) {
-    // 暫定処理
-    //$ajax_url = $this->ajax_url( [ 'event' => 'update_target_table' ] );
+  public function create_scheme_datasource( $conponent_id='cdbtRepeater', $page_index=0, $page_size=10, $columns=null, $datasource=[], $reject_columns=[] ) {
     
     $custom_row_scripts = [];
     
@@ -262,6 +260,7 @@ trait CdbtExtras {
     return $conponent_options;
     
   }
+
 
 
 

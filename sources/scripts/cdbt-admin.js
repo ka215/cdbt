@@ -282,12 +282,21 @@ $(function() {
     
     $('button[id^="operate-table-action-"]').on('click', function() {
       var new_action = _.last($(this).attr('id').split('-'));
+      if ('change_table' === new_action) {
+        new_action = 'detail';
+      }
       $('input[name="custom-database-tables[operate_action]"]').val(new_action);
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
       if ('drop' === new_action) {
         var post_data = {
+        	id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'drop_table', 
+          modalBody: '', 
+          modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');", 
+          modalShowEvent: "", 
         };
         init_modal( post_data );
       }
