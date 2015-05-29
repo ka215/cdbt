@@ -474,7 +474,19 @@ sort($selectable_table);
     </div>
   </nav>
   
-<?php if (empty($current_action)) : ?>
+<?php 
+  if (!empty($target_table)) {
+    $table_status = $this->get_table_status($target_table);
+    $columns_schema = $this->get_table_schema($target_table);
+    $columns_schema_index = is_array($columns_schema) ? array_keys(reset($columns_schema)) : [];
+    $row_index_number = 1;
+    
+    if (empty($columns_schema_index)) 
+      $current_action = '';
+  }
+  
+  if (empty($current_action)) : 
+?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -485,15 +497,6 @@ sort($selectable_table);
 <?php endif; ?>
   
 <?php if ('detail' === $current_action) : ?>
-  
-  <?php if (!empty($target_table)) : 
-    
-    $table_status = $this->get_table_status($target_table);
-    $columns_schema = $this->get_table_schema($target_table);
-    $columns_schema_index = array_keys(reset($columns_schema));
-    $row_index_number = 1;
-    
-?>
   <div class="table-responsive">
     <strong><i class="fa fa-square text-muted"></i> カラム情報</strong>
     <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
@@ -546,8 +549,6 @@ sort($selectable_table);
       </tfoot>
     </table>
   </div>
-  <?php endif; ?>
-  
 <?php endif; ?>
   
   

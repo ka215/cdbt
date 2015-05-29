@@ -891,12 +891,22 @@ class CdbtAdmin extends CdbtDB {
   public function insert_content_to_modal( $args ) {
     if (array_key_exists('modalTitle', $args)) {
       switch ($args['modalTitle']) {
+        case 'truncate_table': 
+        	$args['modalTitle'] = __('Truncate data in this table', CDBT);
+          $args['modalBody'] = __('//%If you have deleted a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to delete the table really?', CDBT);
+        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_truncate_table" class="btn btn-primary">%s</button>', __('Truncate', CDBT)), ];
+        	$args['modalShowEvent'] = "$('#run_truncate_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+        	break;
         case 'drop_table': 
         	$args['modalTitle'] = __('Delete this table', CDBT);
           $args['modalBody'] = __('If you have deleted a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to delete the table really?', CDBT);
         	$args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
-        	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ console.info('deleted!'); $('#cdbtModal').modal('hide'); });";
+        	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
         	break;
+        case 'table_unknown': 
+        	$args['modalTitle'] = __('Table does not selected', CDBT);
+          $args['modalBody'] = __('Please retry to operate that after the table selection.', CDBT);
+          break;
         default:
         	break;
       }

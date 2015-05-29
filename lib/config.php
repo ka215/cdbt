@@ -42,6 +42,9 @@ class CdbtConfig extends CdbtCore {
     if (empty($this->options)) 
       $this->initialize_options();
     
+    // Enable Filters
+    add_filter( 'cdbt_cleaning_options', array($this, 'cleaning_options') );
+    
     if (!$this->validate_option_schema() || !$this->check_option_version()) 
       $this->upgrade_options();
     
@@ -196,6 +199,11 @@ class CdbtConfig extends CdbtCore {
     }
     unset($key, $value);
     
+    // 
+    // Filter to clean up the option settings in depending with the setting of "cleaning_options"
+    // 
+    $new_options = apply_filters( 'cdbt_cleaning_options', $new_options );
+    
     update_option($this->domain_name, $new_options);
     
     if (isset($this->debug) && $this->debug) 
@@ -268,7 +276,7 @@ class CdbtConfig extends CdbtCore {
     if (empty($new_data)) 
       $message = sprintf( __('New options is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
     
-    if (empty($action) || !in_array($action, [ 'override', 'add', 'delete' ])) 
+    if (empty($action) || !in_array($action, [ 'override', 'delete' ])) 
       $message = sprintf( __('Illegal action is specified to the method "%s" call.', CDBT), __FUNCTION__ );
     
     if (!empty($message)) {
@@ -280,7 +288,10 @@ class CdbtConfig extends CdbtCore {
     
     if (empty($option_key)) {
       if ( empty(array_diff(array_keys($prev_options), array_keys($new_data))) ) {
-        $new_options = $new_data;
+        // 
+        // Filter to clean up the option settings in depending with the setting of "cleaning_options"
+        // 
+        $new_options = apply_filters( 'cdbt_cleaning_options', $new_data );
         if (!update_option( $this->domain_name, $new_options )) 
         	$mesage = __('Failed to save the option.', CDBT);
       } else {
@@ -349,6 +360,10 @@ class CdbtConfig extends CdbtCore {
         }
       }
       if ($executed) {
+        // 
+        // Filter to clean up the option settings in depending with the setting of "cleaning_options"
+        // 
+        $new_options = apply_filters( 'cdbt_cleaning_options', $new_options );
         if (!update_option( $this->domain_name, $new_options )) 
         	$mesage = __('Failed to save the option.', CDBT);
       } else {
@@ -364,8 +379,8 @@ class CdbtConfig extends CdbtCore {
     }
     
   }
-
-
+  
+  
   /**
    * Add table to option settings and save
    *
@@ -426,6 +441,31 @@ class CdbtConfig extends CdbtCore {
     
   }
   
+  
+  /**
+   * Processing of `cdbt_cleaning_options` filter hook
+   *
+   * @since 2.0.0
+   *
+   * @param array $latest_options [require] Array of unfiltered option settings
+   * @return array $latest_options
+   */
+  public function cleaning_options( $latest_options=null ) {
+    if (!$this->options['cleaning_options']) 
+      return $latest_options;
+    
+    if (empty($latest_options)) 
+      return $this->options;
+    
+    if (!empty($latest_options['tables'])) {
+      foreach ($latest_options['tables'] as $i => $table) {
+        if (!$this->check_table_exists($table['table_name'])) 
+          unset($latest_options['tables'][$i]);
+      }
+    }
+    
+    return $latest_options;
+  }
   
   
 }

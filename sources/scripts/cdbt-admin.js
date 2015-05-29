@@ -289,21 +289,70 @@ $(function() {
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
-      if ('drop' === new_action) {
-        var post_data = {
+      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
+      
+      var post_data = {};
+      if ('' === $('input[name="custom-database-tables[operate_current_table]"]').val()) {
+        post_data = {
         	id: 'cdbtModal', 
           insertContent: true, 
-          modalTitle: 'drop_table', 
+          modalTitle: 'table_unknown', 
           modalBody: '', 
-          modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');", 
+          modalHideEvent: $common_modal_hide, 
           modalShowEvent: "", 
         };
         init_modal( post_data );
+      } else {
+        switch(new_action) {
+          case 'truncate': 
+            post_data = {
+        	    id: 'cdbtModal', 
+              insertContent: true, 
+              modalTitle: 'truncate_table', 
+              modalBody: '', 
+              modalHideEvent: $common_modal_hide, 
+              modalShowEvent: "", 
+            };
+            init_modal( post_data );
+            break;
+          case 'drop': 
+            post_data = {
+        	    id: 'cdbtModal', 
+              insertContent: true, 
+              modalTitle: 'drop_table', 
+              modalBody: '', 
+              modalHideEvent: $common_modal_hide, 
+              modalShowEvent: "", 
+            };
+            init_modal( post_data );
+            break;
+          default:
+            break;
+        }
       }
       
 //      $('form.navbar-form').trigger('submit');
     });
     
+    // Run of truncating table after confirmation
+    $(document).on('click', '#run_truncate_table', function(){
+      var post_data = {
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'truncate_table', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    
+    // Run of dropping table after confirmation
+    $(document).on('click', '#run_drop_table', function(){
+      var post_data = {
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'drop_table', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
     
   }
   

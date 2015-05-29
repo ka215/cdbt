@@ -689,20 +689,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function truncate_table($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		if ($this->check_table_exists($table_name)) {
-			// if exists table, truncate table.
-			$e = $wpdb->query("TRUNCATE TABLE `". $table_name ."`");
-			if ($e) {
-				$result = array(true, __('Completed to truncate table.', self::DOMAIN));
-			} else {
-				$result = array(false, __('Failed to truncate table.', self::DOMAIN));
-			}
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**
@@ -711,20 +697,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function drop_table($table_name=null) {
-		global $wpdb;
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		if ($this->check_table_exists($table_name)) {
-			// if exists table, drop table.
-			$e = $wpdb->query("DROP TABLE `". $table_name ."`");
-			if ($e) {
-				$result = array(true, __('Completed to drop table.', self::DOMAIN));
-			} else {
-				$result = array(false, __('Failed to drop table.', self::DOMAIN));
-			}
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**

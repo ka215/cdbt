@@ -271,8 +271,8 @@ class CdbtDB extends CdbtConfig {
     return $this->get_table_status( $table_name, 'Comment' );
     
   }
-
-
+  
+  
   /**
    * Get table status
    *
@@ -326,6 +326,69 @@ class CdbtDB extends CdbtConfig {
     return false;
     
   }
+  
+  
+  /**
+   * Truncate all data in table for emptying
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @return boolean
+   */
+  function truncate_table( $table_name=null ) {
+    static $message = '';
+    
+    if (empty($table_name)) 
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!$this->check_table_exists($table_name)) 
+      $message = __('Specified table does not exist.', CDBT);
+    
+    if ($this->wpdb->query( sprintf( 'TRUNCATE TABLE `%s`;', esc_sql($table_name) ) )) {
+      $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $table_name );
+      $this->logger( $message );
+      return true;
+    } else {
+      $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $table_name );
+    }
+    
+    $this->logger( $message );
+    return false;
+  }
+  
+  
+  /**
+   * Drop specific table in database (as complete remove)
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @return boolean
+   */
+  function drop_table( $table_name=null ) {
+    static $message = '';
+    
+    if (empty($table_name)) 
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!$this->check_table_exists($table_name)) 
+      $message = __('Specified table does not exist.', CDBT);
+    
+    if ($this->wpdb->query( sprintf( 'DROP TABLE `%s`;', esc_sql($table_name) ) )) {
+      $message = sprintf( __('Table of "%s" has been removed successfully.', CDBT), $table_name );
+      $this->logger( $message );
+      return true;
+    } else {
+      $message = sprintf( __('Failed to remove the table of "%s".', CDBT), $table_name );
+    }
+    
+    $this->logger( $message );
+    return false;
+  }
+  
   
   
   
