@@ -162,6 +162,40 @@ trait CdbtAjax {
    *
    * @param array $args [require]
    * @return void Output the JavaScript for callback on the frontend
+   * /
+  public function ajax_event_truncate_table( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    if (array_key_exists('table_name', $args) && array_key_exists('operate_action', $args) && 'truncate' === $args['operate_action']) {
+      
+      if ($this->truncate_table( $args['table_name'] )) {
+        $notices_class = CDBT . '-notice';
+        $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $args['table_name'] );
+      } else {
+        $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $args['table_name'] );
+      }
+      
+    } else {
+      
+      $message = sprintf( __('Parameters required for table truncation is missing.', CDBT) );
+      
+    }
+    
+    $this->register_admin_notices( $notices_class, $message, 3, true );
+    die('location.reload();');
+    
+  }
+  */
+  
+  
+  /**
+   * Run the table truncate via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
    */
   public function ajax_event_truncate_table( $args=[] ) {
     static $message = '';

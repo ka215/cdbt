@@ -12,6 +12,8 @@
  * 'modalShow' => @boolean [optional] For default is true
  * 'modalHideEvent' => @string [optional] Javascript is.
  * 'modalShowEvent' => @string [optional] Javascript is.
+ * 'modalExtras' => @array [optional] Freely addition arguments for using when generating content in modal
+ * ]
  */
 
 /**

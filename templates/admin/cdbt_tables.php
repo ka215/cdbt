@@ -63,7 +63,7 @@ sort($selectable_table);
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
   
     endif; ?>
-<?php endif; ?>
+<?php endif; /* End of `table_list` tab contents */ ?>
   
 <?php if ($current_tab == 'wp_core_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4>
@@ -79,7 +79,7 @@ sort($selectable_table);
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
   
 ?>
-<?php endif; ?>
+<?php endif; /* End of `wp_core_table` tab contents */ ?>
   
 <?php if ($current_tab == 'create_table') : 
   /**
@@ -366,7 +366,7 @@ sort($selectable_table);
       
     </form>
   </div><!-- /.cdbt-create-table -->
-<?php endif; ?>
+<?php endif; /* End of `create_table` tab contents */ ?>
   
 <?php if ($current_tab == 'modify_table') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Modify Table', CDBT); ?></h4>
@@ -380,13 +380,11 @@ sort($selectable_table);
     $this->destroy_session();
   
 ?>
-<?php endif; ?>
+<?php endif; /* End of `modify_table` tab contents */ ?>
   
-<?php if ($current_tab == 'operate_table') : ?>
-  
-<?php
+<?php if ($current_tab == 'operate_table') : 
   /**
-   * Define the localized variables for tab of `modify_table`
+   * Define the localized variables for tab of `operate_table`
    */
   
   $target_table = '';
@@ -454,6 +452,7 @@ sort($selectable_table);
                 <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
               </button>
               <ul class="dropdown-menu" role="menu">
+                <li data-value=""><a href="#"><span class="text-muted"><?php _e('Please select', CDBT); ?></span></a></li>
               <?php foreach ($selectable_table as $table) : ?>
                 <li data-value="<?php echo $table; ?>"<?php if ($target_table === $table) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $table; ?></a></li>
               <?php endforeach; ?>
@@ -467,7 +466,7 @@ sort($selectable_table);
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $current_action; ?>">
         <div class="navbar-right">
         <?php foreach ($operatable_buttons as $action_name => $definitions) : ?>
-          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (!in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
+          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (empty($target_table) || !in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
         <?php endforeach; ?>
         </div>
       </form>
@@ -496,7 +495,8 @@ sort($selectable_table);
   
 <?php endif; ?>
   
-<?php if ('detail' === $current_action) : ?>
+
+<section id="detail" class="<?php if ('detail' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   <div class="table-responsive">
     <strong><i class="fa fa-square text-muted"></i> カラム情報</strong>
     <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
@@ -549,16 +549,39 @@ sort($selectable_table);
       </tfoot>
     </table>
   </div>
-<?php endif; ?>
+</section>
   
+<section id="import" class="<?php if ('import' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-<?php endif; ?>
+  <p>Import Table</p>
+  
+</section>
+  
+<section id="export" class="<?php if ('export' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <p>Export Table</p>
+  
+</section>
+  
+<section id="duplicate" class="<?php if ('duplicate' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <p>Duplicate Table</p>
+  
+</section>
+  
+<section id="backup" class="<?php if ('backup' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <p>Backup Table</p>
+  
+</section>
+  
+<?php endif; /* End of `operate_table` tab contents */ ?>
   
 <?php if ($current_tab == 'operate_data') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Operate Data', CDBT); ?></h4>
     
     <?php var_dump( $this->cdbt_sessions[$current_tab] ); ?>
     
-<?php endif; ?>
+<?php endif; /* End of `operate_data` tab contents */ ?>
   
 </div><!-- /.wrap -->

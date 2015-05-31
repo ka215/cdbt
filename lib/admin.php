@@ -891,15 +891,20 @@ class CdbtAdmin extends CdbtDB {
   public function insert_content_to_modal( $args ) {
     if (array_key_exists('modalTitle', $args)) {
       switch ($args['modalTitle']) {
+        case 'notices_error': 
+        case 'notices_updated': 
+        	$args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
+          $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          break;
         case 'truncate_table': 
-        	$args['modalTitle'] = __('Truncate data in this table', CDBT);
-          $args['modalBody'] = __('//%If you have deleted a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to delete the table really?', CDBT);
+        	$args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);
+          $args['modalBody'] = __('When you truncate a table, all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to truncate this table really?', CDBT);
         	$args['modalFooter'] = [ sprintf('<button type="button" id="run_truncate_table" class="btn btn-primary">%s</button>', __('Truncate', CDBT)), ];
         	$args['modalShowEvent'] = "$('#run_truncate_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
         	break;
         case 'drop_table': 
-        	$args['modalTitle'] = __('Delete this table', CDBT);
-          $args['modalBody'] = __('If you have deleted a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to delete the table really?', CDBT);
+        	$args['modalTitle'] = sprintf(__('Remove the "%s" table', CDBT), $args['modalExtras']['table_name']);
+          $args['modalBody'] = __('If you have removed a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to remove the table really?', CDBT);
         	$args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
         	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
         	break;

@@ -8,6 +8,7 @@ $(function() {
   
   /**
    * Utility functions
+   * Return as an object by parsing the query string of the current URL
    */
   $.QueryString = (function(queries) {
     if ('' === queries) { return {}; }
@@ -43,6 +44,10 @@ $(function() {
     
     this.render_modal = function(){
       
+      if ($('#cdbtModal').size() > 0) {
+        $('#cdbtModal').remove();
+      }
+      
       $('body').append( $.ajaxResponse.responseText );
       
     };
@@ -52,9 +57,21 @@ $(function() {
   var Callback = new CallbackClass();
   
   /**
-   * Common display notice handler
+   * Modal dialog window of Bootstrap initialize
    */
-  $('#message').show();
+  var init_modal = function(){
+    var post_data = {};
+    if (arguments.length > 0) {
+      post_data = arguments[0];
+    }
+    
+    if ($('div.modal').size() > 0) {
+      $('div.modal').remove();
+    }
+    
+    cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
+    
+  };
   
   /**
    * Wizard components of Fuel UX renderer
@@ -94,23 +111,6 @@ $(function() {
     }
     
   }
-  
-  /**
-   * Modal dialog window of Bootstrap initialize
-   */
-  var init_modal = function(){
-    var post_data = {};
-    if (arguments.length > 0) {
-      post_data = arguments[0];
-    }
-    
-    if ($('#cdbtModal').size() > 0) {
-      $('#cdbtModal').remove();
-    }
-    
-    cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
-    
-  };
   
   
   /**
@@ -182,6 +182,25 @@ $(function() {
     });
     
   };
+  
+  
+  /**
+   * Common display notice handler
+   */
+  if ('' !== $('#message').text()) {
+    if ($.isDebug) {
+      var post_data = {
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalTitle: 'notices_' + $('#message').attr('class'), 
+        modalBody: $('#message').html(), 
+      };
+      init_modal( post_data );
+    } else {
+      $('#message').show();
+    }
+  }
+  
   
   /**
    * `<a>` tag was clicked, then executes an AJAX processing before transition to the link destination.
@@ -280,7 +299,11 @@ $(function() {
   
   if ('cdbt_tables' === $.QueryString.page && 'operate_table' === $.QueryString.tab) {
     
-    $('button[id^="operate-table-action-"]').on('click', function() {
+    $('button[id^="operate-table-action-"]').on('click', function(e) {
+      if ('' === $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value')) {
+        e.preventDefault();
+        return false;
+      }
       var new_action = _.last($(this).attr('id').split('-'));
       if ('change_table' === new_action) {
         new_action = 'detail';
@@ -289,7 +312,8 @@ $(function() {
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
-      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
+//      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
+      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');";
       
       var post_data = {};
       if ('' === $('input[name="custom-database-tables[operate_current_table]"]').val()) {
@@ -299,11 +323,56 @@ $(function() {
           modalTitle: 'table_unknown', 
           modalBody: '', 
           modalHideEvent: $common_modal_hide, 
-          modalShowEvent: "", 
         };
         init_modal( post_data );
       } else {
         switch(new_action) {
+        	case 'detail': 
+            $('section').each(function() {
+              if (new_action === $(this).attr('id')) {
+                $(this).attr('class', 'show');
+              } else {
+                $(this).attr('class', 'hidden');
+              }
+            });
+        	  break;
+        	case 'import': 
+            $('section').each(function() {
+              if (new_action === $(this).attr('id')) {
+                $(this).attr('class', 'show');
+              } else {
+                $(this).attr('class', 'hidden');
+              }
+            });
+        	  break;
+        	case 'export': 
+            $('section').each(function() {
+              if (new_action === $(this).attr('id')) {
+                $(this).attr('class', 'show');
+              } else {
+                $(this).attr('class', 'hidden');
+              }
+            });
+        	  break;
+        	case 'duplicate': 
+            $('section').each(function() {
+              if (new_action === $(this).attr('id')) {
+                $(this).attr('class', 'show');
+              } else {
+                $(this).attr('class', 'hidden');
+              }
+            });
+/*
+            post_data = {
+              'session_key': 'operate_table', 
+              'target_table': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+              'default_action': new_action, 
+              'callback_url': './admin.php?page=cdbt_tables&tab=operate_table', 
+            };
+            cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+*/
+        	  
+        	  break;
           case 'truncate': 
             post_data = {
         	    id: 'cdbtModal', 
@@ -311,9 +380,22 @@ $(function() {
               modalTitle: 'truncate_table', 
               modalBody: '', 
               modalHideEvent: $common_modal_hide, 
-              modalShowEvent: "", 
+              modalExtras: { 'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val() }, 
             };
             init_modal( post_data );
+            break;
+          case 'modify': 
+            post_data = {
+              'session_key': 'modify_table', 
+              'target_table': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+              'callback_url': './admin.php?page=cdbt_tables&tab=modify_table', 
+            };
+            cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+            break;
+          case 'backup': 
+            
+            // Have not yet implemented
+            
             break;
           case 'drop': 
             post_data = {
@@ -322,16 +404,18 @@ $(function() {
               modalTitle: 'drop_table', 
               modalBody: '', 
               modalHideEvent: $common_modal_hide, 
-              modalShowEvent: "", 
+              modalExtras: { 'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val() }, 
             };
             init_modal( post_data );
             break;
           default:
+            
+            $('form.navbar-form').trigger('submit');
+            
             break;
         }
       }
       
-//      $('form.navbar-form').trigger('submit');
     });
     
     // Run of truncating table after confirmation
