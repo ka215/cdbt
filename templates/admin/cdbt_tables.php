@@ -434,7 +434,7 @@ sort($selectable_table);
   
 ?>
   
-  <nav class="navbar navbar-default" style="margin-top: 1em;">
+  <nav class="navbar navbar-default navbar-inner-tab" style="margin-top: 1em;">
     <div class="container-fluid">
       <!-- This icon represents the belonging table type -->
       <label class="navbar-brand"><i class="<?php echo $belong_table_type['icon']; ?>"></i></label>
@@ -553,25 +553,69 @@ sort($selectable_table);
   
 <section id="import" class="<?php if ('import' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <p>Import Table</p>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Table Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
   
 </section>
   
 <section id="export" class="<?php if ('export' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <p>Export Table</p>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['export']['icon']; ?> text-muted"></i> <?php esc_html_e('Export Table Options', CDBT); ?></h4> <?php $this->during_trial( 'export_table' ); ?>
   
 </section>
   
 <section id="duplicate" class="<?php if ('duplicate' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <p>Duplicate Table</p>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['duplicate']['icon']; ?> text-muted"></i> <?php esc_html_e('Duplicate Table Options', CDBT); ?></h4> <?php $this->during_trial( 'duplicate_table' ); ?>
+  
+  <div class="well-sm">
+    <p class="text-info">
+      複製テーブルのテーブル名以外の設定値は複製元テーブルの設定を引き継ぎます。設定を変更したい場合は、テーブル複製後に個別に変更してください。
+    </p>
+  </div>
+  
+  <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
+    <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+    <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+    <input type="hidden" name="action" value="duplicate_table">
+    <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+    
+    <div class="form-group">
+      <label for="duplicate-table-table_name" class="col-sm-2 control-label"><?php _e('Duplicate Table Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-5">
+        <input id="duplicate-table-table_name" name="<?php echo $this->domain_name; ?>[duplicate_table_name]" type="text" value="<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_table_name'])) echo $this->cdbt_sessions[$current_tab]['duplicate_table_name']; ?>" class="form-control" placeholder="Duplicate Table Name">
+        <p class="help-block">複製されるテーブルのテーブル名を入力してください。</p>
+      </div>
+    </div><!-- /create-table-duplicate_table_name -->
+    <div class="form-group">
+      <label for="duplicate-table-with_data_true" class="col-sm-2 control-label"><?php _e('Duplicate With Data', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-10">
+        <div class="radio">
+          <label class="radio-custom" data-initialize="radio" id="duplicate-table-with_data_true">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[duplicate_with_data]" type="radio" value="true"<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_with_data'])) { if ($this->cdbt_sessions[$current_tab]['duplicate_with_data']) : ?> checked="checked"<?php endif; } else { ?> checked="checked"<?php } ?>>
+            複製元テーブルに格納されているデータが含まれる完全な複製を行う
+          </label>
+        </div>
+        <div class="radio checked">
+          <label class="radio-custom" data-initialize="radio" id="duplicate-table-with_data_false">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[duplicate_with_data]" type="radio" value="false"<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_with_data'])) { if (!$this->cdbt_sessions[$current_tab]['duplicate_with_data']) : ?> checked="checked"<?php endif; } ?>>
+            複製元テーブルのデータを含まないテーブル構造だけを複製する（複製後のテーブルはデータのない空テーブルになります）
+          </label>
+        </div>
+      </div>
+    </div><!-- /create-table-duplicate_with_data -->
+    <input type="hidden" name="<?php echo $this->domain_name; ?>[duplicate_origin_table]" value="<?php echo $target_table; ?>">
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary"><?php _e('Duplicate Table', CDBT); ?></button>
+      </div>
+    </div>
+  </form>
   
 </section>
   
 <section id="backup" class="<?php if ('backup' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <p>Backup Table</p>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['backup']['icon']; ?> text-muted"></i> <?php esc_html_e('Backup Table Options', CDBT); ?></h4> <?php $this->during_trial( 'backup_table' ); ?>
   
 </section>
   

@@ -390,6 +390,49 @@ class CdbtDB extends CdbtConfig {
   }
   
   
+  /**
+   * Duplicate the table like as replication table
+   *
+   * @since 2.0.0
+   *
+   * @param string $replicate_table [require] Replicated destination table name
+   * @param boolean $duplicate_with_data [require] Whether data copy at the replication table
+   * @param string $origin_table [require] Replication origin table name
+   * @return boolean
+   */
+  function duplicate_table( $replicate_table=null, $duplicate_with_data=true, $origin_table=null ) {
+    static $message = '';
+    
+    if (empty($replicate_table) || empty($origin_table)) 
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!$this->check_table_exists($origin_table)) 
+      $message = __('Replication origin table does not exist.', CDBT);
+    
+    if ($this->wpdb->query( sprintf( 'CREATE TABLE `%s` LIKE `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) )) {
+      $message = sprintf( __('Created a table "%1$s" replicated of the table "%2$s".', CDBT), $replicate_table, $origin_table );
+      $this->logger( $message );
+      if ($duplicate_with_data) {
+        $check_data = $this->array_flatten($this->get_data( $origin_table, 'COUNT(*)', 'ARRAY_A'));
+        if (is_array($check_data) && intval(reset($check_data)) > 0) {
+          if ($this->wpdb->query( sprintf( 'INSERT INTO `%s` SELECT * FROM `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) )) {
+            $message = sprintf( __('Then copied the data to replication table "%s".', CDBT), $replicate_table );
+          } else {
+            $message = __('Table replication has been completed, but have failed to copy the data.', CDBT);
+          }
+        }
+      }
+      $this->logger( $message );
+      return true;
+    } else {
+      $message = sprintf( __('Failed to replicated table "%s" creation.', CDBT), $replicate_table );
+    }
+    
+    $this->logger( $message );
+    return false;
+  }
+  
+  
   
   
   

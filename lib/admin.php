@@ -817,33 +817,95 @@ class CdbtAdmin extends CdbtDB {
    */
   public function do_cdbt_tables_operate_table() {
     static $message = '';
+    $notice_class = CDBT . '-error';
     
     // Access authentication process to the page
-    $message = $this->access_page_authentication( [ 'change_table' ] );
+    $message = $this->access_page_authentication( [ 'change_table', 'import_table', 'export_table', 'duplicate_table', 'backup_table' ] );
     if (!empty($message)) {
-      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      $this->register_admin_notices( $notice_class, $message, 3, true );
       return;
     }
     
-    // Process of changing the operation table and process of switching operation action
-    if ('change_table' === $_POST['action']) {
-      
-      $post_data = $_POST[$this->domain_name];
-      if (empty($post_data['operate_target_table'])) {
-        $this->register_admin_notices( CDBT . '-error', __('Could not change the operate table.', CDBT), 3, true );
-      } else {
-        $this->cdbt_sessions[$_POST['active_tab']] = [
-          'target_table' => $post_data['operate_target_table'], 
-          'operate_current_table' => isset($post_data['operate_current_table']) && !empty($post_data['operate_current_table']) ? $post_data['operate_current_table'] : $post_data['operate_target_table'], 
-          'operate_action' => isset($post_data['operate_action']) && !empty($post_data['operate_action']) ? $post_data['operate_action'] : 'detail', 
-        ];
-      }
-      return;
-      
+    // Process of changing the table and switching operation action
+    switch($_POST['action']) {
+      case 'change_table': 
+        
+        $post_data = $_POST[$this->domain_name];
+        if (empty($post_data['operate_target_table'])) {
+          $message = __('Could not change the operate table.', CDBT);
+        } else {
+          $this->cdbt_sessions[$_POST['active_tab']] = [
+            'target_table' => $post_data['operate_target_table'], 
+            'operate_current_table' => isset($post_data['operate_current_table']) && !empty($post_data['operate_current_table']) ? $post_data['operate_current_table'] : $post_data['operate_target_table'], 
+            'operate_action' => isset($post_data['operate_action']) && !empty($post_data['operate_action']) ? $post_data['operate_action'] : 'detail', 
+          ];
+        }
+        
+        break;
+      case 'import_table': 
+        
+        break;
+      case 'export_table': 
+        
+        break;
+      case 'duplicate_table': 
+        
+        $post_data = $_POST[$this->domain_name];
+        if (!isset($post_data['duplicate_table_name']) || empty($post_data['duplicate_table_name'])) {
+          $message = __('Replicate table name does not specified.', CDBT);
+        } else
+        if (!isset($post_data['duplicate_with_data']) || empty($post_data['duplicate_with_data']) || !in_array($post_data['duplicate_with_data'], [ 'true', 'false' ])) {
+        	$message = __('Parameter for duplicating the table is incomplete.', CDBT);
+        } else
+        if (!isset($post_data['duplicate_origin_table']) || empty($post_data['duplicate_origin_table'])) {
+        	$message = __('Original table for duplicating does not specified.', CDBT);
+        } else
+        if ($this->check_table_exists($post_data['duplicate_table_name'])) {
+          $message = __('Replicate table name already exists. Please specify a different table name.', CDBT);
+        }
+        
+        if (empty($message)) {
+        	$duplicate_with_data = 'true' === $post_data['duplicate_with_data'] ? true : false;
+          if ($this->duplicate_table( $post_data['duplicate_table_name'], $duplicate_with_data, $post_data['duplicate_origin_table'] )) {
+            // Register as a managed table of plugin
+            if ($this->add_new_table( $post_data['duplicate_table_name'], 'regular', $this->get_table_option($post_data['duplicate_origin_table']) )) {
+              $notice_class = CDBT . '-notice';
+              $message = __('Duplication of the table has been completed successfully.', CDBT);
+            } else {
+              $message = __('Replication of table has been completed, but have failed to register as a manageable table of plugin. Please retry from resuming the table.', CDBT);
+            }
+          } else {
+            $message = __('Failed to replication of the table.', CDBT);
+          }
+        }
+        if (CDBT . '-error' === $notice_class) {
+          $this->cdbt_sessions[$_POST['active_tab']] = [
+            'target_table' => $post_data['duplicate_origin_table'], 
+            'operate_current_table' => $post_data['duplicate_origin_table'], 
+            'duplicate_table_name' => $post_data['duplicate_table_name'], 
+            'duplicate_with_data' => $duplicate_with_data, 
+            'operate_action' => 'duplicate', 
+          ];
+        } else {
+          $this->cdbt_sessions[$_POST['active_tab']] = [
+            'operate_target_table' => $post_data['duplicate_table_name'], 
+            'operate_current_table' => $post_data['duplicate_table_name'], 
+            'operate_action' => 'detail', 
+          ];
+        }
+        break;
+      case 'backup_table': 
+        
+        break;
+      default:
+        $message = __('Illegal operation was called.', CDBT);
+        break;
     }
     
-    
-    
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+    }
+    return;
     
   }
 

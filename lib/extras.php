@@ -52,6 +52,10 @@ trait CdbtExtras {
       'user_permission_view', 
       'user_permission_entry', 
       'user_permission_edit', 
+      'import_table', 
+      'export_table', 
+      'duplicate_table', 
+      'backup_table', 
     ];
     if (in_array($feature_name, $new_features)) {
       printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );

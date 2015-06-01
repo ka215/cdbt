@@ -27,6 +27,11 @@ dd:last-child, li:last-child {
   background-color: #f0f0f0;
 }
 
+.navbar-inner-tab {
+  margin-top: 1em;
+  margin-bottom: 0px;
+}
+
 code, kbd, pre, samp {
   font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
@@ -71,21 +76,6 @@ fieldset>label {
   margin-bottom: 8px;
   text-indent: 1.5em;
 }
-
-/*
-.label {
-  display: inline;
-  padding: .2em .6em .3em;
-  font-size: 75%;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: .25em;
-}
-*/
 
 .label-default {
   background-color: $default;
@@ -186,4 +176,20 @@ div.plugin-meta {
       border-top-width: 2px;
     }
   }
+}
+
+nav+section {
+  margin-top: 1em;
+}
+
+.table-responsive>strong {
+  display: block;
+  padding: 5px;
+}
+
+.sub-description-title {
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 8px;
+  margin-bottom: 1em;
 }
