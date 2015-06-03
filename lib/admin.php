@@ -847,18 +847,46 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'export_table': 
         
+/*
+        $post_data = $_POST[$this->domain_name];
+        if (!isset($post_data['export_filetype']) || empty($post_data['export_filetype']) || !in_array($post_data['export_filetype'], $this->allow_file_types)) {
+        	$message = __('Format of the download file is not specified.', CDBT);
+        } else
+        if (!isset($post_data['export_columns']) || empty($post_data['export_columns']) || !is_array($post_data['export_columns'])) {
+        	$message = __('Export columns has not been specified. You must specify at least one or more columns.', CDBT);
+        	$post_data['export_columns'] = [];
+        } else
+        if (!isset($post_data['export_table']) || empty($post_data['export_table'])) {
+          $message = __('Export table is not specified.', CDBT);
+        }
+        $add_index_line = isset($post_data['add_index_line']) && 1 === intval($post_data['add_index_line']) ? true : false;
+        
+        if (empty($message)) {
+          $result = $this->export_table( $post_data['export_table'], array_values($post_data['export_columns']), $post_data['export_filetype'], $add_index_line );
+          var_dump($result);
+        }
+        
+        // Set sessions
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $post_data['export_table'], 
+          'export_filetype' => $post_data['export_filetype'], 
+          'add_index_line' => $add_index_line, 
+          'export_columns' => $post_data['export_columns'], 
+          'operate_action' => 'export', 
+        ];
+*/
         break;
       case 'duplicate_table': 
         
         $post_data = $_POST[$this->domain_name];
         if (!isset($post_data['duplicate_table_name']) || empty($post_data['duplicate_table_name'])) {
-          $message = __('Replicate table name does not specified.', CDBT);
+          $message = __('Replicate table name is not specified.', CDBT);
         } else
         if (!isset($post_data['duplicate_with_data']) || empty($post_data['duplicate_with_data']) || !in_array($post_data['duplicate_with_data'], [ 'true', 'false' ])) {
         	$message = __('Parameter for duplicating the table is incomplete.', CDBT);
         } else
         if (!isset($post_data['duplicate_origin_table']) || empty($post_data['duplicate_origin_table'])) {
-        	$message = __('Original table for duplicating does not specified.', CDBT);
+        	$message = __('Original table for duplicating is not specified.', CDBT);
         } else
         if ($this->check_table_exists($post_data['duplicate_table_name'])) {
           $message = __('Replicate table name already exists. Please specify a different table name.', CDBT);
@@ -878,6 +906,7 @@ class CdbtAdmin extends CdbtDB {
             $message = __('Failed to replication of the table.', CDBT);
           }
         }
+        // Set sessions
         if (CDBT . '-error' === $notice_class) {
           $this->cdbt_sessions[$_POST['active_tab']] = [
             'target_table' => $post_data['duplicate_origin_table'], 
@@ -957,6 +986,12 @@ class CdbtAdmin extends CdbtDB {
         case 'notices_updated': 
         	$args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          break;
+        case 'export_table': 
+        	$args['modalTitle'] = sprintf(__('Export data from "%s" table', CDBT), $args['modalExtras']['export_table']);
+          $args['modalBody'] = __('If specified table has a lot of data for exporting, it may take long time until the download is complete.<br>Please start the export if it is good.', CDBT);
+        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_export_table" class="btn btn-primary">%s</button>', __('Export', CDBT)), ];
+        	$args['modalShowEvent'] = "$('#run_export_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'truncate_table': 
         	$args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);

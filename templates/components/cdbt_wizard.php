@@ -7,6 +7,8 @@
  * 'currentStep' => @integer is currently step number [optional] For default `1`
  * 'displayMaxStep' => @integer is rendered step number of maximum [optional] For default `1`
  * 'stepLabels' => @array(no assoc) is displayed label of step [optional] For default is `Step` + (key-index + 1)
+ * 'stepContents' => @array(assoc) is displayed content and styling of any step [optional] For default is null
+ * 'disablePreviousStep' => @boolean Whether the previous step button disable [optional] For default `false`
  * 'extras' = @array(assoc) [optional]
  */
 
@@ -54,6 +56,21 @@ if (isset($this->component_options['stepLabels']) && !empty($this->component_opt
   }
 }
 
+// `stepContents` section
+if (isset($this->component_options['stepContents']) && is_array($this->component_options['stepContents']) && !empty($this->component_options['stepContents'])) {
+  foreach ($wizard_steps as $step_num => $step_values) {
+    if (isset($this->component_options['stepContents'][$step_num]) && is_array($this->component_options['stepContents'][$step_num])) 
+      $wizard_steps[$step_num] = array_merge($step_values, $this->component_options['stepContents'][$step_num]);
+  }
+}
+
+// `disablePreviousStep` section
+$disable_previous_step = 'false';
+if (isset($this->component_options['disablePreviousStep']) && !empty($this->component_options['disablePreviousStep'])) {
+  $disable_previous_step = $this->component_options['disablePreviousStep'] ? 'true' : 'false';
+}
+
+
 // `extras` section
 
 
@@ -77,7 +94,7 @@ if (isset($this->component_options['stepLabels']) && !empty($this->component_opt
     <div class="step-content">
     <?php foreach ($wizard_steps as $i => $step_values) : ?>
       <?php if ($i < $display_max_step) : ?>
-      <div class="step-pane<?php if ($current_step === $i+1) echo ' active'; ?>" data-step="<?php echo $i+1; ?>">
+      <div class="step-pane <?php if (isset($step_values['bgcolor'])) echo $step_values['bgcolor'] . ' '; ?><?php if ($current_step === $i+1) echo 'active '; ?>alert" data-step="<?php echo $i+1; ?>">
         <h4><?php echo isset($step_values['title']) ? $step_values['title'] : $step_values['label']; ?></h4>
         <?php if (isset($step_values['content'])) : ?>
         <p><?php echo $step_values['content']; ?><p>
@@ -86,11 +103,15 @@ if (isset($this->component_options['stepLabels']) && !empty($this->component_opt
         <?php endif; ?>
       </div>
       <?php endif; ?>
-    </div><!-- /.step-content -->
     <?php endforeach; ?>
+    </div><!-- /.step-content -->
   </div><!-- /.wizard -->
+  <div class="clearfix"><div style="height: 2em;"></div></div>
 <script>
-var wizard = $('#<?php echo $wizard_id; ?>').wizard({
-  
-});
+var wizard = function() {
+  var wizard = $('#<?php echo $wizard_id; ?>');
+  wizard.wizard(
+    'disablePreviousStep', <?php echo $disable_previous_step; ?>
+  );
+};
 </script>

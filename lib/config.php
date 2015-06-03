@@ -17,6 +17,8 @@ class CdbtConfig extends CdbtCore {
   
   var $option_template = array();
   
+  var $allow_file_types; // For import and export
+  
   var $db_charsets;
   
   var $db_collations;
@@ -49,6 +51,8 @@ class CdbtConfig extends CdbtCore {
       $this->upgrade_options();
     
     // Define base variables for plugin options
+    $this->allow_file_types = [ 'csv', 'tsv', 'json', 'sql' ];
+    
     $this->timezone_identifiers = \DateTimeZone::listIdentifiers();
     sort($this->timezone_identifiers);
     

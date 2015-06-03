@@ -31,6 +31,29 @@ $wizard_step = [
     <p>Welcome to "Custom DataBase Tables" plugin! This page is tutorial of about plugin.</p>
   </div>
   
+  <?php
+  /**
+   * Define the localized variables for tab of `wizard`
+   */
+  $conponent_options = [
+    'id' => 'cdbt-wizard', 
+    'defaultStep' => 1, 
+    'currentStep' => 1, 
+    'displayMaxStep' => 5, 
+    'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), __('Step4', CDBT), __('Step5', CDBT) ], 
+    'stepContents' => [ 
+      [ 'title' => 'Step1 Title', 'bgcolor' => 'bg-default', 'content' => 'content1' ], 
+      [ 'title' => 'Step2 Title', 'bgcolor' => 'bg-danger', 'content' => 'content2' ], 
+      [ 'title' => 'Step3 Title', 'bgcolor' => 'bg-info', 'content' => 'content3' ], 
+      [ 'title' => 'Step4 Title', 'bgcolor' => 'bg-success', 'content' => 'content4' ], 
+      [ 'title' => 'Step5 Title', 'bgcolor' => 'bg-warning', 'content' => 'content5' ], 
+    ], 
+    'disablePreviousStep' => false, 
+  ];
+  $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
+  
+  ?>
+  
   <div class="wizard" data-initialize="wizard" id="welcome-wizard">
     <ul class="steps">
     <?php foreach ($wizard_step['name'] as $i => $step_name) : ?>
@@ -48,14 +71,10 @@ $wizard_step = [
   /* Wizard Step1 Block */
       if (1 <= $wizard_step['display_max']) : ?>
       <div class="step-pane active sample-pane alert" data-step="1">
-        <h4>`CdbtAdmin` Objests</h4>
+        <h4>`$this` Object</h4>
         <p><?php 
 
-//var_dump($this->add_new_table('wp_a'));
-
-//$this->update_options(); 
-var_dump($this->options);
-
+var_dump($this);
 
       /* var_dump($this); */ ?></p>
       </div>
@@ -72,7 +91,7 @@ var_dump($this->options);
   /* Wizard Step3 Block */
       if (3 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-danger alert" data-step="3">
-        <h4>Design Template</h4>
+        <h4>`$this->get_table_status( 'wp_a' )`</h4>
         <p><?php var_dump( $this->get_table_status( 'wp_a' ) ); ?></p>
       </div>
 <?php
@@ -87,8 +106,7 @@ var_dump($this->options);
       endif; ?>
     </div><!-- /.step-content -->
   </div><!-- /.wizard -->
-  
-  <br><br>
+  <div class="clearfix"><div style="height: 2em;"></div></div>
   
   <div class="panel panel-default other-note">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>

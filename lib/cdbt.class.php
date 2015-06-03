@@ -1302,26 +1302,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function export_table($table_name, $index_only=false) {
-		$table_name = !empty($table_name) ? $table_name : $this->current_table;
-		list($is_table,,$table_schema) = $this->get_table_schema($table_name);
-		if ($is_table) {
-			$data = array();
-			$data[] = array_keys($table_schema);
-			if (!$index_only) {
-				$all_data = $this->get_data($table_name);
-				foreach ($all_data as $data_obj) {
-					$row = array();
-					foreach ($data_obj as $key => $val) {
-						$row[] = $val;
-					}
-					$data[] = $row;
-				}
-			}
-			$result = array(true, $data);
-		} else {
-			$result = array(false, __('Table is not exists', self::DOMAIN));
-		}
-		return $result;
 	}
 	
 	/**

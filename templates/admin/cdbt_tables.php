@@ -30,6 +30,11 @@ $unreserved_table = !is_array($unreserved_table) ? [] : $unreserved_table;
 $selectable_table = $options['enable_core_tables'] ? array_merge($enable_table, $this->core_tables) : $enable_table;
 sort($selectable_table);
 
+$allow_file_types = [];
+foreach ($this->allow_file_types as $file_type) {
+  $allow_file_types[$file_type] = __(strtoupper($file_type), CDBT);
+}
+
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -555,11 +560,92 @@ sort($selectable_table);
   
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Table Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
   
+  
+  
 </section>
   
 <section id="export" class="<?php if ('export' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['export']['icon']; ?> text-muted"></i> <?php esc_html_e('Export Table Options', CDBT); ?></h4> <?php $this->during_trial( 'export_table' ); ?>
+  
+  <div class="well-sm">
+    <p class="text-info">
+    <?php if (intval($table_status['Rows']) > 0) : ?>
+      現在テーブルに格納されているデータのエクスポートを行います。ダウンロードしたいファイル形式と、エクスポートの対象となるカラムを指定してください。
+    <?php else : ?>
+      このテーブルにはエクスポートするデータがありません。
+    <?php endif; ?>
+    </p>
+  </div>
+  
+  <?php if (intval($table_status['Rows']) > 0) : ?>
+  <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-export_table">
+    <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+    <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+    <input type="hidden" name="action" value="export_table">
+    <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+    
+    <div class="form-group">
+      <label for="export-table-download_filetype" class="col-sm-2 control-label"><?php _e('Download File Type', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-10">
+        <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="export-table-download_filetype">
+          <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+            <span class="selected-label"></span>
+            <span class="caret"></span>
+            <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+          <?php foreach ($allow_file_types as $filetype_name => $filetype_label) : ?>
+            <li data-value="<?php echo $filetype_name; ?>"<?php if (isset($this->cdbt_sessions[$current_tab]['export_filetype']) && $this->cdbt_sessions[$current_tab]['export_filetype'] === $filetype_name) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $filetype_label; ?></a></li>
+          <?php endforeach; ?>
+          </ul>
+          <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[export_filetype]" readonly="readonly" aria-hidden="true" type="text"/>
+        </div>
+      </div>
+    </div><!-- /export-table-download_filetype -->
+    <div class="form-group" id="switching-item-add_index_line">
+      <label for="export-table-add_index_line" class="col-sm-2 control-label"><?php _e('Add Index Line', CDBT); ?></label>
+      <div class="col-sm-10">
+        <div class="checkbox" id="export-table-add_index_line">
+          <label class="checkbox-custom" data-initialize="checkbox">
+            <input class="sr-only" type="checkbox" name="<?php echo $this->domain_name; ?>[add_index_line]" value="1"<?php if (isset($this->cdbt_sessions[$current_tab]['add_index_line']) && $this->cdbt_sessions[$current_tab]['add_index_line']) : ?> checked="checked"<?php endif; ?>>
+            <span class="checkbox-label">先頭の行にカラム名だけの列をインデックス行として追加する</span>
+          </label>
+        </div>
+        <p class="help-block">この設定はダウンロードファイルが「CSV」か「TSV」の時のみ有効です。</p>
+      </div>
+    </div><!-- /export-table-add_index_line -->
+    <div class="form-group">
+      <label for="export-table-target_columns" class="col-sm-2 control-label"><?php _e('Export Columns', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-10" id="export-table-target_columns">
+      <?php foreach(array_keys($columns_schema) as $i => $column) : ?>
+        <?php 
+    $default_checked = ' checked="checked"';
+    if (isset($this->cdbt_sessions[$current_tab]['export_columns']) && !in_array($column, $this->cdbt_sessions[$current_tab]['export_columns'])) 
+      $default_checked = '';
+        ?>
+        <div class="checkbox highlight" id="export-table-target_columns<?php echo $i+1; ?>">
+          <label class="checkbox-custom highlight" data-initialize="checkbox">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[export_columns][]"<?php echo $default_checked; ?> type="checkbox" value="<?php esc_attr_e($column); ?>"> <span class="checkbox-label"><?php esc_html_e($column); ?></span><?php if ($columns_schema[$column]['primary_key']) : ?>
+            &nbsp;<span class="label label-default"><?php _e('PK', CDBT); ?></span><?php endif; ?>
+          </label>
+        </div>
+      <?php endforeach; ?>
+        <p class="help-block">
+        	<?php _e('You must specify at least one or more columns.', CDBT); ?>
+          <button type="button" class="btn btn-default btn-sm" id="switch-checkbox-export_columns"><?php _e('Switch of all checking', CDBT); ?></button>
+        </p>
+      </div>
+    </div><!-- /export-table-target_columns -->
+    <input type="hidden" name="<?php echo $this->domain_name; ?>[export_table]" value="<?php echo $target_table; ?>">
+    <?php if (isset($this->cdbt_sessions[$current_tab]['ajax_download']) && $this->cdbt_sessions[$current_tab]['ajax_download']) : ?><input type="hidden" id="_ajax_download_export" value="true"><?php endif; ?>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" id="button-submit-export_table"><?php _e('Export', CDBT); ?></button>
+      </div>
+    </div>
+  </form>
+  <?php endif; ?>
   
 </section>
   

@@ -362,16 +362,6 @@ $(function() {
                 $(this).attr('class', 'hidden');
               }
             });
-/*
-            post_data = {
-              'session_key': 'operate_table', 
-              'target_table': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
-              'default_action': new_action, 
-              'callback_url': './admin.php?page=cdbt_tables&tab=operate_table', 
-            };
-            cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-*/
-        	  
         	  break;
           case 'truncate': 
             post_data = {
@@ -416,6 +406,65 @@ $(function() {
         }
       }
       
+    });
+    
+    // Switch of all checking of checkbox
+    $('button[id^="switch-checkbox-"]').on('click', function(){
+      var target_checkbox_container_id = 'export_columns' === $(this).attr('id').replace('switch-checkbox-', '') ? 'export-table-target_columns' : 'import-table-target_columns';
+      $('#' + target_checkbox_container_id + ' .checkbox input').checkbox('toggle');
+    });
+    
+    // Switch the display according to the selected value of the select list
+    $('#export-table-download_filetype').on('changed.fu.selectlist', function(){
+      if (_.contains(['csv', 'tsv'], $(this).selectlist('selectedItem').value)) {
+        $('#switching-item-add_index_line').show();
+      } else {
+        $('#switching-item-add_index_line').hide();
+      }
+    });
+    if ($('#export-table-download_filetype').size() > 0) {
+      if (_.contains(['csv', 'tsv'], $('#export-table-download_filetype').selectlist('selectedItem').value)) {
+        $('#switching-item-add_index_line').show();
+      } else {
+        $('#switching-item-add_index_line').hide();
+      }
+    }
+    
+    // Run of exporting table util first confirmation
+    $('#button-submit-export_table').on('click', function(e){
+      e.preventDefault();
+      var post_data = {
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalTitle: 'export_table', 
+        modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('export');", 
+        modalExtras: {
+          'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
+        },
+      };
+//      console.info(post_data);
+      init_modal( post_data );
+    
+    });
+    
+    // Run of exporting table after confirmation
+    $(document).on('click', '#run_export_table', function(){
+      var export_columns = [];
+      $('[id^="export-table-target_columns"]').each(function(){
+        if ($(this).checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
+          export_columns.push($(this).children().children('input').val());
+        }
+      });
+      var post_data = {
+        'export_filetype': $('#export-table-download_filetype').selectlist('selectedItem').value, 
+        'add_index_line': $('#export-table-add_index_line').checkbox('isChecked') ? $('#export-table-add_index_line input').val() : '', 
+        'export_columns': export_columns, 
+        'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'export_table', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
     });
     
     // Run of truncating table after confirmation

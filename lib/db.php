@@ -597,6 +597,101 @@ class CdbtDB extends CdbtConfig {
     return $return_tables;
     
   }
+  
+  
+  /**
+   * export data from any table
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @param array $export_columns [require] For default is empty array as all columns
+   * @param string $export_file_type [require] Allowed file types conform to `$this->allow_file_types`
+   * @param boolean $add_index_line [optional] Valid if csv and tsv only
+   * @return boolean
+   */
+  public function export_table( $table_name=null, $export_columns=[], $export_file_type=null, $add_index_line=false ) {
+    static $message = '';
+    
+    if (empty($table_name)) 
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+    
+    if (!$this->check_table_exists($table_name)) 
+      $message = __('Original table to export does not exist.', CDBT);
+    
+    if (empty($export_file_type) || !in_array($export_file_type, $this->allow_file_types)) 
+      $message = sprintf( __('Specified "%s" format of download file does not correspond.', CDBT), $export_file_type );
+    
+    if (empty($message)) {
+      $table_scheme = $this->get_table_schema( $table_name );
+      if (empty($export_columns)) {
+        $target_columns = array_keys($table_scheme);
+      } else {
+        $check_columns = true;
+        foreach ($export_columns as $column) {
+          if (!array_key_exists($column, $table_scheme)) {
+            $check_columns = false;
+            break;
+          }
+        }
+        if ($check_columns) {
+          $target_columns = $export_columns;
+        } else {
+          $message = sprintf( __('Export target column "%s" does not exist.', CDBT), $column );
+        }
+      }
+    }
+    
+    if (empty($message) && !empty($target_columns)) {
+      $export_data = $this->get_data( $table_name, $target_columns );
+      $result_exec = true;
+      switch ($export_file_type) {
+        case 'csv': 
+        	$file_name = $table_name .'.'. $export_file_type;
+          //$this->download_file( $export_data, $file_name, true);
+          header( 'Content-Type: application/octet-stream' );
+          header( 'Content-Disposition: attachment; filename=' . $file_name );
+          $fp = fopen('php://output', 'w');
+          foreach ($export_data as $row) {
+            fputcsv($fp, (array)$row);
+          }
+          fclose($fp);
+          break;
+        case 'tsv': 
+        	
+        	
+        	
+          break;
+        case 'json': 
+        	$file_name = $table_name .'.'. $export_file_type;
+        	header( 'Content-type: text/javascript; charset=utf-8' );
+          header( 'Content-Disposition: attachment; filename=' . $file_name );
+          $fp = fopen('php://output', 'w');
+          fwrite($fp, json_encode($export_data));
+          fclose($fp);
+          break;
+        case 'sql': 
+        	
+          break;
+        default:
+        	$result_exec = false;
+        	break;
+      }
+      if ($result_exec) {
+        $this->logger( $message );
+        return ture;
+      } else {
+        $message = __('Failed in the export of table data.', CDBT);
+      }
+    }
+    
+    $this->logger( $message );
+    return false;
+    
+  }
+  
+  
 
 
 
