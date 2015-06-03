@@ -137,6 +137,7 @@ class CdbtCore extends CdbtUtility {
    */
   protected function core_actions() {
     
+    add_action( 'plugins_loaded', array($this, 'plugin_loaded') );
     add_action( 'init', array($this, 'init_cdbt_sessions') );
     
     register_activation_hook		( $this->plugin_main_file, array(&$this, 'plugin_activate' ) );
@@ -144,6 +145,18 @@ class CdbtCore extends CdbtUtility {
     
   }
   
+  protected function plugin_loaded() {
+    
+    if ( (isset($_POST['page']) && 'cdbt_tables' === $_POST['page']) 
+      && (isset($_POST['action']) && !empty($_POST['action'])) 
+      && (isset($_POST[$this->domain_name]) && !empty($_POST[$this->domain_name]) && is_array($_POST[$this->domain_name])) 
+      && (isset($_POST['file_download']) && 'true' === $_POST['file_download']) ) {
+      if ('export_table' === $_POST['action']) 
+        $this->download_file( $_POST[$this->domain_name] );
+      
+    }
+    
+  }
   
   protected function init_cdbt_sessions() {
     if (!session_id()) 

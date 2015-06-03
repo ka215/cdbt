@@ -638,7 +638,7 @@ foreach ($this->allow_file_types as $file_type) {
       </div>
     </div><!-- /export-table-target_columns -->
     <input type="hidden" name="<?php echo $this->domain_name; ?>[export_table]" value="<?php echo $target_table; ?>">
-    <?php if (isset($this->cdbt_sessions[$current_tab]['ajax_download']) && $this->cdbt_sessions[$current_tab]['ajax_download']) : ?><input type="hidden" id="_ajax_download_export" value="true"><?php endif; ?>
+    <input type="hidden" name="file_download" id="cdbt_file_download_flag" value="false">
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <button type="submit" class="btn btn-primary" id="button-submit-export_table"><?php _e('Export', CDBT); ?></button>

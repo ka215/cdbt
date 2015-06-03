@@ -328,32 +328,8 @@ $(function() {
       } else {
         switch(new_action) {
         	case 'detail': 
-            $('section').each(function() {
-              if (new_action === $(this).attr('id')) {
-                $(this).attr('class', 'show');
-              } else {
-                $(this).attr('class', 'hidden');
-              }
-            });
-        	  break;
         	case 'import': 
-            $('section').each(function() {
-              if (new_action === $(this).attr('id')) {
-                $(this).attr('class', 'show');
-              } else {
-                $(this).attr('class', 'hidden');
-              }
-            });
-        	  break;
         	case 'export': 
-            $('section').each(function() {
-              if (new_action === $(this).attr('id')) {
-                $(this).attr('class', 'show');
-              } else {
-                $(this).attr('class', 'hidden');
-              }
-            });
-        	  break;
         	case 'duplicate': 
             $('section').each(function() {
               if (new_action === $(this).attr('id')) {
@@ -449,6 +425,7 @@ $(function() {
     
     // Run of exporting table after confirmation
     $(document).on('click', '#run_export_table', function(){
+/*
       var export_columns = [];
       $('[id^="export-table-target_columns"]').each(function(){
         if ($(this).checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
@@ -465,6 +442,9 @@ $(function() {
         'event': 'export_table', 
       };
       cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+*/
+      $('#cdbt_file_download_flag').val('true');
+      $('#form-export_table').submit();
     });
     
     // Run of truncating table after confirmation

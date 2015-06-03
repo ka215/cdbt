@@ -98,6 +98,60 @@ class CdbtUtility {
     }
   }
 
+
+  public function download_file( $data_sources ) {
+    static $message = '';
+    
+    $add_index_line = isset($data_sources['add_index_line']) && !empty($data_sources['add_index_line']) ? true : false;
+    if (!$this->export_table( $data_sources['export_table'], $data_sources['export_columns'], $data_sources['export_filetype'], $add_index_line )) {
+      wp_safe_redirect();
+    }
+    
+    $file_name = sprintf('%s.%s', $data_sources['export_table'], $data_sources['export_filetype']);
+    $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
+    
+    $result_exec = true;
+    switch ($data_sources['export_filetype']) {
+      case 'csv': 
+        header( 'Content-Type: application/octet-stream' );
+        header( 'Content-Disposition: attachment; filename=' . $file_name );
+        $fp = fopen('php://output', 'w');
+        foreach ($raw_data as $row) {
+          fputcsv($fp, (array)$row);
+        }
+        fclose($fp);
+        break;
+      case 'tsv': 
+        
+        
+        
+        break;
+      case 'json': 
+//        header( 'Content-type: text/javascript; charset=utf-8' );
+        header( 'Content-Type: application/octet-stream' );
+        header( 'Content-Disposition: attachment; filename=' . $file_name );
+        $fp = fopen('php://output', 'w');
+        fwrite($fp, json_encode($raw_data));
+        fclose($fp);
+        break;
+      case 'sql': 
+        
+        break;
+      default:
+        $result_exec = false;
+        break;
+    }
+    if ($result_exec) {
+      $this->logger( $message );
+      exit;
+    } else {
+      $message = __('Failed in the export of table data.', CDBT);
+      wp_safe_redirect();
+    }
+    
+  }
+
+
   /**
    * Flatten the array or object that has nested
    *

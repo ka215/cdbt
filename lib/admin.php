@@ -116,7 +116,7 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * 
+   * Initialization for the plugin management console
    *
    * @since 2.0.0
    */
@@ -149,7 +149,7 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * 
+   * Definition actions for the plugin management console
    *
    * @since 2.0.0
    */
@@ -847,7 +847,6 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'export_table': 
         
-/*
         $post_data = $_POST[$this->domain_name];
         if (!isset($post_data['export_filetype']) || empty($post_data['export_filetype']) || !in_array($post_data['export_filetype'], $this->allow_file_types)) {
         	$message = __('Format of the download file is not specified.', CDBT);
@@ -874,7 +873,6 @@ class CdbtAdmin extends CdbtDB {
           'export_columns' => $post_data['export_columns'], 
           'operate_action' => 'export', 
         ];
-*/
         break;
       case 'duplicate_table': 
         

@@ -600,7 +600,9 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
-   * export data from any table
+   * Export data from any table.
+   * This method is only validation of the setting values.
+   * Generate the downloading data and output that does by the `CdbtUtility::download_file()` method.
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
@@ -644,50 +646,11 @@ class CdbtDB extends CdbtConfig {
     }
     
     if (empty($message) && !empty($target_columns)) {
-      $export_data = $this->get_data( $table_name, $target_columns );
-      $result_exec = true;
-      switch ($export_file_type) {
-        case 'csv': 
-        	$file_name = $table_name .'.'. $export_file_type;
-          //$this->download_file( $export_data, $file_name, true);
-          header( 'Content-Type: application/octet-stream' );
-          header( 'Content-Disposition: attachment; filename=' . $file_name );
-          $fp = fopen('php://output', 'w');
-          foreach ($export_data as $row) {
-            fputcsv($fp, (array)$row);
-          }
-          fclose($fp);
-          break;
-        case 'tsv': 
-        	
-        	
-        	
-          break;
-        case 'json': 
-        	$file_name = $table_name .'.'. $export_file_type;
-        	header( 'Content-type: text/javascript; charset=utf-8' );
-          header( 'Content-Disposition: attachment; filename=' . $file_name );
-          $fp = fopen('php://output', 'w');
-          fwrite($fp, json_encode($export_data));
-          fclose($fp);
-          break;
-        case 'sql': 
-        	
-          break;
-        default:
-        	$result_exec = false;
-        	break;
-      }
-      if ($result_exec) {
-        $this->logger( $message );
-        return ture;
-      } else {
-        $message = __('Failed in the export of table data.', CDBT);
-      }
+      return true;
+    } else {
+      $this->logger( $message );
+      return false;
     }
-    
-    $this->logger( $message );
-    return false;
     
   }
   
