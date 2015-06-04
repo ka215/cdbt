@@ -7,6 +7,7 @@
  *
  */
 
+// 暫定設定
 $wizard_step = [
   'default' => 1, 
   'current' => isset($_REQUEST['wizard_step']) && !empty($_REQUEST['wizard_step']) && intval($_REQUEST['wizard_step']) > 0 ? intval($_REQUEST['wizard_step']) : 1, 

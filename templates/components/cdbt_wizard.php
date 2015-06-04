@@ -8,6 +8,7 @@
  * 'displayMaxStep' => @integer is rendered step number of maximum [optional] For default `1`
  * 'stepLabels' => @array(no assoc) is displayed label of step [optional] For default is `Step` + (key-index + 1)
  * 'stepContents' => @array(assoc) is displayed content and styling of any step [optional] For default is null
+ * 'splitRendering' => @string Outputting with dividing the components before and after content part [optional] `before` or `after`
  * 'disablePreviousStep' => @boolean Whether the previous step button disable [optional] For default `false`
  * 'extras' = @array(assoc) [optional]
  */
@@ -64,6 +65,13 @@ if (isset($this->component_options['stepContents']) && is_array($this->component
   }
 }
 
+// `splitRendering` section
+$is_split = false;
+if (isset($this->component_options['splitRendering']) && !empty($this->component_options['splitRendering']) && in_array($this->component_options['splitRendering'], [ 'before', 'after' ])) {
+  $is_split = true;
+  $render_part = $this->component_options['splitRendering'];
+}
+
 // `disablePreviousStep` section
 $disable_previous_step = 'false';
 if (isset($this->component_options['disablePreviousStep']) && !empty($this->component_options['disablePreviousStep'])) {
@@ -78,6 +86,7 @@ if (isset($this->component_options['disablePreviousStep']) && !empty($this->comp
  * Render the Repeater
  * ---------------------------------------------------------------------------
  */
+if (!$is_split) :
 ?>
   <div class="wizard" data-initialize="wizard" id="<?php echo $wizard_id; ?>">
     <ul class="steps">
@@ -115,3 +124,33 @@ var wizard = function() {
   );
 };
 </script>
+<?php else : ?>
+  <?php if ('before' === $render_part) : ?>
+  <div class="wizard" data-initialize="wizard" id="<?php echo $wizard_id; ?>">
+    <ul class="steps">
+    <?php foreach ($wizard_steps as $i => $step_values) : ?>
+      <?php if ($i < $display_max_step) : ?>
+      <li data-step="<?php echo $i+1; ?>" data-name="cdbt-step-<?php echo $i+1; ?>"<?php if ($current_step === $i+1) echo ' class="active"'; ?>><span class="badge"><?php echo $i+1; ?></span><?php echo $step_values['label']; ?><span class="chevron"></span></li>
+      <?php endif; ?>
+    <?php endforeach; ?>
+    </ul>
+    <div class="actions">
+      <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span><?php _e('Prev', CDBT); ?></button>
+      <button type="button" class="btn btn-default btn-next" data-last="Complete"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>
+    </div>
+    <div class="step-content">
+  <?php endif; ?>
+  <?php if ('after' === $render_part) : ?>
+    </div><!-- /.step-content -->
+  </div><!-- /.wizard -->
+  <div class="clearfix"><div style="height: 2em;"></div></div>
+<script>
+var wizard = function() {
+  var wizard = $('#<?php echo $wizard_id; ?>');
+  wizard.wizard(
+    'disablePreviousStep', <?php echo $disable_previous_step; ?>
+  );
+};
+</script>
+  <?php endif; ?>
+<?php endif; ?>

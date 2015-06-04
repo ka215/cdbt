@@ -99,59 +99,147 @@ class CdbtUtility {
   }
 
 
+  /**
+   * This process download the file when exporting table data.
+   *
+   * @since 2.0.0
+   *
+   * @param array $data_sources [require]
+   * @return boolean
+   */
   public function download_file( $data_sources ) {
     static $message = '';
+    $notice_class = CDBT . '-error';
     
     $add_index_line = isset($data_sources['add_index_line']) && !empty($data_sources['add_index_line']) ? true : false;
-    if (!$this->export_table( $data_sources['export_table'], $data_sources['export_columns'], $data_sources['export_filetype'], $add_index_line )) {
-      wp_safe_redirect();
-    }
+    $output_encoding = isset($data_sources['output_encoding']) && !empty($data_sources['output_encoding']) ? $data_sources['output_encoding'] : '';
+    if (empty($output_encoding) && function_exists('mb_internal_encoding')) 
+      $output_encoding = mb_internal_encoding();
     
     $file_name = sprintf('%s.%s', $data_sources['export_table'], $data_sources['export_filetype']);
     $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
     
-    $result_exec = true;
+    $download_ready = true;
     switch ($data_sources['export_filetype']) {
       case 'csv': 
-        header( 'Content-Type: application/octet-stream' );
-        header( 'Content-Disposition: attachment; filename=' . $file_name );
-        $fp = fopen('php://output', 'w');
-        foreach ($raw_data as $row) {
-          fputcsv($fp, (array)$row);
-        }
-        fclose($fp);
-        break;
       case 'tsv': 
-        
-        
+        $raw_array = json_decode(json_encode($raw_data), true);
+        $escaped_data = [];
+        $current_encoding = [];
+        if ($add_index_line) {
+          $escaped_data[] = '"' . implode('","', $data_sources['export_columns']) . '"';
+        }
+        foreach ($raw_array as $raw_row) {
+          $escaped_row = $this->esc_xsv($raw_row, $data_sources['export_filetype']);
+          if (function_exists('mb_detect_encoding')) 
+            $current_encoding[] = mb_detect_encoding($escaped_row);
+          $escaped_data[] = $escaped_row;
+        }
+        if (!empty($output_encoding) && function_exists('mb_convert_variables')) {
+          mb_convert_variables($output_encoding, implode(',', array_unique($current_encoding)), $escaped_data);
+        }
+        $output_data = implode("\n", $escaped_data);
+        $file_size = strlen($output_data);
         
         break;
       case 'json': 
-//        header( 'Content-type: text/javascript; charset=utf-8' );
-        header( 'Content-Type: application/octet-stream' );
-        header( 'Content-Disposition: attachment; filename=' . $file_name );
-        $fp = fopen('php://output', 'w');
-        fwrite($fp, json_encode($raw_data));
-        fclose($fp);
+        $json_data = json_encode($raw_data);
+        $current_encoding = function_exists('mb_detect_encoding') ? mb_detect_encoding($json_data) : 'UTF-8';
+        if (!empty($output_encoding) && function_exists('mb_convert_encoding')) {
+          $output_data = mb_convert_encoding($json_data, $output_encoding, $current_encoding);
+        } else {
+        	$output_data = $json_data;
+        }
+        $file_size = strlen($output_data);
+        
         break;
       case 'sql': 
+        // if (false !== system('mysqldump --version')) 
+        if (preg_match('/^mysqldump\s(.*)Ver\s(.*)Distrib.*$/iU', exec('mysqldump --version'), $matches) && is_array($matches) && array_key_exists(2, $matches)) {
+          
+          $cmd = sprintf('mysqldump -u %s -p%s -h %s %s %s', DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, $data_sources['export_table']);
+          $temp = tmpfile();
+          exec($cmd, $retval);
+          fwrite($temp, $retval[0]);
+          fseek($temp, 0);
+          $output_data = fread($temp, 8192);
+//          $output_data = file_get_contents($temp);
+          fclose($temp);
+          
+//          var_dump($output_data);
+          $download_ready = false;
+          
+        } else {
+        	$download_ready = false;
+        }
         
         break;
       default:
-        $result_exec = false;
+        $download_ready = false;
+        
         break;
     }
-    if ($result_exec) {
-      $this->logger( $message );
-      exit;
+    
+    if ($download_ready) {
+      try {
+        header( 'Content-Type: application/octet-stream' );
+        header( 'Content-Disposition: attachment; filename=' . $file_name );
+        header( 'Content-Length: ' . $file_size );
+        $fp = fopen('php://output', 'w');
+        fwrite($fp, $output_data);
+        fclose($fp);
+        
+        $download_result = true;
+        $notice_class = CDBT . '-notice';
+        $message = __('Export of table data has been completed successfully.', CDBT);
+        
+      } catch(Exception $e) {
+        
+        $download_result = false;
+        $message = __('Failed in the export of table data.', CDBT);
+        
+      }
     } else {
-      $message = __('Failed in the export of table data.', CDBT);
-      wp_safe_redirect();
+      $download_result = false;
+      $message = __('Failed to export, because could not generate the download file.', CDBT);
     }
+    
+    $this->logger( $message );
+    $this->download_result = $download_result;
+    $this->download_message = $message;
+    return $download_result;
     
   }
 
 
+  /**
+   * Escape an array as a single line string for CSV or TSV
+   *
+   * @since 2.0.0
+   *
+   * @param array $base_array [require]
+   * @param string $file_type [require] `csv` or `tsv`
+   * @return string Escaped row string
+   */
+  public function esc_xsv( $base_array, $file_type='csv' ) {
+    if (!is_array($base_array)) 
+      return;
+    
+    $escaped_array = [];
+    foreach ($base_array as $k => $v) {
+      $v = str_replace('"', '""', $v);
+      $v = str_replace(',', '","', $v);
+      $v = str_replace("\t", chr(9), $v);
+      $v = str_replace(["\r\n", "\r", "\n"], chr(10), $v);
+      $escaped_array[$k] = $v;
+    }
+    
+    $separator = 'csv' === $file_type ? '","' : '"' . chr(9) . '"';
+    return '"' . implode($separator, $escaped_array) . '"';
+    
+  }
+  
+  
   /**
    * Flatten the array or object that has nested
    *

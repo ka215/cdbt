@@ -409,23 +409,6 @@ $(function() {
     // Run of exporting table util first confirmation
     $('#button-submit-export_table').on('click', function(e){
       e.preventDefault();
-      var post_data = {
-        id: 'cdbtModal', 
-        insertContent: true, 
-        modalTitle: 'export_table', 
-        modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('export');", 
-        modalExtras: {
-          'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
-        },
-      };
-//      console.info(post_data);
-      init_modal( post_data );
-    
-    });
-    
-    // Run of exporting table after confirmation
-    $(document).on('click', '#run_export_table', function(){
-/*
       var export_columns = [];
       $('[id^="export-table-target_columns"]').each(function(){
         if ($(this).checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
@@ -433,16 +416,24 @@ $(function() {
         }
       });
       var post_data = {
-        'export_filetype': $('#export-table-download_filetype').selectlist('selectedItem').value, 
-        'add_index_line': $('#export-table-add_index_line').checkbox('isChecked') ? $('#export-table-add_index_line input').val() : '', 
-        'export_columns': export_columns, 
-        'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
-        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
-        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
-        'event': 'export_table', 
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalTitle: 'export_table', 
+        modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('export');", 
+        modalExtras: {
+          'export_filetype': $('#export-table-download_filetype').selectlist('selectedItem').value, 
+          'add_index_line': $('#export-table-add_index_line').checkbox('isChecked') ? $('#export-table-add_index_line input').val() : '', 
+          'output_encoding': $('#export-table-output_encoding').selectlist('selectedItem').value, 
+          'export_columns': export_columns, 
+          'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
+        },
       };
-      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-*/
+      init_modal( post_data );
+    
+    });
+    
+    // Run of exporting table after confirmation
+    $(document).on('click', '#run_export_table', function(){
       $('#cdbt_file_download_flag').val('true');
       $('#form-export_table').submit();
     });
@@ -468,6 +459,62 @@ $(function() {
     });
     
   }
+  
+  if ('cdbt_tables' === $.QueryString.page && 'operate_data' === $.QueryString.tab) {
+  
+    $('button[id^="operate-table-action-"]').on('click', function(e) {
+      if ('' === $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value')) {
+        e.preventDefault();
+        return false;
+      }
+      var new_action = _.last($(this).attr('id').split('-'));
+      if ('change_table' === new_action) {
+        new_action = 'view';
+      }
+      $('input[name="custom-database-tables[operate_action]"]').val(new_action);
+      $('button[id^="operate-table-action-"]').removeClass('active');
+      $(this).addClass('active');
+      
+      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('view'); $('form.navbar-form').trigger('submit');";
+      
+      var post_data = {};
+      if ('' === $('input[name="custom-database-tables[operate_current_table]"]').val()) {
+        post_data = {
+        	id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'table_unknown', 
+          modalBody: '', 
+          modalHideEvent: $common_modal_hide, 
+        };
+        init_modal( post_data );
+      } else {
+        switch(new_action) {
+        	case 'view': 
+        	case 'entry': 
+        	case 'edit': 
+            $('section').each(function() {
+              if (new_action === $(this).attr('id')) {
+                $(this).attr('class', 'show');
+              } else {
+                $(this).attr('class', 'hidden');
+              }
+            });
+        	  break;
+          default:
+            
+            $('form.navbar-form').trigger('submit');
+            
+            break;
+        }
+      }
+      
+    });
+    
+    
+    
+    
+  }
+  
   
 });
 /**

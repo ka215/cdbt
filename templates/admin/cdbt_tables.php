@@ -387,9 +387,9 @@ foreach ($this->allow_file_types as $file_type) {
 ?>
 <?php endif; /* End of `modify_table` tab contents */ ?>
   
-<?php if ($current_tab == 'operate_table') : 
+<?php if ($current_tab === 'operate_table' || $current_tab === 'operate_data') : 
   /**
-   * Define the localized variables for tab of `operate_table`
+   * Define the localized variables for tab of `operate_table` and `operate_data`
    */
   
   $target_table = '';
@@ -426,16 +426,25 @@ foreach ($this->allow_file_types as $file_type) {
   }
   
   // Definition of operatable console buttons
-  $operatable_buttons = [
-    'detail'      => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-    'import'    => [ 'labal' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-    'export'    => [ 'labal' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-    'duplicate' => [ 'labal' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-    'truncate'  => [ 'labal' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
-    'modify'    => [ 'labal' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
-    'backup'    => [ 'labal' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
-    'drop'       => [ 'labal' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
-  ];
+  if ($current_tab === 'operate_table') {
+    $operatable_buttons = [
+      'detail'      => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'import'    => [ 'labal' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'export'    => [ 'labal' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'duplicate' => [ 'labal' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'truncate'  => [ 'labal' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
+      'modify'    => [ 'labal' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
+      'backup'    => [ 'labal' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
+      'drop'       => [ 'labal' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
+    ];
+  } else
+  if ($current_tab === 'operate_data') {
+    $operatable_buttons = [
+      'view'  => [ 'label' => __( 'View Data', CDBT),  'icon' => 'fa fa-eye',                   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'entry' => [ 'label' => __( 'Entry Data', CDBT),  'icon' => 'fa fa-plus',                  'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'edit'   => [ 'label' => __( 'Edit Data', CDBT),    'icon' => 'fa fa-pencil-square-o',  'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+    ];
+  }
   
 ?>
   
@@ -494,12 +503,13 @@ foreach ($this->allow_file_types as $file_type) {
   
   <div class="well-sm">
     <p class="text-info">
-      このセクションでは指定のテーブルに対して様々な操作を行うことができます。実行したい操作ボタンを押してください。
+      <?php if ($current_tab === 'operate_table') { _e('You can perform various operations to the specified table at this section. Please press the operation buttons you want to run.', CDBT); } ?><!-- このセクションでは指定のテーブルに対して様々な操作を行うことができます。実行したい操作ボタンを押してください。 -->
+      <?php if ($current_tab === 'operate_data') { _e('You can manipulate the data in the specified table on this section. Please press the operation buttons you want to run.', CDBT); } ?><!-- このセクションでは指定テーブル内のデータを操作することができます。実行したい操作ボタンを押してください。 -->
     </p>
   </div>
   
-<?php endif; ?>
-  
+<?php endif;
+  if ($current_tab === 'operate_table') : ?>
 
 <section id="detail" class="<?php if ('detail' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   <div class="table-responsive">
@@ -560,7 +570,95 @@ foreach ($this->allow_file_types as $file_type) {
   
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Table Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
   
+  <div class="well-sm">
+    <p class="text-info">
+      現在の指定テーブルにデータをインポートします。インポートは手順に沿ってウィザード形式で行われます。各ステップの指示に従ってください。
+    </p>
+  </div>
   
+  <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-import_table">
+    <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+    <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+    <input type="hidden" name="action" value="import_table">
+    <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+<?php
+  /**
+   * Define the localized variables for tab of `wizard`
+   */
+  $conponent_options = [
+    'id' => 'cdbt-wizard', 
+    'defaultStep' => 1, 
+    'currentStep' => 1, 
+    'displayMaxStep' => 3, 
+    'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), ], 
+    'splitRendering' => 'before', 
+    'disablePreviousStep' => true, 
+  ];
+  $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
+  
+?>
+  <div class="step-pane bg-default active alert" data-step="1">
+    <h4><?php _e('Upload import file', CDBT); ?></h4>
+    <div class="form-group">
+      <label for="import-table-upload_filetype" class="col-sm-2 control-label"><?php _e('Upload File Type', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-10">
+        <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="import-table-upload_filetype">
+          <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+            <span class="selected-label"></span>
+            <span class="caret"></span>
+            <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+          <?php foreach ($allow_file_types as $filetype_name => $filetype_label) : ?>
+            <li data-value="<?php echo $filetype_name; ?>"<?php if (isset($this->cdbt_sessions[$current_tab]['import_filetype']) && $this->cdbt_sessions[$current_tab]['import_filetype'] === $filetype_name) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $filetype_label; ?></a></li>
+          <?php endforeach; ?>
+          </ul>
+          <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[import_filetype]" readonly="readonly" aria-hidden="true" type="text"/>
+        </div>
+      </div>
+    </div><!-- /import-table-upload_filetype -->
+    <div class="form-group" id="switching-item-add_first_line">
+      <label for="import-table-add_first_line" class="col-sm-2 control-label"><?php _e('Add first line of file', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-9">
+        <textarea id="import-table-add_first_line" name="<?php echo $this->domain_name; ?>[add_first_line]" class="form-control" rows="2"></textarea>
+        <div class="sr-only" id="csv_index_line_preset"><?php echo '"' . implode('","', array_keys($columns_schema)) . '"'; ?></div>
+        <div class="sr-only" id="tsv_index_line_preset"><?php echo '"' . implode('"\t"', array_keys($columns_schema)) . '"'; ?></div>
+        <p class="help-block">アップロードするファイルが「CSV」か「TSV」の時は、先頭の行にカラム名の列だけのインデックス行を挿入する必要があります。<br>必要であれば、上記テキストエリア内のインデックス行をデータ列に合わせて編集してください。</p>
+      </div>
+    </div><!-- /import-table-add_first_line -->
+    <div class="form-group">
+      <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Insert Upload File', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <div class="col-sm-10">
+        <input type="file" name="<?php echo $this->domain_name; ?>[upfile]" id="import-table-upfile">
+        <p class="help-block">前項にて指定した形式のファイルをアップロードしてください。</p>
+      </div>
+    </div><!-- /import-table-upfile -->
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" id="button-submit-import_step1"><?php _e('Upload', CDBT); ?></button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="step-pane bg-default alert" data-step="2">
+    <h4>データのインポート方法の選択</h4>
+    <div class="step-body">
+    </div>
+  </div>
+  
+  <div class="step-pane bg-info alert" data-step="3">
+    <h4>インポート結果の確認</h4>
+    <div class="step-body">
+    </div>
+  </div>
+  
+<?php
+  $conponent_options['splitRendering'] = 'after';
+  $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
+?>
+  
+  <input type="hidden" name="<?php echo $this->domain_name; ?>[import_current_step]" value="<?php if (isset($this->cdbt_sessions[$current_tab]['import_current_step']) && !empty($this->cdbt_sessions[$current_tab]['import_current_step'])) { echo $this->cdbt_sessions[$current_tab]['import_current_step']; } else { echo $conponent_options['currentStep']; } ?>">
+  </form>
   
 </section>
   
@@ -615,6 +713,27 @@ foreach ($this->allow_file_types as $file_type) {
         <p class="help-block">この設定はダウンロードファイルが「CSV」か「TSV」の時のみ有効です。</p>
       </div>
     </div><!-- /export-table-add_index_line -->
+  <?php if (function_exists('mb_list_encodings')) : ?>
+    <div class="form-group">
+      <label for="export-table-output_encoding" class="col-sm-2 control-label"><?php _e('Output Encoding Charset', CDBT); ?></label>
+      <div class="col-sm-10">
+        <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="export-table-output_encoding">
+          <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+            <span class="selected-label"></span>
+            <span class="caret"></span>
+            <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+          <?php foreach (mb_list_encodings() as $encoding) : ?>
+            <li data-value="<?php echo $encoding; ?>"<?php if (isset($this->cdbt_sessions[$current_tab]['encoding']) && $this->cdbt_sessions[$current_tab]['encoding'] === $encoding) : ?> data-selected="true"<?php else : if ('utf-8' === strtolower($encoding)) { ?> data-selected="true"<?php } endif; ?>><a href="#"><?php echo $encoding; ?></a></li>
+          <?php endforeach; ?>
+          </ul>
+          <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[output_encoding]" readonly="readonly" aria-hidden="true" type="text"/>
+        </div>
+        <p class="help-block"><?php printf(__('Internal encoding of the current system is the %s.', CDBT), sprintf('<code>%s</code>', mb_internal_encoding())); ?> <?php _e('In the case of downloading JSON file recommend "UTF-8".', CDBT); ?></p>
+      </div>
+    </div><!-- /export-table-output_encoding -->
+  <?php endif; ?>
     <div class="form-group">
       <label for="export-table-target_columns" class="col-sm-2 control-label"><?php _e('Export Columns', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
       <div class="col-sm-10" id="export-table-target_columns">
@@ -707,11 +826,32 @@ foreach ($this->allow_file_types as $file_type) {
   
 <?php endif; /* End of `operate_table` tab contents */ ?>
   
-<?php if ($current_tab == 'operate_data') : ?>
-  <h4 class="tab-annotation"><?php esc_html_e('Operate Data', CDBT); ?></h4>
-    
-    <?php var_dump( $this->cdbt_sessions[$current_tab] ); ?>
-    
-<?php endif; /* End of `operate_data` tab contents */ ?>
+<?php if ($current_tab == 'operate_data') : 
+  
+var_dump( $this->cdbt_sessions );
+var_dump( $this->cdbt_sessions[$current_tab] );
+  
+?>
+
+<section id="view" class="<?php if ('view' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['view']['icon']; ?> text-muted"></i> <?php esc_html_e('View Data in Table', CDBT); ?></h4> <?php $this->during_trial( 'view_data' ); ?>
+  
+</section>
+
+<section id="entry" class="<?php if ('entry' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['entry']['icon']; ?> text-muted"></i> <?php esc_html_e('Entry Data to Table', CDBT); ?></h4> <?php $this->during_trial( 'entry_data' ); ?>
+  
+</section>
+
+<section id="edit" class="<?php if ('edit' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
+  
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['edit']['icon']; ?> text-muted"></i> <?php esc_html_e('Edit Data in Table', CDBT); ?></h4> <?php $this->during_trial( 'edit_data' ); ?>
+  
+</section>
+
+<?php endif; /* End of `operate_data` tab contents */ 
+  endif; ?>
   
 </div><!-- /.wrap -->

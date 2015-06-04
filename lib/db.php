@@ -608,12 +608,11 @@ class CdbtDB extends CdbtConfig {
    * @since 2.0.0 Have refactored logic.
    *
    * @param string $table_name [require]
-   * @param array $export_columns [require] For default is empty array as all columns
+   * @param array $export_columns [require]
    * @param string $export_file_type [require] Allowed file types conform to `$this->allow_file_types`
-   * @param boolean $add_index_line [optional] Valid if csv and tsv only
-   * @return boolean
+   * @return string $message
    */
-  public function export_table( $table_name=null, $export_columns=[], $export_file_type=null, $add_index_line=false ) {
+  public function export_table( $table_name=null, $export_columns=[], $export_file_type=null ) {
     static $message = '';
     
     if (empty($table_name)) 
@@ -626,10 +625,10 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Specified "%s" format of download file does not correspond.', CDBT), $export_file_type );
     
     if (empty($message)) {
-      $table_scheme = $this->get_table_schema( $table_name );
       if (empty($export_columns)) {
-        $target_columns = array_keys($table_scheme);
+        $message = __('Export target column is not specified.', CDBT);
       } else {
+        $table_scheme = $this->get_table_schema( $table_name );
         $check_columns = true;
         foreach ($export_columns as $column) {
           if (!array_key_exists($column, $table_scheme)) {
@@ -637,20 +636,17 @@ class CdbtDB extends CdbtConfig {
             break;
           }
         }
-        if ($check_columns) {
-          $target_columns = $export_columns;
-        } else {
+        if (!$check_columns) {
           $message = sprintf( __('Export target column "%s" does not exist.', CDBT), $column );
         }
       }
     }
     
-    if (empty($message) && !empty($target_columns)) {
-      return true;
-    } else {
+    if (!empty($message)) {
       $this->logger( $message );
-      return false;
     }
+    
+    return $message;
     
   }
   

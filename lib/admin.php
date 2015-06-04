@@ -844,35 +844,23 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'import_table': 
         
+        
+        
         break;
       case 'export_table': 
         
+        if ($this->download_result) 
+          $notice_class = CDBT . '-notice';
+        
         $post_data = $_POST[$this->domain_name];
-        if (!isset($post_data['export_filetype']) || empty($post_data['export_filetype']) || !in_array($post_data['export_filetype'], $this->allow_file_types)) {
-        	$message = __('Format of the download file is not specified.', CDBT);
-        } else
-        if (!isset($post_data['export_columns']) || empty($post_data['export_columns']) || !is_array($post_data['export_columns'])) {
-        	$message = __('Export columns has not been specified. You must specify at least one or more columns.', CDBT);
-        	$post_data['export_columns'] = [];
-        } else
-        if (!isset($post_data['export_table']) || empty($post_data['export_table'])) {
-          $message = __('Export table is not specified.', CDBT);
-        }
-        $add_index_line = isset($post_data['add_index_line']) && 1 === intval($post_data['add_index_line']) ? true : false;
-        
-        if (empty($message)) {
-          $result = $this->export_table( $post_data['export_table'], array_values($post_data['export_columns']), $post_data['export_filetype'], $add_index_line );
-          var_dump($result);
-        }
-        
-        // Set sessions
         $this->cdbt_sessions[$_POST['active_tab']] = [
-          'target_table' => $post_data['export_table'], 
-          'export_filetype' => $post_data['export_filetype'], 
-          'add_index_line' => $add_index_line, 
-          'export_columns' => $post_data['export_columns'], 
-          'operate_action' => 'export', 
+          'operate_target_table' => $post_data['export_table'], 
+          'operate_current_table' => $post_data['export_table'], 
+          'operate_action' => 'detail', 
         ];
+        $message = $this->download_message;
+        unset($this->download_result, $this->download_message);
+        
         break;
       case 'duplicate_table': 
         
@@ -943,8 +931,53 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_tables_operate_data() {
+    static $message = '';
+    $notice_class = CDBT . '-error';
     
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'change_table', 'view_data', 'entry_data', 'edit_data' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      return;
+    }
     
+    // Process of changing the table and switching operation action
+    switch($_POST['action']) {
+      case 'change_table': 
+        
+        $post_data = $_POST[$this->domain_name];
+        if (empty($post_data['operate_target_table'])) {
+          $message = __('Could not change the operate table.', CDBT);
+        } else {
+          $this->cdbt_sessions[$_POST['active_tab']] = [
+            'target_table' => $post_data['operate_target_table'], 
+            'operate_current_table' => isset($post_data['operate_current_table']) && !empty($post_data['operate_current_table']) ? $post_data['operate_current_table'] : $post_data['operate_target_table'], 
+            'operate_action' => isset($post_data['operate_action']) && !empty($post_data['operate_action']) ? $post_data['operate_action'] : 'view', 
+          ];
+        }
+        
+        break;
+      case 'view_data': 
+        
+        
+        break;
+      case 'entry_data': 
+        
+        
+        break;
+      case 'edit_data': 
+        
+        
+        break;
+      default:
+        $message = __('Illegal operation was called.', CDBT);
+        break;
+    }
+    
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+    }
+    return;
     
   }
 
@@ -986,10 +1019,15 @@ class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
           break;
         case 'export_table': 
-        	$args['modalTitle'] = sprintf(__('Export data from "%s" table', CDBT), $args['modalExtras']['export_table']);
-          $args['modalBody'] = __('If specified table has a lot of data for exporting, it may take long time until the download is complete.<br>Please start the export if it is good.', CDBT);
-        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_export_table" class="btn btn-primary">%s</button>', __('Export', CDBT)), ];
-        	$args['modalShowEvent'] = "$('#run_export_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          $post_data = $args['modalExtras'];
+          $post_data['export_columns'] = empty($post_data['export_columns']) ? [] : $post_data['export_columns'];
+          $error = $this->export_table( $post_data['export_table'], $post_data['export_columns'], $post_data['export_filetype'] );
+          $args['modalTitle'] = sprintf(__('Export data from "%s" table', CDBT), $post_data['export_table']);
+          $args['modalBody'] = empty($error) ? __('If specified table has a lot of data for exporting, it may take long time until the download is complete.<br>Please start the export if it is good.', CDBT) : $error;
+          if (empty($error)) {
+            $args['modalFooter'] = [ sprintf('<button type="button" id="run_export_table" class="btn btn-primary">%s</button>', __('Export', CDBT)), ];
+            $args['modalShowEvent'] = "$('#run_export_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          }
           break;
         case 'truncate_table': 
         	$args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);
