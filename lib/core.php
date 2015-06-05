@@ -49,49 +49,6 @@ class CdbtCore extends CdbtUtility {
   protected $cdbt_sessions;
   
   
-/*
-  public function __call( $name, $args=null ) {
-    // For compatible methods with version 1.x
-    $legend_methods = [
-      'truncate_table' => 'CdbtDb', 
-      'drop_table' => 'CdbtDb', 
-      'create_table' => 'CdbtDb', 
-      'get_table_schema' => 'CdbtDb', 
-      'get_table_comment' => 'CdbtDb', 
-      'get_create_table_sql' => 'CdbtDb', 
-      'get_data' => 'CdbtDb', 
-      'find_data' => 'CdbtDb', 
-      'insert_data' => 'CdbtDb', 
-      'update_data' => 'CdbtDb', 
-      'update_where' => 'CdbtDb', 
-      'run_query' => false, // deprecated
-      'delete_data' => 'CdbtDb', 
-      'validate_data' => 'Validation', 
-      'validate_create_sql' => 'Validation', 
-      'validate_alter_sql' => 'Validation', 
-      'compare_reservation_tables' => 'CdbtDb', 
-      'import_table' => 'CdbtDb', 
-      'export_table' => 'CdbtDb', 
-      'get_table_list' => 'CdbtDb', 
-      'incorporate_table_option' => false, // deprecated
-    ];
-    if ( method_exists($this, $name) ) {
-      return $this->$name($args);
-    } elseif ( method_exists($this->util, $name)) {
-      return $this->util->$name($args);
-    } elseif ( array_key_exists($name, $legend_methods) ) {
-      if ('CdbtDb' === $legend_methods[$name]) 
-        return $this->db->$name($args);
-      
-      if ('Validation' === $legend_methods[$name]) 
-        return $this->validate->$name($args);
-      
-    }
-    
-    throw new \BadMethodCallException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
-  }
-*/
-  
   /**
    * Initialize plugin core
    *

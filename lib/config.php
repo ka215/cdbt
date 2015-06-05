@@ -58,12 +58,6 @@ class CdbtConfig extends CdbtCore {
     
     $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
     
-    $this->user_capabilities['subscriber'] = explode(' ', 'read');
-    $this->user_capabilities['contributor'] = array_merge(explode(' ', 'edit_posts delete_posts'), $this->user_capabilities['subscriber']);
-    $this->user_capabilities['author'] = array_merge(explode(' ', 'edit_published_posts upload_files publish_posts delete_published_posts'), $this->user_capabilities['contributor']);
-    $this->user_capabilities['editor'] = array_merge(explode(' ', 'moderate_comments manage_categories manage_links edit_others_posts edit_pages edit_others_pages edit_published_pages publish_pages delete_pages delete_others_pages delete_published_pages delete_others_posts delete_private_posts edit_private_posts read_private_posts delete_private_pages edit_private_pages read_private_pages unfiltered_html'), $this->user_capabilities['author']);
-    $this->user_capabilities['administrator'] = array_merge(explode(' ', 'activate_plugins create_users delete_plugins delete_themes delete_users edit_files edit_plugins edit_theme_options edit_themes edit_users export import install_plugins install_themes list_users manage_options promote_users remove_users switch_themes update_core update_plugins update_themes edit_dashboard'), $this->user_capabilities['editor']);
-    $this->user_capabilities['super_admin'] = array_merge(explode(' ', 'manage_network manage_sites manage_network_users manage_network_plugins manage_network_themes manage_network_options'), $this->user_capabilities['administrator']);
     
   }
 

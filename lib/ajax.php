@@ -25,6 +25,14 @@ trait CdbtAjax {
   }
 
 
+  /**
+   * Retrieve the URL for calling Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return string $ajax_url
+   **/
   public function ajax_url( $args=[] ) {
     if (!is_array($args)) 
       return;
@@ -41,7 +49,7 @@ trait CdbtAjax {
 
   /**
    * Method of the handling of Ajax call
-   * 
+   * Ajax controller calls the actual processing in accordance with the requested event value
    *
    * @since 2.0.0
    **/

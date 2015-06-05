@@ -17,6 +17,7 @@ $files = [
   'db.php',        // Database class with wrapping wpdb
   'ajax.php',      // Trait for using ajax
   'tmpl.php',      // Trait for dynamic rendering templates
+  'shortcode.php', // Trait for shortcode definitions
   'extras.php',   // Trait for enhancements (for customization)
   'admin.php',    // Entry point class for admin panels
   'main.php',     // Entry point class for web frontend

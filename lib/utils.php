@@ -241,6 +241,141 @@ class CdbtUtility {
   
   
   /**
+   * User permission checker
+   *
+   * @since 2.0.0
+   *
+   * @param array $compare_caproles [require]
+   * @return boolean
+   */
+  public function is_permit_user( $compare_caproles=[] ) {
+    if (empty($compare_caproles)) 
+      return false;
+    
+    $current_user = wp_get_current_user();
+    $current_user_capabilities = array_keys($current_user->caps);
+    $current_user_capabilities = empty($current_user_capabilities) ? 'level_0' : $current_user_capabilities;
+    $has_caproles = [];
+    foreach ($current_user_capabilities as $role_name) {
+      $_temp = get_role($role_name);
+      $has_caproles[] = $_temp->name;
+      foreach ($_temp->capabilities as $cap => $v) {
+        if ($v) $has_caproles[] = $cap;
+      }
+    }
+    
+    $check_caproles = [];
+    foreach ($compare_caproles as $role_name) {
+      if ('guest' === $role_name) 
+        $role_name = 'subscriber';
+      
+      $_temp = get_role($role_name);
+      $check_caproles[] = $_temp->name;
+      foreach ($_temp->capabilities as $cap => $v) {
+        if ($v) $check_caproles[] = $cap;
+      }
+    }
+    
+    foreach ($check_caproles as $caprole) {
+      if (in_array($caprole, $has_caproles)) 
+        return true;
+    }
+    return false;
+    
+  }
+  
+  
+  /**
+   * Convert to array from string like array
+   *
+   * @since 2.0.0
+   *
+   * @param string $string [require]
+   * @return mixed Return array if conversion success, False otherwise
+   */
+  public function strtoarray( $string=null ) {
+    if (empty($string)) 
+      return false;
+    
+    $_ary = explode(',', trim($string));
+    $fixed_ary = [];
+    foreach ($_ary as $_val) {
+      $_val = trim($_val);
+      if (empty($_val) || 0 === strlen($_val)) {
+        continue;
+      } else {
+        $fixed_ary[] = $_val;
+      }
+    }
+    
+    if (!empty($fixed_ary)) 
+      return $fixed_ary;
+    
+    return false;
+    
+  }
+  
+  
+  /**
+   * Convert to object or array from string like hash
+   *
+   * @since 2.0.0
+   *
+   * @param string $string [require]
+   * @param string $var_type [optional] Whether return value is at assoc array or object. For default is `array`
+   * @return mixed Return specified variables if conversion success, False otherwise
+   */
+  public function strtohash( $string=null, $var_type='array' ) {
+    if (empty($string) || !in_array(strtolower($var_type), [ 'array', 'object' ])) 
+      return false;
+    
+    
+    if (!($_ary = $this->strtoarray($string))) 
+      return false;
+    
+    $_assoc = [];
+    foreach ($_ary as $_row) {
+      if (strpos($_row, ':') !== false) {
+        list($_key, $_val) = explode(':', $_row);
+        $_key = trim(trim(stripcslashes(trim($_key)), "\"' "));
+        $_val = trim(trim(stripcslashes(trim($_val)), "\"' "));
+        if (!empty($_key) && strlen($_key) > 0) {
+          $_assoc[$_key] = $_val;
+        }
+      } else {
+        $_row = trim(trim(stripcslashes(trim($_row)), "\"' "));
+        $_assoc[] = $_row;
+      }
+    }
+    
+    if (empty($_assoc)) 
+      return false;
+    
+    if ('object' === strtolower($var_type)) 
+      return (object)$_assoc;
+    
+    return $_assoc;
+    
+  }
+  
+  
+  /**
+   * Convert to boolean from string like boolean
+   *
+   * @since 2.0.0
+   *
+   * @param string $string [require]
+   * @return boolean
+   */
+  public function strtobool( $string=null ) {
+    $_boolstr = strval($string);
+    if (empty($_boolstr) || !in_array(strtolower($_boolstr), [ 'true', 'false', '1', '0', 1, 0 ])) 
+      return false;
+    
+    return in_array(strtolower($_boolstr), [ 'true', '1', 1 ]);
+  }
+  
+  /**
    * Flatten the array or object that has nested
    *
    * @since 2.0.0

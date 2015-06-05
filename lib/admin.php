@@ -99,6 +99,7 @@ class CdbtAdmin extends CdbtDB {
    */
   use CdbtAjax;
   use DynamicTemplate;
+  use CdbtShortcodes;
   use CdbtExtras;
 
 
@@ -144,6 +145,9 @@ class CdbtAdmin extends CdbtDB {
     
     // Ajax Initialize
     $this->ajax_init();
+    
+    // Shortcode Initialize
+    $this->shortcode_register();
     
   }
 

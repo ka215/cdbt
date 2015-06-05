@@ -178,8 +178,9 @@ div.plugin-meta {
   }
 }
 
-nav+section {
+nav#operation-navbar {
   margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .table-responsive>strong {
