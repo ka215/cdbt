@@ -245,12 +245,15 @@ class CdbtUtility {
    *
    * @since 2.0.0
    *
-   * @param array $compare_caproles [require]
+   * @param mixed $compare_caproles [require] Array of capabilities and roles or string
    * @return boolean
    */
   public function is_permit_user( $compare_caproles=[] ) {
     if (empty($compare_caproles)) 
       return false;
+    
+    if (!is_array($compare_caproles)) 
+      $compare_caproles = (array)$compare_caproles;
     
     $current_user = wp_get_current_user();
     $current_user_capabilities = array_keys($current_user->caps);
@@ -258,9 +261,11 @@ class CdbtUtility {
     $has_caproles = [];
     foreach ($current_user_capabilities as $role_name) {
       $_temp = get_role($role_name);
-      $has_caproles[] = $_temp->name;
-      foreach ($_temp->capabilities as $cap => $v) {
-        if ($v) $has_caproles[] = $cap;
+      if (is_object($_temp)) {
+        $has_caproles[] = $_temp->name;
+        foreach ($_temp->capabilities as $cap => $v) {
+          if ($v) $has_caproles[] = $cap;
+        }
       }
     }
     
@@ -270,9 +275,11 @@ class CdbtUtility {
         $role_name = 'subscriber';
       
       $_temp = get_role($role_name);
-      $check_caproles[] = $_temp->name;
-      foreach ($_temp->capabilities as $cap => $v) {
-        if ($v) $check_caproles[] = $cap;
+      if (is_object($_temp)) {
+        $check_caproles[] = $_temp->name;
+        foreach ($_temp->capabilities as $cap => $v) {
+          if ($v) $check_caproles[] = $cap;
+        }
       }
     }
     

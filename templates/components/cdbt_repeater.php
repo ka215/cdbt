@@ -9,10 +9,12 @@
  * 'defaultView' => @mixed is view type of default [optional] (-1 (default), 'list', 'thumbnail')
  * 'listSelectable' => @mixed can not select items of default [option] (false (default), 'single', 'multi')
  * 'staticHeight' => @mixed is auto height of default [optional] (-1 (default), true, false, integer)
- * 'pageIndex' = @integer is start page number [optional] (>= 0)
- * 'pageSize' = @integer is displayed data per page [optional] (5, 10, 20, 50, 100)
+ * 'pageIndex' => @integer is start page number [optional] (>= 0)
+ * 'pageSize' => @integer is displayed data per page [optional] (5, 10, 20, 50, 100)
+ * 'customRowScripts' => @array is customized row as javascript lines [optional]
  * 'columns' => @array(assoc) is listing label [require]
- * 'data' = @array(assoc) is listing data [require]
+ * 'data' => @array(assoc) is listing data [require]
+ * 'addClass' => @string [optional]
  */
 
 /**
@@ -98,6 +100,11 @@ if ($insert_position >= 0) {
   $insert_page_size_line = sprintf( '<li data-value="%d" data-selected="true"><a href="#">%d</a></li>', $page_size, $page_size );
 }
 
+// `customRowScripts` section
+if (isset($this->component_options['customRowScripts']) && !empty($this->component_options['customRowScripts'])) {
+  $custom_rows = $this->component_options['customRowScripts'];
+}
+
 // `columns` section
 if (!isset($this->component_options['columns']) || empty($this->component_options['columns'])) {
   return;
@@ -105,7 +112,6 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
   $columns = [];
   $numric_properties = [];
   $custom_columns = [];
-  //$custom_rows = [];
   foreach ($this->component_options['columns'] as $i => $setting) {
     $columns[$i] = [
       'label' => $setting['label'], 
@@ -127,8 +133,8 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
     if (isset($setting['customColumnRenderer']) && !empty($setting['customColumnRenderer'])) 
       $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'];
     
-//    if (isset($setting['customRowRenderer']) && !empty($setting['customRowRenderer'])) 
-//      $custom_rows[$columns[$i]['property']] = $setting['customRowRenderer'];
+    if (isset($setting['customRowRenderer']) && !empty($setting['customRowRenderer'])) 
+      $custom_rows = isset($custom_rows) ? array_merge($custom_rows, $setting['customRowRenderer']) : $setting['customRowRenderer'];
     
   }
 }
@@ -142,14 +148,19 @@ if (!isset($this->component_options['data']) || empty($this->component_options['
   $items = $this->component_options['data'];
 }
 
-//var_dump($items);
+// `addClass` section
+if (!isset($this->component_options['addClass']) || empty($this->component_options['addClass'])) {
+  $add_class = '';
+} else {
+  $add_class = $this->component_options['addClass'];
+}
 
 /**
  * Render the Repeater
  * ---------------------------------------------------------------------------
  */
 ?>
-  <div class="repeater" id="<?php echo $repeater_id; ?>">
+  <div class="repeater<?php echo $add_class; ?>" id="<?php echo $repeater_id; ?>">
     <div class="repeater-header">
       <div class="repeater-header-left">
         <span class="repeater-title"><?php esc_html_e('', CDBT); ?></span>
@@ -337,8 +348,10 @@ endif; ?>
     // let's get the id and add it to the "tr" DOM element
     var item = helpers.item;
 <?php
-  if (isset($this->component_options['customRowScripts']) && !empty($this->component_options['customRowScripts'])) :
-    echo implode("\n", $this->component_options['customRowScripts']);
+//  if (isset($this->component_options['customRowScripts']) && !empty($this->component_options['customRowScripts'])) :
+  if (isset($custom_rows) && !empty($custom_rows)) :
+//    echo implode("\n", $this->component_options['customRowScripts']);
+    echo implode("\n", $custom_rows);
   endif;
 ?>
     

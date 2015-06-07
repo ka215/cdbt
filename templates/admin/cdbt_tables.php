@@ -838,7 +838,7 @@ foreach ($this->allow_file_types as $file_type) {
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['view']['icon']; ?> text-muted"></i> <?php esc_html_e('View Data in Table', CDBT); ?></h4> <?php $this->during_trial( 'view_data' ); ?>
   <div class="clearfix"></div>
   
-  <?php echo do_shortcode( sprintf('[cdbt-view table="%s"]', $target_table) ); ?>
+  <?php echo do_shortcode( sprintf('[cdbt-view table="%s" display_title="false"]', $target_table) ); ?>
   
 </section>
 

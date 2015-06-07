@@ -36,6 +36,18 @@ trait CdbtShortcodes {
   
   
   /**
+   * 
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @return 
+   **/
+  
+  
+  
+  
+  /**
    * Retrieve a table data that match the specified conditions, then it outputs as list
    *
    * @since 1.0.0
@@ -49,13 +61,13 @@ trait CdbtShortcodes {
     list($attributes, $content) = func_get_args();
     extract( shortcode_atts([
       'table' => '', // Required attribute
-      'bootstrap_style' => true, 
-      'display_list_num' => true, 
-      'display_search' => true, 
+      'bootstrap_style' => true, // If false is output by the static table tag layout in non the Repeater format. Also does not have any pagination when false.
+      'display_list_num' => false, // The default value has changed to false from v2.0.0
+      'display_search' => true, // Is enabled only if "bootstrap_style" is true.
       'display_title' => true, 
-      'enable_sort' => true, 
+      'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
       'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
-      'add_class' => '', 
+      'add_class' => '', // Separator is a single-byte space character
       // As legacy of `cdbt-extract` is follows:
       'display_index_row' => true, 
       'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
@@ -65,19 +77,37 @@ trait CdbtShortcodes {
       'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
       'image_render' => '', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
       // Added new attribute from 2.0.0 is follows:
-      'display_filter' => false, 
+      'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
       'filters' => '', // String as array (not assoc); For example `filter1,filter2,...`
-      'ajax_load' => false, 
+      'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
+      'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
+      'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
      return;
     
-    // Get table status
+    // Initialization process for the shortcode
+    $shortcode_name = 'cdbt-view';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $has_pk = !empty($table_option['primary_key']) ? true : false;
-    $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
+    if (false !== $table_option) {
+      $table_type = $table_option['table_type'];
+      $has_pk = !empty($table_option['primary_key']) ? true : false;
+      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
+    } else {
+      if (in_array($table, $this->core_tables)) 
+        $table_type = 'wp_core';
+      $has_pk = false;
+      foreach ($table_schema as $column => $scheme) {
+        if ($scheme['primary_key']) {
+          $has_pk = true;
+          break;
+        }
+      }
+      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($this->options['default_per_records']) : intval($limit_items);
+    }
+    $content = '';
     
     // Check user permission
     $result_permit = false;
@@ -94,10 +124,20 @@ trait CdbtShortcodes {
           break;
         }
       }
-      $result_permit = $this->is_permit_user([ $check_role ]);
+      $result_permit = $this->is_permit_user( $check_role );
+    } else
+    if ('wp_core' === $table_type) {
+      // If WordPress core tables
+      $result_permit = $this->is_permit_user( 'administrator' );
     }
+    //
+    // Filter the viewing rights check result of the shortcode
+    // You can give viewing rights to specific users by utilizing this filter hook.
+    //
+    $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
     if (!$result_permit) 
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+    
     
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'ajax_load' ];
@@ -129,43 +169,61 @@ trait CdbtShortcodes {
     } else {
       $csid = 0;
     }
-    
-    
+    if ($display_title) {
+      // テーブルコメントを取ってきて比較する
+      $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $table ) . '</h4>';
+    }
     
     $datasource = $this->get_data($table, 'ARRAY_A');
+    if (empty($datasource))
+      return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
     
-    $columns = [];
-    foreach ($table_schema as $column => $scheme) {
-      $columns[] = [
-        'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
-        'property' => $column, 
-        'sortable' => true, 
-        'sortDirection' => 'asc', 
-        'dataNumric' => preg_match('/int/i', $scheme['type']) ? true : false, 
-        'className' => '', 
-      ];
-    }
-    
-    if ('regular' === $table_option['table_type'] && $display_list_num) {
-      foreach ($datasource as $i => $datum) {
-        $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
+    if ($bootstrap_style) {
+      // Generate repeater
+      $columns = [];
+      foreach ($table_schema as $column => $scheme) {
+        $columns[] = [
+          'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
+          'property' => $column, 
+          'sortable' => true, 
+          'sortDirection' => 'asc', 
+          'dataNumric' => preg_match('/int/i', $scheme['type']) ? true : false, 
+          'className' => '', 
+        ];
       }
-      $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
-      array_unshift($columns, $add_column);
+      
+      if ('regular' === $table_type && $display_list_num) {
+        foreach ($datasource as $i => $datum) {
+          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
+        }
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        array_unshift($columns, $add_column);
+      }
+      //
+      // Filter the column definition of the list content that is output by this shortcode
+      //
+      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
+      
+      $conponent_options = [
+        'id' => 'cdbt-repeater-' . $table, 
+        'listSelectable' => 'false', 
+        'pageIndex' => 1, 
+        'pageSize' => $limit_items, 
+        'columns' => $columns, 
+        'data' => $datasource, 
+        'addClass' => $add_class, 
+      ];
+      
+      if (isset($title)) 
+        echo $title;
+      
+      return $this->component_render('repeater', $conponent_options);
+      
+    } else {
+      // Generate table layout
+      
+      return $content;
     }
-    
-    $conponent_options = [
-      'id' => 'cdbt-repeater-' . $table, 
-      'listSelectable' => 'false', 
-      'pageIndex' => 1, 
-      'pageSize' => $limit_items, 
-      'columns' => $columns, 
-      'data' => $datasource, 
-    ];
-    
-    
-    return $this->component_render('repeater', $conponent_options);
-    
   }
   
 
