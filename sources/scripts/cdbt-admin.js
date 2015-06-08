@@ -112,6 +112,13 @@ $(function() {
     
   }
   
+  /**
+   * Datepicker components of Fuel UX renderer
+   */
+  if (typeof datepicker !== 'undefined') {
+    _.each(datepicker, function(v) { return v; });
+  }
+  
   
   /**
    * Common ajax closure

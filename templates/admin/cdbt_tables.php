@@ -480,7 +480,7 @@ foreach ($this->allow_file_types as $file_type) {
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $current_action; ?>">
         <div class="navbar-right">
         <?php foreach ($operatable_buttons as $action_name => $definitions) : ?>
-          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['labal']; ?>"<?php if (empty($target_table) || !in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
+          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['label']; ?>"<?php if (empty($target_table) || !in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
         <?php endforeach; ?>
         </div>
       </form>
@@ -835,7 +835,7 @@ foreach ($this->allow_file_types as $file_type) {
 
 <section id="view" class="<?php if ('view' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['view']['icon']; ?> text-muted"></i> <?php esc_html_e('View Data in Table', CDBT); ?></h4> <?php $this->during_trial( 'view_data' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['view']['icon']; ?> text-muted"></i> <?php printf(__('View Data in "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'view_data' ); ?>
   <div class="clearfix"></div>
   
   <?php echo do_shortcode( sprintf('[cdbt-view table="%s" display_title="false"]', $target_table) ); ?>
@@ -844,16 +844,16 @@ foreach ($this->allow_file_types as $file_type) {
 
 <section id="entry" class="<?php if ('entry' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['entry']['icon']; ?> text-muted"></i> <?php esc_html_e('Entry Data to Table', CDBT); ?></h4> <?php $this->during_trial( 'entry_data' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['entry']['icon']; ?> text-muted"></i> <?php printf(__('Entry Data to "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'entry_data' ); ?>
   <div class="clearfix"></div>
   
-  <?php echo do_shortcode( sprintf('[cdbt-entry table="%s"]', $target_table) ); ?>
+  <?php echo do_shortcode( sprintf('[cdbt-entry table="%s" display_title="false"]', $target_table) ); ?>
   
 </section>
 
 <section id="edit" class="<?php if ('edit' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['edit']['icon']; ?> text-muted"></i> <?php esc_html_e('Edit Data in Table', CDBT); ?></h4> <?php $this->during_trial( 'edit_data' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['edit']['icon']; ?> text-muted"></i> <?php printf(__('Edit Data of "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'edit_data' ); ?>
   <div class="clearfix"></div>
   
   <?php echo do_shortcode( sprintf('[cdbt-edit table="%s"]', $target_table) ); ?>

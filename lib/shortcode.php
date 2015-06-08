@@ -170,8 +170,9 @@ trait CdbtShortcodes {
       $csid = 0;
     }
     if ($display_title) {
-      // テーブルコメントを取ってきて比較する
-      $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $table ) . '</h4>';
+      $disp_title = $this->get_table_comment($table);
+      $disp_title = !empty($disp_title) ? $disp_title : $table;
+      $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
     $datasource = $this->get_data($table, 'ARRAY_A');
@@ -187,7 +188,7 @@ trait CdbtShortcodes {
           'property' => $column, 
           'sortable' => true, 
           'sortDirection' => 'asc', 
-          'dataNumric' => preg_match('/int/i', $scheme['type']) ? true : false, 
+          'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
           'className' => '', 
         ];
       }
@@ -226,7 +227,222 @@ trait CdbtShortcodes {
     }
   }
   
-
+  
+  /**
+   * Render the data registration form for the specified table
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param array $attributes [require] Array of attributes in shortcode
+   * @param string $content [optional] For default is empty
+   * @return string $html_content The created form contents
+   **/
+  public function entry_data_form() {
+    list($attributes, $content) = func_get_args();
+    extract( shortcode_atts([
+      'table' => '', // Required attribute
+      'bootstrap_style' => true, // 
+      'display_title' => true, 
+      'hidden_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
+      'add_class' => '', // Separator is a single-byte space character
+      // Added new attribute from 2.0.0 is follows:
+      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+    ], $attributes) );
+    if (empty($table) || !$this->check_table_exists($table)) 
+     return;
+    
+    // Initialization process for the shortcode
+    $shortcode_name = 'cdbt-entry';
+    $table_schema = $this->get_table_schema($table);
+    $table_option = $this->get_table_option($table);
+    if (false !== $table_option) {
+      $table_type = $table_option['table_type'];
+//      $has_pk = !empty($table_option['primary_key']) ? true : false;
+    } else {
+      if (in_array($table, $this->core_tables)) 
+        $table_type = 'wp_core';
+//      $has_pk = false;
+//      foreach ($table_schema as $column => $scheme) {
+//        if ($scheme['primary_key']) {
+//          $has_pk = true;
+//          break;
+//        }
+//      }
+    }
+    $content = '';
+    
+    // Check user permission
+    $result_permit = false;
+    if (isset($table_option['permission']) && isset($table_option['permission']['entry_global']) && !empty($table_option['permission']['entry_global'])) {
+      // Standard from v2.0.0
+      $result_permit = $this->is_permit_user($table_option['permission']['entry_global']);
+    } else
+    if (isset($table_option['roles']) && isset($table_option['roles']['input_role'])) {
+      // As legacy v.1.x
+      foreach(array_reverse($this->user_roles) as $role_name) {
+        $_role = get_role($role_name);
+        if (is_object($_role) && array_key_exists('level_' . $table_option['roles']['input_role'], $_role->capabilities)) {
+          $check_role = $_role->name;
+          break;
+        }
+      }
+      $result_permit = $this->is_permit_user( $check_role );
+    } else
+    if ('wp_core' === $table_type) {
+      // If WordPress core tables
+      $result_permit = $this->is_permit_user( 'administrator' );
+    }
+    //
+    // Filter the viewing rights check result of the shortcode
+    // You can give viewing rights to specific users by utilizing this filter hook.
+    //
+    $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
+    if (!$result_permit) 
+      return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+    
+    
+    // Validation of the attributes, then sanitizing
+    $boolean_atts = [ 'bootstrap_style', 'display_title' ];
+    foreach ($boolean_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtobool(${$attribute_name});
+    }
+    $not_assoc_atts = [ 'hidden_cols' ];
+    foreach ($not_assoc_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtoarray(${$attribute_name});
+    }
+    if (!empty($add_class)) {
+      $add_classes = [];
+      foreach (explode(' ', $add_class) as $_class) {
+        $add_classes[] = esc_attr(trim($_class));
+      }
+      $add_class = implode(' ', $add_classes);
+    }
+    if ($this->validate->checkInt($csid)) {
+      // csidに対応したショートコードが存在するかのチェックを行う
+    } else {
+      $csid = 0;
+    }
+    if ($display_title) {
+      $disp_title = $this->get_table_comment($table);
+      $disp_title = !empty($disp_title) ? $disp_title : $table;
+      $title = '<h4 class="sub-description-title">' . sprintf( __('Entry Data to "%s" Table', CDBT), $disp_title ) . '</h4>';
+    }
+    
+    
+//    if (isset($title)) 
+//      echo $title;
+    
+    //var_dump($table_schema);
+    
+    $elements_options = [];
+    foreach ($table_schema as $column => $scheme) {
+      if ( $scheme['primary_key'] ) 
+        continue;
+      $detect_column_type = $this->validate->check_column_type($scheme['type']);
+      if( array_key_exists('datetime', $detect_column_type) && 'updated' === $column ) 
+        continue;
+      
+//      var_dump([$column, $detect_column_type, $scheme]);
+      unset($input_type, $rows, $max_file_size, $max_length, $element_size, $pattern, $selectable_list);
+      if (array_key_exists('char', $detect_column_type)) {
+        if (array_key_exists('text', $detect_column_type)) {
+          $input_type = 'textarea';
+          // $max_length = $scheme['max_length'];
+          if ('longtext' === $detect_column_type['text']) {
+            $rows = 20;
+          } else
+          if ('midiumtext' === $detect_column_type['text']) {
+            $rows = 15;
+          } else
+          if ('tinytext' === $detect_column_type['text']) {
+            $rows = 5;
+          } else {
+            $rows = 10;
+          }
+        } else
+        if (array_key_exists('blob', $detect_column_type)) {
+          $input_type = 'file';
+          $max_file_size = $scheme['max_length'];
+        } else {
+          $input_type = 'text';
+          $max_length = $scheme['max_length'];
+        }
+      } else
+      if (array_key_exists('numeric', $detect_column_type)) {
+        if (array_key_exists('integer', $detect_column_type)) {
+          $input_type = 'number';
+          if ($scheme['unsigned']) 
+            $min = 0;
+          $element_size = ceil($scheme['max_length'] / 10);
+          $pattern = '^[0-9]+$';
+        } else
+        if (array_key_exists('binary', $detect_column_type)) {
+          $input_type = 'boolean';
+          if (preg_match('/^b\'(.*)\'$/iU', $scheme['default'], $matches) && is_array($matches) && array_key_exists(1, $matches)) {
+            $scheme['default'] = $this->strtobool($matches[1]);
+          }
+        } else {
+          $input_type = 'text';
+          $element_size = ceil($scheme['max_length'] / 10);
+          $pattern = '^[0-9]+$';
+        }
+      } else
+      if (array_key_exists('list', $detect_column_type)) {
+        $input_type = 'enum' === $detect_column_type['list'] ? 'select' : 'checkbox';
+        if (preg_match('/^(enum|set)\((.*)\)$/iU', $scheme['type_format'], $matches) && is_array($matches) && array_key_exists(2, $matches)) {
+        	$selectable_list = [];
+          foreach (explode(',', $matches[2]) as $list_value) {
+            $list_value = trim($list_value, "'");
+            $selectable_list[] = sprintf( '%s:%s', __($list_value, CDBT), esc_attr($list_value) );
+          }
+        }
+      } else
+      if (array_key_exists('datetime', $detect_column_type)) {
+        $input_type = 'timestamp' === $detect_column_type['datetime'] ? 'number' : 'datetime';
+      } else {
+        $input_type = 'text';
+      }
+//var_dump([$column, $scheme]);
+      $_temp_elements_options = [
+        'elementName' => $column, 
+        'elementLabel' => !empty($scheme['logical_name']) ? $scheme['logical_name'] : $column, 
+        'elementType' => $input_type, 
+        'isRequired' => $scheme['not_null'], 
+        'defaultValue' => !empty($scheme['default']) ? $scheme['default'] : '', 
+        'placeholder' => '', 
+        'addClass' => '', 
+        'selectableList' => isset($selectable_list) && !empty($selectable_list) ? implode(',', $selectable_list) : '', 
+        'horizontalList' => false, 
+        'elementSize' => isset($element_size) && !empty($element_size) ? $element_size : '', 
+        'helperText' => '', 
+        'elementExtras' => [], // 'maxlength' => '', 'pattern' => '', 
+      ];
+      if (isset($max_length) && !empty($max_length)) 
+        $_temp_elements_options['elementExtras']['maxlength'] = $max_length;
+      if (isset($pattern) && !empty($pattern)) 
+        $_temp_elements_options['elementExtras']['pattern'] = $pattern;
+      if (isset($rows) && !empty($rows)) 
+        $_temp_elements_options['elementExtras']['rows'] = $rows;
+      
+      $elements_options[] = $_temp_elements_options;
+    }
+    //
+    // Filter the form content definition that is output by this shortcode
+    //
+    $elements_options = apply_filters( 'cdbt_shortcode_custom_forms', $elements_options, $shortcode_name, $table );
+    
+    $conponent_options = [
+      'id' => 'cdbt-entry-data-to-' . $table, 
+      'entryTable' => $table, 
+      'useBootstrap' => true, 
+      'outputTitle' => isset($title) ? $title : '', 
+      'formElements' => $elements_options, 
+    ];
+    
+    return $this->component_render('forms', $conponent_options);
+    
+  }
 
 
 }

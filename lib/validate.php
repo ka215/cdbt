@@ -395,6 +395,46 @@ class CdbtValidator extends CommonValidator {
   }
   
   
+  /**
+   * Detecting definition of column type in MySQL table, then checking
+   *
+   * @since 2.0.0
+   *
+   * @param string $column_type [require] Column type name retrieved by the method of `get_table_schema()`.
+   * @param string $candidate_type [optional] You want to compare column type as candidate 
+   * @return mixed Boolean If candidate type is specified, otherwise array of column type group name is returned.
+   */
+  public function check_column_type( $column_type=null, $candidate_type=null ) {
+    if (empty($column_type)) 
+      return false;
+    
+    $column_type_group = [];
+    $reg_column_type = [
+      'numeric' => '/((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)/i', 
+      'integer' => '/((|tiny|small|medium|big)int|bool(|ean))/i', 
+      'float' => '/(float|double(| precision)|real|dec(|imal)|numeric|fixed)/i', 
+      'binary' => '/(bit)/i', 
+      'char' => '/((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)/i', 
+      'text' => '/((|tiny|medium|long)text)/i', 
+      'blob' => '/((|tiny|medium|long)blob|(|var)binary)/i', 
+      'list' => '/(enum|set)/i', 
+      'datetime' => '/((date(|time))|(time(|stamp))|year)/i', 
+    ];
+    foreach ($reg_column_type as $type_group => $regx) {
+      if (preg_match($regx, strtolower($column_type), $matches) && is_array($matches) && array_key_exists(1, $matches)) 
+        $column_type_group[$type_group] = $column_type;
+    }
+    
+    if (empty($column_type_group)) 
+      return false;
+    
+    if (isset($candidate_type) && !empty($candidate_type)) {
+      return array_key_exists($candidate_type, $column_type_group);
+    }
+    
+    return $column_type_group;
+    
+  }
   
   
 
