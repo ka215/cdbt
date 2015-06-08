@@ -3,7 +3,6 @@
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
-//var ajaxResponse = {};
 $(function() {
   
   /**
@@ -115,8 +114,18 @@ $(function() {
   /**
    * Datepicker components of Fuel UX renderer
    */
-  if (typeof datepicker !== 'undefined') {
-    _.each(datepicker, function(v) { return v; });
+//  if (typeof datepicker !== 'undefined') {
+  if ($('.cdbt-datepicker').size() > 0) {
+    $('.cdbt-datepicker').each(function(){
+      if ($(this).data().momentLocale && $(this).data().momentFormat) {
+        $(this).datepicker({ 
+          momentConfig: { culture: $(this).data().momentLocale, format: $(this).data().momentFormat } 
+        });
+      }
+      if (typeof $(this).data().date === 'undefined') {
+        $(this).datepicker('getDate', new Date()); 
+      }
+    });
   }
   
   

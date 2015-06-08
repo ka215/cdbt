@@ -424,6 +424,10 @@ trait CdbtShortcodes {
         $_temp_elements_options['elementExtras']['pattern'] = $pattern;
       if (isset($rows) && !empty($rows)) 
         $_temp_elements_options['elementExtras']['rows'] = $rows;
+      if ('datetime' === $input_type) {
+        $_temp_elements_options['elementExtras']['data-moment-locale'] = 'ja';
+        $_temp_elements_options['elementExtras']['data-moment-format'] = 'L';
+      }
       
       $elements_options[] = $_temp_elements_options;
     }
