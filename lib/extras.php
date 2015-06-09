@@ -109,16 +109,6 @@ trait CdbtExtras {
           'create_time' => $table_info['Create_time'], 
           'operate_table_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_table' ]))) ), 
           'operate_data_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_data' ]))) ), 
-/*          'info' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'table_info' ]))) ), // , 'table'=>$value
-          'import' => null, 
-          'export' => null, 
-          'duplicate' => null, 
-          'modify' => null, 
-          'drop' => null, 
-          'truncate' => null, 
-          'view' => null, 
-          'entry' => null, 
-          'edit' => null, */
           'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
           'thumbnail_title' => $value, // optional
           'thumbnail_bgcolor' => 'tranceparent', // optional
@@ -126,9 +116,6 @@ trait CdbtExtras {
           'thumbnail_height' => 64, // optional
           'thumbnail_class' => null, // optional
         ];
-//        $datasource[$index]['table_controls'] = '<strong>controle</strong>';
-        
-//        $datasource[$index]['data_controls'] = '<strong>controle</strong>';
         
         $index++;
       }

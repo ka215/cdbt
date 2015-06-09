@@ -963,10 +963,26 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'view_data': 
         
+        // No action
         
         break;
       case 'entry_data': 
         
+        $table_name = $_POST['table'];
+        $post_data = $_POST[$this->domain_name];
+        unset($this->cdbt_sessions[__FUNCTION__]);
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $table_name, 
+          'operate_current_table' => $table_name, 
+          'operate_action' => 'entry', 
+        ];
+        if ($this->register_data( $table_name, $post_data )) {
+          $notice_class = CDBT . '-notice';
+          $message = sprintf(__('Your entry data has been successfully registered to "%s" table.', CDBT), $table_name);
+        } else {
+          $message = sprintf(__('Could not insert data to "%s" table.', CDBT), $table_name);
+          $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
+        }
         
         break;
       case 'edit_data': 

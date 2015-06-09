@@ -258,17 +258,9 @@ trait CdbtShortcodes {
     $table_option = $this->get_table_option($table);
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
-//      $has_pk = !empty($table_option['primary_key']) ? true : false;
     } else {
       if (in_array($table, $this->core_tables)) 
         $table_type = 'wp_core';
-//      $has_pk = false;
-//      foreach ($table_schema as $column => $scheme) {
-//        if ($scheme['primary_key']) {
-//          $has_pk = true;
-//          break;
-//        }
-//      }
     }
     $content = '';
     
@@ -329,16 +321,15 @@ trait CdbtShortcodes {
       $title = '<h4 class="sub-description-title">' . sprintf( __('Entry Data to "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
-    
-//    if (isset($title)) 
-//      echo $title;
-    
-    //var_dump($table_schema);
+//    var_dump($this->cdbt_sessions);
+//    var_dump($table_schema);
     
     $elements_options = [];
+    $is_file_upload = false;
     foreach ($table_schema as $column => $scheme) {
-      if ( $scheme['primary_key'] ) 
+      if ( $scheme['primary_key'] && false !== strpos( $scheme['extra'], 'auto_increment' ) ) 
         continue;
+      
       $detect_column_type = $this->validate->check_column_type($scheme['type']);
       if( array_key_exists('datetime', $detect_column_type) && 'updated' === $column ) 
         continue;
@@ -364,6 +355,7 @@ trait CdbtShortcodes {
         if (array_key_exists('blob', $detect_column_type)) {
           $input_type = 'file';
           $max_file_size = $scheme['max_length'];
+          $is_file_upload = true;
         } else {
           $input_type = 'text';
           $max_length = $scheme['max_length'];
@@ -441,12 +433,33 @@ trait CdbtShortcodes {
       'entryTable' => $table, 
       'useBootstrap' => true, 
       'outputTitle' => isset($title) ? $title : '', 
+      'fileUpload' => isset($is_file_upload) ? $is_file_upload : false, 
       'formElements' => $elements_options, 
     ];
     
     return $this->component_render('forms', $conponent_options);
     
   }
+  
+  
+  /**
+   * The registration data is validation and sanitization and  rasterization data is inserted into the table.
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param array $post_data [require]
+   * @return boolean
+   */
+  protected function register_data( $table_name=null, $post_data=[] ) {
+    
+    var_dump($table_name);
+    var_dump($post_data);
+    var_dump($_FILES);
+    
+    return false;
+  }
+
 
 
 }

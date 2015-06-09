@@ -6,6 +6,7 @@
  * 'entryTable' => @string [require] To entry table name
  * 'useBootstrap' => @boolean [require] For default is True
  * 'outputTitle' => @string [optional] For default is null
+ * 'fileUpload' => @boolean [optional] For default is false
  * 'formElements' => @array [require] As follow is: 
  *   [
  *   'elementName' => @string [require] Column name
@@ -62,6 +63,13 @@ if (isset($this->component_options['outputTitle']) && !empty($this->component_op
   $form_title = '';
 }
 
+// `fileUpload` section
+if (isset($this->component_options['fileUpload']) && !empty($this->component_options['fileUpload'])) {
+  $is_file_upload = $this->strtobool($this->component_options['fileUpload']);
+} else {
+  $is_file_upload = false;
+}
+
 // `useBootstrap` section
 if (isset($this->component_options['useBootstrap']) && !empty($this->component_options['useBootstrap'])) {
   $use_bootstrap = $this->strtobool($this->component_options['useBootstrap']);
@@ -92,7 +100,7 @@ if (is_admin()) {
  */
 ?>
 <div class="cdbt-entry-data-form">
-  <form method="post" action="<?php echo $action_url; ?>" class="form-horizontal">
+  <form method="post" action="<?php echo $action_url; ?>" class="form-horizontal"<?php if ($is_file_upload) : ?> enctype="multipart/form-data"<?php endif; ?>>
     <?php if (empty(!$admin_hidden)) { echo implode("\n", $admin_hidden); } ?>
     <input type="hidden" name="action" value="entry_data">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
@@ -249,7 +257,7 @@ search, datetime, date, month, week, time, color
       <div class="col-sm-10">
         <div class="checkbox <?php esc_attr_e($element['addClass']); ?>" id="entry-data-<?php esc_attr_e($element['elementName']); ?>">
           <label class="checkbox-custom" data-initialize="checkbox">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="checkbox" value="1"<?php echo $checked; ?> <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" type="checkbox" value="1"<?php echo $checked; ?> <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
             <span class="checkbox-label"><?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><?php esc_html_e($element['helperText']); ?><?php else : ?><?php echo $element['elementLabel']; ?><?php endif; ?></span>
           </label>
         </div>
@@ -263,8 +271,8 @@ search, datetime, date, month, week, time, color
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
       <div class="col-sm-10">
-        <input class="<?php esc_attr_e($element['addClass']); ?>" type="file" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" value="<?php esc_attr($element['defaultValue']); ?>">
-        <input class="hidden hidden-field" type="hidden" name="cache_file" value="<?php esc_attr($element['defaultValue']); ?>">
+        <input class="<?php esc_attr_e($element['addClass']); ?>" type="file" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" value="">
+        <input class="hidden hidden-field" type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>-cache]" value="<?php esc_attr($element['defaultValue']); ?>">
       <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
       </div>
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
@@ -303,7 +311,7 @@ search, datetime, date, month, week, time, color
         }
         
         if (isset($_time) && !empty($_time)) {
-          list($_hour, $_minite, $_second) = explode(':', $_time);
+          list($_hour, $_minute, $_second) = explode(':', $_time);
         }
 ?>
     <div class="form-group">
@@ -311,7 +319,7 @@ search, datetime, date, month, week, time, color
       <div class="col-sm-10">
         <div class="datepicker cdbt-datepicker" data-initialize="datepicker" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-date" <?php if (isset($default_date) && !empty($default_date)) : ?>data-date="<?php echo $default_date; ?>"<?php endif; ?> data-allow-past-dates="allowPastDates" <?php echo $add_attributes; ?>>
           <div class="input-group col-sm-3 pull-left">
-            <input class="form-control text-center" type="text">
+            <input class="form-control text-center" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][date]" type="text">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-calendar"></span>
@@ -370,12 +378,12 @@ search, datetime, date, month, week, time, color
         <div class="clock-mark pull-left"><span class="glyphicon glyphicon-time text-muted"></span></div>
         <div class="col-sm-2 pull-left">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text"  id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][hour]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
               <?php for ($hour=0; $hour<24; $hour++) : ?>
-                <li data-value="<?php echo $hour; ?>"><a href="#"><?php printf('%02d', $hour); ?></a></li>
+                <li data-value="<?php printf('%02d', $hour); ?>"><a href="#"><?php printf('%02d', $hour); ?></a></li>
               <?php endfor; ?>
               </ul>
             </div>
@@ -384,33 +392,33 @@ search, datetime, date, month, week, time, color
         <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text"  id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_minite; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][minute]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-              <?php for ($minit=0; $minit<60; $minit++) : ?>
-                <li data-value="<?php echo $hour; ?>"><a href="#"><?php printf('%02d', $minit); ?></a></li>
+              <?php for ($minute=0; $minute<60; $minute++) : ?>
+                <li data-value="<?php printf('%02d', $minute); ?>"><a href="#"><?php printf('%02d', $minute); ?></a></li>
               <?php endfor; ?>
               </ul>
             </div>
-          </div><!-- /hour-combobox -->
+          </div><!-- /minute-combobox -->
         </div>
         <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text"  id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][second]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
               <?php for ($second=0; $second<60; $second++) : ?>
-                <li data-value="<?php echo $hour; ?>"><a href="#"><?php printf('%02d', $second); ?></a></li>
+                <li data-value="<?php printf('%02d', $second); ?>"><a href="#"><?php printf('%02d', $second); ?></a></li>
               <?php endfor; ?>
               </ul>
             </div>
-          </div><!-- /hour-combobox -->
+          </div><!-- /second-combobox -->
         </div>
       </div>
-      <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" value="<?php esc_attr_e($element['defaultValue']); ?>">
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][prev_date]" value="<?php esc_attr_e($element['defaultValue']); ?>">
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
         unset($default_date, $_time, $_hour, $_minite, $_second);

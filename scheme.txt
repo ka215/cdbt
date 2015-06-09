@@ -29,13 +29,14 @@ custom-database-tables/
 │  │  ├cdbt_apis.php			<-- 管理画面テンプレート： WEBAPI管理画面用
 │  │  └cdbt_options.php			<-- 管理画面テンプレート： プラグインオプション画面用
 │  ├components/
+│  │  ├cdbt_forms.php			<-- コンポーネントテンプレート： 各種フォーム用（by bootstrap and Fuel UX）
 │  │  ├cdbt_modal.php			<-- コンポーネントテンプレート： モーダルダイアログ用（by bootstrap）
 │  │  ├cdbt_repeater.php			<-- コンポーネントテンプレート： リピーター用（by Fuel UX）
 │  │  └cdbt_wizard.php			<-- コンポーネントテンプレート： ウィザード用（by Fuel UX）
 │  └shortcodes/
-│  　  ├cdbt_view.php			<-- ショートコードテンプレート： 
-│  　  ├cdbt_entry.php			<-- ショートコードテンプレート： 
-│  　  └cdbt_edit.php			<-- ショートコードテンプレート： 
+│  　  ├cdbt_view.php			<-- ショートコードテンプレート： なし
+│  　  ├cdbt_entry.php			<-- ショートコードテンプレート： なし
+│  　  └cdbt_edit.php			<-- ショートコードテンプレート： なし
 │
 ├langs/
 └sources/
