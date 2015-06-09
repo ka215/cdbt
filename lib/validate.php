@@ -83,7 +83,8 @@ class CommonValidator
 
         if (CommonValidator::checkString($arg) && CommonValidator::checkLength($arg,1)
         || CommonValidator::checkRange($arg,1) && CommonValidator::checkString($format)) {
-            $date = new CommonDate($arg);
+            //$date = new \CommonDate($arg);
+            $date = new \DateTime($arg);
             if($date && $arg == $date->format($format) && checkdate($date->getMonth(), $date->getDay(), $date->getYear())){
                 return true;
             } else {
@@ -118,7 +119,7 @@ class CommonValidator
      * Check that it is all only numbers
      *
      * @param string $arg Checking value
-     * @return bool All only numbers is trueAotherwise false
+     * @return bool All only numbers is true otherwise false
      */
     public static function checkDigit($arg)
     {

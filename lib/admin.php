@@ -585,7 +585,7 @@ class CdbtAdmin extends CdbtDB {
       }
       $worker_method = sprintf('do_%s%s', $this->query['page'], $current_tab);
       if (method_exists($this, $worker_method)) {
-        $_SESSION = $_POST;
+        $_SESSION = array_map( 'stripslashes_deep', $_POST );
         $this->update_session( $worker_method );
         $this->$worker_method();
       } else {
@@ -655,7 +655,7 @@ class CdbtAdmin extends CdbtDB {
       return;
     }
     
-    $submit_options = $_POST[$this->domain_name];
+    $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
     
     // sanitaize empty values
     foreach ($submit_options as $key => $value) {
@@ -713,7 +713,7 @@ class CdbtAdmin extends CdbtDB {
     // Table creation process
     if ('create_table' === $_POST['action']) {
       // Validation params
-      $source_data = $_POST[$this->domain_name];
+      $source_data = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
       $errors = [];
       
       // Check the required item is whether it is empty
@@ -777,7 +777,7 @@ class CdbtAdmin extends CdbtDB {
         return;
       }
       
-      $resume_table_name = $_POST[$this->domain_name]['resume_table'];
+      $resume_table_name = array_map( 'stripslashes_deep', $_POST[$this->domain_name]['resume_table'] );
       $resume_table_options = [];
       //
       // Filter the sub-option of the table to resume
@@ -829,6 +829,9 @@ class CdbtAdmin extends CdbtDB {
       $this->register_admin_notices( $notice_class, $message, 3, true );
       return;
     }
+    
+    if ( get_magic_quotes_gpc() ) 
+      $_POST = array_map( 'stripslashes_deep', $_POST );
     
     // Process of changing the table and switching operation action
     switch($_POST['action']) {
@@ -944,6 +947,9 @@ class CdbtAdmin extends CdbtDB {
       $this->register_admin_notices( $notice_class, $message, 3, true );
       return;
     }
+    
+    if ( get_magic_quotes_gpc() ) 
+      $_POST = array_map( 'stripslashes_deep', $_POST );
     
     // Process of changing the table and switching operation action
     switch($_POST['action']) {

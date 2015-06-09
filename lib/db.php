@@ -600,6 +600,27 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
+   * Parse the element definition of the list type column as an array
+   *
+   * @since 2.0.0
+   *
+   * @param string $list_string [require] Definition string in the list type column of `enum` or `set`
+   * @return array $list_array Array of list type column element
+   */
+  public function parse_list_elements( $list_string=null ) {
+    $list_array = [];
+    
+    if (!empty($list_string) && preg_match('/^(enum|set)\((.*)\)$/iU', $list_string, $matches) && is_array($matches) && array_key_exists(2, $matches)) {
+      foreach (explode(',', $matches[2]) as $list_value) {
+        $list_array[] = trim($list_value, "'");
+      }
+    }
+    
+    return $list_array;
+  }
+  
+  
+  /**
    * Export data from any table.
    * This method is only validation of the setting values.
    * Generate the downloading data and output that does by the `CdbtUtility::download_file()` method.

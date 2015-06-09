@@ -367,7 +367,7 @@ trait CdbtShortcodes {
           if ($scheme['unsigned']) 
             $min = 0;
           $element_size = ceil($scheme['max_length'] / 10);
-          $pattern = '^[0-9]+$';
+          $pattern = $scheme['unsigned'] ? '^[0-9]+$' : '^(\-|)[0-9]+$';
         } else
         if (array_key_exists('binary', $detect_column_type)) {
           $input_type = 'boolean';
@@ -377,18 +377,16 @@ trait CdbtShortcodes {
         } else {
           $input_type = 'text';
           $element_size = ceil($scheme['max_length'] / 10);
-          $pattern = '^[0-9]+$';
+          $pattern = $scheme['unsigned'] ? '^[0-9]{0,}(|\.)[0-9]+$' : '^(\-|)[0-9]{0,}(|\.)[0-9]+$';
         }
       } else
       if (array_key_exists('list', $detect_column_type)) {
         $input_type = 'enum' === $detect_column_type['list'] ? 'select' : 'checkbox';
-        if (preg_match('/^(enum|set)\((.*)\)$/iU', $scheme['type_format'], $matches) && is_array($matches) && array_key_exists(2, $matches)) {
-        	$selectable_list = [];
-          foreach (explode(',', $matches[2]) as $list_value) {
-            $list_value = trim($list_value, "'");
-            $selectable_list[] = sprintf( '%s:%s', __($list_value, CDBT), esc_attr($list_value) );
-          }
+        $selectable_list = [];
+        foreach ($this->parse_list_elements($scheme['type_format']) as $list_value) {
+          $selectable_list[] = sprintf( '%s:%s', __($list_value, CDBT), esc_attr($list_value) );
         }
+        unset($list_value);
       } else
       if (array_key_exists('datetime', $detect_column_type)) {
         $input_type = 'timestamp' === $detect_column_type['datetime'] ? 'number' : 'datetime';
@@ -453,8 +451,114 @@ trait CdbtShortcodes {
    */
   protected function register_data( $table_name=null, $post_data=[] ) {
     
-    var_dump($table_name);
-    var_dump($post_data);
+    $table_schema = $this->get_table_schema($table_name);
+    $regist_data = [];
+    foreach ($post_data as $post_key => $post_value) {
+      if (array_key_exists($post_key, $table_schema)) {
+        $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
+        
+        if (array_key_exists('char', $detect_column_type)) {
+          if (array_key_exists('text', $detect_column_type)) {
+            // Sanitization data from textarea
+            $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
+            $regist_data[$post_key] = tag_escape(wp_kses($post_value, $allowed_html_tags)); 
+          } else {
+            // Sanitization data from text field
+            if (is_email($post_value)) {
+              $regist_data[$post_key] = sanitize_email($post_value);
+            } else {
+              $regist_data[$post_key] = sanitize_text_field($post_value);
+            }
+          }
+        }
+        
+        if (array_key_exists('numeric', $detect_column_type)) {
+          if (array_key_exists('integer', $detect_column_type)) {
+            // Sanitization data of integer
+            $regist_data[$post_key] = $table_schema[$post_key]['unsigned'] ? absint($post_value) : intval($post_value);
+          } else
+          if (array_key_exists('float', $detect_column_type)) {
+            // Sanitization data of float
+            $regist_data[$post_key] = 'decimal' === $detect_column_type['float'] ? strval(floatval($post_value)) : floatval($post_value);
+          } else
+          if (array_key_exists('binary', $detect_column_type)) {
+            // Sanitization data of bainary bit
+            $regist_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+          } else {
+            $regist_data[$post_key] = intval($post_value);
+          }
+        }
+        
+        if (array_key_exists('list', $detect_column_type)) {
+          if ('enum' === $detect_column_type['list']) {
+            // Validation data of enum element
+            if (in_array($post_value, $this->parse_list_elements($table_schema[$post_key]['type_format']))) {
+              $regist_data[$post_key] = $post_value;
+            } else {
+              $regist_data[$post_key] = $table_schema[$post_key]['default'];
+            }
+          } else
+          if ('set' === $detect_column_type['list']) {
+            $post_value = is_array($post_value) ? $post_value : (array)$post_value;
+            $list_array = $this->parse_list_elements($table_schema[$post_key]['type_format']);
+            $_save_array = [];
+            foreach ($post_value as $item) {
+              if (in_array($item, $list_array)) 
+                $_save_array[] = $item;
+            }
+            $regist_data[$post_key] = implode(',', $_save_array);
+            unset($list_array, $_save_array, $item);
+          }
+        }
+        
+        if (array_key_exists('datetime', $detect_column_type)) {
+//          var_dump([$post_key, $post_value]);
+          if (is_array($post_value)) {
+            if (array_key_exists('date', $post_value)) {
+              if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
+                $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
+              } else {
+                $_date = $post_value['date'];
+              }
+            } else {
+              $_date = '';
+            }
+            $_hour = $_minute = $_second = '00';
+            foreach (['hour', 'minute', 'second'] as $key) {
+              if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
+                if ('hour' === $key) {
+                  $_hour = $this->validate->checkRange(intval($post_value[$key]), 0, 23) ? $post_value[$key] : '00';
+                } else {
+                  if ('minute' === $key) {
+                    $_minute = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                  } else {
+                    $_second = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                  }
+                }
+              }
+            }
+            if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
+              $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
+            } else {
+              $regist_data[$post_key] = !empty($_date.$_hour.$_minute.$_second) ? $_date.$_hour.$_minute.$_second : $table_schema[$post_key]['default'];
+            }
+          } else {
+            $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
+          }
+          if (!$this->validate->checkDateTime($regist_data[$post_key], 'Y-m-d H:i:s')) {
+            $regist_data[$post_key] = '0000-00-00 00:00:00';
+          }
+          unset($_date, $_hour, $_minute, $_second);
+        }
+
+//var_dump($detect_column_type);
+        
+        
+      }
+    }
+    var_dump($regist_data);
+//    var_dump($table_name);
+//    var_dump($post_data);
     var_dump($_FILES);
     
     return false;
