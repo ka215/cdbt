@@ -480,7 +480,7 @@ foreach ($this->allow_file_types as $file_type) {
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $current_action; ?>">
         <div class="navbar-right">
         <?php foreach ($operatable_buttons as $action_name => $definitions) : ?>
-          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['label']; ?>"<?php if (empty($target_table) || !in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['labal']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
+          <button type="button" class="btn btn-default<?php if ($action_name === $current_action) : ?> active<?php endif; ?>" id="operate-table-action-<?php echo $action_name; ?>" title="<?php echo $definitions['label']; ?>"<?php if (empty($target_table) || !in_array($belong_table_type['type_name'], $definitions['allow_type'])) : ?> disabled="disabled"<?php endif; ?>><span class="sr-only"><?php echo $definitions['label']; ?></span><i class="<?php echo $definitions['icon']; ?>"></i></button>
         <?php endforeach; ?>
         </div>
       </form>

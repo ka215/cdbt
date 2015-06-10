@@ -26,11 +26,11 @@ class CommonValidator
     /**
      * Format of datetime
      */
-    const NEW_DATE_FORMAT_YMD = '%Y%m%d';
-    const NEW_DATE_FORMAT_Y_M_D = '%Y-%m-%d';
-    const NEW_DATE_FORMAT_YMDHIS = '%Y%m%d%H%M%S';
-    const NEW_DATE_FORMAT_YMD_H_I_S = '%Y%m%d %H:%M:%S';
-    const NEW_DATE_FORMAT_Y_M_D_H_I_S = '%Y-%m-%d %H:%M:%S';
+    const NEW_DATE_FORMAT_YMD = 'Ymd';
+    const NEW_DATE_FORMAT_Y_M_D = 'Y-m-d';
+    const NEW_DATE_FORMAT_YMDHIS = 'YmdHis';
+    const NEW_DATE_FORMAT_YMD_H_I_S = 'Ymd H:i:s';
+    const NEW_DATE_FORMAT_Y_M_D_H_I_S = 'Y-m-d H:i:s';
 
     const DATE_FORMAT_YMD = 'Ymd';
     const DATE_FORMAT_Y_M_D = 'Y-m-d';
@@ -83,9 +83,8 @@ class CommonValidator
 
         if (CommonValidator::checkString($arg) && CommonValidator::checkLength($arg,1)
         || CommonValidator::checkRange($arg,1) && CommonValidator::checkString($format)) {
-            //$date = new \CommonDate($arg);
             $date = new \DateTime($arg);
-            if($date && $arg == $date->format($format) && checkdate($date->getMonth(), $date->getDay(), $date->getYear())){
+            if($date && $arg == $date->format($format)){
                 return true;
             } else {
                 return false;

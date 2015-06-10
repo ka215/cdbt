@@ -982,7 +982,8 @@ class CdbtAdmin extends CdbtDB {
           'operate_current_table' => $table_name, 
           'operate_action' => 'entry', 
         ];
-        if ($this->register_data( $table_name, $post_data )) {
+        $register_data = $this->cleanup_data( $table_name, $post_data );
+        if ($this->insert_data( $table_name, $register_data )) {
           $notice_class = CDBT . '-notice';
           $message = sprintf(__('Your entry data has been successfully registered to "%s" table.', CDBT), $table_name);
         } else {

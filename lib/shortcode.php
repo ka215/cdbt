@@ -75,12 +75,14 @@ trait CdbtShortcodes {
       'order_cols' => '', // String as array (not assoc); For example `col3,col2,col1,...` If overlapped with `display_cols`, set to override the `display_cols`.
       'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
       'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
-      'image_render' => '', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
+      'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
       // Added new attribute from 2.0.0 is follows:
       'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
       'filters' => '', // String as array (not assoc); For example `filter1,filter2,...`
       'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
       'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
+      'thumbnail_title_column' => '', // Column name to be used as a thumbnail title
+      'thumbnail_width' => 100, // Integer of thumbnail block size
       'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
@@ -91,18 +93,28 @@ trait CdbtShortcodes {
     $shortcode_name = 'cdbt-view';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
+    $has_bin = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
+      foreach ($table_schema as $column => $scheme) {
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+          $has_bin[] = $column;
+        }
+      }
     } else {
       if (in_array($table, $this->core_tables)) 
         $table_type = 'wp_core';
+      
       $has_pk = false;
       foreach ($table_schema as $column => $scheme) {
         if ($scheme['primary_key']) {
           $has_pk = true;
           break;
+        }
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+          $has_bin[] = $column;
         }
       }
       $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($this->options['default_per_records']) : intval($limit_items);
@@ -179,6 +191,32 @@ trait CdbtShortcodes {
     if (empty($datasource))
       return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
     
+    // If contain binary data in the datasource
+    if (!empty($has_bin)) {
+      $custom_column_renderer = [];
+      foreach ($datasource as $i => $row_data) {
+        foreach ($has_bin as $col_name) {
+          if (array_key_exists($col_name, $row_data)) {
+            if ('image' === $this->check_binary_data($row_data[$col_name])) {
+              $row_data[$col_name] = sprintf('data:%s;base64,%s', $this->esc_binary_data($row_data[$col_name], 'mime_type'), $this->esc_binary_data($row_data[$col_name], 'bin_data') );
+              $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<a href="#" class="modal-preview"><img src="\' + rowData.'. $col_name .' + \'" class="img-'. $image_render .'"></a>\' : \'\'';
+              // $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
+              // $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<div class="lazy-loading-image"><input type="hidden"value="\' + rowData.'. $col_name .' + \'"></div>\' : \'\'';
+              if (is_admin() && empty($thumbnail_column)) {
+                $display_view = true;
+                $thumbnail_column = $col_name;
+              }
+            } else {
+              $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
+            }
+            $datasource[$i] = $row_data;
+          } else {
+            $custom_column_renderer[$col_name] = '';
+          }
+        }
+      }
+	}
+    
     if ($bootstrap_style) {
       // Generate repeater
       $columns = [];
@@ -191,6 +229,15 @@ trait CdbtShortcodes {
           'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
           'className' => '', 
         ];
+      }
+      
+      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
+        foreach ($columns as $i => $column_definition) {
+          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
+            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
+          }
+        }
+        unset($i);
       }
       
       if ('regular' === $table_type && $display_list_num) {
@@ -214,6 +261,12 @@ trait CdbtShortcodes {
         'data' => $datasource, 
         'addClass' => $add_class, 
       ];
+      
+      if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
+        $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
+        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
+        $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
+      }
       
       if (isset($title)) 
         echo $title;
@@ -441,17 +494,19 @@ trait CdbtShortcodes {
   
   
   /**
-   * The registration data is validation and sanitization and  rasterization data is inserted into the table.
+   * Inputted data is validation and sanitization and rasterization data is returned.
    *
    * @since 2.0.0
    *
    * @param string $table_name [require]
    * @param array $post_data [require]
-   * @return boolean
+   * @return mixed $raster_data False is returned if invalid data
    */
-  protected function register_data( $table_name=null, $post_data=[] ) {
+  protected function cleanup_data( $table_name=null, $post_data=[] ) {
     
-    $table_schema = $this->get_table_schema($table_name);
+    if (false === ($table_schema = $this->get_table_schema($table_name))) 
+      return false;
+    
     $regist_data = [];
     foreach ($post_data as $post_key => $post_value) {
       if (array_key_exists($post_key, $table_schema)) {
@@ -499,6 +554,7 @@ trait CdbtShortcodes {
             }
           } else
           if ('set' === $detect_column_type['list']) {
+            // Validation data of enum element
             $post_value = is_array($post_value) ? $post_value : (array)$post_value;
             $list_array = $this->parse_list_elements($table_schema[$post_key]['type_format']);
             $_save_array = [];
@@ -512,8 +568,8 @@ trait CdbtShortcodes {
         }
         
         if (array_key_exists('datetime', $detect_column_type)) {
-//          var_dump([$post_key, $post_value]);
           if (is_array($post_value)) {
+            // Validation data of date
             if (array_key_exists('date', $post_value)) {
               if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
                 $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
@@ -523,6 +579,7 @@ trait CdbtShortcodes {
             } else {
               $_date = '';
             }
+            // Validation data of time
             $_hour = $_minute = $_second = '00';
             foreach (['hour', 'minute', 'second'] as $key) {
               if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
@@ -537,6 +594,7 @@ trait CdbtShortcodes {
                 }
               }
             }
+            // Rasterization data of datetime
             if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
               $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
             } else {
@@ -545,23 +603,66 @@ trait CdbtShortcodes {
           } else {
             $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
           }
+          // Validation data of datetime
           if (!$this->validate->checkDateTime($regist_data[$post_key], 'Y-m-d H:i:s')) {
             $regist_data[$post_key] = '0000-00-00 00:00:00';
           }
           unset($_date, $_hour, $_minute, $_second);
         }
-
-//var_dump($detect_column_type);
         
+        if (array_key_exists('file', $detect_column_type)) {
+          // Check the `$_FILES`
+          var_dump($detect_column_type['file']); // debug code
+        }
         
       }
     }
-    var_dump($regist_data);
-//    var_dump($table_name);
-//    var_dump($post_data);
-    var_dump($_FILES);
     
-    return false;
+    if (!empty($_FILES[$this->domain_name])) {
+      $uploaded_data = [];
+      foreach ($_FILES[$this->domain_name] as $file_key => $file_data) {
+        foreach ($file_data as $column => $value) {
+          if (array_key_exists($column, $table_schema)) 
+            $uploaded_data[$column][$file_key] = $value;
+        }
+      }
+      unset($file_key, $file_data, $column, $value);
+      // Verification the uploaded file
+      $mines = get_allowed_mime_types();
+      foreach ($uploaded_data as $column => $file_data) {
+        $is_allowed_file = true;
+        
+        // Unauthorized file types to exclude
+        if (!in_array($file_data['type'], $mines)) 
+        	$is_allowed_file = false;
+        
+        // Verification file size is whether within the allowable range
+        if (!$this->validate->checkRange($file_data['size'], 1, $table_schema[$column]['octet_length'])) 
+        	$is_allowed_file = false;
+        
+        // Verification whether an error has occurred in the upload
+        if ($file_data['error'] !== 0) 
+          $is_allowed_file = false;
+        
+        // Verification whether the temporary file exists
+        if (empty($file_data['tmp_name'])) 
+          $is_allowed_file = false;
+        
+        if (!$is_allowed_file) 
+          unset($uploaded_data[$column]);
+        
+      }
+      unset($colmun, $file_data);
+      if (!empty($uploaded_data)) {
+        // Rasterization data of file
+        foreach ($uploaded_data as $column => $file_data) {
+          $regist_data[$column] = $this->get_binary_context( $file_data['tmp_name'], $file_data['name'], $file_data['type'], $file_data['size'], true );
+        }
+      }
+    }
+    
+    return !empty($regist_data) ? $regist_data : false;
+    
   }
 
 

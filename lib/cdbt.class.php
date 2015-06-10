@@ -869,61 +869,6 @@ class CustomDatabaseTables {
 	 * @return int $insert_id
 	 */
 	function insert_data($table_name, $data, $table_schema=null, $date_init=true) {
-		global $wpdb;
-		if (empty($table_schema)) 
-			list(, , $table_schema) = $this->get_table_schema($table_name);
-		$primary_key_name = $primary_key_value = null;
-		$primary_key_count = 0;
-		$is_exists_created = $is_exists_updated = false;
-		foreach ($table_schema as $key => $val) {
-			if ($val['primary_key']) {
-				if (empty($primary_key_name)) {
-					$primary_key_name = $key;
-					$primary_key_a_i = strtolower($val['extra']) == 'auto_increment' ? true : false;
-				}
-				$primary_key_count++;
-			}
-			if ($key == 'created') 
-				$is_exists_created = $date_init;
-			if ($key == 'updated') 
-				$is_exists_updated = $date_init;
-		}
-		if (!empty($primary_key_name)) {
-			if ($primary_key_a_i) {
-				unset($data[$primary_key_name]);
-			} else {
-				$primary_key_value = $data[$primary_key_name];
-			}
-		}
-		if ($is_exists_created || empty($data['created'])) 
-			$data['created'] = date('Y-m-d H:i:s', time());
-		if ($is_exists_updated || empty($data['updated'])) 
-			unset($data['updated']);
-		$format = array();
-		foreach ($data as $column_name => $value) {
-			if (array_key_exists($column_name, $table_schema)) {
-				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+$/', $value)) {
-					// is integer format
-					$format[] = '%d';
-				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $value)) {
-					// is double format
-					$format[] = '%f';
-				} else {
-					// is string format
-					$format[] = '%s';
-				}
-			}
-		}
-		if (isset($format) && !empty($format) && count($data) == count($format)) {
-			$res = $wpdb->insert($table_name, $data, $format);
-		} else {
-			$res = $wpdb->insert($table_name, $data);
-		}
-		if ($primary_key_count == 1) {
-			return (!cdbt_get_boolean($res)) ? $res : $wpdb->insert_id;
-		} else if ($primary_key_count > 1) {
-			return $primary_key_value;
-		}
 	}
 	
 	/**

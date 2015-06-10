@@ -15,6 +15,7 @@
  * 'columns' => @array(assoc) is listing label [require]
  * 'data' => @array(assoc) is listing data [require]
  * 'addClass' => @string [optional]
+ * 'thumbnailTemplate' => @string [optional]
  */
 
 /**
@@ -130,8 +131,13 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
     if (isset($setting['width']) && intval($setting['width']) > 0) 
       $columns[$i]['width'] = intval($setting['width']);
     
-    if (isset($setting['customColumnRenderer']) && !empty($setting['customColumnRenderer'])) 
-      $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'];
+    if (isset($setting['customColumnRenderer']) && !empty($setting['customColumnRenderer'])) {
+      if (is_array($setting['customColumnRenderer']) && array_key_exists($columns[$i]['property'], $setting['customColumnRenderer'])) {
+        $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'][$columns[$i]['property']];
+      } else {
+        $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'];
+      }
+    }
     
     if (isset($setting['customRowRenderer']) && !empty($setting['customRowRenderer'])) 
       $custom_rows = isset($custom_rows) ? array_merge($custom_rows, $setting['customRowRenderer']) : $setting['customRowRenderer'];
@@ -153,6 +159,13 @@ if (!isset($this->component_options['addClass']) || empty($this->component_optio
   $add_class = '';
 } else {
   $add_class = $this->component_options['addClass'];
+}
+
+// `thumbnailTemplate` section
+if (!isset($this->component_options['thumbnailTemplate']) || empty($this->component_options['thumbnailTemplate'])) {
+  $thumbnail_template = '<div class="thumbnail repeater-thumbnail {{thumbnail_class}}" style="background: {{thumbnail_bgcolor}};"><img height="{{thumbnail_height}}" src="{{thumbnail_src}}" width="{{thumbnail_width}}"><span>{{thumbnail_title}}</span></div>';
+} else {
+  $thumbnail_template = $this->component_options['thumbnailTemplate'];
 }
 
 /**
@@ -514,7 +527,7 @@ endif; ?>
     
     <?php if ($static_height !== -1) printf('staticHeight: %s,', $static_height); ?>
     
-    thumbnail_template: '<div class="thumbnail repeater-thumbnail {{thumbnail_class}}" style="background: {{thumbnail_bgcolor}};"><img height="{{thumbnail_height}}" src="{{thumbnail_src}}" width="{{thumbnail_width}}"><span>{{thumbnail_title}}</span></div>',
+    thumbnail_template: <?php echo $thumbnail_template; ?>,
     
   });
 

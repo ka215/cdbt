@@ -548,6 +548,95 @@ class CdbtDB extends CdbtConfig {
   
   
   
+  /**
+   * Insert data to specific table in database.
+   *
+   * @since 1.0.0
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param array $data
+   * @return mixed Integer of the primary key that was inserted when was successful against a table with a surrogate key, otherwise is boolean that representing the success or failure of processing
+   */
+  public function insert_data( $table_name=null, $data=[] ) {
+    static $message = '';
+    
+    // Check Table
+    if (false === ($table_schema = $this->get_table_schema($table_name))) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $this->logger( $message );
+      return false;
+    }
+    
+    // Scanning of the table structure
+    $has_pk = false;
+    $primary_keys = [];
+    $is_auto_add_column = [];
+    $surrogate_key = '';
+    foreach ($table_schema as $column => $scheme) {
+      if ($scheme['primary_key']) {
+        $has_pk = true;
+        $primary_keys[] = $column;
+        if (false !== strpos( $scheme['extra'], 'auto_increment' )) {
+          $surrogate_key = $column;
+          if ('ID' == $column) 
+            $is_auto_add_column[] = $column;
+        }
+      }
+      if ('created' === $column && 'datetime' === $scheme['type'] && '0000-00-00 00:00:00' === $scheme['default']) 
+        $is_auto_add_column[] = $column;
+      
+      if ('updated' === $column && 'timestamp' === $scheme['type'] && 'CURRENT_TIMESTAMP' === $scheme['default'] && 'on update CURRENT_TIMESTAMP' === $scheme['extra']) 
+        $is_auto_add_column[] = $column;
+      
+    }
+    unset($column, $scheme);
+    
+    // Generation of insertion candidate data
+    $insert_data = [];
+    $field_format = [];
+    foreach ($data as $column => $value) {
+      if ($surrogate_key === $column) 
+        continue;
+      
+      if (in_array('update', $is_auto_add_column) && 'update' === $column) 
+        continue;
+      
+      $insert_data[$column] = $value;
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+        $field_format[$column] = '%d';
+      } else
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+        $field_format[$column] = '%f';
+      } else {
+        $field_format[$column] = '%s';
+      }
+      
+    }
+    
+    if (empty($insert_data) || empty($field_format)) {
+      $message = __('Inserted data is invalid.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
+    if (empty(array_diff_key($insert_data, $field_format))) {
+      $result = $this->wpdb->insert( $table_name, $insert_data, array_values($field_format) );
+    } else {
+      $result = $this->wpdb->insert( $table_name, $insert_data );
+    }
+    $retvar = $this->strtobool($result);
+    if ($retvar) {
+      if (!empty($surrogate_key)) 
+        $retvar = $this->wpdb->insert_id;
+    } else {
+      $message = __('Failed to insert data.', CDBT);
+      $this->logger( $message );
+    }
+    
+    return $retvar;
+    
+  }
   
   
   
