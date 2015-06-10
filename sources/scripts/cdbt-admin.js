@@ -41,6 +41,19 @@ $(function() {
    */
   var CallbackClass = function() {
     
+    /**
+     * Reload combobox of time within datepicker
+     */
+    this.reload_timer = function(){
+      
+      var now = new Date();
+      $('.cdbt-datepicker').datepicker('getDate', now);
+      $('.datepicker-combobox-hour input[type="text"]').val(('00' + now.getHours()).slice(-2));
+      $('.datepicker-combobox-minute input[type="text"]').val(('00' + now.getMinutes()).slice(-2));
+      $('.datepicker-combobox-second input[type="text"]').val(('00' + now.getSeconds()).slice(-2));
+      
+    };
+    
     this.render_modal = function(){
       
       if ($('#cdbtModal').size() > 0) {
@@ -83,7 +96,8 @@ $(function() {
    * Repeater components of Fuel UX renderer
    */
   if (typeof repeater !== 'undefined') {
-    repeater();
+    // repeater();
+    _.each(repeater, function(k,v){ return repeater[v](); });
     
     var locationToOperation = function( post_raw_data ) {
       var post_data = {
@@ -114,7 +128,6 @@ $(function() {
   /**
    * Datepicker components of Fuel UX renderer
    */
-//  if (typeof datepicker !== 'undefined') {
   if ($('.cdbt-datepicker').size() > 0) {
     $('.cdbt-datepicker').each(function(){
       if ($(this).data().momentLocale && $(this).data().momentFormat) {
@@ -126,6 +139,7 @@ $(function() {
         $(this).datepicker('getDate', new Date()); 
       }
     });
+    setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
   }
   
   

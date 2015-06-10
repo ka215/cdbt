@@ -373,10 +373,10 @@ search, datetime, date, month, week, time, color
                 </div>
               </div>
             </div>
-          </div><!-- /data-picker -->
+          </div><!-- /date-picker -->
         </div>
         <div class="clock-mark pull-left"><span class="glyphicon glyphicon-time text-muted"></span></div>
-        <div class="col-sm-2 pull-left">
+        <div class="col-sm-2 pull-left datepicker-combobox-hour">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][hour]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
@@ -390,7 +390,7 @@ search, datetime, date, month, week, time, color
           </div><!-- /hour-combobox -->
         </div>
         <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
-        <div class="col-sm-2 pull-left">
+        <div class="col-sm-2 pull-left datepicker-combobox-minute">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][minute]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
@@ -404,7 +404,7 @@ search, datetime, date, month, week, time, color
           </div><!-- /minute-combobox -->
         </div>
         <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
-        <div class="col-sm-2 pull-left">
+        <div class="col-sm-2 pull-left datepicker-combobox-second">
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][second]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">

@@ -87,7 +87,7 @@ trait CdbtShortcodes {
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
-     return;
+      return;
     
     // Initialization process for the shortcode
     $shortcode_name = 'cdbt-view';
@@ -253,7 +253,7 @@ trait CdbtShortcodes {
       $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
       
       $conponent_options = [
-        'id' => 'cdbt-repeater-' . $table, 
+        'id' => 'cdbt-repeater-view-' . $table, 
         'listSelectable' => 'false', 
         'pageIndex' => 1, 
         'pageSize' => $limit_items, 
@@ -303,7 +303,7 @@ trait CdbtShortcodes {
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
-     return;
+      return;
     
     // Initialization process for the shortcode
     $shortcode_name = 'cdbt-entry';
@@ -489,6 +489,232 @@ trait CdbtShortcodes {
     ];
     
     return $this->component_render('forms', $conponent_options);
+    
+  }
+  
+  
+  /**
+   * Render the editable data list for the specified table
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param array $attributes [require] Array of attributes in shortcode
+   * @param string $content [optional] For default is empty
+   * @return string $html_content The created form contents
+   **/
+  public function editable_data_list() {
+    list($attributes, $content) = func_get_args();
+    extract( shortcode_atts([
+      'table' => '', // Required attribute
+      'entry_page' => '', // Deprecated attributes from v2.0.0 (actually not work)
+      'bootstrap_style' => true, // If false is output by the static table tag layout in non the Repeater format. Also does not have any pagination when false.
+      'display_list_num' => false, // Deprecated attributes, and the default value has changed to false  from v2.0.0 (actually not work)
+      'display_title' => true, 
+      'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
+      'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
+      'add_class' => '', // Separator is a single-byte space character
+//      'display_search' => true, // true is static
+//      'display_index_row' => true, // true is static
+//      'image_render' => 'responsive', // 'responsive' is static
+      // Added new attribute from 2.0.0 is follows:
+      'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'filters' => '', // String as array (not assoc); For example `filter1,filter2,...`
+      'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
+      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+    ], $attributes) );
+    if (empty($table) || !$this->check_table_exists($table)) 
+      return;
+    
+    // Initialization process for the shortcode
+    $shortcode_name = 'cdbt-edit';
+    $table_schema = $this->get_table_schema($table);
+    $table_option = $this->get_table_option($table);
+    $has_bin = [];
+    if (false !== $table_option) {
+      $table_type = $table_option['table_type'];
+      $has_pk = !empty($table_option['primary_key']) ? true : false;
+      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
+      foreach ($table_schema as $column => $scheme) {
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+          $has_bin[] = $column;
+        }
+      }
+    } else {
+      if (in_array($table, $this->core_tables)) 
+        $table_type = 'wp_core';
+      
+      $has_pk = false;
+      foreach ($table_schema as $column => $scheme) {
+        if ($scheme['primary_key']) {
+          $has_pk = true;
+          break;
+        }
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+          $has_bin[] = $column;
+        }
+      }
+      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($this->options['default_per_records']) : intval($limit_items);
+    }
+    $content = '';
+    
+    // Check user permission
+    $result_permit = false;
+    if (isset($table_option['permission']) && isset($table_option['permission']['eidt_global']) && !empty($table_option['permission']['edit_global'])) {
+      // Standard from v2.0.0
+      $result_permit = $this->is_permit_user($table_option['permission']['edit_global']);
+    } else
+    if (isset($table_option['roles']) && isset($table_option['roles']['edit_role'])) {
+      // As legacy v.1.x
+      foreach(array_reverse($this->user_roles) as $role_name) {
+        $_role = get_role($role_name);
+        if (is_object($_role) && array_key_exists('level_' . $table_option['roles']['edit_role'], $_role->capabilities)) {
+          $check_role = $_role->name;
+          break;
+        }
+      }
+      $result_permit = $this->is_permit_user( $check_role );
+    } else
+    if ('wp_core' === $table_type) {
+      // If WordPress core tables
+      $result_permit = $this->is_permit_user( 'administrator' );
+    }
+    //
+    // Filter the viewing rights check result of the shortcode
+    // You can give viewing rights to specific users by utilizing this filter hook.
+    //
+    $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
+    if (!$result_permit) 
+      return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+    
+    
+    // Validation of the attributes, then sanitizing
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'ajax_load' ];
+    foreach ($boolean_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtobool(${$attribute_name});
+    }
+    $not_assoc_atts = [ 'exclude_cols', 'display_cols', 'order_cols', 'filters' ];
+    foreach ($not_assoc_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtoarray(${$attribute_name});
+    }
+    $hash_atts = [ 'narrow_keyword', 'sort_order' ];
+    foreach ($hash_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtohash(${$attribute_name});
+    }
+    if (!empty($add_class)) {
+      $add_classes = [];
+      foreach (explode(' ', $add_class) as $_class) {
+        $add_classes[] = esc_attr(trim($_class));
+      }
+      $add_class = implode(' ', $add_classes);
+    }
+    if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
+      $image_render = 'responsive';
+    } else {
+      $image_render = strtolower($image_render);
+    }
+    if ($this->validate->checkInt($csid)) {
+      // csidに対応したショートコードが存在するかのチェックを行う
+    } else {
+      $csid = 0;
+    }
+    if ($display_title) {
+      $disp_title = $this->get_table_comment($table);
+      $disp_title = !empty($disp_title) ? $disp_title : $table;
+      $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $disp_title ) . '</h4>';
+    }
+    
+    $datasource = $this->get_data($table, 'ARRAY_A');
+    if (empty($datasource))
+      return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
+    
+    // If contain binary data in the datasource
+    if (!empty($has_bin)) {
+      $custom_column_renderer = [];
+      foreach ($datasource as $i => $row_data) {
+        foreach ($has_bin as $col_name) {
+          if (array_key_exists($col_name, $row_data)) {
+            if ('image' === $this->check_binary_data($row_data[$col_name])) {
+              $row_data[$col_name] = sprintf('data:%s;base64,%s', $this->esc_binary_data($row_data[$col_name], 'mime_type'), $this->esc_binary_data($row_data[$col_name], 'bin_data') );
+              $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<a href="#" class="modal-preview"><img src="\' + rowData.'. $col_name .' + \'" class="img-'. $image_render .'"></a>\' : \'\'';
+              // $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
+              // $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<div class="lazy-loading-image"><input type="hidden"value="\' + rowData.'. $col_name .' + \'"></div>\' : \'\'';
+              if (is_admin() && empty($thumbnail_column)) {
+                $display_view = true;
+                $thumbnail_column = $col_name;
+              }
+            } else {
+              $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
+            }
+            $datasource[$i] = $row_data;
+          } else {
+            $custom_column_renderer[$col_name] = '';
+          }
+        }
+      }
+	}
+    
+    if ($bootstrap_style) {
+      // Generate repeater
+      $columns = [];
+      foreach ($table_schema as $column => $scheme) {
+        $columns[] = [
+          'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
+          'property' => $column, 
+          'sortable' => true, 
+          'sortDirection' => 'asc', 
+          'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
+          'className' => '', 
+        ];
+      }
+      
+      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
+        foreach ($columns as $i => $column_definition) {
+          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
+            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
+          }
+        }
+        unset($i);
+      }
+      
+      if ('regular' === $table_type && $display_list_num) {
+        foreach ($datasource as $i => $datum) {
+          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
+        }
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        array_unshift($columns, $add_column);
+      }
+      //
+      // Filter the column definition of the list content that is output by this shortcode
+      //
+      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
+      
+      $conponent_options = [
+        'id' => 'cdbt-repeater-edit-' . $table, 
+        'listSelectable' => 'multi', 
+        'pageIndex' => 1, 
+        'pageSize' => $limit_items, 
+        'columns' => $columns, 
+        'data' => $datasource, 
+        'addClass' => $add_class, 
+      ];
+      
+      if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
+        $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
+        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
+        $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
+      }
+      
+      if (isset($title)) 
+        echo $title;
+      
+      return $this->component_render('repeater', $conponent_options);
+      
+    } else {
+      // Generate table layout
+      
+      return $content;
+    }
     
   }
   

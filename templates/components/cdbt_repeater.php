@@ -163,7 +163,7 @@ if (!isset($this->component_options['addClass']) || empty($this->component_optio
 
 // `thumbnailTemplate` section
 if (!isset($this->component_options['thumbnailTemplate']) || empty($this->component_options['thumbnailTemplate'])) {
-  $thumbnail_template = '<div class="thumbnail repeater-thumbnail {{thumbnail_class}}" style="background: {{thumbnail_bgcolor}};"><img height="{{thumbnail_height}}" src="{{thumbnail_src}}" width="{{thumbnail_width}}"><span>{{thumbnail_title}}</span></div>';
+  $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail {{thumbnail_class}}" style="background: {{thumbnail_bgcolor}};"><img height="{{thumbnail_height}}" src="{{thumbnail_src}}" width="{{thumbnail_width}}"><span>{{thumbnail_title}}</span></div>\'';
 } else {
   $thumbnail_template = $this->component_options['thumbnailTemplate'];
 }
@@ -278,10 +278,13 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
     </div>
   </div>
 <script>
-var repeater = function() {
+if (typeof repeater === 'undefined') {
+  var repeater = {};
+}
+repeater['<?php echo $repeater_id; ?>'] = function() {
 
   // define the columns in your datasource
-/*
+<?php /*
   var columns = [
     {
       label: 'Name &amp; Description',
@@ -294,10 +297,10 @@ var repeater = function() {
       sortable: true
     }
   ];
-*/
+*/ ?>
   var columns = <?php echo json_encode($columns); ?>
   
-/*
+<?php /*
       // define the rows in your datasource
       var items = [];
       var statuses = ['archived', 'active', 'draft'];
@@ -318,7 +321,7 @@ var repeater = function() {
         };
         items.push(item);
       }
-*/
+*/ ?>
   var items = <?php echo json_encode($items); ?>
 
   
@@ -333,10 +336,12 @@ var repeater = function() {
     // only override the output for specific columns.
     // will default to output the text value of the row item
     switch(column) {
-//      case 'name':
-//        // let's combine name and description into a single column
-//        customMarkup = '<div style="font-size:12px;">' + rowData.name + '</div><div class="small text-muted">' + rowData.description + '</div>';
-//        break;
+<?php /*
+      case 'name':
+        // let's combine name and description into a single column
+        customMarkup = '<div style="font-size:12px;">' + rowData.name + '</div><div class="small text-muted">' + rowData.description + '</div>';
+        break;
+*/ ?>
 <?php if (!empty($custom_columns)) :
   foreach ($custom_columns as $column => $custom_content) :
 ?>
@@ -379,7 +384,7 @@ endif; ?>
     var pageSize = options.pageSize;
 
     var data = items;
-/*
+<?php /*
     var new_options = {
       pageIndex: pageIndex,
       pageSize: pageSize,
@@ -426,7 +431,7 @@ endif; ?>
       // invoke callback to render repeater
       callback(dataSource);
     });
-*/
+*/ ?>
 
     // sort by
     data = _.sortBy(data, function(item) {
