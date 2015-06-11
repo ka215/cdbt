@@ -828,39 +828,39 @@ foreach ($this->allow_file_types as $file_type) {
   
 <?php if ($current_tab == 'operate_data') : 
   
-//var_dump( $this->cdbt_sessions );
-//var_dump( $this->cdbt_sessions[$current_tab] );
-  
+  if (empty($target_table)) :
 ?>
-
-<section id="view" class="<?php if ('view' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['view']['icon']; ?> text-muted"></i> <?php printf(__('View Data in "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'view_data' ); ?>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('Please select the table to perform data manipulation.', CDBT); ?>
+    </p>
+  </div>
+  
+<?php else : 
+    
+    //var_dump( $this->cdbt_sessions );
+    //var_dump( $this->cdbt_sessions[$current_tab] );
+    $title_labels = [
+      'view' => sprintf( __('View Data in "%s" Table', CDBT), $target_table ), 
+      'entry' => sprintf( __('Entry Data to "%s" Table', CDBT), $target_table ), 
+      'edit' => sprintf( __('Edit Data of "%s" Table', CDBT), $target_table ), 
+    ];
+    
+    $current_action = empty($current_action) ? 'view' : $current_action;
+    
+?>
+<section id="<?php echo $current_action; ?>" data-target_table="<?php echo $target_table; ?>">
+  
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons[$current_action]['icon']; ?> text-muted"></i> <?php echo $title_labels[$current_action]; ?></h4> <?php $this->during_trial( $current_action . '_data' ); ?>
   <div class="clearfix"></div>
   
-  <?php echo do_shortcode( sprintf('[cdbt-view table="%s" display_title="false"]', $target_table) ); ?>
+  <?php echo do_shortcode( sprintf('[cdbt-%s table="%s" display_title="false"]', $current_action, $target_table) ); ?>
   
 </section>
 
-<section id="entry" class="<?php if ('entry' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
-  
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['entry']['icon']; ?> text-muted"></i> <?php printf(__('Entry Data to "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'entry_data' ); ?>
-  <div class="clearfix"></div>
-  
-  <?php echo do_shortcode( sprintf('[cdbt-entry table="%s" display_title="false"]', $target_table) ); ?>
-  
-</section>
-
-<section id="edit" class="<?php if ('edit' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
-  
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['edit']['icon']; ?> text-muted"></i> <?php printf(__('Edit Data of "%s" Table', CDBT), $target_table); ?></h4> <?php $this->during_trial( 'edit_data' ); ?>
-  <div class="clearfix"></div>
-  
-  <?php echo do_shortcode( sprintf('[cdbt-edit table="%s"]', $target_table) ); ?>
-  
-</section>
-
-<?php endif; /* End of `operate_data` tab contents */ 
+<?php endif; 
+    endif; /* End of `operate_data` tab contents */ 
   endif; ?>
   
 </div><!-- /.wrap -->

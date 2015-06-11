@@ -3,10 +3,13 @@
  * Repeater Options array `$this->component_options` scheme
  * [
  * 'id' => @string is element id [require]
+ * 'enableSearch' => @boolean Switching search form is hidden if `false`; default `true` [optional]
  * 'enableFilter' => @boolean Switching filter dropdown is hidden if `false`; default `true` [optional]
  * 'filters' => @array(assoc) is listing data [optional] array key is data-value, array value is display label
  * 'enableView' => @boolean Switching view button is hidden if `false`; default `true` [optional]
  * 'defaultView' => @mixed is view type of default [optional] (-1 (default), 'list', 'thumbnail')
+ * 'enableEditor' => @boolean Operation button for editing is displayed if `true`; default `false` [optional] For `cdbt-edit` only
+ * 'disableEdit' => @boolean Flag to disable the data editing because it can not identify a single data [optional] For `cdbt-edit` only
  * 'listSelectable' => @mixed can not select items of default [option] (false (default), 'single', 'multi')
  * 'staticHeight' => @mixed is auto height of default [optional] (-1 (default), true, false, integer)
  * 'pageIndex' => @integer is start page number [optional] (>= 0)
@@ -30,6 +33,9 @@ if (isset($this->component_options['id']) && !empty($this->component_options['id
   return;
 }
 
+// `search` section
+$enable_search = isset($this->component_options['enableSearch']) && false === $this->component_options['enableSearch'] ? false : true;
+
 // `filter` section
 $enable_filter = isset($this->component_options['enableFilter']) && false === $this->component_options['enableFilter'] ? false : true;
 
@@ -51,9 +57,15 @@ if (isset($this->component_options['defaultView']) && in_array($this->component_
   $default_view = 'list';
 }
 
+// `enableEditor` section
+$enable_editor = isset($this->component_options['enableEditor']) && true === $this->component_options['enableEditor'] ? true : false;
+
+// `disableEdit` section
+$disable_edit = isset($this->component_options['disableEdit']) && true === $this->component_options['disableEdit'] ? true : false;
+
 // `listSelectable` section
 if (isset($this->component_options['listSelectable']) && in_array($this->component_options['listSelectable'], [ 'single', 'multi' ])) {
-  $list_selectable = "'" . esc_attr__($this->component_options['listSelectable']) . "'";
+  $list_selectable = "'" . esc_attr($this->component_options['listSelectable']) . "'";
 } else {
   $list_selectable = 'false';
 }
@@ -61,11 +73,7 @@ if (isset($this->component_options['listSelectable']) && in_array($this->compone
 // `staticHeight` section
 $static_height = -1;
 if (isset($this->component_options['staticHeight'])) {
-  if (in_array($this->component_options['staticHeight'], [ true, false ])) {
-    $static_height = $this->component_options['staticHeight'] ? 'true' : 'false';
-  } elseif (intval($this->component_options['staticHeight']) > 0) {
-    $static_height = intval($this->component_options['staticHeight']);
-  }
+  $static_height = $this->strtobool($this->component_options['staticHeight']) ? 'true' : 'false';
 }
 
 // `pageIndex` section
@@ -174,9 +182,11 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
  */
 ?>
   <div class="repeater<?php echo $add_class; ?>" id="<?php echo $repeater_id; ?>">
+  <?php if ($enable_search || $enable_filter || $enable_view || $enable_editor) : ?>
     <div class="repeater-header">
       <div class="repeater-header-left">
-        <span class="repeater-title"><?php esc_html_e('', CDBT); ?></span>
+        <span class="repeater-title"></span>
+      <?php if ($enable_search) : ?>
         <div class="repeater-search">
           <div class="search input-group">
             <input type="search" class="form-control" placeholder="<?php esc_html_e('Search', CDBT); ?>"/>
@@ -187,7 +197,8 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
               </button>
             </span>
           </div>
-        </div>
+        </div><!-- /.repeater-search -->
+      <?php endif; ?>
       </div>
       <div class="repeater-header-right">
       <?php if ($enable_filter) : ?>
@@ -202,7 +213,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
             <?php echo implode("\n", $filters_list); ?>
           </ul>
           <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
-        </div>
+        </div><!-- /.repeater-filters -->
       <?php endif; ?>
       <?php if ($enable_view) : ?>
         <div class="btn-group repeater-views" data-toggle="buttons">
@@ -212,10 +223,22 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
           <label class="btn btn-default<?php if ('thumbnail' === $default_view) : ?> active<?php endif; ?>">
             <input name="repeaterViews" type="radio" value="thumbnail"><span class="glyphicon glyphicon-th"></span>
           </label>
-        </div>
+        </div><!-- /.repeater-views -->
+      <?php endif; ?>
+      <?php if ($enable_editor) : ?>
+        <div class="repeater-editor">
+        <?php if ($disable_edit) : ?>
+          <p class="text-danger" style="margin-top: 6px;"><?php _e('Disable the data editing because it can not identify a single data.', CDBT); ?></p>
+        <?php else : ?>
+          <button type="button" class="btn btn-default"><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e('Edit Data', CDBT); ?></span></button>
+          <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e('Refresh List', CDBT); ?></span></button>
+          <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e('Delete Data', CDBT); ?></span></button>
+        <?php endif; ?>
+        </div><!-- /.repeater-editor -->
       <?php endif; ?>
       </div>
     </div>
+  <?php endif; ?>
     <div class="repeater-viewport">
       <div class="repeater-canvas"></div>
       <div class="loader repeater-loader"></div>
@@ -372,6 +395,8 @@ endif; ?>
     echo implode("\n", $custom_rows);
   endif;
 ?>
+    //if ('' !== helpers.rowData.hobby) { var list = helpers.rowData.hobby.split(','); helpers.rowData.hobby = '<ul><li>' + list.join('</li><li>') + '</li></ul>'; };
+    
     
     callback();
   }
@@ -456,13 +481,16 @@ endif; ?>
       data = data.reverse();
     }
     
+<?php if ($enable_filter) : ?>
     // filter
     if (options.filter && options.filter.value !== 'all') {
       data = _.filter(data, function(item) {
         return item.status === options.filter.value;
       });
     }
+<?php endif; ?>
     
+<?php if ($enable_search) : ?>
     // search
     if (options.search && options.search.length > 0) {
       var searchedData = [];
@@ -482,6 +510,7 @@ endif; ?>
       
       data = searchedData;
     }
+<?php endif; ?>
     
     var totalItems = data.length;
     var totalPages = Math.ceil(totalItems / pageSize);

@@ -56,6 +56,9 @@ trait CdbtExtras {
       'export_table', 
       'duplicate_table', 
       'backup_table', 
+      'view_data', 
+      'entry_data', 
+      'edit_data', 
     ];
     if (in_array($feature_name, $new_features)) {
       printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );
@@ -237,6 +240,7 @@ trait CdbtExtras {
     
     $conponent_options = [
       'id' => $conponent_id, 
+      'enableView' => false, 
       'listSelectable' => 'single', 
       'pageIndex' => $page_index, 
       'pageSize' => $page_size, 

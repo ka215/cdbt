@@ -123,6 +123,7 @@ $(function() {
       });
     }
     
+    
   }
   
   /**
@@ -230,31 +231,6 @@ $(function() {
       $('#message').show();
     }
   }
-  
-  
-  /**
-   * `<a>` tag was clicked, then executes an AJAX processing before transition to the link destination.
-   */
-/*
-  $('a').on( 'click', function(e) {
-    e.preventDefault();
-    if (typeof $(this).attr('data-ajax-url') !== 'undefined' && $(this).attr('data-ajax-url') !== '') {
-      var post_data = {};
-      if (typeof $(this).attr('data-ajax-data') !== 'undefined' && $(this).attr('data-ajax-data') !== '') {
-        var data_list = $(this).attr('data-ajax-data').split(',');
-        _.each(data_list, function(val) {
-          var splits = val.split(':');
-          post_data[splits[0]] = splits[1];
-        });
-      }
-      post_data.callback_url = $(this).attr('href');
-      cdbtCallAjax( $(this).attr('data-ajax-url'), 'post', post_data, 'script' );
-    } else {
-      location.href = $(this).attr('href');
-    }
-  });
-*/
-  
   
   
   /**
@@ -522,14 +498,15 @@ $(function() {
         	case 'view': 
         	case 'entry': 
         	case 'edit': 
-            $('section').each(function() {
-              if (new_action === $(this).attr('id')) {
-                $(this).attr('class', 'show');
-              } else {
-                $(this).attr('class', 'hidden');
-              }
-            });
-        	  break;
+            
+            post_data = {
+              'session_key': $.QueryString.tab, 
+              'default_action': new_action, 
+              'target_table': $('section').attr('data-target_table'), 
+              'callback_url': './admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, 
+            };
+            return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+            
           default:
             
             $('form.navbar-form').trigger('submit');

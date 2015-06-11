@@ -568,6 +568,13 @@ class CdbtDB extends CdbtConfig {
       return false;
     }
     
+    // Check Data
+    if (empty($data)) {
+      $message = __('Insertion data does not exists.', CDBT);
+      $this->logger( $message );
+      return false;
+    }
+    
     // Scanning of the table structure
     $has_pk = false;
     $primary_keys = [];
