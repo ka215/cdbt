@@ -236,6 +236,42 @@ trait CdbtAjax {
   }
   
   
+  /**
+   * Run the data delete via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_delete_data( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    if (array_key_exists('table_name', $args) && array_key_exists('operate_action', $args) && 'edit' === $args['operate_action']) {
+      
+      if (is_array($args['where_conditions']) && !empty($args['where_conditions'])) {
+        foreach ($args['where_conditions'] as $_where) {
+          if ($this->delete_data( $args['table_name'], $_where )) {
+            
+          } else {
+            
+          }
+        }
+        
+        
+      } else {
+        
+      }
+      
+    } else {
+      
+    }
+    
+    $this->register_admin_notices( $notices_class, $message, 3, true );
+    die('location.reload();');
+    
+  }
 
 
 }

@@ -1069,9 +1069,23 @@ class CdbtAdmin extends CdbtDB {
         	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
         	break;
         case 'table_unknown': 
-        	$args['modalTitle'] = __('Table does not selected', CDBT);
+        	$args['modalTitle'] = __('Table is not selected', CDBT);
           $args['modalBody'] = __('Please retry to operate that after the table selection.', CDBT);
           break;
+        case 'no_selected_item': 
+          $args['modalTitle'] = __('Data is not selected', CDBT);
+          $args['modalBody'] = __('Please retry to operate that after the data selection.', CDBT);
+          break;
+        case 'too_many_selected_item': 
+          $args['modalTitle'] = __('Selected data is too many', CDBT);
+          $args['modalBody'] = __('Please retry after selecting one data you want to edit.', CDBT);
+          break;
+        case 'delete_data': 
+        	$args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
+          $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);
+        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+        	$args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+        	break;
         default:
         	break;
       }

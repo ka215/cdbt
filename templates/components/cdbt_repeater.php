@@ -230,9 +230,9 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
         <?php if ($disable_edit) : ?>
           <p class="text-danger" style="margin-top: 6px;"><?php _e('Disable the data editing because it can not identify a single data.', CDBT); ?></p>
         <?php else : ?>
-          <button type="button" class="btn btn-default"><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e('Edit Data', CDBT); ?></span></button>
-          <button type="button" class="btn btn-default"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e('Refresh List', CDBT); ?></span></button>
-          <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e('Delete Data', CDBT); ?></span></button>
+          <button type="button" class="btn btn-default" id="repeater-editor-edit" title="<?php _e('Edit Data', CDBT); ?>"><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e('Edit Data', CDBT); ?></span></button>
+          <button type="button" class="btn btn-default" id="repeater-editor-refresh" title="<?php _e('Refresh List', CDBT); ?>"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e('Refresh List', CDBT); ?></span></button>
+          <button type="button" class="btn btn-default" id="repeater-editor-delete" title="<?php _e('Delete Data', CDBT); ?>"><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e('Delete Data', CDBT); ?></span></button>
         <?php endif; ?>
         </div><!-- /.repeater-editor -->
       <?php endif; ?>

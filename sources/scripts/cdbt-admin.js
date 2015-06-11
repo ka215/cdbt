@@ -517,6 +517,97 @@ $(function() {
       
     });
     
+    // Button effect
+    $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(){
+      var selectedItem = $(this).repeater('list_getSelectedItems');
+      var edit_button = $('button#repeater-editor-edit');
+      var delete_button = $('button#repeater-editor-delete');
+      if (selectedItem.length === 1) {
+        edit_button.attr('class', 'btn btn-primary').removeAttr('disabled');
+        delete_button.attr('class', 'btn btn-default');
+      } else if (selectedItem.length > 1) {
+        edit_button.attr('class', 'btn btn-default').attr('disabled', 'disabled');
+        delete_button.attr('class', 'btn btn-primary');
+      } else {
+        edit_button.attr('class', 'btn btn-default').removeAttr('disabled');
+        delete_button.attr('class', 'btn btn-default');
+      }
+    });
+    
+    // Event handler
+    $('button[id^="repeater-editor-"]').on('click', function(){
+      var dataAction = _.last($(this).attr('id').split('-'));
+      var selectedItem = $('.repeater[id^="cdbt-repeater-edit-"]').repeater('list_getSelectedItems');
+      var post_data = {};
+//      console.info([dataAction, selectedItem.length]);
+      
+      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
+      
+      switch(dataAction){
+        case 'refresh': 
+          post_data = {
+            'session_key': $.QueryString.tab, 
+            'default_action': 'edit', 
+            'target_table': $('section').attr('data-target_table'), 
+            'callback_url': './admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, 
+          };
+          return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+          
+        case 'edit': 
+          post_data = {
+            id: 'cdbtModal', 
+            insertContent: true, 
+            modalTitle: '', 
+            modalBody: '', 
+//            modalHideEvent: $common_modal_hide, 
+          };
+          if (selectedItem.length === 0) {
+            post_data.modalTitle = 'no_selected_item';
+          } else if (selectedItem.length > 1) {
+            post_data.modalTitle = 'too_many_selected_item';
+          } else {
+            
+          }
+          init_modal( post_data );
+          
+          break;
+        case 'delete': 
+          post_data = {
+            id: 'cdbtModal', 
+            insertContent: true, 
+            modalTitle: '', 
+            modalBody: '', 
+//            modalHideEvent: $common_modal_hide, 
+            modalExtras: { items: selectedItem.length },
+          };
+          if (selectedItem.length === 0) {
+            post_data.modalTitle = 'no_selected_item';
+          } else {
+            post_data.modalTitle = 'delete_data';
+          }
+          init_modal( post_data );
+          
+          break;
+        default: 
+          break;
+      }
+      
+    });
+    
+    // Run of deleting data after confirmation
+    $(document).on('click', '#run_delete_data', function(){
+      var where_conditions = [];
+      $('tr.selectable.selected input.row_where_condition').each(function(){
+        where_conditions.push($(this).val());
+      });
+      var post_data = {
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'delete_data', 
+        'where_conditions': where_conditions, 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
     
     
     
