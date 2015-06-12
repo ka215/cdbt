@@ -656,30 +656,58 @@ class CdbtDB extends CdbtConfig {
    * @param string $where_clause [require] In legacy v1.0 was the designation of the `$primary_key_value`
    * @return boolean
    */
-  public function delete_data( $table_name=null, $where_clause ) {
-    return false;
-/*
-    global $wpdb;
-    list(, , $table_schema) = $this->get_table_schema($table_name);
-    $primary_key_name = null;
-    foreach ($table_schema as $key => $val) {
-      if (empty($primary_key_name) && $val['primary_key']) {
-        $primary_key_name = $key;
-        if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $val['type']) && preg_match('/^(\-|)[0-9]+$/', $primary_key_value)) {
-          $primary_key_value = intval($primary_key_value);
-          $format = '%d';
-        } else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $val['type']) && preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $primary_key_value)) {
-          $primary_key_value = floatval($primary_key_value);
-          $format = '%f';
-        } else {
-          $primary_key_value = strval($primary_key_value);
-          $format = '%s';
-        }
-        break;
+  public function delete_data( $table_name=null, $where_clause=null ) {
+    static $message = '';
+    
+    // Check Table
+    if (false === ($table_schema = $this->get_table_schema($table_name))) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $this->logger( $message );
+      return false;
+    }
+    
+    // Check condition to specify data
+    if (empty($where_clause)) {
+      $message = __('Condition to find the deletion data is not specified.', CDBT);
+    }
+    if (false === ($_deletion_where = $this->strtohash($where_clause))) {
+      $message = __('Condition for finding the deletion data is invalid.', CDBT);
+    }
+    if (!empty($message)) {
+      $this->logger( $message );
+      return false;
+    }
+    
+    
+    $delete_where = [];
+    $field_format = [];
+    foreach ($_deletion_where as $column => $value) {
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+        $field_format[$column] = '%d';
+        $delete_where[$column] = intval($value);
+      } else
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+        $field_format[$column] = '%f';
+        $delete_where[$column] = floatval($value);
+      } else {
+        $field_format[$column] = '%s';
+        $delete_where[$column] = esc_sql(strval(rawurldecode($value)));
       }
     }
-    return $wpdb->delete($table_name, array($primary_key_name => $primary_key_value), array($format));
-*/
+    
+    if (empty(array_diff_key($delete_where, $field_format))) {
+      $result = $this->wpdb->delete( $table_name, $delete_where, array_values($field_format) );
+    } else {
+      $result = $this->wpdb->delete( $table_name, $delete_where );
+    }
+    $retvar = $this->strtobool($result);
+    if (!$retvar) {
+      $message = sprintf( __('Failed to remove data of the deletion condition of "%s".', CDBT), $where_clause );
+      $this->logger( $message );
+    }
+    
+    return $retvar;
+    
   }
   
   

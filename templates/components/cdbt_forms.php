@@ -7,6 +7,9 @@
  * 'useBootstrap' => @boolean [require] For default is True
  * 'outputTitle' => @string [optional] For default is null
  * 'fileUpload' => @boolean [optional] For default is false
+ * 'actionUrl' => @string [optional] For default is null
+ * 'displaySubmit' => @boolean [optional] For default is true; Is false only if called from `cdbt-edit`.
+ * // 'whereClause' => @string as assoc [optional] For default is null; Default values only if called from `cdbt-edit`.
  * 'formElements' => @array [require] As follow is: 
  *   [
  *   'elementName' => @string [require] Column name
@@ -56,6 +59,13 @@ if (isset($this->component_options['id']) && !empty($this->component_options['id
 if (!isset($this->component_options['entryTable']) || empty($this->component_options['entryTable'])) 
   return;
 
+// `useBootstrap` section
+if (isset($this->component_options['useBootstrap'])) {
+  $use_bootstrap = $this->strtobool($this->component_options['useBootstrap']);
+} else {
+  $use_bootstrap = true;
+}
+
 // `outputTitle` section
 if (isset($this->component_options['outputTitle']) && !empty($this->component_options['outputTitle'])) {
   $form_title = esc_html($this->component_options['outputTitle']);
@@ -64,35 +74,55 @@ if (isset($this->component_options['outputTitle']) && !empty($this->component_op
 }
 
 // `fileUpload` section
-if (isset($this->component_options['fileUpload']) && !empty($this->component_options['fileUpload'])) {
+if (isset($this->component_options['fileUpload'])) {
   $is_file_upload = $this->strtobool($this->component_options['fileUpload']);
 } else {
   $is_file_upload = false;
 }
 
-// `useBootstrap` section
-if (isset($this->component_options['useBootstrap']) && !empty($this->component_options['useBootstrap'])) {
-  $use_bootstrap = $this->strtobool($this->component_options['useBootstrap']);
+// `actionUrl` section
+if (isset($this->component_options['actionUrl']) && !empty($this->component_options['actionUrl'])) {
+  $action_url = esc_url($this->component_options['actionUrl']);
 } else {
-  $use_bootstrap = true;
+  $_current_url = is_admin() && isset($this->query['page']) && !empty($this->query['page']) ? add_query_arg([ 'page' => $this->query['page'] ]) : $_SERVER['REQUEST_URI'];
+  $action_url = esc_url($_current_url);
+  unset($_current_url);
 }
-
-// `formElements` section
-if (!isset($this->component_options['formElements']) || empty($this->component_options['formElements'])) 
-  return;
-
-$form_elements = $this->component_options['formElements'];
-
-$current_url = (is_admin()) ? add_query_arg([ 'page' => $this->query['page'] ]) : $_SERVER['REQUEST_URI'];
-$action_url = esc_url($current_url);
-$admin_hidden = [];
+$hidden_fields = [];
 if (is_admin()) {
-  $admin_hidden[] = sprintf( '<input type="hidden" name="page" value="%s">', $this->query['page'] );
-  $admin_hidden[] = sprintf( '<input type="hidden" name="active_tab" value="%s">', $this->query['tab'] );
-  $wp_nonce_action = 'cdbt_management_console-' . $this->query['page'];
+  if (isset($this->query['page']) && !empty($this->query['page'])) {
+    $hidden_fields[] = sprintf( '<input type="hidden" name="page" value="%s">', $this->query['page'] );
+    $wp_nonce_action = 'cdbt_management_console-' . $this->query['page'];
+  }
+  if (isset($this->query['tab']) && !empty($this->query['tab'])) 
+    $hidden_fields[] = sprintf( '<input type="hidden" name="active_tab" value="%s">', $this->query['tab'] );
+  $wp_nonce_action = empty($wp_nonce_action) ? 'cdbt_entry_data_' . $this->component_options['entryTable'] : $wp_nonce_action;
 } else {
   $wp_nonce_action = 'cdbt_entry_data_' . $this->component_options['entryTable'];
 }
+
+// `displaySubmit` section
+if (isset($this->component_options['displaySubmit'])) {
+  $display_submit_button = $this->strtobool($this->component_options['displaySubmit']);
+} else {
+  $display_submit_button = true;
+}
+
+/* // `whereClause` section
+if (isset($this->component_options['whereClause']) && !empty($this->component_options['whereClause'])) {
+  $where_clause = $this->component_options['whereClause'];
+  var_dump($where_clause);
+  //$this->get_data( $this->component_options['entryTable'],  );
+}
+*/
+
+// `formElements` section
+if (!isset($this->component_options['formElements']) || empty($this->component_options['formElements'])) {
+  return;
+} else {
+  $form_elements = $this->component_options['formElements'];
+}
+
 
 /**
  * Render the Form common header
@@ -101,7 +131,7 @@ if (is_admin()) {
 ?>
 <div class="cdbt-entry-data-form">
   <form method="post" action="<?php echo $action_url; ?>" class="form-horizontal"<?php if ($is_file_upload) : ?> enctype="multipart/form-data"<?php endif; ?>>
-    <?php if (empty(!$admin_hidden)) { echo implode("\n", $admin_hidden); } ?>
+    <?php if (empty(!$hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="entry_data">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
     <?php wp_nonce_field( $wp_nonce_action ); ?>
@@ -180,8 +210,19 @@ search, datetime, date, month, week, time, color
         break;
       case 'combobox': 
 ?>
-
-
+    <div class="form-group">
+      <div class="input-group input-append dropdown combobox" data-initialize="combobox">
+        <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" value="<?php esc_attr_e($element['defaultValue']); ?>" class="form-control text-center" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+          <ul class="dropdown-menu dropdown-menu-right">
+          <?php foreach ($selectable_list as $list_label => $list_value) : ?>
+            <li data-value="<?php echo esc_attr($list_value); ?>"><a href="#"><?php esc_html_e($list_label); ?></a></li>
+          <?php endforeach; ?>
+          </ul>
+        </div>
+      </div>
+    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
         break;
       case 'select': 
@@ -191,13 +232,13 @@ search, datetime, date, month, week, time, color
       <div class="col-sm-10">
         <div class="btn-group selectlist <?php esc_attr_e($element['addClass']); ?>" data-resize="auto" data-initialize="selectlist" id="entry-data-<?php esc_attr_e($element['elementName']); ?>">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-            <span class="selected-label"></span>
+            <span class="selected-label"><?php if (!empty($element['defaultValue'])) { echo $element['defaultValue']; } ?></span>
             <span class="caret"></span>
             <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
           </button>
           <ul class="dropdown-menu" role="menu">
           <?php foreach ($selectable_list as $list_label => $list_value) : ?>
-            <li data-value="<?php esc_attr_e($list_value); ?>"<?php if ($list_value === $element['defaultValue']) : ?> selected="selected"<?php endif; ?>><a href="#"><?php esc_html_e($list_label); ?></a></li>
+            <li data-value="<?php echo esc_attr($list_value); ?>"><a href="#"><?php esc_html_e($list_label); ?></a></li>
           <?php endforeach; ?>
           </ul>
           <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" readonly="readonly" aria-hidden="true" type="text"/>
@@ -453,11 +494,13 @@ search, datetime, date, month, week, time, color
  */
 ?>
     
+  <?php if ($display_submit_button) : ?>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <button type="submit" class="btn btn-primary"><?php _e('Register Data', CDBT); ?></button>
       </div>
     </div>
+  <?php endif; ?>
     
   </form>
 </div>

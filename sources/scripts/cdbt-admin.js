@@ -54,6 +54,9 @@ $(function() {
       
     };
     
+    /**
+     * Render a modal dialog
+     */
     this.render_modal = function(){
       
       if ($('#cdbtModal').size() > 0) {
@@ -61,6 +64,32 @@ $(function() {
       }
       
       $('body').append( $.ajaxResponse.responseText );
+      
+    };
+    
+    /**
+     * Insert the content into the modal dialog
+     */
+    this.load_into_modal = function(){
+      
+      if ($('#cdbtModal').size() > 0) {
+        $('.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
+        // Initialize the form components of fuel ux
+        $('.checkbox').checkbox();
+        $('.conbobox').combobox();
+        $('.datepicker').datepicker();
+        $('.infinitescroll').infinitescroll();
+        $('.loader').loader();
+        $('.pillbox').pillbox();
+        $('.placard').placard();
+        $('.radio').radio();
+        $('.repeater').repeater();
+        $('.search').search();
+        $('.selectlist').selectlist();
+        $('.spinbox').spinbox();
+        $('.tree').tree();
+        $('.wizard').wizard();
+      }
       
     };
     
@@ -566,7 +595,13 @@ $(function() {
           } else if (selectedItem.length > 1) {
             post_data.modalTitle = 'too_many_selected_item';
           } else {
-            
+            post_data.modalSize = 'large';
+            post_data.modalTitle = 'edit_data_form';
+            post_data.modalExtras = { 
+              'table_name': $('section').attr('data-target_table'), 
+              'action_url': './admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, 
+              'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
+            };
           }
           init_modal( post_data );
           
@@ -593,6 +628,19 @@ $(function() {
       }
       
     });
+    
+    $(document).on('show.bs.modal', '#cdbtModal', function(){
+//      console.info($('#edit-data-form').val());
+      var post_data = {
+        'session_key': $.QueryString.tab, 
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'render_edit_form', 
+        'shortcode': $('#edit-data-form').val(), 
+      };
+      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
+    });
+    
     
     // Run of deleting data after confirmation
     $(document).on('click', '#run_delete_data', function(){

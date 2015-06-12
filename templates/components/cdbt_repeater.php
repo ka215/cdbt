@@ -566,4 +566,72 @@ endif; ?>
   });
 
 };
+
+if (typeof convert_list !== 'undefined') {
+  var convert_list = null;
+}
+/**
+ * Convert list type data as common utility function for repeater
+ */
+convert_list = function() {
+  if (arguments.length === 0) {
+    return;
+  }
+  
+  var list_data = arguments[0].split(',');
+  
+  return _.reduce(list_data, function(memo, data){ return memo + '<li><small>' + data + '</small></li>'; }, '');
+  
+};
+
+if (typeof convert_datetime !== 'undefined') {
+  var convert_datetime = null;
+}
+/**
+ * Convert datetime format as common utility function for repeater
+ */
+convert_datetime = function() {
+  if (arguments.length < 2) {
+    return arguments.length === 1 ? arguments[0] : false;
+  }
+  
+  var datetime = new Date(arguments[0]);
+  var format = arguments[1].join(' ');
+  // year
+  format = format.replace(/Y/g, datetime.getFullYear());
+  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
+  // month
+  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
+  format = format.replace(/n/g, (datetime.getMonth() + 1));
+  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
+  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
+  // day
+  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
+  format = format.replace(/j/g, datetime.getDate());
+  var suffix = [ 'st', 'nd', 'rd', 'th' ];
+  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
+  format = format.replace(/S/g, suffix[suffix_index()]);
+  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
+  format = format.replace(/l/g, _.find(day, datetime.getDay()));
+  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
+  // time
+  var half_hours = function(){ var h = datetime.getHours(); return (h > 11 ? h - 11 : h) + 1; };
+  var ampm = function(){ var h = datetime.getHours(); return h > 11 ? 'pm' : 'am' };
+  format = format.replace(/a/g, ampm());
+  format = format.replace(/A/g, ampm().toUpperCase());
+  format = format.replace(/g/g, half_hours());
+  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
+  format = format.replace(/G/g, datetime.getHours());
+  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
+  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
+  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
+  format = format.replace(/T/g, '');
+  // other
+  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
+  format = format.replace(/r/g, datetime);
+  
+  return format;
+};
+
 </script>

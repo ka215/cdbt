@@ -191,9 +191,10 @@ trait CdbtShortcodes {
     if (empty($datasource))
       return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
     
+    $custom_column_renderer = [];
+    
     // If contain binary data in the datasource
     if (!empty($has_bin)) {
-      $custom_column_renderer = [];
       $custom_row_scripts = [];
       foreach ($datasource as $i => $row_data) {
         foreach ($has_bin as $col_name) {
@@ -221,19 +222,33 @@ trait CdbtShortcodes {
     }
     
     // If contain list type columns
-    if ($display_filter && empty($filters)) {
-      $_filter_items = [];
-      foreach ($table_schema as $column => $scheme) {
-        if ($this->validate->check_column_type($scheme['type'], 'list')) {
-          foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
-            $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
-          }
+    $_filter_items = [];
+    foreach ($table_schema as $column => $scheme) {
+      if ($this->validate->check_column_type($scheme['type'], 'list')) {
+        foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
+          $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
+        }
+        if ('set' === $scheme['type']) {
+          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
         }
       }
+    }
+    if ($display_filter && empty($filters)) {
       if (!empty($_filter_items)) {
         $filters = array_unique($_filter_items);
       }
     }
+    
+    // If contain datetime data in the datasource
+    foreach ($table_schema as $column => $scheme) {
+      if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+        // 暫定処理: 表示する日付フォーマットは設定できるようにする
+        $_date_format = get_option( 'date_format' );
+        $_time_format = get_option( 'time_format' );
+        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', [\''. $_date_format .'\', \''. $_time_format .'\']) + \'</div>\'';
+      }
+    }
+    
     
     if ($bootstrap_style) {
       // Generate repeater
@@ -330,6 +345,9 @@ trait CdbtShortcodes {
       'hidden_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
       // Added new attribute from 2.0.0 is follows:
+      'action_url' => '', // String of url for form action [optional] For using shortcode of `cdbt-edit`
+      'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
+      'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
@@ -378,13 +396,17 @@ trait CdbtShortcodes {
     
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_title' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_title', 'display_submit' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool(${$attribute_name});
     }
     $not_assoc_atts = [ 'hidden_cols' ];
     foreach ($not_assoc_atts as $attribute_name) {
       ${$attribute_name} = $this->strtoarray(${$attribute_name});
+    }
+    $hash_atts = [ 'where_clause' ];
+    foreach ($hash_atts as $attribute_name) {
+      ${$attribute_name} = $this->strtohash(${$attribute_name});
     }
     if (!empty($add_class)) {
       $add_classes = [];
@@ -404,8 +426,6 @@ trait CdbtShortcodes {
       $title = '<h4 class="sub-description-title">' . sprintf( __('Entry Data to "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
-//    var_dump($this->cdbt_sessions);
-//    var_dump($table_schema);
     
     $elements_options = [];
     $is_file_upload = false;
@@ -517,6 +537,10 @@ trait CdbtShortcodes {
       'fileUpload' => isset($is_file_upload) ? $is_file_upload : false, 
       'formElements' => $elements_options, 
     ];
+    if (!empty($action_url)) 
+      $conponent_options['actionUrl'] = esc_url($action_url);
+    if (!$display_submit) 
+      $conponent_options['displaySubmit'] = $display_submit;
     //
     // Filter the conponent definition of the list content that is output by this shortcode
     //
@@ -682,19 +706,33 @@ trait CdbtShortcodes {
     }
     
     // If contain list type columns
-    if ($display_filter && empty($filters)) {
-      $_filter_items = [];
-      foreach ($table_schema as $column => $scheme) {
-        if ($this->validate->check_column_type($scheme['type'], 'list')) {
-          foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
-            $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
-          }
+    $_filter_items = [];
+    foreach ($table_schema as $column => $scheme) {
+      if ($this->validate->check_column_type($scheme['type'], 'list')) {
+        foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
+          $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
+        }
+        if ('set' === $scheme['type']) {
+          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
         }
       }
+    }
+    if ($display_filter && empty($filters)) {
       if (!empty($_filter_items)) {
         $filters = array_unique($_filter_items);
       }
     }
+    
+    // If contain datetime data in the datasource
+    foreach ($table_schema as $column => $scheme) {
+      if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+        // 暫定処理: 表示する日付フォーマットは設定できるようにする
+        $_date_format = get_option( 'date_format' );
+        $_time_format = get_option( 'time_format' );
+        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', [\''. $_date_format .'\', \''. $_time_format .'\']) + \'</div>\'';
+      }
+    }
+    
     
     if ($bootstrap_style) {
       // Generate repeater

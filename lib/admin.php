@@ -621,7 +621,10 @@ class CdbtAdmin extends CdbtDB {
     if (!in_array($_POST['action'], $allow_actions) || empty($_POST[$this->domain_name]) ) {
       $message = __('Illegal access is.', CDBT);
     } else
-    if (!isset($_POST['_wpnonce']) || !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] )) {
+    if (!isset($_POST['_wpnonce'])) {
+      $message = __('You do not have access privileges on this page.', CDBT);
+    } else
+    if (!wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] ) && !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
       $message = __('You do not have access privileges on this page.', CDBT);
     }
     
@@ -1080,6 +1083,12 @@ class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Selected data is too many', CDBT);
           $args['modalBody'] = __('Please retry after selecting one data you want to edit.', CDBT);
           break;
+        case 'edit_data_form': 
+        	$args['modalTitle'] = __('Edit Data Form', CDBT);
+          $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
+//          $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+        	break;
         case 'delete_data': 
         	$args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
           $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);

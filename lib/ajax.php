@@ -251,20 +251,25 @@ trait CdbtAjax {
     if (array_key_exists('table_name', $args) && array_key_exists('operate_action', $args) && 'edit' === $args['operate_action']) {
       
       if (is_array($args['where_conditions']) && !empty($args['where_conditions'])) {
+        $deleted_data = 0;
         foreach ($args['where_conditions'] as $_where) {
           if ($this->delete_data( $args['table_name'], $_where )) {
-            
-          } else {
-            
+            $deleted_data++;
           }
         }
-        
-        
+        if ($deleted_data === count($args['where_conditions'])) {
+          $notices_class = CDBT . '-notice';
+          $message = __('Specified data have been removed successfully.', CDBT);
+        } else {
+          $message = __('Some of the data could not remove.', CDBT);
+        }
       } else {
-        
+        $message = __('Specified conditions for finding to delete data is invalid.', CDBT);
       }
       
     } else {
+      
+      $message = sprintf( __('Parameters required for data deletion is missing.', CDBT) );
       
     }
     
@@ -272,6 +277,21 @@ trait CdbtAjax {
     die('location.reload();');
     
   }
-
+  
+  
+  /**
+   * Render the editting data form via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_render_edit_form( $args=[] ) {
+    
+    //var_dump($args);
+    die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
+    
+  }
 
 }
