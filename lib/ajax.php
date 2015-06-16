@@ -237,7 +237,50 @@ trait CdbtAjax {
   
   
   /**
-   * Run the data delete via Ajax
+   * Run the data update via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_update_data( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    if (array_key_exists('table_name', $args) && array_key_exists('operate_action', $args) && 'edit' === $args['operate_action']) {
+      
+/*
+      if (array_key_exists('where_condition', $args) && !empty($args['where_condition'])) {
+        if ($this->update_data( $args['table_name'], $_where )) {
+            $deleted_data++;
+          }
+        }
+        if ($deleted_data === count($args['where_conditions'])) {
+          $notices_class = CDBT . '-notice';
+          $message = __('Specified data have been removed successfully.', CDBT);
+        } else {
+          $message = __('Some of the data could not remove.', CDBT);
+        }
+      } else {
+        $message = __('Specified conditions for finding to delete data is invalid.', CDBT);
+      }
+*/
+      
+    } else {
+      
+      $message = sprintf( __('Parameters required for data deletion is missing.', CDBT) );
+      
+    }
+    
+//    $this->register_admin_notices( $notices_class, $message, 3, true );
+//    die('location.reload();');
+    
+  }
+  
+  
+  /**
+   * Run of data deletion via Ajax
    *
    * @since 2.0.0
    *
@@ -290,7 +333,9 @@ trait CdbtAjax {
   public function ajax_event_render_edit_form( $args=[] ) {
     
     //var_dump($args);
-    die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
+    if (array_key_exists('shortcode', $args)) {
+      die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
+    }
     
   }
 

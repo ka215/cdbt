@@ -647,6 +647,28 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
+   * Update data to specific table in database.
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @param array $data
+   * @return mixed Integer of the primary key that was inserted when was successful against a table with a surrogate key, otherwise is boolean that representing the success or failure of processing
+   */
+  public function update_data( $table_name=null, $data=[], $where_clause=[] ) {
+    static $message = '';
+    
+    var_dump($table_name);
+    var_dump($data);
+    var_dump($where_clause);
+    
+    return false;
+    
+  }
+  
+  
+  /**
    * Delete data in the table
    *
    * @since 1.0.0

@@ -437,5 +437,52 @@ class CdbtValidator extends CommonValidator {
   }
   
   
+  /**
+   * Escape stored value by detected column type in table
+   *
+   * @since 2.0.0
+   *
+   * @param string $raw_value [require] Raw values obtained from the database
+   * @param array $detect_type [require] Array of column types that have been detected in `check_column_type()`
+   * @return mixed Such as the escaped string or numeric
+   */
+  public function esc_column_value( $raw_value=null, $detect_type=[] ) {
+    if (empty($raw_value) || empty($detect_type) || !is_array($detect_type)) 
+      return false;
+    
+    if (array_key_exists('integer', $detect_type)) {
+      $retvar = intval($raw_value);
+    } else
+    if (array_key_exists('float', $detect_type)) {
+      $retvar = floatval($raw_value);
+    } else
+    if (array_key_exists('binary', $detect_type)) {
+      $retvar = bindec($raw_value);
+    } else
+    if (array_key_exists('text', $detect_type)) {
+      $retvar = esc_textarea($raw_value);
+    } else
+    if (array_key_exists('blob', $detect_type)) {
+      $retvar = strval($raw_value);
+    } else
+    if (array_key_exists('char', $detect_type)) {
+      $retvar = esc_html($raw_value);
+    } else
+    if (array_key_exists('list', $detect_type)) {
+      $retvar = esc_attr($raw_value);
+    } else
+    if (array_key_exists('datetime', $detect_type)) {
+      if ($this->checkDateTime($raw_value, 'Y-m-d H:i:s')) {
+        $retvar = strval($raw_value);
+      } else {
+        $retvar = '';
+      }
+    } else {
+      $retvar = false;
+    }
+    
+    return $retvar;
+  }
+
 
 }

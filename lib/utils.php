@@ -97,8 +97,41 @@ class CdbtUtility {
       printf('<script>if(window.console&&typeof window.console.log==="function"){console.log("%s : %sHook (%s)");}</script>', str_replace('my_', '', $hook_name), $type, $hook_name);
     }
   }
-
-
+  
+  
+  /** 
+   * Converts bytes into human readable file size. 
+   *
+   * @since 2.0.0
+   *
+   * @author Mogilev Arseny 
+   *
+   * @param mixed $bytes [require] Numeric string as integer
+   * @return string human readable file size
+   */ 
+  public function convert_filesize( $bytes=0 ) {
+    $bytes = floatval($bytes);
+    
+    $arBytes = [
+      [ 'unit' => 'TB', 'value' => pow(1024, 4) ], 
+      [ 'unit' => 'GB', 'value' => pow(1024, 3) ], 
+      [ 'unit' => 'MB', 'value' => pow(1024, 2) ], 
+      [ 'unit' => 'KB', 'value' => 1024 ], 
+      [ 'unit' => 'B',   'value' => 1 ], 
+    ];
+    
+    foreach ( $arBytes as $arItem ) {
+      if ( $bytes >= $arItem['value'] ) {
+        $result = $bytes / $arItem['value'];
+        $result = strval(round($result, 2)).' '.$arItem['unit'];
+        break;
+      }
+    }
+    return $result;
+    
+  }
+  
+  
   /**
    * Retrieve array as context string of the binary file
    *

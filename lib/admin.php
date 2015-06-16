@@ -997,6 +997,23 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'edit_data': 
         
+        $table_name = $_POST['table'];
+        $post_data = $_POST[$this->domain_name];
+        unset($this->cdbt_sessions[__FUNCTION__]);
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $table_name, 
+          'operate_current_table' => $table_name, 
+          'operate_action' => 'edit', 
+        ];
+        $register_data = $this->cleanup_data( $table_name, $post_data );
+        $where_clause = unserialize(stripslashes_deep($_POST['where_clause']));
+        if ($this->update_data( $table_name, $register_data, $where_clause )) {
+          $notice_class = CDBT . '-notice';
+          $message = __('Update of the data has been completed successfully.', CDBT);
+        } else {
+          $message = sprintf(__('Could not update data of "%s" table.', CDBT), $table_name);
+//          $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
+        }
         
         break;
       default:
@@ -1085,7 +1102,7 @@ class CdbtAdmin extends CdbtDB {
           break;
         case 'edit_data_form': 
         	$args['modalTitle'] = __('Edit Data Form', CDBT);
-          $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
+          $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
 //          $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
         	break;

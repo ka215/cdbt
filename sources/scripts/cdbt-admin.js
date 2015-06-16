@@ -59,8 +59,11 @@ $(function() {
      */
     this.render_modal = function(){
       
-      if ($('#cdbtModal').size() > 0) {
-        $('#cdbtModal').remove();
+//      if ($('#cdbtModal').size() > 0) {
+//        $('#cdbtModal').remove();
+//    }
+      if ($('div.modal').size() > 0) {
+        $('div.modal').remove();
       }
       
       $('body').append( $.ajaxResponse.responseText );
@@ -72,8 +75,9 @@ $(function() {
      */
     this.load_into_modal = function(){
       
-      if ($('#cdbtModal').size() > 0) {
-        $('.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
+//      if ($('#cdbtModal').size() > 0) {
+      if ($('div.modal').size() > 0) {
+        $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
         // Initialize the form components of fuel ux
         $('.checkbox').checkbox();
         $('.conbobox').combobox();
@@ -584,7 +588,7 @@ $(function() {
           
         case 'edit': 
           post_data = {
-            id: 'cdbtModal', 
+            id: 'cdbtEditData', // 'cdbtModal', 
             insertContent: true, 
             modalTitle: '', 
             modalBody: '', 
@@ -599,7 +603,9 @@ $(function() {
             post_data.modalTitle = 'edit_data_form';
             post_data.modalExtras = { 
               'table_name': $('section').attr('data-target_table'), 
-              'action_url': './admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, 
+              'action_url': '/wp-admin/admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, // location.href
+              'page': $.QueryString.page, 
+              'active_tab': $.QueryString.tab, 
               'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
             };
           }
@@ -608,7 +614,7 @@ $(function() {
           break;
         case 'delete': 
           post_data = {
-            id: 'cdbtModal', 
+            id: 'cdbtDeleteData', // 'cdbtModal', 
             insertContent: true, 
             modalTitle: '', 
             modalBody: '', 
@@ -629,8 +635,8 @@ $(function() {
       
     });
     
-    $(document).on('show.bs.modal', '#cdbtModal', function(){
-//      console.info($('#edit-data-form').val());
+    
+    $(document).on('show.bs.modal', '#cdbtEditData', function(){
       var post_data = {
         'session_key': $.QueryString.tab, 
         'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
@@ -639,6 +645,22 @@ $(function() {
         'shortcode': $('#edit-data-form').val(), 
       };
       return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
+    });
+    
+    
+    $(document).on('click', '#run_update_data', function(){
+      var form = $('#cdbtEditData div.cdbt-entry-data-form form');
+      form.children('input[name="_wp_http_referer"]').val(location.href);
+      form.submit();
+/*
+      var post_data = {
+        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
+        'event': 'update_data', 
+        'where_condition': $('tr.selectable.selected input.row_where_condition').val(), 
+      };
+      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+*/
     });
     
     
@@ -654,7 +676,7 @@ $(function() {
         'event': 'delete_data', 
         'where_conditions': where_conditions, 
       };
-      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
     });
     
     

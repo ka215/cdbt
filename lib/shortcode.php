@@ -346,6 +346,7 @@ trait CdbtShortcodes {
       'add_class' => '', // Separator is a single-byte space character
       // Added new attribute from 2.0.0 is follows:
       'action_url' => '', // String of url for form action [optional] For using shortcode of `cdbt-edit`
+      'form_action' => 'entry_data', // String of action name as method after submiting [optional] Is `edit_data` if edit data
       'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
       'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
@@ -521,6 +522,12 @@ trait CdbtShortcodes {
         $_temp_elements_options['elementExtras']['data-moment-locale'] = 'ja';
         $_temp_elements_options['elementExtras']['data-moment-format'] = 'L';
       }
+      // Override of initial value to for editing
+      if (!empty($where_clause) && is_array($where_clause)) {
+        $_current_data = $this->array_flatten($this->get_data( $table, $column, $where_clause, 'ARRAY_A' ));
+        $_temp_elements_options['defaultValue'] = $this->validate->esc_column_value( $_current_data[$column], $detect_column_type );
+      }
+      
       
       $elements_options[] = $_temp_elements_options;
     }
@@ -538,9 +545,13 @@ trait CdbtShortcodes {
       'formElements' => $elements_options, 
     ];
     if (!empty($action_url)) 
-      $conponent_options['actionUrl'] = esc_url($action_url);
+      $conponent_options['actionUrl'] = $action_url;
+    if (!empty($form_action)) 
+      $conponent_options['formAction'] = $form_action;
     if (!$display_submit) 
       $conponent_options['displaySubmit'] = $display_submit;
+    if (!empty($where_clause) && is_array($where_clause)) 
+      $conponent_options['whereClause'] = $where_clause;
     //
     // Filter the conponent definition of the list content that is output by this shortcode
     //
@@ -879,7 +890,7 @@ trait CdbtShortcodes {
           if (array_key_exists('text', $detect_column_type)) {
             // Sanitization data from textarea
             $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
-            $regist_data[$post_key] = tag_escape(wp_kses($post_value, $allowed_html_tags)); 
+            $regist_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
           } else {
             // Sanitization data from text field
             if (is_email($post_value)) {
