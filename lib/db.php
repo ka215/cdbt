@@ -648,20 +648,114 @@ class CdbtDB extends CdbtConfig {
   
   /**
    * Update data to specific table in database.
+//   * This method have integrated the primary key based method `update_date()` and the method `update_where()` of usable where clause.
+   * If it contains binary data in the update data, it is necessary to generate context by `CdbtUtility::get_binary_context()` before calling this method.
+   * It is not performed update processing if the update data or where conditions is nothing.
    *
    * @since 1.0.0
+//   * @since 1.1.14 Added method of `update_where()`
    * @since 2.0.0 Have refactored logic.
    *
    * @param string $table_name [require]
-   * @param array $data
-   * @return mixed Integer of the primary key that was inserted when was successful against a table with a surrogate key, otherwise is boolean that representing the success or failure of processing
+   * @param mixed $data [require] Assoc array as key of column name; or hash string like assoc array (cf. `col1:val1,col2:val2,..`)
+   * @param mixed $where_clause [require] Assoc array as key of column name; or hash string like assoc array (`ID:1` etc.)
+   * @return boolean
    */
   public function update_data( $table_name=null, $data=[], $where_clause=[] ) {
     static $message = '';
     
-    var_dump($table_name);
+    // Check Table
+    if (false === ($table_schema = $this->get_table_schema($table_name))) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $this->logger( $message );
+      return false;
+    }
+    $primary_keys = [];
+    $foreign_keys = [];
+    $unique_keys = [];
+    $surrogate_key = '';
+    $is_exists_updated = false;
+    foreach ($table_schema as $column => $scheme) {
+      if ($scheme['primary_key']) 
+        $primary_keys[] = $column;
+      if (false !== strpos( $scheme['extra'], 'auto_increment' )) 
+        $surrogate_key = $column;
+      if (false !== strpos( $scheme['column_key'], 'MUL' )) 
+        $foreign_keys = $column;
+      if (false !== strpos( $scheme['column_key'], 'UNI' )) 
+        $unique_keys = $column;
+      if ('updated' === $column && 'timestamp' === $scheme['type'] && 'CURRENT_TIMESTAMP' === $scheme['default'] && 'on update CURRENT_TIMESTAMP' === $scheme['extra']) 
+        $is_exists_updated = true;
+    }
+    
+    // Check update data
+    if (empty($data)) {
+      $message = __('Update data does not exist.', CDBT);
+    } else
+    if (!is_array($data)) {
+      if (false === ($_update_data = $this->strtohash($data))) {
+        $message = __('Update data is invalid.', CDBT);
+      }
+    } else {
+      $_update_data = $data;
+    }
+    if (empty($message)) {
+      unset($data);
+      if (array_key_exists($surrogate_key, $_update_data)) 
+        unset($_update_data[$surrogate_key]);
+      if ($is_exists_updated && array_key_exists('updated', $_update_data)) 
+        unset($_update_data['updated']);
+      if (empty($_update_data)) 
+        $message = __('You can not update to a column that will be modified automatically.', CDBT);
+    }
+    
+    // Check condition to specify data
+    if (empty($where_clause)) {
+      $message = __('Condition to find the update data is not specified.', CDBT);
+    } else
+    if (!is_array($where_clause)) {
+      if (false === ($_update_where = $this->strtohash($where_clause))) {
+        $message = __('Condition for finding the update data is invalid.', CDBT);
+      }
+    } else {
+      $_update_where = $where_clause;
+    }
+    
+    if (!empty($message)) {
+      $this->logger( $message );
+      return false;
+    }
+    
+    // Generation of insertion candidate data
+    $data = [];
+    $field_format = [];
+    foreach ($_update_data as $column => $value) {
+      if ($surrogate_key === $column) 
+        continue;
+      
+      if ($is_exists_updated && 'update' === $column) 
+        continue;
+      
+      $data[$column] = $value;
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+        $field_format[$column] = '%d';
+      } else
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+        $field_format[$column] = '%f';
+      } else {
+        $field_format[$column] = '%s';
+      }
+    }
+/*
+    if (empty(array_diff_key($data, $field_format))) {
+      $result = $this->wpdb->update( $table_name, $data, array_values($field_format) );
+    } else {
+      $result = $this->wpdb->delete( $table_name, $delete_where );
+    }
+*/    
     var_dump($data);
-    var_dump($where_clause);
+    var_dump($_update_where);
+    var_dump($field_format);
     
     return false;
     

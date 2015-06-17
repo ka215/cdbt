@@ -1020,26 +1020,6 @@ class CustomDatabaseTables {
 	 * @return bool
 	 */
 	function delete_data($table_name, $primary_key_value) {
-		global $wpdb;
-		list(, , $table_schema) = $this->get_table_schema($table_name);
-		$primary_key_name = null;
-		foreach ($table_schema as $key => $val) {
-			if (empty($primary_key_name) && $val['primary_key']) {
-				$primary_key_name = $key;
-				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $val['type']) && preg_match('/^(\-|)[0-9]+$/', $primary_key_value)) {
-					$primary_key_value = intval($primary_key_value);
-					$format = '%d';
-				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $val['type']) && preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $primary_key_value)) {
-					$primary_key_value = floatval($primary_key_value);
-					$format = '%f';
-				} else {
-					$primary_key_value = strval($primary_key_value);
-					$format = '%s';
-				}
-				break;
-			}
-		}
-		return $wpdb->delete($table_name, array($primary_key_name => $primary_key_value), array($format));
 	}
 	
 	/**
