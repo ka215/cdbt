@@ -43,6 +43,7 @@ trait CdbtExtras {
   public function during_trial( $feature_name ) {
     $new_features = [
       'enable_core_tables', 
+      'display_datetime_format', 
       'debug_mode', 
       'default_charset', 
       'localize_timezone', 

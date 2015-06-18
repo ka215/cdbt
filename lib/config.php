@@ -68,6 +68,7 @@ class CdbtConfig extends CdbtCore {
    * @since 2.0.0
    */
   public function set_option_template() {
+    $default_datetime_format = get_option( 'links_updated_date_format' );
     $default_timezone = get_option( 'timezone_string', 'UTC' );
     
     $default_options = [
@@ -77,6 +78,7 @@ class CdbtConfig extends CdbtCore {
       'uninstall_options' => false, 
       'resume_options' => false, 
       'enable_core_tables' => false, // add new from ver.2
+      'display_datetime_format' => $default_datetime_format, // add new from ver.2
       'debug_mode' => false, // add new from ver.2
       'use_wp_prefix' => true, 
       'charset' => 'utf8', 

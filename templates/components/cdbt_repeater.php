@@ -616,8 +616,8 @@ convert_datetime = function() {
   format = format.replace(/l/g, _.find(day, datetime.getDay()));
   format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
   // time
-  var half_hours = function(){ var h = datetime.getHours(); return (h > 11 ? h - 11 : h) + 1; };
-  var ampm = function(){ var h = datetime.getHours(); return h > 11 ? 'pm' : 'am' };
+  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
+  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am' };
   format = format.replace(/a/g, ampm());
   format = format.replace(/A/g, ampm().toUpperCase());
   format = format.replace(/g/g, half_hours());

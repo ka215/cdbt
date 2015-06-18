@@ -275,6 +275,7 @@ search, datetime, date, month, week, time, color
       case 'checkbox': 
         $index_num = 0;
         $is_horizontal = $element['horizontalList'];
+        $default_values = $this->strtoarray($element['defaultValue']);
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
@@ -282,7 +283,7 @@ search, datetime, date, month, week, time, color
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
         <?php if (!$is_horizontal) : ?><div class="checkbox <?php esc_attr_e($element['addClass']); ?>"><?php endif; ?>
           <label class="checkbox-custom<?php if ($is_horizontal) : ?> checkbox-inline<?php esc_attr_e($element['addClass']); endif; ?>" data-initialize="checkbox" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="checkbox" value="<?php esc_attr_e($list_value); ?>"<?php if ($list_value === $element['defaultValue']) : ?> checked="checked"<?php endif; ?>>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="checkbox" value="<?php esc_attr_e($list_value); ?>"<?php if (is_array($default_values) && in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
             <span class="checkbox-label"><?php esc_html_e($list_label); ?></span>
           </label>
         <?php if (!$is_horizontal) : ?></div><?php endif; ?>
@@ -291,11 +292,12 @@ search, datetime, date, month, week, time, color
       </div>
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
-        unset($index_num, $is_horizontal);
+        unset($index_num, $is_horizontal, $default_values);
         break;
       case 'radio': 
         $index_num = 0;
         $is_horizontal = $element['horizontalList'];
+        $default_values= $this->strtoarray($element['defaultValue']);
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
@@ -303,7 +305,7 @@ search, datetime, date, month, week, time, color
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
         <?php if (!$is_horizontal) : ?><div class="radio <?php esc_attr_e($element['addClass']); ?>"><?php endif; ?>
           <label class="radio-custom<?php if ($is_horizontal) : ?> radio-inline<?php esc_attr_e($element['addClass']); endif; ?>" data-initialize="radio" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="radio" value="<?php esc_attr_e($list_value); ?>"<?php if ($list_value === $element['defaultValue']) : ?> checked="checked"<?php endif; ?>>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="radio" value="<?php esc_attr_e($list_value); ?>"<?php if (in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
             <span class="radio-label"><?php esc_html_e($list_label); ?></span>
           </label>
         <?php if (!$is_horizontal) : ?></div><?php endif; ?>
@@ -312,10 +314,10 @@ search, datetime, date, month, week, time, color
       </div>
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
-        unset($index_num, $is_horizontal);
+        unset($index_num, $is_horizontal, $default_values);
         break;
       case 'boolean': 
-        $checked = ($element['defaultValue']) ? ' checked="checked"' : '';
+        $checked = ($this->strtobool($element['defaultValue'])) ? ' checked="checked"' : '';
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
@@ -362,27 +364,27 @@ search, datetime, date, month, week, time, color
         break;
       case 'datetime': 
         $month_list = [
-          [ 'fullname' => __('January', CDBT), 'ailiase' => __('Jan', CDBT) ], 
-          [ 'fullname' => __('February', CDBT), 'ailiase' => __('Feb', CDBT) ], 
-          [ 'fullname' => __('March', CDBT), 'ailiase' => __('Mar', CDBT) ], 
-          [ 'fullname' => __('April', CDBT), 'ailiase' => __('Apr', CDBT) ], 
-          [ 'fullname' => __('May', CDBT), 'ailiase' => __('May', CDBT) ], 
-          [ 'fullname' => __('June', CDBT), 'ailiase' => __('Jun', CDBT) ], 
-          [ 'fullname' => __('July', CDBT), 'ailiase' => __('Jul', CDBT) ], 
-          [ 'fullname' => __('August', CDBT), 'ailiase' => __('Aug', CDBT) ], 
-          [ 'fullname' => __('September', CDBT), 'ailiase' => __('Sep', CDBT) ], 
-          [ 'fullname' => __('October', CDBT), 'ailiase' => __('Oct', CDBT) ], 
-          [ 'fullname' => __('November', CDBT), 'ailiase' => __('Nov', CDBT) ], 
-          [ 'fullname' => __('December', CDBT), 'ailiase' => __('Dec', CDBT) ], 
+          [ 'fullname' => __('January', CDBT), 'aliase' => __('Jan', CDBT) ], 
+          [ 'fullname' => __('February', CDBT), 'aliase' => __('Feb', CDBT) ], 
+          [ 'fullname' => __('March', CDBT), 'aliase' => __('Mar', CDBT) ], 
+          [ 'fullname' => __('April', CDBT), 'aliase' => __('Apr', CDBT) ], 
+          [ 'fullname' => __('May', CDBT), 'aliase' => __('May', CDBT) ], 
+          [ 'fullname' => __('June', CDBT), 'aliase' => __('Jun', CDBT) ], 
+          [ 'fullname' => __('July', CDBT), 'aliase' => __('Jul', CDBT) ], 
+          [ 'fullname' => __('August', CDBT), 'aliase' => __('Aug', CDBT) ], 
+          [ 'fullname' => __('September', CDBT), 'aliase' => __('Sep', CDBT) ], 
+          [ 'fullname' => __('October', CDBT), 'aliase' => __('Oct', CDBT) ], 
+          [ 'fullname' => __('November', CDBT), 'aliase' => __('Nov', CDBT) ], 
+          [ 'fullname' => __('December', CDBT), 'aliase' => __('Dec', CDBT) ], 
         ];
         $week_list = [
-          [ 'fullname' => __('Sunday', CDBT), 'ailiase' => __('Su', CDBT) ], 
-          [ 'fullname' => __('Monday', CDBT), 'ailiase' => __('Mo', CDBT) ], 
-          [ 'fullname' => __('Tuesday', CDBT), 'ailiase' => __('Tu', CDBT) ], 
-          [ 'fullname' => __('Wednesday', CDBT), 'ailiase' => __('We', CDBT) ], 
-          [ 'fullname' => __('Thurseday', CDBT), 'ailiase' => __('Th', CDBT) ], 
-          [ 'fullname' => __('Friday', CDBT), 'ailiase' => __('Fr', CDBT) ], 
-          [ 'fullname' => __('Saturday', CDBT), 'ailiase' => __('Sa', CDBT) ], 
+          [ 'fullname' => __('Sunday', CDBT), 'aliase' => __('Su', CDBT) ], 
+          [ 'fullname' => __('Monday', CDBT), 'aliase' => __('Mo', CDBT) ], 
+          [ 'fullname' => __('Tuesday', CDBT), 'aliase' => __('Tu', CDBT) ], 
+          [ 'fullname' => __('Wednesday', CDBT), 'aliase' => __('We', CDBT) ], 
+          [ 'fullname' => __('Thurseday', CDBT), 'aliase' => __('Th', CDBT) ], 
+          [ 'fullname' => __('Friday', CDBT), 'aliase' => __('Fr', CDBT) ], 
+          [ 'fullname' => __('Saturday', CDBT), 'aliase' => __('Sa', CDBT) ], 
         ];
         if (!empty($element['defaultValue'])) {
           list($_date, $_time) = explode(' ', $element['defaultValue']);
@@ -425,7 +427,7 @@ search, datetime, date, month, week, time, color
                     <thead>
                       <tr>
                       <?php foreach ($week_list as $week_data) : ?>
-                        <th><?php echo $week_data['ailiase']; ?></th>
+                        <th><?php echo $week_data['aliase']; ?></th>
                       <?php endforeach; ?>
                       </tr>
                     </thead>

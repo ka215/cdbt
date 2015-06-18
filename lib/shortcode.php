@@ -99,9 +99,18 @@ trait CdbtShortcodes {
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
       foreach ($table_schema as $column => $scheme) {
-        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
-        }
+        
+        if ($this->validate->check_column_type($scheme['type'], 'list')) 
+          $has_list[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'binary')) 
+          $has_bit[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) 
+        	$has_datetime[] = $column;
+        
       }
     } else {
       if (in_array($table, $this->core_tables)) 
@@ -222,31 +231,49 @@ trait CdbtShortcodes {
     }
     
     // If contain list type columns
-    $_filter_items = [];
-    foreach ($table_schema as $column => $scheme) {
-      if ($this->validate->check_column_type($scheme['type'], 'list')) {
-        foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
+    if (!empty($has_list)) {
+      $_filter_items = [];
+      foreach ($has_list as $column) {
+        foreach ($this->parse_list_elements($table_schema[$column]['type_format']) as $list_item) {
           $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
         }
-        if ('set' === $scheme['type']) {
+        if ('set' === $table_schema[$column]['type']) {
           $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
         }
       }
+      if ($display_filter && empty($filters)) {
+        if (!empty($_filter_items)) 
+          $filters = array_unique($_filter_items);
+      }
+      unset($_filter_items);
     }
-    if ($display_filter && empty($filters)) {
-      if (!empty($_filter_items)) {
-        $filters = array_unique($_filter_items);
+    
+    // If contain bit binary data in the datasource
+    if (!empty($has_bit)) {
+      foreach ($has_bit as $column) {
+        //
+        // Filter whether to use the icon display in the case of outputting the data registered in boolean form
+        //
+        $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+        if ($bool_data_with_icon) {
+          $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+        } else {
+        	$custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+        }
       }
     }
     
     // If contain datetime data in the datasource
-    foreach ($table_schema as $column => $scheme) {
-      if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
-        // 暫定処理: 表示する日付フォーマットは設定できるようにする
-        $_date_format = get_option( 'date_format' );
-        $_time_format = get_option( 'time_format' );
-        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', [\''. $_date_format .'\', \''. $_time_format .'\']) + \'</div>\'';
+    if (!empty($has_datetime)) {
+      foreach ($has_datetime as $column) {
+        if (empty($this->options['display_datetime_format'])) {
+          $_datetime_format = '[\''. get_option( 'date_format' ) .'\', \''. get_option( 'time_format' ) .'\']';
+        } else {
+        	$_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
+        }
+        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
       }
+      unset($_datetime_format);
     }
     
     
@@ -599,15 +626,24 @@ trait CdbtShortcodes {
     $shortcode_name = 'cdbt-edit';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $has_bin = [];
+    $has_bin = $has_list = $has_bit = $has_datetime = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $limit_items = intval($table_option['show_max_records']);
       foreach ($table_schema as $column => $scheme) {
-        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
-        }
+        
+        if ($this->validate->check_column_type($scheme['type'], 'list')) 
+          $has_list[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'binary')) 
+          $has_bit[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) 
+        	$has_datetime[] = $column;
+        
       }
     } else {
       if (in_array($table, $this->core_tables)) 
@@ -717,31 +753,49 @@ trait CdbtShortcodes {
     }
     
     // If contain list type columns
-    $_filter_items = [];
-    foreach ($table_schema as $column => $scheme) {
-      if ($this->validate->check_column_type($scheme['type'], 'list')) {
-        foreach ($this->parse_list_elements($scheme['type_format']) as $list_item) {
+    if (!empty($has_list)) {
+      $_filter_items = [];
+      foreach ($has_list as $column) {
+        foreach ($this->parse_list_elements($table_schema[$column]['type_format']) as $list_item) {
           $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
         }
-        if ('set' === $scheme['type']) {
+        if ('set' === $table_schema[$column]['type']) {
           $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
         }
       }
+      if ($display_filter && empty($filters)) {
+        if (!empty($_filter_items)) 
+          $filters = array_unique($_filter_items);
+      }
+      unset($_filter_items);
     }
-    if ($display_filter && empty($filters)) {
-      if (!empty($_filter_items)) {
-        $filters = array_unique($_filter_items);
+    
+    // If contain bit binary data in the datasource
+    if (!empty($has_bit)) {
+      foreach ($has_bit as $column) {
+        //
+        // Filter whether to use the icon display in the case of outputting the data registered in boolean form
+        //
+        $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+        if ($bool_data_with_icon) {
+          $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+        } else {
+        	$custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+        }
       }
     }
     
     // If contain datetime data in the datasource
-    foreach ($table_schema as $column => $scheme) {
-      if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
-        // 暫定処理: 表示する日付フォーマットは設定できるようにする
-        $_date_format = get_option( 'date_format' );
-        $_time_format = get_option( 'time_format' );
-        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', [\''. $_date_format .'\', \''. $_time_format .'\']) + \'</div>\'';
+    if (!empty($has_datetime)) {
+      foreach ($has_datetime as $column) {
+        if (empty($this->options['display_datetime_format'])) {
+          $_datetime_format = '[\''. get_option( 'date_format' ) .'\', \''. get_option( 'time_format' ) .'\']';
+        } else {
+        	$_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
+        }
+        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
       }
+      unset($_datetime_format);
     }
     
     
@@ -867,178 +921,5 @@ trait CdbtShortcodes {
   }
   
   
-  /**
-   * Inputted data is validation and sanitization and rasterization data is returned.
-   *
-   * @since 2.0.0
-   *
-   * @param string $table_name [require]
-   * @param array $post_data [require]
-   * @return mixed $raster_data False is returned if invalid data
-   */
-  protected function cleanup_data( $table_name=null, $post_data=[] ) {
-    
-    if (false === ($table_schema = $this->get_table_schema($table_name))) 
-      return false;
-    
-    $regist_data = [];
-    foreach ($post_data as $post_key => $post_value) {
-      if (array_key_exists($post_key, $table_schema)) {
-        $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
-        
-        if (array_key_exists('char', $detect_column_type)) {
-          if (array_key_exists('text', $detect_column_type)) {
-            // Sanitization data from textarea
-            $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
-            $regist_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
-          } else {
-            // Sanitization data from text field
-            if (is_email($post_value)) {
-              $regist_data[$post_key] = sanitize_email($post_value);
-            } else {
-              $regist_data[$post_key] = sanitize_text_field($post_value);
-            }
-          }
-        }
-        
-        if (array_key_exists('numeric', $detect_column_type)) {
-          if (array_key_exists('integer', $detect_column_type)) {
-            // Sanitization data of integer
-            $regist_data[$post_key] = $table_schema[$post_key]['unsigned'] ? absint($post_value) : intval($post_value);
-          } else
-          if (array_key_exists('float', $detect_column_type)) {
-            // Sanitization data of float
-            $regist_data[$post_key] = 'decimal' === $detect_column_type['float'] ? strval(floatval($post_value)) : floatval($post_value);
-          } else
-          if (array_key_exists('binary', $detect_column_type)) {
-            // Sanitization data of bainary bit
-            $regist_data[$post_key] = sprintf("b'%s'", decbin($post_value));
-          } else {
-            $regist_data[$post_key] = intval($post_value);
-          }
-        }
-        
-        if (array_key_exists('list', $detect_column_type)) {
-          if ('enum' === $detect_column_type['list']) {
-            // Validation data of enum element
-            if (in_array($post_value, $this->parse_list_elements($table_schema[$post_key]['type_format']))) {
-              $regist_data[$post_key] = $post_value;
-            } else {
-              $regist_data[$post_key] = $table_schema[$post_key]['default'];
-            }
-          } else
-          if ('set' === $detect_column_type['list']) {
-            // Validation data of enum element
-            $post_value = is_array($post_value) ? $post_value : (array)$post_value;
-            $list_array = $this->parse_list_elements($table_schema[$post_key]['type_format']);
-            $_save_array = [];
-            foreach ($post_value as $item) {
-              if (in_array($item, $list_array)) 
-                $_save_array[] = $item;
-            }
-            $regist_data[$post_key] = implode(',', $_save_array);
-            unset($list_array, $_save_array, $item);
-          }
-        }
-        
-        if (array_key_exists('datetime', $detect_column_type)) {
-          if (is_array($post_value)) {
-            // Validation data of date
-            if (array_key_exists('date', $post_value)) {
-              if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
-                $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
-              } else {
-                $_date = $post_value['date'];
-              }
-            } else {
-              $_date = '';
-            }
-            // Validation data of time
-            $_hour = $_minute = $_second = '00';
-            foreach (['hour', 'minute', 'second'] as $key) {
-              if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
-                if ('hour' === $key) {
-                  $_hour = $this->validate->checkRange(intval($post_value[$key]), 0, 23) ? $post_value[$key] : '00';
-                } else {
-                  if ('minute' === $key) {
-                    $_minute = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
-                  } else {
-                    $_second = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
-                  }
-                }
-              }
-            }
-            // Rasterization data of datetime
-            if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
-              $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
-            } else {
-              $regist_data[$post_key] = !empty($_date.$_hour.$_minute.$_second) ? $_date.$_hour.$_minute.$_second : $table_schema[$post_key]['default'];
-            }
-          } else {
-            $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
-          }
-          // Validation data of datetime
-          if (!$this->validate->checkDateTime($regist_data[$post_key], 'Y-m-d H:i:s')) {
-            $regist_data[$post_key] = '0000-00-00 00:00:00';
-          }
-          unset($_date, $_hour, $_minute, $_second);
-        }
-        
-        if (array_key_exists('file', $detect_column_type)) {
-          // Check the `$_FILES`
-          var_dump($detect_column_type['file']); // debug code
-        }
-        
-      }
-    }
-    
-    if (!empty($_FILES[$this->domain_name])) {
-      $uploaded_data = [];
-      foreach ($_FILES[$this->domain_name] as $file_key => $file_data) {
-        foreach ($file_data as $column => $value) {
-          if (array_key_exists($column, $table_schema)) 
-            $uploaded_data[$column][$file_key] = $value;
-        }
-      }
-      unset($file_key, $file_data, $column, $value);
-      // Verification the uploaded file
-      $mines = get_allowed_mime_types();
-      foreach ($uploaded_data as $column => $file_data) {
-        $is_allowed_file = true;
-        
-        // Unauthorized file types to exclude
-        if (!in_array($file_data['type'], $mines)) 
-        	$is_allowed_file = false;
-        
-        // Verification file size is whether within the allowable range
-        if (!$this->validate->checkRange($file_data['size'], 1, $table_schema[$column]['octet_length'])) 
-        	$is_allowed_file = false;
-        
-        // Verification whether an error has occurred in the upload
-        if ($file_data['error'] !== 0) 
-          $is_allowed_file = false;
-        
-        // Verification whether the temporary file exists
-        if (empty($file_data['tmp_name'])) 
-          $is_allowed_file = false;
-        
-        if (!$is_allowed_file) 
-          unset($uploaded_data[$column]);
-        
-      }
-      unset($colmun, $file_data);
-      if (!empty($uploaded_data)) {
-        // Rasterization data of file
-        foreach ($uploaded_data as $column => $file_data) {
-          $regist_data[$column] = $this->get_binary_context( $file_data['tmp_name'], $file_data['name'], $file_data['type'], $file_data['size'], true );
-        }
-      }
-    }
-    
-    return !empty($regist_data) ? $regist_data : false;
-    
-  }
-
-
 
 }

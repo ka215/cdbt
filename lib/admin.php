@@ -1012,7 +1012,8 @@ class CdbtAdmin extends CdbtDB {
           $message = __('Update of the data has been completed successfully.', CDBT);
         } else {
           $message = sprintf(__('Could not update data of "%s" table.', CDBT), $table_name);
-//          $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
+          $message .= "\n". __('Not done updating of data if there is no change to the data in updating before and after.', CDBT);
+          $message .= "\n". __('Or, it is possible that the record having the same data could not be updated in order that existed in the other.', CDBT);
         }
         
         break;

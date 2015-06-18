@@ -4,4 +4,41 @@
   overflow-x: auto;
   padding-left: 0;
   padding-right: 1px;
+  
+  table {
+    
+    tbody {
+      tr {
+        
+        td {
+          position: relative;
+          
+          .repeater-list-check {
+            position: absolute;
+            float: left;
+            
+            span {
+              color: $brand-primary;
+            }
+          }
+          .cdbt-repeater-left-main {
+            position: absolute;
+            top: auto;
+            left: 28px;
+          }
+          
+        }
+        
+        &:hover {
+          border: solid 2px #e75353;
+          border-right-width: 1px;
+          
+          &:first-child {
+            border-top-width: 2px;
+          }
+        }
+      
+      }
+    }
+  }
 }

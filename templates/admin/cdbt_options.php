@@ -18,16 +18,6 @@ if (!$options['debug_mode']) {
   $current_tab = $default_tab;
 }
 
-/*
-$db_charsets = explode(' ', 'big5 dec8 cp850 hp8 koi8r latin1 latin2 swe7 ascii ujis sjis hebrew tis620 euckr koi8u gb2312 greek cp1250 gbk latin5 armscii8 utf8 ucs2 cp866 keybcs2 macce macroman cp852 latin7 cp1251 cp1256 cp1257 binary geostd8 cp932 eucjpms');
-sort($db_charsets);
-
-$timezone_identifiers = \DateTimeZone::listIdentifiers();
-sort($timezone_identifiers);
-
-$db_engines = explode(' ', 'InnoDB MyISAM');
-sort($db_engines);
-*/
 
 $default_action = 'update';
 
@@ -107,6 +97,15 @@ $default_action = 'update';
         </div>
       </div><!-- /option-item-10 -->
       <div class="form-group">
+        <label class="col-sm-2 control-label">表示日時のフォーマット</label>
+        <div class="col-sm-4">
+          <input type="text" id="option-item-11" name="<?php echo $this->domain_name; ?>[display_datetime_format]" class="form-control" value="<?php echo $options['display_datetime_format']; ?>" placeholder="<?php echo get_option('links_updated_date_format'); ?>">
+        </div><div class="col-sm-1"> <?php $this->during_trial( 'display_datetime_format' ); ?></div>
+        <div class="col-sm-offset-2 col-sm-10">
+          <p class="help-block">プラグインで表示されるdatetime型データの表示フォーマットを定義できます。デフォルトではWordPressの一般設定の日時フォーマットを利用します。</p>
+        </div>
+      </div><!-- /option-item-11 -->
+      <div class="form-group">
         <label class="col-sm-2 control-label">デバッグモード</label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-15">
@@ -117,7 +116,7 @@ $default_action = 'update';
           </div>
         </div>
       </div><!-- /option-item-15 -->
-      <br>
+      <div class="clearfix"><br></div>
       <h4 class="title">テーブル作成時の設定</h4>
       <div class="form-group">
         <label class="col-sm-2 control-label">テーブル接頭辞</label>

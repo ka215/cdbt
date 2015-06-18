@@ -59,9 +59,6 @@ $(function() {
      */
     this.render_modal = function(){
       
-//      if ($('#cdbtModal').size() > 0) {
-//        $('#cdbtModal').remove();
-//    }
       if ($('div.modal').size() > 0) {
         $('div.modal').remove();
       }
@@ -75,13 +72,17 @@ $(function() {
      */
     this.load_into_modal = function(){
       
-//      if ($('#cdbtModal').size() > 0) {
       if ($('div.modal').size() > 0) {
         $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
         // Initialize the form components of fuel ux
         $('.checkbox').checkbox();
         $('.conbobox').combobox();
-        $('.datepicker').datepicker();
+        $('.datepicker').datepicker({ 
+          date: new Date($('input[name="custom-database-tables[created][prev_date]"]').val()), 
+          allowPastDates: true, 
+          restrictDateSelection: true, 
+          momentConfig: { culture: $('.cdbt-datepicker').attr('data-moment-locale'), format: $('.cdbt-datepicker').attr('data-moment-format') }, 
+        });
         $('.infinitescroll').infinitescroll();
         $('.loader').loader();
         $('.pillbox').pillbox();

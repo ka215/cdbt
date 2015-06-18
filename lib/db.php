@@ -726,9 +726,9 @@ class CdbtDB extends CdbtConfig {
       return false;
     }
     
-    // Generation of insertion candidate data
+    // Generate field formats
     $data = [];
-    $field_format = [];
+    $data_field_format = [];
     foreach ($_update_data as $column => $value) {
       if ($surrogate_key === $column) 
         continue;
@@ -738,26 +738,57 @@ class CdbtDB extends CdbtConfig {
       
       $data[$column] = $value;
       if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
-        $field_format[$column] = '%d';
+        $data_field_format[$column] = '%d';
       } else
       if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
-        $field_format[$column] = '%f';
+        $data_field_format[$column] = '%f';
       } else {
-        $field_format[$column] = '%s';
+        $data_field_format[$column] = '%s';
       }
     }
-/*
-    if (empty(array_diff_key($data, $field_format))) {
-      $result = $this->wpdb->update( $table_name, $data, array_values($field_format) );
-    } else {
-      $result = $this->wpdb->delete( $table_name, $delete_where );
+    $where_data = [];
+    $where_field_format = [];
+    foreach ($_update_where as $column => $value) {
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+        $where_field_format[$column] = '%d';
+        $where_data[$column] = intval($value);
+      } else
+      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+        $where_field_format[$column] = '%f';
+        $where_data[$column] = floatval($value);
+      } else {
+        $where_field_format[$column] = '%s';
+        $where_data[$column] = esc_sql(strval(rawurldecode($value)));
+      }
     }
-*/    
-    var_dump($data);
-    var_dump($_update_where);
-    var_dump($field_format);
     
-    return false;
+    // Check of any duplicate records if table has no primary key
+    if (empty($primary_keys) && empty($foreign_keys) && empty($unique_keys) && empty($surrogate_key) && !$is_exists_updated) {
+      $same_rows = $this->array_flatten($this->get_data( $table_name, 'COUNT(*)', $where_data, 'ARRAY_N' ));
+      if (intval($same_rows[0]) > 1) {
+        $message = __('The record having the same data could not be updated in order that existed in the other.', CDBT);
+        $this->logger( $message );
+        return false;
+      }
+    }
+    
+    // Main processing of data update
+    if (empty(array_diff_key($data, $data_field_format))) {
+      if (empty(array_diff_key($where_data, $where_field_format))) {
+        $result = $this->wpdb->update( $table_name, $data, $where_data, array_values($data_field_format), array_values($where_field_format) );
+      } else {
+        $result = $this->wpdb->update( $table_name, $data, $where_data, array_values($data_field_format) );
+      }
+    } else {
+      $result = $this->wpdb->update( $table_name, $data, $where_data );
+    }
+    $retvar = $this->strtobool($result);
+    if (!$retvar) {
+      $message = __('Failed to modify your specified data.', CDBT);
+      $this->logger( $message );
+    }
+    
+    return $retvar;
     
   }
   
@@ -948,6 +979,195 @@ class CdbtDB extends CdbtConfig {
   }
   
   
+  /**
+   * Inputted data is validation and sanitization and rasterization data is returned.
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param array $post_data [require]
+   * @return mixed $raster_data False is returned if invalid data
+   */
+  protected function cleanup_data( $table_name=null, $post_data=[] ) {
+    
+    if (false === ($table_schema = $this->get_table_schema($table_name))) 
+      return false;
+    
+    $regist_data = [];
+    foreach ($post_data as $post_key => $post_value) {
+      if (array_key_exists($post_key, $table_schema)) {
+        $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
+        
+        if (array_key_exists('char', $detect_column_type)) {
+          if (array_key_exists('text', $detect_column_type)) {
+            // Sanitization data from textarea
+            $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
+            //
+            // Filter of the tag list to be allowed for data in the text area
+            //
+            $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
+            $regist_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
+          } else {
+            // Sanitization data from text field
+            if (is_email($post_value)) {
+              $regist_data[$post_key] = sanitize_email($post_value);
+            } else {
+              $regist_data[$post_key] = sanitize_text_field($post_value);
+            }
+          }
+        }
+        
+        if (array_key_exists('numeric', $detect_column_type)) {
+          if (array_key_exists('integer', $detect_column_type)) {
+            // Sanitization data of integer
+            $regist_data[$post_key] = $table_schema[$post_key]['unsigned'] ? absint($post_value) : intval($post_value);
+          } else
+          if (array_key_exists('float', $detect_column_type)) {
+            // Sanitization data of float
+            $regist_data[$post_key] = 'decimal' === $detect_column_type['float'] ? strval(floatval($post_value)) : floatval($post_value);
+          } else
+          if (array_key_exists('binary', $detect_column_type)) {
+            // Sanitization data of bainary bit
+            $regist_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+          } else {
+            $regist_data[$post_key] = intval($post_value);
+          }
+        }
+        
+        if (array_key_exists('list', $detect_column_type)) {
+          if ('enum' === $detect_column_type['list']) {
+            // Validation data of enum element
+            if (in_array($post_value, $this->parse_list_elements($table_schema[$post_key]['type_format']))) {
+              $regist_data[$post_key] = $post_value;
+            } else {
+              $regist_data[$post_key] = $table_schema[$post_key]['default'];
+            }
+          } else
+          if ('set' === $detect_column_type['list']) {
+            // Validation data of enum element
+            $post_value = is_array($post_value) ? $post_value : (array)$post_value;
+            $list_array = $this->parse_list_elements($table_schema[$post_key]['type_format']);
+            $_save_array = [];
+            foreach ($post_value as $item) {
+              if (in_array($item, $list_array)) 
+                $_save_array[] = $item;
+            }
+            $regist_data[$post_key] = implode(',', $_save_array);
+            unset($list_array, $_save_array, $item);
+          }
+        }
+        
+        if (array_key_exists('datetime', $detect_column_type)) {
+          if (is_array($post_value)) {
+            // Validation data of date
+            if (array_key_exists('date', $post_value)) {
+              if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
+                $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
+              } else {
+                $_date = $post_value['date'];
+              }
+            } else {
+              $_date = '';
+            }
+            // Validation data of time
+            $_hour = $_minute = $_second = '00';
+            foreach (['hour', 'minute', 'second'] as $key) {
+              if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
+                if ('hour' === $key) {
+                  $_hour = $this->validate->checkRange(intval($post_value[$key]), 0, 23) ? $post_value[$key] : '00';
+                } else {
+                  if ('minute' === $key) {
+                    $_minute = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                  } else {
+                    $_second = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                  }
+                }
+              }
+            }
+            // Rasterization data of datetime
+            if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
+              $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
+            } else {
+              $regist_data[$post_key] = !empty($_date.$_hour.$_minute.$_second) ? $_date.$_hour.$_minute.$_second : $table_schema[$post_key]['default'];
+            }
+          } else {
+            $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
+          }
+          // Validation data of datetime
+          if (!$this->validate->checkDateTime($regist_data[$post_key], 'Y-m-d H:i:s')) {
+            $regist_data[$post_key] = '0000-00-00 00:00:00';
+          }
+          
+          $_prev_timezone = date_default_timezone_get();
+          //
+          // Filter for localize the datetime at the timezone specified by options
+          //
+          $_localize_timezone = apply_filters( 'cdbt_local_timezone_datetime', $this->options['timezone'] );
+          date_default_timezone_set( $_localize_timezone );
+          
+          $_timestamp = '0000-00-00 00:00:00' === $regist_data[$post_key] ? date_i18n('U') : strtotime($regist_data[$post_key]);
+          $regist_data[$post_key] = date_i18n( 'Y-m-d H:i:s', $_timestamp );
+          
+          date_default_timezone_set( $_prev_timezone );
+          unset($_date, $_hour, $_minute, $_second, $_prev_timezone, $_localize_timezone, $_timestamp);
+        }
+        
+        if (array_key_exists('file', $detect_column_type)) {
+          // Check the `$_FILES`
+          var_dump($detect_column_type['file']); // debug code
+        }
+        
+      }
+    }
+    
+    if (!empty($_FILES[$this->domain_name])) {
+      $uploaded_data = [];
+      foreach ($_FILES[$this->domain_name] as $file_key => $file_data) {
+        foreach ($file_data as $column => $value) {
+          if (array_key_exists($column, $table_schema)) 
+            $uploaded_data[$column][$file_key] = $value;
+        }
+      }
+      unset($file_key, $file_data, $column, $value);
+      // Verification the uploaded file
+      $mines = get_allowed_mime_types();
+      foreach ($uploaded_data as $column => $file_data) {
+        $is_allowed_file = true;
+        
+        // Unauthorized file types to exclude
+        if (!in_array($file_data['type'], $mines)) 
+        	$is_allowed_file = false;
+        
+        // Verification file size is whether within the allowable range
+        if (!$this->validate->checkRange($file_data['size'], 1, $table_schema[$column]['octet_length'])) 
+        	$is_allowed_file = false;
+        
+        // Verification whether an error has occurred in the upload
+        if ($file_data['error'] !== 0) 
+          $is_allowed_file = false;
+        
+        // Verification whether the temporary file exists
+        if (empty($file_data['tmp_name'])) 
+          $is_allowed_file = false;
+        
+        if (!$is_allowed_file) 
+          unset($uploaded_data[$column]);
+        
+      }
+      unset($colmun, $file_data);
+      if (!empty($uploaded_data)) {
+        // Rasterization data of file
+        foreach ($uploaded_data as $column => $file_data) {
+          $regist_data[$column] = $this->get_binary_context( $file_data['tmp_name'], $file_data['name'], $file_data['type'], $file_data['size'], true );
+        }
+      }
+    }
+    
+    return !empty($regist_data) ? $regist_data : false;
+    
+  }
+
+
 
 
 
