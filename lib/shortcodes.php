@@ -36,18 +36,6 @@ trait CdbtShortcodes {
   
   
   /**
-   * 
-   *
-   * @since 2.0.0
-   *
-   * @param string $table_name [require]
-   * @return 
-   **/
-  
-  
-  
-  
-  /**
    * Retrieve a table data that match the specified conditions, then it outputs as list
    *
    * @since 1.0.0
@@ -68,7 +56,7 @@ trait CdbtShortcodes {
       'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
       'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
-      // As legacy of `cdbt-extract` is follows:
+      /* As legacy of `cdbt-extract` is follows: */
       'display_index_row' => true, 
       'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
       'display_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...` If overlapped with `exclude_cols`, set to override the `exclude_cols`.
@@ -76,7 +64,7 @@ trait CdbtShortcodes {
       'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
       'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
       'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
-      // Added new attribute from 2.0.0 is follows:
+      /* Added new attribute from 2.0.0 is follows: */
       'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
       'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
@@ -151,11 +139,13 @@ trait CdbtShortcodes {
       // If WordPress core tables
       $result_permit = $this->is_permit_user( 'administrator' );
     }
-    //
+    
     // Filter the viewing rights check result of the shortcode
     // You can give viewing rights to specific users by utilizing this filter hook.
     //
+    // @since 2.0.0
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
+    
     if (!$result_permit) 
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
@@ -251,10 +241,12 @@ trait CdbtShortcodes {
     // If contain bit binary data in the datasource
     if (!empty($has_bit)) {
       foreach ($has_bit as $column) {
-        //
+        
         // Filter whether to use the icon display in the case of outputting the data registered in boolean form
         //
+        // @since 2.0.0
         $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+        
         if ($bool_data_with_icon) {
           $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
         } else {
@@ -307,9 +299,10 @@ trait CdbtShortcodes {
         $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
         array_unshift($columns, $add_column);
       }
-      //
+      
       // Filter the column definition of the list content that is output by this shortcode
       //
+      // @since 2.0.0
       $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
       
       $conponent_options = [
@@ -335,9 +328,10 @@ trait CdbtShortcodes {
         if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
           $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
       }
-      //
+      
       // Filter the conponent definition of the list content that is output by this shortcode
       //
+      // @since 2.0.0
       $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
       
       if (isset($title)) 
@@ -371,7 +365,7 @@ trait CdbtShortcodes {
       'display_title' => true, 
       'hidden_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
-      // Added new attribute from 2.0.0 is follows:
+      /* Added new attribute from 2.0.0 is follows: */
       'action_url' => '', // String of url for form action [optional] For using shortcode of `cdbt-edit`
       'form_action' => 'entry_data', // String of action name as method after submiting [optional] Is `edit_data` if edit data
       'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
@@ -414,11 +408,13 @@ trait CdbtShortcodes {
       // If WordPress core tables
       $result_permit = $this->is_permit_user( 'administrator' );
     }
-    //
+    
     // Filter the viewing rights check result of the shortcode
     // You can give viewing rights to specific users by utilizing this filter hook.
     //
+    // @since 2.0.0
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
+    
     if (!$result_permit) 
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
@@ -465,7 +461,6 @@ trait CdbtShortcodes {
       if( array_key_exists('datetime', $detect_column_type) && 'updated' === $column ) 
         continue;
       
-//      var_dump([$column, $detect_column_type, $scheme]);
       unset($input_type, $rows, $max_file_size, $max_length, $element_size, $pattern, $selectable_list);
       if (array_key_exists('char', $detect_column_type)) {
         if (array_key_exists('text', $detect_column_type)) {
@@ -524,7 +519,7 @@ trait CdbtShortcodes {
       } else {
         $input_type = 'text';
       }
-//var_dump([$column, $scheme]);
+      
       $_temp_elements_options = [
         'elementName' => $column, 
         'elementLabel' => !empty($scheme['logical_name']) ? $scheme['logical_name'] : $column, 
@@ -558,9 +553,10 @@ trait CdbtShortcodes {
       
       $elements_options[] = $_temp_elements_options;
     }
-    //
+    
     // Filter the form content definition that is output by this shortcode
     //
+    // @since 2.0.0
     $elements_options = apply_filters( 'cdbt_shortcode_custom_forms', $elements_options, $shortcode_name, $table );
     
     $conponent_options = [
@@ -579,9 +575,10 @@ trait CdbtShortcodes {
       $conponent_options['displaySubmit'] = $display_submit;
     if (!empty($where_clause) && is_array($where_clause)) 
       $conponent_options['whereClause'] = $where_clause;
-    //
+    
     // Filter the conponent definition of the list content that is output by this shortcode
     //
+    // @since 2.0.0
     $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
     
     return $this->component_render('forms', $conponent_options);
@@ -610,10 +607,7 @@ trait CdbtShortcodes {
       'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
       'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
-//      'display_search' => true, // true is static
-//      'display_index_row' => true, // true is static
-//      'image_render' => 'responsive', // 'responsive' is static
-      // Added new attribute from 2.0.0 is follows:
+      /* Added new attribute from 2.0.0 is follows: */
       'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
       'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
@@ -684,11 +678,13 @@ trait CdbtShortcodes {
       // If WordPress core tables
       $result_permit = $this->is_permit_user( 'administrator' );
     }
-    //
+    
     // Filter the viewing rights check result of the shortcode
     // You can give viewing rights to specific users by utilizing this filter hook.
     //
+    // @since 2.0.0
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
+    
     if (!$result_permit) 
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
@@ -773,10 +769,12 @@ trait CdbtShortcodes {
     // If contain bit binary data in the datasource
     if (!empty($has_bit)) {
       foreach ($has_bit as $column) {
-        //
+        
         // Filter whether to use the icon display in the case of outputting the data registered in boolean form
         //
+        // @since 2.0.0
         $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+        
         if ($bool_data_with_icon) {
           $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
         } else {
@@ -880,9 +878,10 @@ trait CdbtShortcodes {
         $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
         array_unshift($columns, $add_column);
       }
-      //
+      
       // Filter the column definition of the list content that is output by this shortcode
       //
+      // @since 2.0.0
       $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
       
       $conponent_options = [
@@ -902,9 +901,10 @@ trait CdbtShortcodes {
         'data' => $datasource, 
         'addClass' => $add_class, 
       ];
-      //
+      
       // Filter the conponent definition of the list content that is output by this shortcode
       //
+      // @since 2.0.0
       $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
       
       if (isset($title)) 
@@ -918,6 +918,120 @@ trait CdbtShortcodes {
       return $content;
     }
     
+  }
+  
+  
+  /**
+   * 
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @return 
+   **/
+  public function submit_custom_query() {
+/*
+	extract(shortcode_atts(array(
+		'table' => '', 
+		'query' => '', 
+		'type' => 'button', // or 'link'
+		'label' => 'Submit', 
+		'onclick' => '', // my custom onclick event name (when click on element)
+		'callback' => '', // my callback function name (when ajax complete event)
+		'final' => '', // my final process event name (when ending after ajax)
+		'add_class' => '', 
+	), $atts));
+	global $cdbt;
+	// verification for using shortcode
+	if (empty($table) || !$cdbt->check_table_exists($table)) 
+		return __('Specified table is not exist', CDBT_PLUGIN_SLUG);
+	if (empty($query)) 
+		return __('Specifying query is nothing', CDBT_PLUGIN_SLUG);
+	if (preg_match('/^(insert|update)\s(.*)$/iU', $query, $matches)) {
+		$query_action = strtolower($matches[1]);
+		if ($query_action == 'insert' && !cdbt_check_current_table_role('input', $table)) 
+			$err_permission = sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('input', CDBT_PLUGIN_SLUG));
+		if ($query_action == 'update' && !cdbt_check_current_table_role('edit', $table)) 
+			$err_permission = sprintf(__('You do not have a permission to %s this table', CDBT_PLUGIN_SLUG), __('edit', CDBT_PLUGIN_SLUG));
+	} else {
+		return __('Can not use your specified query', CDBT_PLUGIN_SLUG);
+	}
+	if (!isset($query_action)) 
+		return __('Specified query is invalid', CDBT_PLUGIN_SLUG);
+	
+	// verification of sql query
+	if ($query_action == 'insert') {
+		if (preg_match('/into\s(.*)(\s|)\((.*)\)\s{1,}values(\s|)\((.*)\)\s{0,}(;|)$/iU', preg_replace('/(?:\n|\r|\r\n)/', '', trim($matches[2])), $parse_query)) {
+			$query_elms = array();
+			$query_elms['table_name'] = ($parse_query[1] == '@' || $parse_query[1] != $table) ? $table : trim($parse_query[1]);
+			$query_elms['columns'] = explode(',', trim($parse_query[3]));
+			$tmp_values = explode(',', trim($parse_query[5]));
+			$query_elms['values'] = array();
+			foreach ($query_elms['columns'] as $i => $col) {
+				$query_elms['values'][] = $tmp_values[$i];
+			}
+			$prepared_query = sprintf('INSERT INTO `%s` (%s) VALUES (%s);', $query_elms['table_name'], implode(',', $query_elms['columns']), implode(',', $query_elms['values']));
+		} else {
+			return __('Specified query is invalid', CDBT_PLUGIN_SLUG);
+		}
+	}
+	if ($query_action == 'update') {
+		if (preg_match('/(.*)\s{1,}set\s{1,}(.*)(where\s{1,}(.*)|)(;|)$/iU', preg_replace('/(?:\n|\r|\r\n)/', '', trim($matches[2])), $parse_query)) {
+			$query_elms = array();
+			$query_elms['table_name'] = ($parse_query[1] == '@' || $parse_query[1] != $table) ? $table : trim($parse_query[1]);
+			$tmp_sets = explode(',', trim($parse_query[2]));
+			$query_elms['columns'] = $query_elms['values'] = $query_elms['set_clause'] = array();
+			foreach ($tmp_sets as $val) {
+				list($str_col, $str_val) = explode('=', trim($val));
+				$query_elms['columns'][] = trim($str_col);
+				$query_elms['values'][] = trim($str_val);
+				$query_elms['set_clause'][] = trim($str_col) .' = '. trim($str_val);
+			}
+			$query_elms['where'] = trim($parse_query[4]);
+			if (empty($query_elms['where'])) {
+				$prepared_query = sprintf('UPDATE `%s` SET %s;', $query_elms['table_name'], implode(', ', $query_elms['set_clause']));
+			} else {
+				$prepared_query = sprintf('UPDATE `%s` SET %s WHERE %s;', $query_elms['table_name'], implode(', ', $query_elms['set_clause']), $query_elms['where']);
+			}
+			
+		} else {
+			return __('Specified query is invalid', CDBT_PLUGIN_SLUG);
+		}
+	}
+	if (empty($prepared_query)) 
+		return __('Specified query is invalid', CDBT_PLUGIN_SLUG);
+	
+	add_action('wp_footer', 'cdbt_create_javascript', 9999);
+	
+	// create content for rendering at HTML
+	$hash_id = md5($prepared_query);
+	if (get_option(CDBT_PLUGIN_SLUG . '_stored_queries') !== false) {
+		$stored_queries = get_option(CDBT_PLUGIN_SLUG . '_stored_queries');
+		$stored_queries[$hash_id] = $prepared_query;
+		update_option(CDBT_PLUGIN_SLUG . '_stored_queries', $stored_queries);
+	} else {
+		add_option(CDBT_PLUGIN_SLUG . '_stored_queries', array($hash_id => $prepared_query), '', 'no');
+	}
+	$template_content = $type == 'link' ? '<a href="#" id="%s" class="%s" %s>%s</a>' : '<button type="button" id="%s" class="btn %s" %s>%s</button>';
+	$attributes = array();
+	if (isset($err_permission) && !empty($err_permission)) {
+		$content_id = "cdbt-submit";
+		$attributes[] = sprintf('title="%s"', $err_permission);
+		$attributes[] = 'disabled="disabled"';
+	} else {
+		$content_id = "cdbt-submit-{$hash_id}";
+		if (!empty($onclick)) 
+			$attributes[] = sprintf('data-onclick="%s"', $onclick);
+		if (!empty($callback)) 
+			$attributes[] = sprintf('data-callback="%s"', $callback);
+		if (!empty($final)) 
+			$attributes[] = sprintf('data-final="%s"', $final);
+	}
+	$add_class = ($type != 'link' && empty($add_class)) ? 'btn-primary' : $add_class;
+	$render_content = sprintf($template_content, $content_id, $add_class, implode(' ', $attributes), $label);
+	
+	return $render_content;
+*/
   }
   
   

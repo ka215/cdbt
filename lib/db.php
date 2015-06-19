@@ -75,7 +75,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return boolean
    */
-  function check_table_exists( $table_name=null ) {
+  public function check_table_exists( $table_name=null ) {
     if (empty($table_name)) {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
       $this->logger( $message );
@@ -98,7 +98,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $sql Validated SQL statement for creating new table [require]
    * @return boolean
    */
-  function create_table( $table_data=null, $sql=null ) {
+  public function create_table( $table_data=null, $sql=null ) {
     static $message = '';
     
     if (is_array($table_data)) {
@@ -150,7 +150,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $db_name [optional]
    * @return mixed Return the schema array on success, otherwise is `false`
    */
-  function get_table_schema( $table_name=null, $db_name=null ) {
+  public function get_table_schema( $table_name=null, $db_name=null ) {
     if (empty($table_name)) {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
       $this->logger( $message );
@@ -234,7 +234,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return mixed SQL statement strings if got that, otherwise false
    */
-  function get_create_table_sql( $table_name=null ) {
+  public function get_create_table_sql( $table_name=null ) {
     static $message = '';
     
     if (empty($table_name)) {
@@ -266,7 +266,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return mixed Table comment string if could get that, otherwise false
    */
-  function get_table_comment( $table_name=null ) {
+  public function get_table_comment( $table_name=null ) {
     
     return $this->get_table_status( $table_name, 'Comment' );
     
@@ -282,7 +282,7 @@ class CdbtDB extends CdbtConfig {
    * @param mixed $state_name [optional] Array of some table state name, or string of single state name
    * @return mixed Array of table status if could get that, or string of single state, otherwise false
    */
-  function get_table_status( $table_name=null, $state_name=null ) {
+  public function get_table_status( $table_name=null, $state_name=null ) {
     static $message = '';
     
     if (empty($table_name)) 
@@ -337,7 +337,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return boolean
    */
-  function truncate_table( $table_name=null ) {
+  public function truncate_table( $table_name=null ) {
     static $message = '';
     
     if (empty($table_name)) 
@@ -346,16 +346,21 @@ class CdbtDB extends CdbtConfig {
     if (!$this->check_table_exists($table_name)) 
       $message = __('Specified table does not exist.', CDBT);
     
-    if ($this->wpdb->query( sprintf( 'TRUNCATE TABLE `%s`;', esc_sql($table_name) ) )) {
+    $result = $this->wpdb->query( sprintf( 'TRUNCATE TABLE `%s`;', esc_sql($table_name) ) );
+    $retvar = $this->strtobool($result);
+    if ($retvar) {
       $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $table_name );
-      $this->logger( $message );
-      return true;
     } else {
       $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $table_name );
     }
     
+    // Fire after the truncated table
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_table_truncated', $retvar, $table_name );
+    
     $this->logger( $message );
-    return false;
+    return $retvar;
   }
   
   
@@ -368,7 +373,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return boolean
    */
-  function drop_table( $table_name=null ) {
+  public function drop_table( $table_name=null ) {
     static $message = '';
     
     if (empty($table_name)) 
@@ -377,16 +382,21 @@ class CdbtDB extends CdbtConfig {
     if (!$this->check_table_exists($table_name)) 
       $message = __('Specified table does not exist.', CDBT);
     
-    if ($this->wpdb->query( sprintf( 'DROP TABLE `%s`;', esc_sql($table_name) ) )) {
+    $result = $this->wpdb->query( sprintf( 'DROP TABLE `%s`;', esc_sql($table_name) ) );
+    $retvar = $this->strtobool($result);
+    if ($retvar) {
       $message = sprintf( __('Table of "%s" has been removed successfully.', CDBT), $table_name );
-      $this->logger( $message );
-      return true;
     } else {
       $message = sprintf( __('Failed to remove the table of "%s".', CDBT), $table_name );
     }
     
+    // Fire after the dropped table
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_table_dropped', $retvar, $table_name );
+    
     $this->logger( $message );
-    return false;
+    return $retvar;
   }
   
   
@@ -400,7 +410,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $origin_table [require] Replication origin table name
    * @return boolean
    */
-  function duplicate_table( $replicate_table=null, $duplicate_with_data=true, $origin_table=null ) {
+  public function duplicate_table( $replicate_table=null, $duplicate_with_data=true, $origin_table=null ) {
     static $message = '';
     
     if (empty($replicate_table) || empty($origin_table)) 
@@ -409,7 +419,9 @@ class CdbtDB extends CdbtConfig {
     if (!$this->check_table_exists($origin_table)) 
       $message = __('Replication origin table does not exist.', CDBT);
     
-    if ($this->wpdb->query( sprintf( 'CREATE TABLE `%s` LIKE `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) )) {
+    $result = $this->wpdb->query( sprintf( 'CREATE TABLE `%s` LIKE `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) );
+    $retvar = $this->strtobool($result);
+    if ($retvar) {
       $message = sprintf( __('Created a table "%1$s" replicated of the table "%2$s".', CDBT), $replicate_table, $origin_table );
       $this->logger( $message );
       if ($duplicate_with_data) {
@@ -422,20 +434,18 @@ class CdbtDB extends CdbtConfig {
           }
         }
       }
-      $this->logger( $message );
-      return true;
     } else {
       $message = sprintf( __('Failed to replicated table "%s" creation.', CDBT), $replicate_table );
     }
     
+    // Fire after the duplicated table
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_table_duplicated', $retvar, $replicate_table, $origin_table );
+    
     $this->logger( $message );
-    return false;
+    return $retvar;
   }
-  
-  
-  
-  
-  
   
   
   /**
@@ -454,7 +464,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
    * @return mixed 
    */
-  function get_data( $table_name, $columns='*', $conditions=null, $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
+  public function get_data( $table_name, $columns='*', $conditions=null, $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
     if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ])) {
@@ -479,7 +489,6 @@ class CdbtDB extends CdbtConfig {
       }
       $i++;
     }
-//var_dump([ $table_name, $columns, $conditions, $order, $limit, $offset, $output_type ]);
     
     // Check Table
     if (false === ($table_schema = $this->get_table_schema($table_name))) {
@@ -546,10 +555,132 @@ class CdbtDB extends CdbtConfig {
   }
   
   
+  /**
+   * Find data
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * Locate the appropriate data by extracting the best column from the schema information of the table for the search keyword. 
+   * Same behavior as get_data() If there is no schema of the table argument is.
+   *
+   * @param string $table_name (must containing prefix of table)
+   * @param array $table_schema default null
+   * @param string $search_key
+   * @param array $columns (optional) default wildcard '*' (eq. select clause)
+   * @param array $order (optional) default 'order by `created` desc' (eq. orderby and order clause)
+   * @param int $limit (optional) (eq. limit clause)
+   * @param int $offset (optional) (eq. offset clause)
+   * @return array
+   */
+  public function find_data( $table_name, $table_schema=null, $search_key, $columns, $order=array('created'=>'desc'), $limit=null, $offset=null ) {
+/*
+		global $wpdb;
+		if (empty($table_schema)) 
+			list(, , $table_schema) = $this->get_table_schema($table_name);
+		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
+		$where_clause = $order_clause = $limit_clause = null;
+		if (!empty($order)) {
+			$i = 0;
+			foreach ($order as $key => $val) {
+				if (array_key_exists($key, $table_schema)) {
+					$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
+					if ($i == 0) {
+						$order_clause = "ORDER BY `$key` $val ";
+					} else {
+						$order_clause .= ", `$key` $val ";
+					}
+					$i++;
+				} else {
+					continue;
+				}
+			}
+		}
+		if (!empty($limit)) {
+			$limit_clause = "LIMIT ";
+			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
+		}
+		$search_key = preg_replace('/[\s@]+/u', ' ', trim($search_key), -1);
+		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
+		if (!empty($keywords)) {
+			$primary_key_name = null;
+			foreach ($table_schema as $col_name => $col_scm) {
+				if (empty($primary_key_name) && $col_scm['primary_key']) {
+					$primary_key_name = $col_name;
+					break;
+				}
+			}
+			$union_clauses = array();
+			foreach ($keywords as $value) {
+				if (!empty($table_schema)) {
+					unset($table_schema[$primary_key_name], $table_schema['created'], $table_schema['updated']);
+					$target_columns = array();
+					foreach ($table_schema as $column_name => $column_info) {
+						if (is_float($value)) {
+							if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
+								$target_columns[] = $column_name;
+						} else if (is_int($value)) {
+							if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'])) 
+								$target_columns[] = $column_name;
+						}
+						if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
+							$target_columns[] = $column_name;
+					}
+				}
+			}
+			if (!empty($target_columns)) {
+				foreach ($target_columns as $target_column_name) {
+					$i = 0;
+					foreach ($keywords as $value) {
+						if ($i == 0) {
+							$where_clause = "WHERE `$target_column_name` LIKE '%%$value%%' ";
+						} else {
+							$where_clause .= "AND `$target_column_name` LIKE '%%$value%%' ";
+						}
+						$i++;
+					}
+					$union_clauses[] = sprintf('SELECT %s FROM %s %s', $select_clause, $table_name, $where_clause);
+				}
+			} else {
+				// $table_schema is none
+				
+			}
+			if (!empty($union_clauses)) {
+				if (count($union_clauses) == 1) {
+					$union_clause = array_shift($union_clauses) . ' %s';
+					$sql = sprintf($union_clause, $limit_clause);
+				} else {
+					$i = 0;
+					foreach ($union_clauses as $union_clause) {
+						if ($i == 0) {
+							$sql = '(' . $union_clause . ')';
+						} else {
+							$sql .= ' UNION (' . $union_clause . ')';
+						}
+						$i++;
+					}
+					$sql .= " $order_clause $limit_clause";
+				}
+			}
+		}
+		if (!isset($sql) || empty($sql)) {
+			$sql = sprintf(
+				"SELECT %s FROM `%s` %s %s %s", 
+				$select_clause, 
+				$table_name, 
+				$where_clause, 
+				$order_clause, 
+				$limit_clause 
+			);
+		}
+		return $wpdb->get_results($sql);
+*/
+  }
   
   
   /**
    * Insert data to specific table in database.
+   * This method is the wrapper of "wpdb::insert()".
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
@@ -641,6 +772,11 @@ class CdbtDB extends CdbtConfig {
       $this->logger( $message );
     }
     
+    // Fire after the inserted data
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_inserted_data', $retvar, $table_name, $insert_data );
+    
     return $retvar;
     
   }
@@ -648,7 +784,7 @@ class CdbtDB extends CdbtConfig {
   
   /**
    * Update data to specific table in database.
-//   * This method have integrated the primary key based method `update_date()` and the method `update_where()` of usable where clause.
+   * This method is the wrapper of "wpdb::update()".
    * If it contains binary data in the update data, it is necessary to generate context by `CdbtUtility::get_binary_context()` before calling this method.
    * It is not performed update processing if the update data or where conditions is nothing.
    *
@@ -788,13 +924,103 @@ class CdbtDB extends CdbtConfig {
       $this->logger( $message );
     }
     
+    // Fire after the updated data
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_updated_data', $retvar, $table_name, $data, $where_data );
+    
     return $retvar;
     
   }
   
   
   /**
+   * update data (for where clause based)
+   *
+   * @since 1.1.14
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name (must containing prefix of table)
+   * @param string $where_conditions
+   * @param array $data
+   * @param array $table_schema (optional) default null
+   * @return boolean
+   */
+  public function update_where( $table_name, $where_conditions, $data, $table_schema=null ) {
+/*
+		global $wpdb;
+		if (empty($table_schema)) 
+			list(, , $table_schema) = $this->get_table_schema($table_name);
+		$is_exists_created = $is_exists_updated = false;
+		foreach ($table_schema as $key => $val) {
+			if ($key == 'created') 
+				$is_exists_created = true;
+			if ($key == 'updated') 
+				$is_exists_updated = true;
+		}
+		//if ($is_exists_created && array_key_exists('created', $data)) 
+		//	unset($data['created']);
+		if ($is_exists_updated && array_key_exists('updated', $data)) 
+			unset($data['updated']);
+		
+		if (!empty($where_conditions)) {
+			if (preg_match_all('/\s{0,}\"(.*)\"\s{0,}/iU', $where_conditions, $matches) && array_key_exists(1, $matches)) {
+				foreach ($matches[1] as $stick) {
+					$where_conditions = str_replace('"'. $stick .'"', "'$stick'", $where_conditions);
+				}
+			}
+			$where_clause = 'WHERE ' . $where_conditions;
+		} else {
+			$where_clause = '';
+		}
+		
+		$set_clauses = array();
+		foreach ($data as $column_name => $value) {
+			if (array_key_exists($column_name, $table_schema)) {
+				if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+$/', $value)) {
+					// is integer format
+					$set_clauses[] = sprintf('`%s` = %d', esc_sql($column_name), intval($value));
+				} else if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $table_schema[$column_name]['type']) && preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $value)) {
+					// is double format
+					$set_clauses[] = sprintf('`%s` = %f', esc_sql($column_name), floatval($value));
+				} else {
+					// is string format
+					$set_clauses[] = sprintf("`%s` = '%s'", esc_sql($column_name), strval($value));
+				}
+			}
+		}
+		$sql = sprintf('UPDATE `%s` SET %s %s;', $table_name, implode(', ', $set_clauses), $where_clause);
+		return (boolean)$wpdb->query($sql);
+*/
+  }
+  
+  
+  /**
+   * Upsert data to table that has primary key or unique key
+   * - `UPDATE` if record that matches the specific conditions is exist, is otherwise `INSERT`.
+   * - Able to bulk update of multiple records.
+   * - Update by taking condition for each field.
+   * - Target table must have a unique key index or primary key.
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param mixed $data [require] Assoc array as key of column name; or hash string like assoc array (cf. `col1:val1,col2:val2,..`)
+   * @param mixed $where_condition [require] Single assoc array or hash string as keypair (`ID:1` etc.)
+   * @return boolean
+   */
+  public function upsert_data( $table_name=null, $data=[], $where_condition=[] ) {
+    static $message = '';
+    
+    // query: INSERT INTO $table_name ( (array_keys($where_condition) + array_keys($data)) ) VALUES ( (array_values($where_condition) + array_values($data)) ) ON DUPLICATE KEY UPDATE {$data -> 'key=val'}
+    // Cf. http://qiita.com/yuzroz/items/f0eccf847b2ea42f885f
+    
+  }
+  
+  
+  /**
    * Delete data in the table
+   * This method is the wrapper of "wpdb::delete()".
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
@@ -853,16 +1079,30 @@ class CdbtDB extends CdbtConfig {
       $this->logger( $message );
     }
     
+    // Fire after the data deletion
+    //
+    // @since 2.0.0
+    do_action( 'cdbt_after_data_deletion', $retvar, $table_name, $where_clause );
+    
     return $retvar;
     
   }
   
   
-  
-  
-  
-  
-  
+  /**
+   * run the custom query
+   *
+   * @since
+   * @since 2.0.0
+   *
+   * @param string $query
+   * @return mixed
+   */
+  protected function run_query( $query=null ) {
+    
+    return $this->wpdb->query( esc_sql($query) );
+    
+  }
   
   
   /**
@@ -907,6 +1147,27 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
+   * Compare to table name which already exists
+   *
+   * @since 1.x as `compare_reservation_tables()`
+   * @since 2.0.0 deprecated
+   *
+   * @param string $table_name [require]
+   * @return boolean
+   */
+  protected function compare_reservation_tables( $table_name=null ) {
+    /*
+    $naked_table_name = preg_replace('/^'. $wpdb->prefix .'(.*)$/iU', '$1', $table_name);
+    $reservation_names = array(
+      'commentmeta', 'comments', 'links', 'options', 'postmeta', 'posts', 'term_relationships', 'term_taxonomy', 'terms', 'usermeta', 'users', 
+      'blogs', 'blog_versions', 'registration_log', 'signups', 'site', 'sitecategories', 'sitemeta', 
+    );
+    return in_array($naked_table_name, $reservation_names);
+    */
+  }
+  
+  
+  /**
    * Parse the element definition of the list type column as an array
    *
    * @since 2.0.0
@@ -914,7 +1175,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $list_string [require] Definition string in the list type column of `enum` or `set`
    * @return array $list_array Array of list type column element
    */
-  public function parse_list_elements( $list_string=null ) {
+  protected function parse_list_elements( $list_string=null ) {
     $list_array = [];
     
     if (!empty($list_string) && preg_match('/^(enum|set)\((.*)\)$/iU', $list_string, $matches) && is_array($matches) && array_key_exists(2, $matches)) {
@@ -1002,9 +1263,9 @@ class CdbtDB extends CdbtConfig {
           if (array_key_exists('text', $detect_column_type)) {
             // Sanitization data from textarea
             $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
-            //
             // Filter of the tag list to be allowed for data in the text area
             //
+            // @since 2.0.0
             $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
             $regist_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
           } else {
@@ -1099,9 +1360,9 @@ class CdbtDB extends CdbtConfig {
           }
           
           $_prev_timezone = date_default_timezone_get();
-          //
           // Filter for localize the datetime at the timezone specified by options
           //
+          // @since 2.0.0
           $_localize_timezone = apply_filters( 'cdbt_local_timezone_datetime', $this->options['timezone'] );
           date_default_timezone_set( $_localize_timezone );
           
@@ -1166,11 +1427,120 @@ class CdbtDB extends CdbtConfig {
     return !empty($regist_data) ? $regist_data : false;
     
   }
-
-
-
-
-
+  
+  
+  /**
+   * data verification by column schema
+   *
+   * @since 
+   * @since 2.0.0
+   *
+   * @param array $column_schema
+   * @param string $data
+   * @return array
+   */
+  protected function validate_data( $column_schema, $data ) {
+/*
+		if ($column_schema['not_null'] && $column_schema['default'] == null) {
+			if (strval($data) != '0' && empty($data)) 
+				return array(false, __('empty', self::DOMAIN));
+		}
+		if (!empty($data)) {
+			if (preg_match('/^((|tiny|small|medium|big)int|float|double(| precision)|real|dec(|imal)|numeric|fixed|bool(|ean)|bit)$/i', strtolower($column_schema['type']))) {
+				if (strtolower($column_schema['type_format']) != 'tinyint(1)' && strtolower($column_schema['type_format']) != 'bit(1)') {
+					if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean))$/i', strtolower($column_schema['type']))) {
+						$data = intval($data);
+						if (!is_int($data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					} else {
+						$data = floatval($data);
+						if ($data != 0 && !cdbt_get_boolean(preg_match('/^(\-|)[0-9]+\.?[0-9]+$/', $data))) {
+							return array(false, __('not integer', self::DOMAIN));
+						}
+					}
+				} else {
+					$data = intval($data);
+					if (preg_match('/^bit$/i', strtolower($column_schema['type']))) {
+						if (!is_int($data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					} else {
+						if (!preg_match('/^(\-|)[0-9]+$/', $data)) 
+							return array(false, __('not integer', self::DOMAIN));
+					}
+				}
+				if ($column_schema['unsigned']) {
+					if ($data < 0) 
+						return array(false, __('not a positive number', self::DOMAIN));
+				}
+			}
+			if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary)$/i', strtolower($column_schema['type']))) {
+				if (!is_string($data)) 
+					return array(false, __('invalid strings', self::DOMAIN));
+			}
+			if (preg_match('/^(enum|set)(.*?)$/i', strtolower($column_schema['type_format']), $matches)) {
+				$eval_string = '$items = array' . $matches[2] . ';';
+				eval($eval_string);
+				if (!empty($data)) {
+					if (!is_array($data)) 
+						$data = explode(',', $data);
+					foreach ($data as $tmp) {
+						if (!in_array($tmp, $items)) {
+							return array(false, __('invalid value', self::DOMAIN));
+						}
+					}
+				}
+			}
+			$reg_date = '([1-9][0-9]{3})\D?(0[1-9]{1}|1[0-2]{1})\D?(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1})\D?';
+			$reg_time = '(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?(0[0-9]{1}|[1-5]{1}[0-9]{1})\D?';
+			$reg_year = '([1-9][0-9]{3})\D?';
+			if (preg_match('/^(datetime|timestamp)$/i', strtolower($column_schema['type']))) {
+				if (!preg_match('/^'. $reg_date . $reg_time .'$/', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'date') {
+				if (!preg_match('/^'. $reg_date .'$/', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'time') {
+				if (!preg_match('/^'. $reg_time .'$/i', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (strtolower($column_schema['type']) == 'year') {
+				if (!preg_match('/^'. $reg_year .'$/i', $data)) 
+					return array(false, __('invalid format', self::DOMAIN));
+			}
+			if (is_array($data)) {
+				foreach ($data as $value) {
+					if (function_exists('mb_strlen')) {
+						$length = mb_strlen((string)$value);
+					} else {
+						$length = strlen((string)$value);
+					}
+					if ($length > intval($column_schema['max_length'])) {
+						return array(false, __('max length over', self::DOMAIN));
+					}
+				}
+			} else if (!preg_match('/^(datetime|timestamp|date|time|year)$/i', strtolower($column_schema['type']))) {
+				if (function_exists('mb_strlen')) {
+					$length = mb_strlen((string)$data);
+				} else {
+					$length = strlen((string)$data);
+				}
+				if ($length > intval($column_schema['max_length'])) {
+					return array(false, __('max length over', self::DOMAIN));
+				}
+			}
+		} else {
+			if ($column_schema['not_null'])
+				if (strval($data) != '0' && empty($data)) 
+					return array(false, __('empty', self::DOMAIN));
+		}
+		return array(true, '');
+*/
+  }
+  
+  
+  
 }
 
 endif; // end of class_exists()
