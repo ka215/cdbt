@@ -55,9 +55,9 @@ foreach ($this->allow_file_types as $file_type) {
 <?php if ($current_tab == 'table_list') : ?>
   <h4 class="tab-annotation"><?php esc_html_e('Enabled Table List', CDBT); ?></h4>
   <?php if ( 0 === count($enable_table) ) : ?>
-    <p>現在、プラグインで管理可能なテーブルはありません。</p>
-    <p>テーブルを新規作成する場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>">ここをクリック</a>してください。</p>
-    <p>既存のテーブルをプラグインに取り込む場合は、<a href="<?php echo add_query_arg('tab', 'create_table'); ?>#resume-table">ここをクリック</a>してください。</p>
+    <p><?php _e('Currently, manageable table in the plugin does not exist.', CDBT); /* 現在、プラグインで管理可能なテーブルはありません。*/ ?></p>
+    <p><?php printf( __('If you want to create a new table, please %sclick here%s.', CDBT), '<a href="'. add_query_arg('tab', 'create_table') .'">', '</a>' ); /* テーブルを新規作成する場合は、%sここをクリック%sしてください。*/ ?></p>
+    <p><?php printf( __('If you import an existing table to the plugin, please click here.', CDBT), '<a href="'. add_query_arg('tab', 'create_table') .'#resume-table">', '</a>' ); /* 既存のテーブルをプラグインに取り込む場合は、%sここをクリック%sしてください。*/ ?></p>
   <?php else : 
   /**
    * Define the localized variables for tab of `table_list`
@@ -99,7 +99,7 @@ foreach ($this->allow_file_types as $file_type) {
 ?>
   <div class="well-sm">
     <p class="text-info">
-      テーブルの新規作成、または既存テーブルの取り込みを行うことができます。<a href="#resume-table">既存テーブルを取り込む場合はこちらから</a>行ってください。
+      <?php printf( __('You can create a new table or incorporate an existing table. Please %sgo from here%s if you incorporate an existing table.', CDBT), '<a href="#resume-table">', '</a>' ); /*テーブルの新規作成、または既存テーブルの取り込みを行うことができます。%s既存テーブルを取り込む場合はこちらから%s行ってください。*/ ?>
     </p>
   </div>
   
@@ -110,11 +110,11 @@ foreach ($this->allow_file_types as $file_type) {
       <input type="hidden" name="action" value="create_table">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
-      <h4 class="title" id="create-table"><i class="fa fa-database text-muted"></i> データベース用テーブル設定</h4>
+      <h4 class="title" id="create-table"><i class="fa fa-database text-muted"></i> <?php _e('Table setting for a database', CDBT); ?></h4>
       
       <div class="well-sm">
         <p class="text-info">
-          データベースに新しいテーブルを作成します。必要な設定内容を入力してください。
+          <?php _e('Create a new table in the database. Please enter the required settings.', CDBT); /*データベースに新しいテーブルを作成します。必要な設定内容を入力してください。*/ ?>
         </p>
       </div>
       
@@ -130,7 +130,7 @@ foreach ($this->allow_file_types as $file_type) {
           <div class="checkbox" id="instance_prefix_switcher">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="instance_prefix_switcher" type="checkbox" value="1" <?php if (isset($session_vars)) { checked('1', intval(isset($session_vars['instance_prefix_switcher']))); } else { checked('1', $options['use_wp_prefix']); } ?>>
-              <span class="checkbox-label">WordPressの設定（wp-config.php）で定義されているテーブル接頭辞を使う。</span>
+              <span class="checkbox-label"><?php _e('I use a table prefix that is defined in the WordPress config (wp-config.php).', CDBT); /* WordPressの設定（wp-config.php）で定義されているテーブル接頭辞を使う。*/ ?></span>
             </label>
           </div>
         </div>
@@ -139,7 +139,7 @@ foreach ($this->allow_file_types as $file_type) {
         <label for="create-table-table_comment" class="col-sm-2 control-label"><?php _e('Table Comment', CDBT); ?></label>
         <div class="col-sm-5">
           <input id="create-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['table_comment']; ?>" class="form-control" placeholder="Table Comment">
-          <p class="help-block">テーブルコメントは論理名として表示名などに使われます。</p>
+          <p class="help-block"><?php _e('Table Comments are used to display name as a logical name.', CDBT); /* テーブルコメントは論理名として表示名などに使われます。*/ ?></p>
         </div>
       </div><!-- /create-table-table_comment -->
       <div class="form-group">
@@ -156,7 +156,7 @@ foreach ($this->allow_file_types as $file_type) {
               </ul>
             </div>
           </div>
-          <p class="help-block">指定しない場合、現在のデータベースの初期値: <code><?php echo $this->db_default_charset; ?></code>が設定されます。</p>
+          <p class="help-block"><?php printf( __('If you do not specify, the initial value of the current database: %s will be set.', CDBT), '<code>'. $this->db_default_charset .'</code>' ); /*指定しない場合、現在のデータベースの初期値: %sが設定されます。*/ ?></p>
         </div>
       </div><!-- /create-table-table_charset -->
       <div class="form-group">
@@ -173,7 +173,7 @@ foreach ($this->allow_file_types as $file_type) {
               </ul>
             </div>
           </div>
-          <p class="help-block">指定しない場合、現在のデータベースの初期値: <code><?php echo $this->db_default_engine; ?></code>が設定されます。</p>
+          <p class="help-block"><?php printf( __('If you do not specify, the initial value of the current database: %s will be set.', CDBT), '<code>'. $this->db_default_engine .'</code>' ); /*指定しない場合、現在のデータベースの初期値: %sが設定されます。*/ ?></p>
         </div>
       </div><!-- /create-table-table_db_engine -->
       <div class="form-group">
@@ -182,19 +182,19 @@ foreach ($this->allow_file_types as $file_type) {
           <div class="checkbox" id="automatically-add-columns1">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="ID"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('ID', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
-              <span class="checkbox-label">先頭にプライマリキーの「ID」カラムを追加する（自動採番式のサロゲートキー）</span>
+              <span class="checkbox-label"><?php _e('Add the "ID" column of the primary key to the beginning (Surrogate key of autoincrement type)', CDBT); /* 先頭にプライマリキーの「ID」カラムを追加する（自動採番式のサロゲートキー）*/ ?></span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns2">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="created"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('created', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>">
-              <span class="checkbox-label">データ登録日時を格納する「created」カラムを追加する</span>
+              <span class="checkbox-label"><?php _e('Add the "created" column for storing the data registration datetime', CDBT); /*データ登録日時を格納する「created」カラムを追加する*/ ?></span>
             </label>
           </div>
           <div class="checkbox" id="automatically-add-columns3">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[automatically_add_columns][]" type="checkbox" value="updated"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['automatically_add_columns']) && in_array('updated', $session_vars[$this->domain_name]['automatically_add_columns'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
-              <span class="checkbox-label">データ更新日時を格納する「updated」カラムを追加する</span>
+              <span class="checkbox-label"><?php _e('Add the "updated" column for storing the data update datetime', CDBT); /*データ更新日時を格納する「updated」カラムを追加する*/ ?></span>
             </label>
           </div>
         </div>
@@ -217,7 +217,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block">
             <?php _e('Example of SQL Statements:', CDBT); ?> <br>
-            <pre><code>CREATE TABLE prefix_new_table ( `account_name` varchar(64) NOT NULL COMMENT 'アカウント名',  `gender` enum('female','male') DEFAULT NULL COMMENT '性別' )</code></pre>
+            <pre><code>CREATE TABLE prefix_new_table ( `account_name` varchar(64) NOT NULL COMMENT 'Account Name',  `gender` enum('female','male') DEFAULT NULL COMMENT 'Gender' )</code></pre>
           </p>
         </div>
       </div><!-- /create-table-create_table_sql -->
@@ -226,16 +226,16 @@ foreach ($this->allow_file_types as $file_type) {
       </div>
       <div class="clearfix"></div>
       
-      <h4 class="title" id="plugin-settings"><i class="fa fa-cubes text-muted"></i> プラグイン用テーブル設定</h4>
+      <h4 class="title" id="plugin-settings"><i class="fa fa-cubes text-muted"></i> <?php _e('Table setting for the plugin', CDBT); /*プラグイン用テーブル設定*/ ?></h4>
       
       <div class="well-sm">
         <p class="text-info">
-          プラグインで管理可能になった際のテーブル設定を指定します。この設定はテーブル作成後も変更可能です。
+          <?php _e('Specify the table setting for when became manageable in plugin. This setting can be changed even after the table creation.', CDBT); /*プラグインで管理可能になった際のテーブル設定を指定します。この設定はテーブル作成後も変更可能です。*/ ?>
         </p>
       </div>
       
       <div class="form-group">
-        <label for="create-table-max_show_records" class="col-sm-2 control-label">最大表示データ数</label>
+        <label for="create-table-max_show_records" class="col-sm-2 control-label"><?php _e('Maximum display data per page', CDBT); /*最大表示データ数*/ ?></label>
         <div class="col-sm-10">
           <div class="spinbox disits-3" data-initialize="spinbox" id="create-table-max_show_records">
             <input type="text" name="<?php echo $this->domain_name; ?>[max_show_records]" value="<?php if (isset($session_vars)) { echo intval($session_vars[$this->domain_name]['max_show_records']); } else { echo intval($options['default_per_records']); } ?>" class="form-control input-mini spinbox-input">
@@ -244,11 +244,11 @@ foreach ($this->allow_file_types as $file_type) {
               <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
             </div>
           </div>
-          <p class="help-block">このプラグインで管理するテーブルの1ページに表示される最大データ行数の初期値です。</p>
+          <p class="help-block"><?php _e('This value is the maximum data rows per one page to be displayed the table is managed with this plugin.', CDBT); /*このプラグインで管理するテーブルの1ページに表示される最大データ行数の初期値です。*/ ?></p>
         </div>
       </div>
       <div class="form-group">
-        <label for="create-table-user_permission_view" class="col-sm-2 control-label">テーブルデータ閲覧を許可するユーザー</label>
+        <label for="create-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT);/*テーブルデータ閲覧を許可するユーザー*/?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_view">
             <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="<?php if (isset($session_vars)) { esc_html_e($session_vars[$this->domain_name]['user_permission_view']); } else { echo 'guest'; } ?>" class="form-control">
@@ -261,11 +261,11 @@ foreach ($this->allow_file_types as $file_type) {
               </ul>
             </div>
           </div>
-          <p class="help-block">この設定値は管理画面以外でテーブルが表示される場合に有効になります。主にショートコード<code>&#091;cdbt-view&#093;</code>向けの設定です。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_view' ); ?></p>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you see data of the table in a non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-view&#093;</code>' );/*この設定値は管理画面以外でテーブルが表示される場合に有効になります。主にショートコード%s向けの設定です。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_view' ); ?></p>
         </div>
       </div>
       <div class="form-group">
-        <label for="create-table-user_permission_entry" class="col-sm-2 control-label">テーブルデータ登録を許可するユーザー</label>
+        <label for="create-table-user_permission_entry" class="col-sm-2 control-label"><?php _e('Who is allowed to register table data', CDBT);/*テーブルデータ登録を許可するユーザー*/?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_entry">
             <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="<?php if (isset($session_vars)) { echo esc_html_e($session_vars[$this->domain_name]['user_permission_entry']); } else { echo 'contributor'; } ?>" class="form-control">
@@ -278,11 +278,11 @@ foreach ($this->allow_file_types as $file_type) {
               </ul>
             </div>
           </div>
-          <p class="help-block">この設定値は管理画面以外でテーブルにデータ登録する場合に有効になります。主にショートコード<code>&#091;cdbt-entry&#093;</code>向けの設定です。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_entry' ); ?></p>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you register data to the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-entry&#093;</code>' );/*この設定値は管理画面以外でテーブルにデータ登録する場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_entry' ); ?></p>
         </div>
       </div>
       <div class="form-group">
-        <label for="create-table-user_permission_edit" class="col-sm-2 control-label">テーブルデータ編集を許可するユーザー</label>
+        <label for="create-table-user_permission_edit" class="col-sm-2 control-label"><?php _e('Who is allowed to edit table data', CDBT);/*テーブルデータ編集を許可するユーザー*/?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-user_permission_edit">
             <input type="text" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="<?php if (isset($session_vars)) { echo esc_html_e($session_vars[$this->domain_name]['user_permission_edit']); } else { echo 'editor'; } ?>" class="form-control">
@@ -295,13 +295,13 @@ foreach ($this->allow_file_types as $file_type) {
               </ul>
             </div>
           </div>
-          <p class="help-block">この設定値は管理画面以外でテーブルのデータ編集を行う場合に有効になります。主にショートコード<code>&#091;cdbt-edit&#093;</code>向けの設定です。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_edit' ); ?></p>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you edit data in the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-edit&#093;</code>' );/*この設定値は管理画面以外でテーブルのデータ編集を行う場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_edit' ); ?></p>
         </div>
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <ul id="foot-note-1" class="foot-note">
-            <li><span class="dashicons dashicons-info"></span> 任意の権限を設定する場合は、WordPressのCapability値を設定してください。<a href="https://codex.wordpress.org/Roles_and_Capabilities" target="_blank">Capabilityの詳細はこちら</a>を参照してください。</li>
+            <li><span class="dashicons dashicons-info"></span> <?php printf( __('If you want to set any permissions, please set the Capability of WordPress. Please see %shere more information of Capability%s.', CDBT), '<a href="https://codex.wordpress.org/Roles_and_Capabilities" target="_blank">', '</a>' );/*任意の権限を設定する場合は、WordPressのCapability値を設定してください。%sCapabilityの詳細はこちら%sを参照してください。*/?></li>
           </ul>
         </div>
       </div>
@@ -324,11 +324,11 @@ foreach ($this->allow_file_types as $file_type) {
       <input type="hidden" name="action" value="resume_table">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
-      <h4 class="title" id="resume-table"><i class="fa fa-reply text-muted"></i> 既存テーブル取り込み</h4>
+      <h4 class="title" id="resume-table"><i class="fa fa-reply text-muted"></i> <?php _e('Incorporate an existing table', CDBT);/*既存テーブルの取り込み*/?></h4>
       
       <div class="well-sm">
         <p class="text-info">
-          既に存在しているテーブルを、プラグインで管理できるように取り込みます。
+          <?php _e('You can incorporate a table that already exists, as be able to manage by this plugin.', CDBT);/*既に存在しているテーブルを、プラグインで管理できるように取り込みます。*/ ?>
         </p>
       </div>
       
@@ -336,12 +336,12 @@ foreach ($this->allow_file_types as $file_type) {
     if ( 0 === count($resume_table_list = array_diff($unreserved_table, $enable_table)) ) : ?>
       
       <div class="form-group">
-        <p class="well-sm col-sm-offset-2 col-sm-8">現在、プラグインに取り込めるテーブルはありません。</p>
+        <p class="well-sm col-sm-offset-2 col-sm-8"><?php _e('Currently, incorporatable table to the plugin is not exist.', CDBT);/*現在、プラグインに取り込めるテーブルはありません。*/?></p>
       </div>
       
     <?php else : ?>
       <div class="form-group">
-        <label for="resume-table-resume_table" class="col-sm-2 control-label">取り込むテーブル</label>
+        <label for="resume-table-resume_table" class="col-sm-2 control-label"><?php _e('Incorporatable tables', CDBT);/*取り込むテーブル*/?></label>
         <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="resume-table-resume_table">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
             <span class="selected-label"></span>
@@ -359,7 +359,7 @@ foreach ($this->allow_file_types as $file_type) {
       
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><?php _e('Resume Table', CDBT); ?></button>
+          <button type="submit" class="btn btn-primary"><?php _e('Incorporate Table', CDBT); ?></button>
         </div>
       </div>
     <?php endif; ?>
@@ -428,14 +428,14 @@ foreach ($this->allow_file_types as $file_type) {
   // Definition of operatable console buttons
   if ($current_tab === 'operate_table') {
     $operatable_buttons = [
-      'detail'      => [ 'labal' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-      'import'    => [ 'labal' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-      'export'    => [ 'labal' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-      'duplicate' => [ 'labal' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-      'truncate'  => [ 'labal' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
-      'modify'    => [ 'labal' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
-      'backup'    => [ 'labal' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
-      'drop'       => [ 'labal' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
+      'detail'      => [ 'label' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'import'    => [ 'label' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'export'    => [ 'label' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'duplicate' => [ 'label' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'truncate'  => [ 'label' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
+      'modify'    => [ 'label' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
+      'backup'    => [ 'label' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
+      'drop'       => [ 'label' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
     ];
   } else
   if ($current_tab === 'operate_data') {
@@ -474,7 +474,7 @@ foreach ($this->allow_file_types as $file_type) {
               <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[operate_target_table]" readonly="readonly" aria-hidden="true" type="text"/>
             </div>
           </div>
-          <button type="submit" class="btn btn-default" id="operate-table-action-change_table">操作テーブルを変更</button>
+          <button type="submit" class="btn btn-default" id="operate-table-action-change_table"><?php _e('Change Operation Table', CDBT);/*操作テーブルを変更*/?></button>
         </div>
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_current_table]" value="<?php echo $target_table; ?>">
         <input type="hidden" name="<?php echo $this->domain_name; ?>[operate_action]" value="<?php echo $current_action; ?>">
@@ -513,7 +513,7 @@ foreach ($this->allow_file_types as $file_type) {
 
 <section id="detail" class="<?php if ('detail' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   <div class="table-responsive">
-    <strong><i class="fa fa-square text-muted"></i> カラム情報</strong>
+    <strong><i class="fa fa-square text-muted"></i> <?php _e('Column Information', CDBT);/*カラム情報*/?></strong>
     <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
       <thead>
         <tr class="active">
@@ -549,7 +549,7 @@ foreach ($this->allow_file_types as $file_type) {
     <table id="table-detail" class="table table-striped table-hover table-condensed">
       <thead>
         <tr>
-          <th colspan="4" class="col"><i class="fa fa-square text-muted"></i> テーブル情報</th>
+          <th colspan="4" class="col"><i class="fa fa-square text-muted"></i> <?php _e('Table Information', CDBT);/*テーブル情報*/?></th>
         </tr>
       </thead>
       <tbody>
@@ -667,12 +667,14 @@ foreach ($this->allow_file_types as $file_type) {
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['export']['icon']; ?> text-muted"></i> <?php esc_html_e('Export Table Options', CDBT); ?></h4> <?php $this->during_trial( 'export_table' ); ?>
   
   <div class="well-sm">
-    <p class="text-info">
-    <?php if (intval($table_status['Rows']) > 0) : ?>
-      現在テーブルに格納されているデータのエクスポートを行います。ダウンロードしたいファイル形式と、エクスポートの対象となるカラムを指定してください。
-    <?php else : ?>
-      このテーブルにはエクスポートするデータがありません。
-    <?php endif; ?>
+    <p class="text-info"><?php
+    if (intval($table_status['Rows']) > 0) {
+      _e('We will do the export of data stored in the table currently. Please choice of the download file format, and specify the exportation columns that you want.', CDBT);
+      /*現在テーブルに格納されているデータのエクスポートを行います。ダウンロードしたいファイル形式と、エクスポートの対象となるカラムを指定してください。*/
+    } else {
+      _e('There is no data to be exported to this table.', CDBT);
+      /*このテーブルにはエクスポートするデータがありません。*/
+    } ?>
     </p>
   </div>
   
@@ -707,10 +709,10 @@ foreach ($this->allow_file_types as $file_type) {
         <div class="checkbox" id="export-table-add_index_line">
           <label class="checkbox-custom" data-initialize="checkbox">
             <input class="sr-only" type="checkbox" name="<?php echo $this->domain_name; ?>[add_index_line]" value="1"<?php if (isset($this->cdbt_sessions[$current_tab]['add_index_line']) && $this->cdbt_sessions[$current_tab]['add_index_line']) : ?> checked="checked"<?php endif; ?>>
-            <span class="checkbox-label">先頭の行にカラム名だけの列をインデックス行として追加する</span>
+            <span class="checkbox-label"><?php _e('Add a column of only column name as the index at the beginning of the line', CDBT);/*先頭の行にカラム名だけの列をインデックス行として追加する*/?></span>
           </label>
         </div>
-        <p class="help-block">この設定はダウンロードファイルが「CSV」か「TSV」の時のみ有効です。</p>
+        <p class="help-block"><?php _e('This setting will be enable only if you choose "CSV" or "TSV" in the download file.', CDBT);/*この設定はダウンロードファイルが「CSV」か「TSV」の時のみ有効です。*/?></p>
       </div>
     </div><!-- /export-table-add_index_line -->
   <?php if (function_exists('mb_list_encodings')) : ?>
@@ -774,7 +776,7 @@ foreach ($this->allow_file_types as $file_type) {
   
   <div class="well-sm">
     <p class="text-info">
-      複製テーブルのテーブル名以外の設定値は複製元テーブルの設定を引き継ぎます。設定を変更したい場合は、テーブル複製後に個別に変更してください。
+      <?php _e('The setting other of table name in the duplication table takes over the setting of the origin table. If you want to modify the settings, please modify individually after table duplication.', CDBT);/*複製テーブルのテーブル名以外の設定値は複製元テーブルの設定を引き継ぎます。設定を変更したい場合は、テーブル複製後に個別に変更してください。*/?>
     </p>
   </div>
   
@@ -788,7 +790,7 @@ foreach ($this->allow_file_types as $file_type) {
       <label for="duplicate-table-table_name" class="col-sm-2 control-label"><?php _e('Duplicate Table Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
       <div class="col-sm-5">
         <input id="duplicate-table-table_name" name="<?php echo $this->domain_name; ?>[duplicate_table_name]" type="text" value="<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_table_name'])) echo $this->cdbt_sessions[$current_tab]['duplicate_table_name']; ?>" class="form-control" placeholder="Duplicate Table Name">
-        <p class="help-block">複製されるテーブルのテーブル名を入力してください。</p>
+        <p class="help-block"><?php _e('Please enter the duplication table name.', CDBT);/*複製されるテーブルのテーブル名を入力してください。*/?></p>
       </div>
     </div><!-- /create-table-duplicate_table_name -->
     <div class="form-group">
@@ -797,13 +799,13 @@ foreach ($this->allow_file_types as $file_type) {
         <div class="radio">
           <label class="radio-custom" data-initialize="radio" id="duplicate-table-with_data_true">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[duplicate_with_data]" type="radio" value="true"<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_with_data'])) { if ($this->cdbt_sessions[$current_tab]['duplicate_with_data']) : ?> checked="checked"<?php endif; } else { ?> checked="checked"<?php } ?>>
-            複製元テーブルに格納されているデータが含まれる完全な複製を行う
+            <?php _e('Do a complete duplication that contains the data stored in the origin table', CDBT);/*複製元テーブルに格納されているデータが含まれる完全な複製を行う*/?>
           </label>
         </div>
         <div class="radio checked">
           <label class="radio-custom" data-initialize="radio" id="duplicate-table-with_data_false">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[duplicate_with_data]" type="radio" value="false"<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_with_data'])) { if (!$this->cdbt_sessions[$current_tab]['duplicate_with_data']) : ?> checked="checked"<?php endif; } ?>>
-            複製元テーブルのデータを含まないテーブル構造だけを複製する（複製後のテーブルはデータのない空テーブルになります）
+            <?php _e('Do a duplication copy only scheme of the origin table which does not contain the data. (the duplicated table will be empty table with no data)', CDBT);/*複製元テーブルのデータを含まないテーブル構造だけを複製する（複製後のテーブルはデータのない空テーブルになります）*/?>
           </label>
         </div>
       </div>
