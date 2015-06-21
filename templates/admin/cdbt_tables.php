@@ -41,7 +41,7 @@ foreach ($this->allow_file_types as $file_type) {
  */
 ?>
 <div id="page-head" name="page-head" class="wrap">
-  <h2><?php esc_html_e('CDBT Tables Management', CDBT); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Tables Management', CDBT); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -110,7 +110,7 @@ foreach ($this->allow_file_types as $file_type) {
       <input type="hidden" name="action" value="create_table">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
-      <h4 class="title" id="create-table"><i class="fa fa-database text-muted"></i> <?php _e('Table setting for a database', CDBT); ?></h4>
+      <h4 class="title" id="create-table"><i class="image-icon cdbt-icon-db-leaf square26"></i> <?php _e('Table setting for a database', CDBT); ?></h4>
       
       <div class="well-sm">
         <p class="text-info">
@@ -246,7 +246,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block"><?php _e('This value is the maximum data rows per one page to be displayed the table is managed with this plugin.', CDBT); /*このプラグインで管理するテーブルの1ページに表示される最大データ行数の初期値です。*/ ?></p>
         </div>
-      </div>
+      </div><!-- /create-table-max_show_records -->
       <div class="form-group">
         <label for="create-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT);/*テーブルデータ閲覧を許可するユーザー*/?></label>
         <div class="col-sm-10">
@@ -263,7 +263,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block"><?php printf( __('This setting will be enabled when you see data of the table in a non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-view&#093;</code>' );/*この設定値は管理画面以外でテーブルが表示される場合に有効になります。主にショートコード%s向けの設定です。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_view' ); ?></p>
         </div>
-      </div>
+      </div><!-- /create-table-user_permission_view -->
       <div class="form-group">
         <label for="create-table-user_permission_entry" class="col-sm-2 control-label"><?php _e('Who is allowed to register table data', CDBT);/*テーブルデータ登録を許可するユーザー*/?></label>
         <div class="col-sm-10">
@@ -280,7 +280,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block"><?php printf( __('This setting will be enabled when you register data to the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-entry&#093;</code>' );/*この設定値は管理画面以外でテーブルにデータ登録する場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_entry' ); ?></p>
         </div>
-      </div>
+      </div><!-- /create-table-user_permission_entry -->
       <div class="form-group">
         <label for="create-table-user_permission_edit" class="col-sm-2 control-label"><?php _e('Who is allowed to edit table data', CDBT);/*テーブルデータ編集を許可するユーザー*/?></label>
         <div class="col-sm-10">
@@ -297,7 +297,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block"><?php printf( __('This setting will be enabled when you edit data in the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-edit&#093;</code>' );/*この設定値は管理画面以外でテーブルのデータ編集を行う場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'user_permission_edit' ); ?></p>
         </div>
-      </div>
+      </div><!-- /create-table-user_permission_edit -->
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <ul id="foot-note-1" class="foot-note">
@@ -374,17 +374,318 @@ foreach ($this->allow_file_types as $file_type) {
 <?php endif; /* End of `create_table` tab contents */ ?>
   
 <?php if ($current_tab == 'modify_table') : ?>
-  <h4 class="tab-annotation"><?php esc_html_e('Modify Table', CDBT); ?></h4>
   
 <?php
   /**
    * Define the localized variables for tab of `modify_table`
    */
   
-  if ( !isset($this->cdbt_sessions[$current_tab]) ) 
-    $this->destroy_session();
+//var_dump($enable_table);
+//var_dump($unreserved_table);
+//var_dump($selectable_table);
+  
+//var_dump($this->cdbt_sessions);
+  $is_enable_modify = false;
+  $modify_table = '';
+  if (isset($this->cdbt_sessions[$current_tab]['target_table'])) {
+    $modify_table = $this->cdbt_sessions[$current_tab]['target_table'];
+    if (in_array($modify_table, $enable_table)) {
+      $is_enable_modify = true;
+      $_session_key = 'do_' . $this->query['page'] . '_' . $current_tab;
+      if (isset($this->cdbt_sessions[$_session_key]) && array_key_exists($this->domain_name, $this->cdbt_sessions[$_session_key]) && !empty($this->cdbt_sessions[$_session_key][$this->domain_name])) {
+        // Set variables from session
+        $session_vars = $this->cdbt_sessions[$_session_key][$this->domain_name];
+//var_dump($session_vars);
+      }
+      $table_options = $this->get_table_option($modify_table);
+    }
+  }
+//var_dump([$is_enable_modify, $modify_table]);
+//var_dump($table_options);
   
 ?>
+<?php if (!$is_enable_modify) : ?>
+  
+  <div class="cdbt-modify-table">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="modify_table">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <div class="well-sm">
+        <p class="text-info">
+          <?php if (!empty($modify_table)) {
+            _e('Table you want to modify is not specified. Please select the table you want to modify.', CDBT); /*編集するテーブルが指定されていません。編集したいテーブルを選択してください*/
+          } else {
+            _e('The specified table can not be modified in this plugin. Please select the other table.', CDBT); /*指定されたテーブルはこのプラグインでは編集できません。他のテーブルを選択してください。*/
+          } ?>
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label for="modify-table-change_table" class="col-sm-3 control-label"><?php _e('Select Modification Table', CDBT); ?></label>
+        <div class="col-sm-9">
+          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="modify-table-change_table">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+              <span class="selected-label"></span>
+              <span class="caret"></span>
+              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li data-value=""><a href="#"><span class="text-muted"><?php _e('Please select', CDBT); ?></span></a></li>
+              <?php foreach ($enable_table as $table) : ?>
+                <li data-value="<?php echo $table; ?>"<?php if ($modify_table === $table) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $table; ?></a></li>
+              <?php endforeach; ?>
+            </ul>
+            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[modify_table]" readonly="readonly" aria-hidden="true" type="text">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="submit" class="btn btn-primary" id="modify-table-action-change_table"><?php _e('Change Modify Table', CDBT);/*編集テーブルを変更*/?></button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+<?php else : ?>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php printf( __('You can make the schema change of the table body. Also, there is able to do such as changing permission to access to a table outputted by the shortcode. %sIn that case is here%s.', CDBT), '<a href="#table-attribution">', '</a>' ); /*テーブル本体のスキーマ変更をおこなうことができます。また、%sショートコードで出力されるテーブルのアクセス権などの変更はこちら%sです。*/ ?>
+    </p>
+  </div>
+  
+  <div class="cdbt-modify-table">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" id="cdbt-alter-table-form" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="modify_table">
+      <input type="hidden" name="target_table" value="<?php echo $modify_table; ?>">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <h4 class="title" id="alter-table"><i class="fa fa-wrench text-muted"></i> <?php _e('Modifies to the scheme of table body', CDBT); ?></h4>
+      
+      <div class="well-sm">
+        <p class="text-info">
+          <?php _e('Modify the scheme of the specified table by running the SQL query (mainly "ALTER TABLE"). Please enter the item you want to modify.', CDBT); /*SQLクエリ（ALTER TABLE）を発行して指定テーブルのスキームを変更します。変更したい内容を入力してください。*/ ?>
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label for="modify-table-table_name" class="col-sm-2 control-label"><?php _e('Table Name', CDBT); ?></label>
+        <div class="col-sm-4">
+          <input id="modify-table-table_name" name="<?php echo $this->domain_name; ?>[table_name]" type="text" value="<?php echo isset($session_vars) && isset($session_vars['table_name']) ? esc_attr($session_vars['table_name']) : esc_attr($modify_table); ?>" class="form-control" placeholder="Table Name">
+        </div>
+        <div class="col-sm-6">
+          <button type="button" id="btn-undo-modify-table-table_name" class="btn btn-default" data-prev-value="<?php echo esc_attr($modify_table); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+        </div>
+      </div><!-- /modify-table-table_name -->
+      <div class="form-group">
+        <label for="modify-table-table_comment" class="col-sm-2 control-label"><?php _e('Table Comment', CDBT); ?></label>
+        <div class="col-sm-5">
+          <input id="modify-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="<?php echo isset($session_vars) && isset($session_vars['table_comment']) ? esc_attr($session_vars['table_comment']) : esc_attr($table_options['table_comment']); ?>" class="form-control" placeholder="Table Comment">
+          <p class="help-block"><?php _e('Table Comments are used to display name as a logical name.', CDBT); /* テーブルコメントは論理名として表示名などに使われます。*/ ?></p>
+        </div>
+        <div class="col-sm-5">
+          <button type="button" id="btn-undo-modify-table-table_comment" class="btn btn-default" data-prev-value="<?php echo esc_attr($table_options['table_comment']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+        </div>
+      </div><!-- /modify-table-table_comment -->
+      <div class="form-group">
+        <label for="modify-table-table_charset" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-table_charset">
+            <input type="text" id="modify-table-table_charset_input" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php echo isset($session_vars) && isset($session_vars['table_charset']) ? esc_attr($session_vars['table_charset']) : esc_attr($table_options['table_charset']); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->db_charsets as $i => $charset) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $charset; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-7 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-table_charset_input" class="btn btn-default" data-prev-value="<?php echo esc_attr($table_options['table_charset']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div><!-- /modify-table-table_charset -->
+      <div class="form-group">
+        <label for="modify-table-table_db_engine" class="col-sm-2 control-label"><?php _e('DB Engine', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-table_db_engine">
+            <input type="text" id="modify-table-table_db_engine_input" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php echo isset($session_vars) && isset($session_vars['table_db_engine']) ? esc_attr($session_vars['table_db_engine']) : esc_attr($table_options['db_engine']); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->db_engines as $i => $db_engine) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $db_engine; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-7 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-table_db_engine_input" class="btn btn-default" data-prev-value="<?php echo esc_attr($table_options['db_engine']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div><!-- /modify-table-table_db_engine -->
+      <div class="form-group">
+        <label for="modify-table-alter_table_sql" class="col-sm-2 control-label"><?php _e('Custom Alter Table SQL', CDBT); ?></label>
+        <div class="col-sm-9">
+          <div role="tabpanel">
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#direct_sql" aria-controls="direct_sql" role="tab" data-toggle="tab"><?php _e('Direct Edit SQL', CDBT); ?></a></li>
+              <li role="presentation"><a href="#create_table_sql" aria-controls="create_table_sql" role="tab" data-toggle="tab"><?php _e('Show Create Table SQL', CDBT); ?></a></li>
+              <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab"><?php _e('Table Creator', CDBT); ?></a></li>
+            </ul>
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="modify-table-alter_table_sql" name="<?php echo $this->domain_name; ?>[alter_table_sql]" class="form-control" rows="10" placeholder="Alter Table SQL"><?php if (isset($session_vars) && isset($session_vars['alter_table_sql'])) echo esc_textarea(stripslashes_deep($session_vars['alter_table_sql'])); ?></textarea></div>
+              <div role="tabpanel" class="tab-pane" id="create_table_sql"><textarea id="view_create_table_sql" class="form-control" rows="10" readonly="readonly"><?php echo esc_textarea($table_options['sql']); ?></textarea></div>
+              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_alter_table_sql" class="form-control" rows="10" disabled="disabled"></textarea></div>
+            </div>
+            <div class="sql-support-button pull-right" style="top: 3px;">
+              <button type="button" id="btn-undo-modify-table-alter_table_sql" class="btn btn-default" data-prev-value=""><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); /* やり直す */ ?></button>
+            </div>
+          </div>
+          <p class="help-block">
+            <?php _e('Example of SQL Statements:', CDBT); ?> <br>
+            <pre><code>ALTER TABLE prefix_new_table </code></pre>
+          </p>
+        </div>
+      </div><!-- /modify-table-create_table_sql -->
+      
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="submit-alter-table" class="btn btn-primary"><?php _e('Modify Table', CDBT); ?></button>
+        </div>
+      </div>
+      
+      <div class="pull-right">
+        <a href="#plugin-settings"><i class="fa fa-arrow-up"></i></a>
+      </div>
+      <div class="clearfix"></div>
+    </form>
+    
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" id="cdbt-update-options-form" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="update_options">
+      <input type="hidden" name="target_table" value="<?php echo $modify_table; ?>">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <h4 class="title" id="resume-table"><i class="fa fa-cubes text-muted"></i> <?php _e('Modify the table attributes (setting option of plugin)', CDBT);/*テーブル属性（プラグインでの設定）の変更*/?></h4>
+      
+      <div class="well-sm">
+        <p class="text-info">
+          <?php _e('Settings in this section affects the output attribute of the table to handle with mainly shortcodes.', CDBT);/*このセクションでの設定内容は主にショートコードで取り扱われるテーブルの出力属性に影響します。*/ ?>
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label for="modify-table-max_show_records" class="col-sm-2 control-label"><?php _e('Maximum display data per page', CDBT); /*最大表示データ数*/ ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3 pull-left" data-initialize="spinbox" id="modify-table-max_show_records">
+            <input type="text" id="modify-table-max_show_records_input" name="<?php echo $this->domain_name; ?>[max_show_records]" value="<?php echo isset($session_vars) && isset($session_vars['max_show_records']) ? intval($session_vars['max_show_records']) : intval($table_options['show_max_records']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <div class="col-sm-5 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-max_show_records_input" class="btn btn-default" data-prev-value="<?php echo intval($table_options['show_max_records']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php _e('This value is the maximum data rows per one page to be displayed the table is managed with this plugin.', CDBT); /*このプラグインで管理するテーブルの1ページに表示される最大データ行数の初期値です。*/ ?></p>
+        </div>
+      </div><!-- /modify-table-max_show_records -->
+      <div class="form-group">
+        <label for="modify-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT);/*テーブルデータ閲覧を許可するユーザー*/?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_view">
+            <input type="text" id="modify-table-user_permission_view_input" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_view']) ? esc_attr($session_vars['user_permission_view']) : esc_attr(implode(',', $table_options['permission']['view_global'])); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->user_roles as $i => $role) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $role; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-7 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-user_permission_view_input" class="btn btn-default" data-prev-value="<?php echo esc_attr(implode(',', $table_options['permission']['view_global'])); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you see data of the table in a non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-view&#093;</code>' );/*この設定値は管理画面以外でテーブルが表示される場合に有効になります。主にショートコード%s向けの設定です。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a></p>
+        </div>
+      </div><!-- /modify-table-user_permission_view -->
+      <div class="form-group">
+        <label for="modify-table-user_permission_entry" class="col-sm-2 control-label"><?php _e('Who is allowed to register table data', CDBT);/*テーブルデータ登録を許可するユーザー*/?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_entry">
+            <input type="text" id="modify-table-user_permission_entry_input" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_entry']) ? esc_attr($session_vars['user_permission_entry']) : esc_attr(implode(',', $table_options['permission']['entry_global'])); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->user_roles as $i => $role) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $role; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-7 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-user_permission_entry_input" class="btn btn-default" data-prev-value="<?php echo esc_attr(implode(',', $table_options['permission']['entry_global'])); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you register data to the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-entry&#093;</code>' );/*この設定値は管理画面以外でテーブルにデータ登録する場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a></p>
+        </div>
+      </div><!-- /modify-table-user_permission_entry -->
+      <div class="form-group">
+        <label for="modify-table-user_permission_edit" class="col-sm-2 control-label"><?php _e('Who is allowed to edit table data', CDBT);/*テーブルデータ編集を許可するユーザー*/?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_edit">
+            <input type="text" id="modify-table-user_permission_edit_input" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_edit']) ? esc_attr($session_vars['user_permission_edit']) : esc_attr(implode(',', $table_options['permission']['edit_global'])); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->user_roles as $i => $role) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $role; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-7 pull-left" style="margin-left: 15px;">
+            <button type="button" id="btn-undo-modify-table-user_permission_edit_input" class="btn btn-default" data-prev-value="<?php echo esc_attr(implode(',', $table_options['permission']['edit_global'])); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php printf( __('This setting will be enabled when you edit data in the table at the non-management screen. Also is for the mainly shortcode %s.', CDBT), '<code>&#091;cdbt-edit&#093;</code>' );/*この設定値は管理画面以外でテーブルのデータ編集を行う場合に有効になります。主にショートコード%s向けの設定です。*/?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a></p>
+        </div>
+      </div><!-- /modify-table-user_permission_edit -->
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <ul id="foot-note-1" class="foot-note">
+            <li><span class="dashicons dashicons-info"></span> <?php printf( __('If you want to set any permissions, please set the Capability of WordPress. Please see %shere more information of Capability%s.', CDBT), '<a href="https://codex.wordpress.org/Roles_and_Capabilities" target="_blank">', '</a>' );/*任意の権限を設定する場合は、WordPressのCapability値を設定してください。%sCapabilityの詳細はこちら%sを参照してください。*/?></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" id="submit-update-options" class="btn btn-primary"><?php _e('Save Changes', CDBT); ?></button>
+        </div>
+      </div>
+      
+      <div class="pull-right">
+        <a href="#page-head"><i class="fa fa-arrow-up"></i></a>
+      </div>
+      <div class="clearfix"></div>
+      
+    </form>
+  </div><!-- /.cdbt-modify-table -->
+<?php endif; ?>
 <?php endif; /* End of `modify_table` tab contents */ ?>
   
 <?php if ($current_tab === 'operate_table' || $current_tab === 'operate_data') : 
@@ -420,9 +721,9 @@ foreach ($this->allow_file_types as $file_type) {
     $belong_table_type = [ 'type_name' => 'wordpress', 'icon' => 'fa fa-wordpress' ];
   } else
   if (in_array($target_table, $enable_table)) {
-    $belong_table_type = [ 'type_name' => 'regular', 'icon' => 'fa fa-cubes' ];
+    $belong_table_type = [ 'type_name' => 'regular', 'icon' => 'image-icon cdbt-icon square22' ];
   } else {
-    $belong_table_type = [ 'type_name' => 'other', 'icon' => 'fa fa-database' ];
+    $belong_table_type = [ 'type_name' => 'other', 'icon' => 'image-icon cdbt-icon-db square22' ];
   }
   
   // Definition of operatable console buttons

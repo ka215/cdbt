@@ -8,7 +8,7 @@ $default_tab = 'shortcode_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 ?>
 <div class="wrap">
-  <h2><?php esc_html_e('CDBT Shortcodes Management', CDBT); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Shortcodes Management', CDBT); ?></h2>
   
   <h3 class="nav-tab-wrapper">
   <?php foreach ($tabs as $tab_name => $display_tab_title) : ?>

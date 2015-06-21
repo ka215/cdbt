@@ -27,7 +27,7 @@ $default_action = 'update';
  */
 ?>
 <div class="wrap">
-  <h2><?php esc_html_e('CDBT Plugin Options', $this->domain_name); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Plugin Options', $this->domain_name); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">

@@ -337,10 +337,104 @@ $(function() {
     
   }
   
+  
+  /**
+   * Helper UI scripts for modify table section
+   */
+  if ('cdbt_tables' === $.QueryString.page && 'modify_table' === $.QueryString.tab) {
+    // Change modify table
+    $('#modify-table-action-change_table').on('click', function(e) {
+      e.preventDefault();
+      if ('' === $('#modify-table-change_table').selectlist('selectedItem').value) {
+        return false;
+      }
+      
+      post_data = {
+        'session_key': 'modify_table', 
+        'target_table': $('#modify-table-change_table').selectlist('selectedItem').value, 
+        'callback_url': './admin.php?page=cdbt_tables&tab=modify_table', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    
+    // Undo button action
+    $('button[id^="btn-undo-modify-table-"]').on('click', function() {
+      var undo_target = $(this).attr('id').replace('btn-undo-', '');
+      $('#' + undo_target).val($(this).data().prevValue);
+    });
+    
+    // The effect occurs if changed
+    $('input,button,.dropdown-menu>li>a').on('click blur', function(){
+      $('.form-group').each(function(){
+        var current_value = $(this).find('input[id^="modify-table-"]').val();
+        if ('undefined' !== current_value && '' !== current_value) {
+          if (typeof $(this).find('button[id^="btn-undo-"]') !== 'undefined') {
+            if ($(this).find('button[id^="btn-undo-"]').attr('data-prev-value')) {
+              var prev_value = $(this).find('button[id^="btn-undo-"]').attr('data-prev-value');
+              if (current_value !== String(prev_value)) {
+                $(this).addClass('has-success');
+              } else {
+                $(this).removeClass('has-success');
+              }
+            }
+          }
+        }
+      });
+    });
+    $('textarea[id^="modify-table-"]').on('blur', function(){
+      if ($(this).val() !== $('#btn-undo-' + $(this).attr('id')).data().prevValue) {
+        $(this).parents('.form-group').addClass('has-success');
+      } else {
+        $(this).parents('.form-group').removeClass('has-success');
+      }
+    });
+    
+    // Count modification items
+    var count_modification_items = function(){
+      var selector_str = '';
+      var modification_items = 0;
+      if (arguments.length !== 1) {
+        selector_str = '.form-group';
+      } else {
+        selector_str = '#' + arguments[0] + ' .form-group';
+      }
+      
+      $(selector_str).each(function(){
+        if ($(this).hasClass('has-success')) {
+          modification_items++;
+        }
+      });
+      
+      return modification_items;
+    };
+    
+    $('#submit-alter-table, #submit-update-options').on('click', function(e){
+      e.preventDefault();
+      var form_id = $(this).parents('form').attr('id');
+      if (count_modification_items(form_id) > 0) {
+        $('#' + form_id).trigger('submit');
+      } else {
+        post_data = {
+        	id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'changing_item_none', 
+          modalBody: '', 
+        };
+        init_modal( post_data );
+      }
+    });
+    
+  }
+  
+  
+  /**
+   * Helper UI scripts for operate table section
+   */
   if ('cdbt_tables' === $.QueryString.page && 'operate_table' === $.QueryString.tab) {
     
     $('button[id^="operate-table-action-"]').on('click', function(e) {
-      if ('' === $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value')) {
+//      if ('' === $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value')) {
+      if ('' === $('#operate-table-target_table').selectlist('selectedItem').value) {
         e.preventDefault();
         return false;
       }
@@ -500,6 +594,10 @@ $(function() {
     
   }
   
+  
+  /**
+   * Helper UI scripts for operate data section
+   */
   if ('cdbt_tables' === $.QueryString.page && 'operate_data' === $.QueryString.tab) {
   
     $('button[id^="operate-table-action-"]').on('click', function(e) {
@@ -593,7 +691,6 @@ $(function() {
             insertContent: true, 
             modalTitle: '', 
             modalBody: '', 
-//            modalHideEvent: $common_modal_hide, 
           };
           if (selectedItem.length === 0) {
             post_data.modalTitle = 'no_selected_item';
@@ -619,7 +716,6 @@ $(function() {
             insertContent: true, 
             modalTitle: '', 
             modalBody: '', 
-//            modalHideEvent: $common_modal_hide, 
             modalExtras: { items: selectedItem.length },
           };
           if (selectedItem.length === 0) {
@@ -653,15 +749,6 @@ $(function() {
       var form = $('#cdbtEditData div.cdbt-entry-data-form form');
       form.children('input[name="_wp_http_referer"]').val(location.href);
       form.submit();
-/*
-      var post_data = {
-        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
-        'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
-        'event': 'update_data', 
-        'where_condition': $('tr.selectable.selected input.row_where_condition').val(), 
-      };
-      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-*/
     });
     
     

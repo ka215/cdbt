@@ -782,9 +782,9 @@ class CdbtAdmin extends CdbtDB {
       
       $resume_table_name = array_map( 'stripslashes_deep', $_POST[$this->domain_name]['resume_table'] );
       $resume_table_options = [];
-      //
       // Filter the sub-option of the table to resume
       //
+      // @since 2.0.0
       $resume_table_options = apply_filters( 'cdbt_resume_table_options', $resume_table_options, $resume_table_name );
       
       if ($this->add_new_table( $resume_table_name, 'regular', $resume_table_options )) {
@@ -811,8 +811,124 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_tables_modify_table() {
+    static $message = '';
+    $notice_class = CDBT . '-error';
     
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'modify_table', 'update_options' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      return;
+    }
     
+    if ( get_magic_quotes_gpc() ) 
+      $_POST = array_map( 'stripslashes_deep', $_POST );
+    
+    // Process of changing the table and switching operation action
+    switch($_POST['action']) {
+      case 'modify_table': 
+        
+        $table_name = $_POST['target_table'];
+        $post_data = $_POST[$this->domain_name];
+//var_dump($post_data);
+//var_dump($this->cdbt_sessions);
+        // unset($this->cdbt_sessions[__FUNCTION__]);
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $table_name, 
+        ];
+        
+        $current_options = $this->get_table_option($table_name);
+        $modification_db = [];
+        if ($post_data['table_name'] !== $current_options['table_name']) {
+          // Rename table
+          $_new_value = $post_data['table_name'];
+          $modification_db['table_name'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+        }
+        if ($post_data['table_comment'] !== $current_options['table_name']) {
+          // Modify table comment
+          $_new_value = $post_data['table_comment'];
+          $modification_db['table_comment'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+        }
+        if ($post_data['table_charset'] !== $current_options['table_charset']) {
+          // Change table charset
+          $_new_value = $post_data['table_charset'];
+          $modification_db['table_charset'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+        }
+        if ($post_data['table_db_engine'] !== $current_options['db_engine']) {
+          // Change database engine
+          $_new_value = $post_data['table_db_engine'];
+          $modification_db['db_engine'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+        }
+        if (!empty($post_data['alter_table_sql']) && $this->validate_alter_sql($post_data['alter_table_sql'])) {
+          // Custom alter table SQL
+          $modification_db['custom_alter_table'] = esc_sql($post_data['alter_table_sql']);
+        }
+        
+        if (!empty($modification_db)) {
+          // modify_table -> update_options
+          // 更新処理成功時
+          unset($this->cdbt_sessions[__FUNCTION__]);
+          $message = __('Modification was successful.', CDBT); /* 修正が正常に行われました。 */
+          $notice_class = CDBT . '-notice';
+          
+        } else {
+          $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
+        }
+        
+        break;
+      case 'update_options': 
+        
+        $table_name = $_POST['target_table'];
+        $post_data = $_POST[$this->domain_name];
+//var_dump($post_data);
+        $this->cdbt_sessions[$_POST['active_tab']] = [
+          'target_table' => $table_name, 
+        ];
+        
+        $current_options = $this->get_table_option($table_name);
+        $modification_option = [];
+        if ($post_data['max_show_records'] !== $current_options['show_max_records']) {
+          // Modify max show records
+          $_new_value = $post_data['max_show_records'];
+          $modification_option['show_max_records'] = '';
+        }
+        if ($post_data['user_permission_view'] !== implode(',', $current_options['permission']['view_global'])) {
+          // Modify user permission view
+          $_new_value = $post_data['user_permission_view'];
+          $modification_option['user_permission_view'] = '';
+        }
+        if ($post_data['user_permission_entry'] !== implode(',', $current_options['permission']['entry_global'])) {
+          // Modify user permission entry
+          $_new_value = $post_data['user_permission_entry'];
+          $modification_option['user_permission_entry'] = '';
+        }
+        if ($post_data['user_permission_edit'] !== implode(',', $current_options['permission']['edit_global'])) {
+          // Modify user permission edit
+          $_new_value = $post_data['user_permission_edit'];
+          $modification_option['user_permission_edit'] = '';
+        }
+        
+        if (!empty($modification_option)) {
+          // update_options
+          // 更新処理成功時
+          unset($this->cdbt_sessions[__FUNCTION__]);
+          $message = __('Modification was successful.', CDBT); /* 修正が正常に行われました。 */
+          $notice_class = CDBT . '-notice';
+          
+        } else {
+          $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
+        }
+        
+        break;
+      default:
+        $message = __('Illegal operation was called.', CDBT);
+        break;
+    }
+    
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+    }
+    return;
     
   }
 
@@ -876,7 +992,7 @@ class CdbtAdmin extends CdbtDB {
         
         $post_data = $_POST[$this->domain_name];
         if (!isset($post_data['duplicate_table_name']) || empty($post_data['duplicate_table_name'])) {
-          $message = __('Replicate table name is not specified.', CDBT);
+          $message = __('Duplicate table name is not specified.', CDBT);
         } else
         if (!isset($post_data['duplicate_with_data']) || empty($post_data['duplicate_with_data']) || !in_array($post_data['duplicate_with_data'], [ 'true', 'false' ])) {
         	$message = __('Parameter for duplicating the table is incomplete.', CDBT);
@@ -885,7 +1001,7 @@ class CdbtAdmin extends CdbtDB {
         	$message = __('Original table for duplicating is not specified.', CDBT);
         } else
         if ($this->check_table_exists($post_data['duplicate_table_name'])) {
-          $message = __('Replicate table name already exists. Please specify a different table name.', CDBT);
+          $message = __('Duplicate table name already exists. Please specify a different table name.', CDBT);
         }
         
         if (empty($message)) {
@@ -896,7 +1012,7 @@ class CdbtAdmin extends CdbtDB {
               $notice_class = CDBT . '-notice';
               $message = __('Duplication of the table has been completed successfully.', CDBT);
             } else {
-              $message = __('Replication of table has been completed, but have failed to register as a manageable table of plugin. Please retry from resuming the table.', CDBT);
+              $message = __('Duplication of table has been completed, but have failed to register as a manageable table of plugin. Please retry from resuming the table.', CDBT);
             }
           } else {
             $message = __('Failed to replication of the table.', CDBT);
@@ -1063,8 +1179,12 @@ class CdbtAdmin extends CdbtDB {
       switch ($args['modalTitle']) {
         case 'notices_error': 
         case 'notices_updated': 
-        	$args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
+          $args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          break;
+        case 'changing_item_none': 
+          $args['modalTitle'] = __('Modification item none', CDBT);
+          $args['modalBody'] = __('Please run again after you correct the item you want to modify.', CDBT);
           break;
         case 'export_table': 
           $post_data = $args['modalExtras'];
@@ -1078,19 +1198,19 @@ class CdbtAdmin extends CdbtDB {
           }
           break;
         case 'truncate_table': 
-        	$args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);
+          $args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);
           $args['modalBody'] = __('When you truncate a table, all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to truncate this table really?', CDBT);
-        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_truncate_table" class="btn btn-primary">%s</button>', __('Truncate', CDBT)), ];
-        	$args['modalShowEvent'] = "$('#run_truncate_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
-        	break;
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_truncate_table" class="btn btn-primary">%s</button>', __('Truncate', CDBT)), ];
+          $args['modalShowEvent'] = "$('#run_truncate_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
         case 'drop_table': 
-        	$args['modalTitle'] = sprintf(__('Remove the "%s" table', CDBT), $args['modalExtras']['table_name']);
+          $args['modalTitle'] = sprintf(__('Remove the "%s" table', CDBT), $args['modalExtras']['table_name']);
           $args['modalBody'] = __('If you have removed a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to remove the table really?', CDBT);
-        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
-        	$args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
-        	break;
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+          $args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
         case 'table_unknown': 
-        	$args['modalTitle'] = __('Table is not selected', CDBT);
+          $args['modalTitle'] = __('Table is not selected', CDBT);
           $args['modalBody'] = __('Please retry to operate that after the table selection.', CDBT);
           break;
         case 'no_selected_item': 
@@ -1102,19 +1222,19 @@ class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = __('Please retry after selecting one data you want to edit.', CDBT);
           break;
         case 'edit_data_form': 
-        	$args['modalTitle'] = __('Edit Data Form', CDBT);
+          $args['modalTitle'] = __('Edit Data Form', CDBT);
           $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
 //          $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
-        	break;
+          break;
         case 'delete_data': 
-        	$args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
+          $args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
           $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);
-        	$args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
-        	$args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
-        	break;
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+          $args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
         default:
-        	break;
+          break;
       }
     }
     
