@@ -836,18 +836,6 @@ class CustomDatabaseTables {
 	 * @return array
 	 */
 	function validate_alter_sql($table_name, $sql) {
-		//$org_sql = preg_replace("/\r|\n|\t/", '', $sql);
-		$org_sql = trim(preg_replace("/[\s|\r|\n|\t]+/", ' ', $sql));
-		//$reg_base = '/^(ALTER\sTABLE\s'. $table_name .'\s)(.*)$/iU';
-		$reg_base = '/^(ALTER[\s]{1,}TABLE[\s}{1,}'. $table_name .'{\s]{0,})(.*)$/iU';
-		if (preg_match($reg_base, $org_sql, $matches)) {
-			
-			$fixed_sql = $matches[1] .' '. preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
-			$result = array(true, $fixed_sql);
-		} else {
-			$result = array(false, null);
-		}
-		return $result;
 	}
 	
 	/**

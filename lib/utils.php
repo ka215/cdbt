@@ -266,7 +266,8 @@ class CdbtUtility {
       $output_encoding = mb_internal_encoding();
     
     $file_name = sprintf('%s.%s', $data_sources['export_table'], $data_sources['export_filetype']);
-    $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
+    if ('sql' !== $data_sources['export_filetype']) 
+      $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
     
     $download_ready = true;
     switch ($data_sources['export_filetype']) {
@@ -303,24 +304,14 @@ class CdbtUtility {
         
         break;
       case 'sql': 
-        // if (false !== system('mysqldump --version')) 
-        if (preg_match('/^mysqldump\s(.*)Ver\s(.*)Distrib.*$/iU', exec('mysqldump --version'), $matches) && is_array($matches) && array_key_exists(2, $matches)) {
-          
-          $cmd = sprintf('mysqldump -u %s -p%s -h %s %s %s', DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, $data_sources['export_table']);
-          $temp = tmpfile();
-          exec($cmd, $retval);
-          fwrite($temp, $retval[0]);
-          fseek($temp, 0);
-          $output_data = fread($temp, 8192);
-//          $output_data = file_get_contents($temp);
-          fclose($temp);
-          
-//          var_dump($output_data);
-          $download_ready = false;
-          
+        $sql_text = $this->dump_table( $data_sources['export_table'], $data_sources['export_columns'], false );
+        $current_encoding = function_exists('mb_detect_encoding') ? mb_detect_encoding($sql_text) : 'UTF-8';
+        if (!empty($output_encoding) && function_exists('mb_convert_encoding')) {
+          $output_data = mb_convert_encoding($sql_text, $output_encoding, $current_encoding);
         } else {
-        	$download_ready = false;
+        	$output_data = $sql_text;
         }
+        $file_size = strlen($output_data);
         
         break;
       default:

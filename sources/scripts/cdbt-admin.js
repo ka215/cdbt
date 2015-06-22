@@ -446,6 +446,12 @@ $(function() {
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
+      if (_.contains(['csv', 'tsv'], $('#import-table-upload_filetype').selectlist('selectedItem').value)) {
+        toggle_item('switching-item-add_first_line', 'show');
+      } else {
+        toggle_item('switching-item-add_first_line', 'hide');
+      }
+      
 //      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
       $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');";
       
@@ -517,6 +523,24 @@ $(function() {
       }
       
     });
+    
+    // OnChange import file type
+    $('#import-table-upload_filetype').on('changed.fu.selectlist', function(){
+      if (_.contains(['csv', 'tsv'], $(this).selectlist('selectedItem').value)) {
+        $('#import-table-add_first_line').val($('#' + $(this).selectlist('selectedItem').value + '_index_line_preset').html());
+        toggle_item('switching-item-add_first_line', 'show');
+      } else {
+        toggle_item('switching-item-add_first_line', 'hide');
+      }
+    });
+    
+    var toggle_item = function(selector, action){
+      if ('show' === action) {
+        $('#' + selector).show();
+      } else {
+        $('#' + selector).hide();
+      }
+    };
     
     // Switch of all checking of checkbox
     $('button[id^="switch-checkbox-"]').on('click', function(){

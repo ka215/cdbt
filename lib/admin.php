@@ -825,52 +825,117 @@ class CdbtAdmin extends CdbtDB {
       $_POST = array_map( 'stripslashes_deep', $_POST );
     
     // Process of changing the table and switching operation action
+    $table_name = $_POST['target_table'];
+    $post_data = $_POST[$this->domain_name];
+    $current_options = $this->get_table_option($table_name);
     switch($_POST['action']) {
       case 'modify_table': 
         
-        $table_name = $_POST['target_table'];
-        $post_data = $_POST[$this->domain_name];
-//var_dump($post_data);
-//var_dump($this->cdbt_sessions);
-        // unset($this->cdbt_sessions[__FUNCTION__]);
         $this->cdbt_sessions[$_POST['active_tab']] = [
           'target_table' => $table_name, 
         ];
-        
-        $current_options = $this->get_table_option($table_name);
         $modification_db = [];
+        $process_msg = [
+          __('Invalid sql statement of `ALTER TABLE`.', CDBT), 
+          __('Failed to run the query of `ALTER TABLE`.', CDBT), 
+        ];
+        $modify_done = 0;
         if ($post_data['table_name'] !== $current_options['table_name']) {
           // Rename table
-          $_new_value = $post_data['table_name'];
-          $modification_db['table_name'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+          $_sql = sprintf( 'ALTER TABLE %s RENAME TO %s;', esc_sql($table_name), esc_sql($post_data['table_name']) );
+          if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
+            $message = $process_msg[0];
+          } else {
+            $result = $this->run_query($_sql);
+            if ($result) {
+              $table_name = $post_data['table_name'];
+              $modify_done++;
+            } else {
+              $message = $process_msg[1];
+            }
+          }
         }
-        if ($post_data['table_comment'] !== $current_options['table_name']) {
+        if (empty($message) && $post_data['table_comment'] !== $current_options['table_name']) {
           // Modify table comment
-          $_new_value = $post_data['table_comment'];
-          $modification_db['table_comment'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+          $_sql = sprintf( "ALTER TABLE %s COMMENT '%s';", esc_sql($table_name), esc_sql($post_data['table_comment']) );
+          if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
+            $message = $process_msg[0];
+          } else {
+            $result = $this->run_query($_sql);
+            if (!$result) {
+              $message = $process_msg[1];
+            } else {
+              $modify_done++;
+            }
+          }
         }
-        if ($post_data['table_charset'] !== $current_options['table_charset']) {
+        if (empty($message) && $post_data['table_charset'] !== $current_options['table_charset']) {
           // Change table charset
-          $_new_value = $post_data['table_charset'];
-          $modification_db['table_charset'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+          $_sql = sprintf( 'ALTER TABLE %s CHARSET=%s;', esc_sql($table_name), esc_sql($post_data['table_charset']) );
+          if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
+            $message = $process_msg[0];
+          } else {
+            $result = $this->run_query($_sql);
+            if (!$result) {
+              $message = $process_msg[1];
+            } else {
+              $modify_done++;
+            }
+          }
         }
-        if ($post_data['table_db_engine'] !== $current_options['db_engine']) {
+        if (empty($message) && $post_data['table_db_engine'] !== $current_options['db_engine']) {
           // Change database engine
-          $_new_value = $post_data['table_db_engine'];
-          $modification_db['db_engine'] = sprintf( 'ALTER TABLE %s ...;', $table_name );
+          $_sql = sprintf( 'ALTER TABLE %s ENGINE=%s;', esc_sql($table_name), esc_sql($post_data['table_db_engine']) );
+          if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
+            $message = $process_msg[0];
+          } else {
+            $result = $this->run_query($_sql);
+            if (!$result) {
+              $message = $process_msg[1];
+            } else {
+              $modify_done++;
+            }
+          }
         }
-        if (!empty($post_data['alter_table_sql']) && $this->validate_alter_sql($post_data['alter_table_sql'])) {
+        if (empty($message) && !empty($post_data['alter_table_sql'])) {
           // Custom alter table SQL
-          $modification_db['custom_alter_table'] = esc_sql($post_data['alter_table_sql']);
+          if (!$this->validate->validate_alter_sql( $table_name, esc_sql($post_data['alter_table_sql']) )) {
+            $message = $process_msg[0];
+          } else {
+            $result = $this->run_query($_sql);
+            if (!$result) {
+              $message = $process_msg[1];
+            } else {
+              $modify_done++;
+            }
+          }
         }
         
-        if (!empty($modification_db)) {
-          // modify_table -> update_options
-          // 更新処理成功時
-          unset($this->cdbt_sessions[__FUNCTION__]);
-          $message = __('Modification was successful.', CDBT); /* 修正が正常に行われました。 */
-          $notice_class = CDBT . '-notice';
-          
+        if ($modify_done > 0) {
+          if (empty($message)) {
+            // If modification succeeds
+            $new_pk = [];
+            foreach ($this->get_table_schema($table_name) as $column => $scheme) {
+              if ($scheme['primary_key']) 
+                $new_pk[] = $column;
+            }
+            $new_table_status = $this->get_table_status($table_name);
+            // Overrides
+            $current_options['table_name'] = $new_table_status['Name'];
+            $current_options['table_comment'] = $new_table_status['Comment'];
+            $current_options['primary_key'] = $new_pk;
+            $current_options['sql'] = $this->get_create_table_sql($table_name);
+            $current_options['table_charset'] = $post_data['table_charset'];
+            $current_options['db_engine'] = $new_table_status['Engine'];
+            if ($this->update_options( $current_options, 'override', 'tables' )) {
+              $message = __('Modification was successful.', CDBT); 
+              $notice_class = CDBT . '-notice';
+              $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
+              unset($modification_option, $current_options, $key, $value, $_key, $_value);
+            } else {
+              $message = __('Failed to update of the plugin options.', CDBT);
+            }
+          }
         } else {
           $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
         }
@@ -878,43 +943,53 @@ class CdbtAdmin extends CdbtDB {
         break;
       case 'update_options': 
         
-        $table_name = $_POST['target_table'];
-        $post_data = $_POST[$this->domain_name];
-//var_dump($post_data);
         $this->cdbt_sessions[$_POST['active_tab']] = [
           'target_table' => $table_name, 
         ];
         
-        $current_options = $this->get_table_option($table_name);
         $modification_option = [];
         if ($post_data['max_show_records'] !== $current_options['show_max_records']) {
           // Modify max show records
-          $_new_value = $post_data['max_show_records'];
-          $modification_option['show_max_records'] = '';
+          $_new_value = intval($post_data['max_show_records']);
+          $modification_option['show_max_records'] = $_new_value;
         }
         if ($post_data['user_permission_view'] !== implode(',', $current_options['permission']['view_global'])) {
           // Modify user permission view
-          $_new_value = $post_data['user_permission_view'];
-          $modification_option['user_permission_view'] = '';
+          $_new_value = $this->strtoarray($post_data['user_permission_view']);
+          $modification_option['permission']['view_global'] = $_new_value;
         }
         if ($post_data['user_permission_entry'] !== implode(',', $current_options['permission']['entry_global'])) {
           // Modify user permission entry
-          $_new_value = $post_data['user_permission_entry'];
-          $modification_option['user_permission_entry'] = '';
+          $_new_value = $this->strtoarray($post_data['user_permission_entry']);
+          $modification_option['permission']['entry_global'] = $_new_value;
         }
         if ($post_data['user_permission_edit'] !== implode(',', $current_options['permission']['edit_global'])) {
           // Modify user permission edit
-          $_new_value = $post_data['user_permission_edit'];
-          $modification_option['user_permission_edit'] = '';
+          $_new_value = $this->strtoarray($post_data['user_permission_edit']);
+          $modification_option['permission']['edit_global'] = $_new_value;
         }
         
         if (!empty($modification_option)) {
-          // update_options
-          // 更新処理成功時
-          unset($this->cdbt_sessions[__FUNCTION__]);
-          $message = __('Modification was successful.', CDBT); /* 修正が正常に行われました。 */
-          $notice_class = CDBT . '-notice';
-          
+          foreach ($modification_option as $key => $value) {
+            if (array_key_exists($key, $current_options)) {
+              if ('permission' !== $key) {
+                $current_options[$key] = $value;
+              } else {
+                foreach ($modification_option[$key] as $_key => $_value) {
+                  $current_options[$key][$_key] = $_value;
+                }
+              }
+            }
+          }
+          if ($this->update_options( $current_options, 'override', 'tables' )) {
+            // If modification succeeds
+            $message = __('Modification was successful.', CDBT); 
+            $notice_class = CDBT . '-notice';
+            $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
+            unset($modification_option, $current_options, $key, $value, $_key, $_value);
+          } else {
+            $message = __('Failed to update of the plugin options.', CDBT);
+          }
         } else {
           $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
         }
@@ -991,6 +1066,7 @@ class CdbtAdmin extends CdbtDB {
       case 'duplicate_table': 
         
         $post_data = $_POST[$this->domain_name];
+        $duplicate_with_data = $this->strtobool($post_data['duplicate_with_data']);
         if (!isset($post_data['duplicate_table_name']) || empty($post_data['duplicate_table_name'])) {
           $message = __('Duplicate table name is not specified.', CDBT);
         } else
@@ -1005,7 +1081,6 @@ class CdbtAdmin extends CdbtDB {
         }
         
         if (empty($message)) {
-        	$duplicate_with_data = 'true' === $post_data['duplicate_with_data'] ? true : false;
           if ($this->duplicate_table( $post_data['duplicate_table_name'], $duplicate_with_data, $post_data['duplicate_origin_table'] )) {
             // Register as a managed table of plugin
             if ($this->add_new_table( $post_data['duplicate_table_name'], 'regular', $this->get_table_option($post_data['duplicate_origin_table']) )) {

@@ -382,7 +382,7 @@ search, datetime, date, month, week, time, color
           [ 'fullname' => __('Monday', CDBT), 'aliase' => __('Mo', CDBT) ], 
           [ 'fullname' => __('Tuesday', CDBT), 'aliase' => __('Tu', CDBT) ], 
           [ 'fullname' => __('Wednesday', CDBT), 'aliase' => __('We', CDBT) ], 
-          [ 'fullname' => __('Thurseday', CDBT), 'aliase' => __('Th', CDBT) ], 
+          [ 'fullname' => __('Thursday', CDBT), 'aliase' => __('Th', CDBT) ], 
           [ 'fullname' => __('Friday', CDBT), 'aliase' => __('Fr', CDBT) ], 
           [ 'fullname' => __('Saturday', CDBT), 'aliase' => __('Sa', CDBT) ], 
         ];

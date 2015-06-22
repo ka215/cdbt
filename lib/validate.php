@@ -396,6 +396,32 @@ class CdbtValidator extends CommonValidator {
   
   
   /**
+   * Validate only SQL statements to alter table.
+   *
+   * @since 1.0.0
+   * @since 2.0.0 Have refactored logic.
+   *
+   * @param string $table_name [require]
+   * @param string $sql For create table statements [require]
+   * @return boolean
+   */
+  public function validate_alter_sql( $table_name=null, $sql=null ) {
+    if (empty($table_name) || empty($sql)) 
+      return;
+    
+    $origin_sql = trim(preg_replace("/[\s|\r|\n|\t]+/", ' ', $sql));
+    $reg_base = '/^(ALTER[\s]{1,}TABLE[\s}{1,}'. $table_name .'{\s]{0,})(.*)$/iU';
+    if (preg_match($reg_base, $origin_sql, $matches)) {
+      // $fixed_sql = $matches[1] .' '. preg_replace('/(.*)(,|;)$/iU', '$1', trim($matches[2])) . ';';
+      $result = true;
+    } else {
+      $result = false;
+    }
+    return $result;
+  }
+  
+  
+  /**
    * Detecting definition of column type in MySQL table, then checking
    *
    * @since 2.0.0

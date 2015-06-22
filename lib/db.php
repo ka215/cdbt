@@ -1090,7 +1090,7 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
-   * run the custom query
+   * Run the custom query
    *
    * @since
    * @since 2.0.0
@@ -1100,8 +1100,44 @@ class CdbtDB extends CdbtConfig {
    */
   protected function run_query( $query=null ) {
     
-    return $this->wpdb->query( esc_sql($query) );
+    return $this->wpdb->query( stripslashes_deep($query) );
     
+  }
+  
+  
+  /**
+   * Run the dump of specific table like mysqldump
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require]
+   * @param array $columns [optional] Array of column names of when dump a specific column
+   * @param boolean $contains_create_sql [optional] For default `False`
+   * @return string $insert_sql
+   */
+  public function dump_table( $table_name=null, $columns=[], $contains_create_sql=false ) {
+    if (empty($table_name)) 
+      return false;
+    
+    $table_schema = $this->get_table_schema( $table_name );
+    $orderby = null;
+    foreach ($table_schema as $column => $scheme) {
+      if ($scheme['primary_key']) 
+        $orderby[$column] = 'ASC';
+    }
+    
+    $raw_data = $this->get_data( $table_name, $columns, null, $orderby, 'ARRAY_A' );
+    $rows = [];
+    foreach ($raw_data as $raw_value) {
+      $esc_values = [];
+      foreach ($raw_value as $val) {
+        $esc_values[] = esc_sql($val);
+      }
+      $rows[] = "('". implode("','", $esc_values) ."')";
+    }
+    $insert_sql = sprintf("INSERT INTO `%s` (`%s`) VALUES %s;", $table_name, implode('`,`', array_keys($raw_value)), implode(',', $rows));
+    
+    return $insert_sql;
   }
   
   
