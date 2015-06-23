@@ -877,8 +877,15 @@ foreach ($this->allow_file_types as $file_type) {
     </p>
   </div>
 <?php
-  $session_var = isset($this->cdbt_sessions) ? $this->cdbt_sessions : '';
-  $wizard_step = (isset($session_var[$current_tab]['import_current_step']) && !empty($session_var[$current_tab]['import_current_step'])) ? intval($session_var[$current_tab]['import_current_step']) : 1;
+  $session_var = [];
+  if (isset($this->cdbt_sessions)) {
+    foreach ($this->cdbt_sessions as $sessions) {
+      $session_var = array_merge($session_var, $sessions);
+    }
+  }
+//var_dump($session_var);
+  $wizard_step = (isset($session_var['import_current_step']) && !empty($session_var['import_current_step'])) ? intval($session_var['import_current_step']) : 1;
+//  $wizard_step = (isset($session_var[$current_tab]['import_current_step']) && !empty($session_var[$current_tab]['import_current_step'])) ? intval($session_var[$current_tab]['import_current_step']) : 1;
 ?>
 
   <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-import_table"<?php if ($wizard_step === 1) : ?> enctype="multipart/form-data"<?php endif; ?>>
@@ -906,6 +913,7 @@ foreach ($this->allow_file_types as $file_type) {
     $add_first_line = $this->strtoarray($session_var[$this->domain_name]['add_first_line']);
   }
   
+var_dump($session_var);
 ?>
   <div class="step-pane bg-default active alert" data-step="1">
     <h4><?php _e('Upload import file', CDBT); ?></h4>

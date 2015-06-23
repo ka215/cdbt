@@ -1056,32 +1056,49 @@ class CdbtAdmin extends CdbtDB {
           $message = __('Invalid step transition.', CDBT); /*不正なステップ遷移です。*/
         } else
         if (intval($post_data['import_current_step']) === 1) {
-var_dump($post_data);
+//var_dump($post_data);
           $step1_validate = false;
           if (isset($post_data['import_filetype']) && in_array($post_data['import_filetype'], $this->allow_file_types)) {
             if (in_array($post_data['import_filetype'], ['csv', 'tsv']) && isset($post_data['add_first_line'])) {
               $add_first_row = $this->strtoarray($post_data['add_first_line']);
               if (is_array($add_first_row) && !empty($add_first_row)) 
                 $step1_validate = true;
+            } else
+            if (in_array($post_data['import_filetype'], ['json', 'sql'])) {
+              $step1_validate = true;
             }
           }
           if ($step1_validate) {
             if ($_FILES[$this->domain_name]['size']['upfile'] > 0) {
               // Check file type and format
-              if ($this->validate->check_file_type($_FILES[$this->domain_name]['type']['upfile'], $post_data['import_filetype'])) {
+              if ($this->validate->check_file_type($_FILES[$this->domain_name]['type']['upfile'], $post_data['import_filetype'], $_FILES[$this->domain_name]['name']['upfile'])) {
                 $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
-var_dump($bin_context);
+                $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $this->esc_binary_data($bin_context, 'bin_data');
+                switch($post_data['import_filetype']){
+                  case 'csv': 
+                  case 'tsv': 
+                    break;
+                  case 'json': 
+                    break;
+                  case 'sql': 
+                    
+//var_dump();
+                    
+                    break;
+                }
               } else {
-                $message = __('アップロードされたファイル形式が指定された形式と異なります。', CDBT); /*アップロードされたファイル形式が指定された形式と異なります。*/
+                $message = __('Uploaded file format is different from the specified format.', CDBT); /*アップロードされたファイル形式が指定された形式と異なります。*/
               }
             } else {
-              $message = __('インポートファイルがアップロードされていません。', CDBT); /*インポートファイルがアップロードされていません。*/
+              $message = __('Import file has not been uploaded.', CDBT); /*インポートファイルがアップロードされていません。*/
             }
           } else {
-            $message = __('ファイル形式に不備があるか、もしくはパラメータが足りません。', CDBT); /*ファイル形式に不備があるか、もしくはパラメータが足りません。*/
+            $message = __('Uploaded file format is invalid, or parameter is not enough.', CDBT); /*ファイル形式に不備があるか、もしくはパラメータが足りません。*/
           }
           if (empty($message)) {
             $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 2;
+          } else {
+            
           }
         } else
         if (intval($post_data['import_current_step']) === 2) {

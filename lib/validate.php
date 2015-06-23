@@ -518,15 +518,35 @@ class CdbtValidator extends CommonValidator {
    *
    * @param string $file_mime_type [require] Mime type of the file that you want to examine
    * @param string $candidate_type [require] File format to be compared
+   * @param string $file_name [optional] Uploaded file name. Then verifies the file extension If this parameter is specified.
    * @return boolean
    */
-  public function check_file_type( $file_mime_type=null, $candidate_type=null ) {
+  public function check_file_type( $file_mime_type=null, $candidate_type=null, $file_name=null ) {
     if (empty($file_mime_type) || empty($candidate_type)) 
       return false;
     
+    $result = false;
+    if ('csv' === $candidate_type) {
+      $result = in_array($file_mime_type, [ 'text/plain', 'text/csv', 'text/comma-separated-values', 'application/csv', 'application/vnd.ms-excel', 'application/msexcel' ]);
+    }
+    if ('tsv' === $candidate_type) {
+      $result = in_array($file_mime_type, [ 'text/plain', 'text/tsv', 'text/tab-separated-values', 'application/tsv', 'application/vnd.ms-excel', 'application/msexcel' ]);
+    }
+    if ('json' === $candidate_type) {
+      $result = in_array($file_mime_type, [ 'application/json', 'text/javascript', 'application/javascript', 'application/x-javascript' ]);
+    }
+    if ('sql' === $candidate_type) {
+      $result = in_array($file_mime_type, [ 'text/plain', 'text/sql', 'text/x-sql', 'application/sql', 'application/octet-stream' ]);
+    }
     
+    if (!empty($file_name)) {
+      $_parse_file = explode('.', $file_name);
+      if ($candidate_type !== end($_parse_file)) {
+        $result = false;
+      }
+    }
     
-    return false;
+    return $result;
     
   }
   

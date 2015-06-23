@@ -446,12 +446,6 @@ $(function() {
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
-      if (_.contains(['csv', 'tsv'], $('#import-table-upload_filetype').selectlist('selectedItem').value)) {
-        toggle_item('switching-item-add_first_line', 'show');
-      } else {
-        toggle_item('switching-item-add_first_line', 'hide');
-      }
-      
 //      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
       $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');";
       
@@ -539,6 +533,13 @@ $(function() {
         $('#' + selector).hide();
       }
     };
+    // When onLoaded toggle
+    if (_.contains(['csv', 'tsv'], $('#import-table-upload_filetype').selectlist('selectedItem').value)) {
+      toggle_item('switching-item-add_first_line', 'show');
+    } else {
+      toggle_item('switching-item-add_first_line', 'hide');
+    }
+    
     
     // Submit import step 1
     $('#button-submit-import_step1').on('click', function(e){
