@@ -509,6 +509,27 @@ class CdbtValidator extends CommonValidator {
     
     return $retvar;
   }
-
+  
+  
+  /**
+   * Check file mime type
+   *
+   * @since 2.0.0
+   *
+   * @param string $file_mime_type [require] Mime type of the file that you want to examine
+   * @param string $candidate_type [require] File format to be compared
+   * @return boolean
+   */
+  public function check_file_type( $file_mime_type=null, $candidate_type=null ) {
+    if (empty($file_mime_type) || empty($candidate_type)) 
+      return false;
+    
+    
+    
+    return false;
+    
+  }
+  
+  
 
 }

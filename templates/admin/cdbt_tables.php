@@ -380,11 +380,6 @@ foreach ($this->allow_file_types as $file_type) {
    * Define the localized variables for tab of `modify_table`
    */
   
-//var_dump($enable_table);
-//var_dump($unreserved_table);
-//var_dump($selectable_table);
-  
-//var_dump($this->cdbt_sessions);
   $is_enable_modify = false;
   $is_updated = false;
   $modify_table = '';
@@ -397,7 +392,6 @@ foreach ($this->allow_file_types as $file_type) {
       if (isset($this->cdbt_sessions[$_session_key]) && array_key_exists($this->domain_name, $this->cdbt_sessions[$_session_key]) && !empty($this->cdbt_sessions[$_session_key][$this->domain_name])) {
         // Set variables from session
         $session_vars = $this->cdbt_sessions[$_session_key][$this->domain_name];
-//var_dump($session_vars);
       }
     }
     if (isset($this->cdbt_sessions[$current_tab]['is_modified']) && $this->cdbt_sessions[$current_tab]['is_modified']) {
@@ -405,8 +399,6 @@ foreach ($this->allow_file_types as $file_type) {
     }
     $table_options = $this->get_table_option($modify_table);
   }
-//var_dump([$is_enable_modify, $modify_table]);
-//var_dump($table_options);
   
 ?>
 <?php if (!$is_enable_modify) : ?>
@@ -881,14 +873,19 @@ foreach ($this->allow_file_types as $file_type) {
   
   <div class="well-sm">
     <p class="text-info">
-      現在の指定テーブルにデータをインポートします。インポートは手順に沿ってウィザード形式で行われます。各ステップの指示に従ってください。
+      <?php printf(__('Import the data into the current specified table "%s". Import is done in the wizard format along the procedure. Please follow the instructions of each step.', CDBT), $target_table); /*現在の指定テーブル「%s」にデータをインポートします。インポートは手順に沿ってウィザード形式で行われます。各ステップの指示に従ってください。*/ ?>
     </p>
   </div>
-  
-  <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-import_table">
+<?php
+  $session_var = isset($this->cdbt_sessions) ? $this->cdbt_sessions : '';
+  $wizard_step = (isset($session_var[$current_tab]['import_current_step']) && !empty($session_var[$current_tab]['import_current_step'])) ? intval($session_var[$current_tab]['import_current_step']) : 1;
+?>
+
+  <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-import_table"<?php if ($wizard_step === 1) : ?> enctype="multipart/form-data"<?php endif; ?>>
     <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
     <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
     <input type="hidden" name="action" value="import_table">
+    <input type="hidden" name="import_to" value="<?php echo $target_table; ?>">
     <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
 <?php
   /**
@@ -897,13 +894,17 @@ foreach ($this->allow_file_types as $file_type) {
   $conponent_options = [
     'id' => 'cdbt-wizard', 
     'defaultStep' => 1, 
-    'currentStep' => 1, 
+    'currentStep' => $wizard_step, 
     'displayMaxStep' => 3, 
     'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), ], 
     'splitRendering' => 'before', 
     'disablePreviousStep' => true, 
   ];
   $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
+  
+  if (isset($session_var[$this->domain_name]['add_first_line']) && !empty($session_var[$this->domain_name]['add_first_line'])) {
+    $add_first_line = $this->strtoarray($session_var[$this->domain_name]['add_first_line']);
+  }
   
 ?>
   <div class="step-pane bg-default active alert" data-step="1">
@@ -919,7 +920,7 @@ foreach ($this->allow_file_types as $file_type) {
           </button>
           <ul class="dropdown-menu" role="menu">
           <?php foreach ($allow_file_types as $filetype_name => $filetype_label) : ?>
-            <li data-value="<?php echo $filetype_name; ?>"<?php if (isset($this->cdbt_sessions[$current_tab]['import_filetype']) && $this->cdbt_sessions[$current_tab]['import_filetype'] === $filetype_name) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $filetype_label; ?></a></li>
+            <li data-value="<?php echo $filetype_name; ?>"<?php if (isset($session_var[$this->domain_name]['import_filetype']) && $session_var[$this->domain_name]['import_filetype'] === $filetype_name) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $filetype_label; ?></a></li>
           <?php endforeach; ?>
           </ul>
           <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[import_filetype]" readonly="readonly" aria-hidden="true" type="text"/>
@@ -928,15 +929,19 @@ foreach ($this->allow_file_types as $file_type) {
     </div><!-- /import-table-upload_filetype -->
     <div class="form-group" id="switching-item-add_first_line">
       <label for="import-table-add_first_line" class="col-sm-2 control-label"><?php _e('Add first line of file', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+<!--
       <div class="col-sm-9">
         <textarea id="import-table-add_first_line" name="<?php echo $this->domain_name; ?>[add_first_line]" class="form-control" rows="2"><?php echo '"' . implode('","', array_keys($columns_schema)) . '"'; ?></textarea>
         <div class="sr-only" id="csv_index_line_preset"><?php echo '"' . implode('","', array_keys($columns_schema)) . '"'; ?></div>
         <div class="sr-only" id="tsv_index_line_preset"><?php echo '"' . implode("\"\t\"", array_keys($columns_schema)) . '"'; ?></div>
       </div>
       <div class="col-sm-offset-2 col-sm-10">
-        <div class="pillbox" data-initialize="pillbox" id="myPillbox">
+-->
+      <div class="col-sm-10">
+        <div class="pillbox" data-initialize="pillbox" id="import-table-add_first_line">
           <ul class="clearfix pill-group">
           <?php foreach (array_keys($columns_schema) as $column_name) : ?>
+          <?php if (isset($add_first_line)) { if (!in_array($column_name, $add_first_line)) continue; } ?>
             <li class="btn btn-default pill" data-value="<?php echo esc_attr($column_name); ?>">
               <span><?php echo $column_name; ?></span>
               <span class="glyphicon glyphicon-close">
@@ -955,6 +960,7 @@ foreach ($this->allow_file_types as $file_type) {
             </li>
           </ul>
         </div>
+        <input type="hidden" id="import-table-add_first_line-instance" name="<?php echo $this->domain_name; ?>[add_first_line]" value="<?php if (isset($add_first_line)) echo implode(',', $add_first_line); ?>">
         <p class="help-block"><?php _e('If you will upload the file of "CSV" or "TSV", you must insert of the head line by the column name only as an index row.', CDBT); ?><br><?php _e('If necessary, please edit to match the data column of the index rows template in the above textarea.', CDBT); ?></p>
       </div>
     </div><!-- /import-table-add_first_line -->

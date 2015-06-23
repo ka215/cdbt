@@ -527,13 +527,11 @@ $(function() {
     // OnChange import file type
     $('#import-table-upload_filetype').on('changed.fu.selectlist', function(){
       if (_.contains(['csv', 'tsv'], $(this).selectlist('selectedItem').value)) {
-        $('#import-table-add_first_line').val($('#' + $(this).selectlist('selectedItem').value + '_index_line_preset').html());
         toggle_item('switching-item-add_first_line', 'show');
       } else {
         toggle_item('switching-item-add_first_line', 'hide');
       }
     });
-    
     var toggle_item = function(selector, action){
       if ('show' === action) {
         $('#' + selector).show();
@@ -541,6 +539,12 @@ $(function() {
         $('#' + selector).hide();
       }
     };
+    
+    // Submit import step 1
+    $('#button-submit-import_step1').on('click', function(e){
+      var values = _.pluck($('#import-table-add_first_line').pillbox('items'), 'value');
+      $('#import-table-add_first_line-instance').val(values.join(','));
+    });
     
     // Switch of all checking of checkbox
     $('button[id^="switch-checkbox-"]').on('click', function(){
