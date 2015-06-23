@@ -869,7 +869,7 @@ foreach ($this->allow_file_types as $file_type) {
   
 <section id="import" class="<?php if ('import' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Table Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Data Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -987,9 +987,31 @@ var_dump($session_var);
   </div>
   
   <div class="step-pane bg-default alert" data-step="2">
-    <h4><?php _e('Choice of how to import data', CDBT); ?></h4>
+    <h4><?php _e('Confirm SQL for importing data', CDBT); ?></h4>
     <div class="step-body">
+      <div class="form-group">
+    <?php if ($wizard_step === 2 && isset($session_var[$this->domain_name]['import_filetype'])) : ?>
+      <?php if (in_array($session_var[$this->domain_name]['import_filetype'], ['csv', 'tsv'])) : ?>
+      <?php elseif ('json' === $session_var[$this->domain_name]['import_filetype']) : ?>
+      <?php elseif ('sql' === $session_var[$this->domain_name]['import_filetype']) : ?>
+        <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
+        <div class="col-sm-9">
+          <textarea name="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php /* Ajaxで遅延読み込み？ echo base64_decode($session_var[$this->domain_name]['upfile']); */  ?></textarea>
+          <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); /*バイナリデータを含んでいるSQLは正常にインポートされない場合があります。*/?></p>
+        </div>
+      <?php endif; ?>
+    <?php else : ?>
+    <?php endif; ?>
+      </div>
     </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" id="button-submit-import_step2" disabled="disabled"><?php _e('Import', CDBT); ?></button>
+      </div>
+    </div>
+  <?php if ($wizard_step === 2 && isset($session_var[$this->domain_name]['import_filetype'])) : ?>
+    <script>var delay_load_importing_sql = true;</script>
+  <?php endif; ?>
   </div>
   
   <div class="step-pane bg-info alert" data-step="3">

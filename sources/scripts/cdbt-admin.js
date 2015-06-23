@@ -540,6 +540,9 @@ $(function() {
       toggle_item('switching-item-add_first_line', 'hide');
     }
     
+    if (typeof delay_load_importing_sql !== 'undefined' && delay_load_importing_sql) {
+      console.info('delay_load_ok!');
+    }
     
     // Submit import step 1
     $('#button-submit-import_step1').on('click', function(e){
