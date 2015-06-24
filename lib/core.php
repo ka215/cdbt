@@ -102,6 +102,11 @@ class CdbtCore extends CdbtUtility {
     
   }
   
+  /**
+   * Run the hooked action before http header response
+   *
+   * @since 2.0.0
+   */
   protected function plugin_loaded() {
     
     if ( (isset($_POST['page']) && 'cdbt_tables' === $_POST['page']) 
@@ -115,6 +120,11 @@ class CdbtCore extends CdbtUtility {
     
   }
   
+  /**
+   * Start of the session
+   *
+   * @since 2.0.0
+   */
   protected function init_cdbt_sessions() {
     if (!session_id()) 
       session_start();
