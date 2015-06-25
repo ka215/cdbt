@@ -163,6 +163,23 @@ trait CdbtAjax {
   }
   
   
+  /**
+   * Retrieve the importing sql via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+/*
+  public function ajax_event_retrieve_import_sql( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    var_dump($this->get_binary_context($args['uploaded_temp_filename']));
+    
+  }
+*/
   
   
   /**
@@ -332,7 +349,6 @@ trait CdbtAjax {
    */
   public function ajax_event_render_edit_form( $args=[] ) {
     
-    //var_dump($args);
     if (array_key_exists('shortcode', $args)) {
       die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
     }

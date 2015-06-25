@@ -1076,7 +1076,19 @@ class CdbtAdmin extends CdbtDB {
               // Check file type and format
               if ($this->validate->check_file_type($_FILES[$this->domain_name]['type']['upfile'], $post_data['import_filetype'], $_FILES[$this->domain_name]['name']['upfile'])) {
                 $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
-                $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $this->esc_binary_data($bin_context, 'bin_data');
+                switch($post_data['import_filetype']){
+                  case 'csv': 
+                  case 'tsv': 
+                    
+                    break;
+                  case 'json': 
+                    
+                    break;
+                  case 'sql': 
+                    $escaped_sql = $this->esc_binary_data($bin_context, 'bin_data');
+                    break;
+                }
+                $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $escaped_sql;
               } else {
                 $message = __('Uploaded file format is different from the specified format.', CDBT); /*アップロードされたファイル形式が指定された形式と異なります。*/
               }
@@ -1088,26 +1100,18 @@ class CdbtAdmin extends CdbtDB {
           }
           if (empty($message)) {
             $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 2;
-          } else {
-            
           }
         } else
         if (intval($post_data['import_current_step']) === 2) {
-          switch($post_data['import_filetype']){
-            case 'csv': 
-            case 'tsv': 
-              break;
-            case 'json': 
-              break;
-            case 'sql': 
-              
-//var_dump();
-              
-              break;
-          }
+          // Run the data import
+var_dump($post_data['import_sql']);
+          $result = $this->run_query(base64_decode($post_data['import_sql']));
+var_dump($result); // insert文の実行結果はinsert成功したrow数
+          $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = $result;
+          
           $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 3;
-        } else
-        if (intval($post_data['import_current_step']) === 3) {
+//        } else
+//        if (intval($post_data['import_current_step']) === 3) {
         }
         
         break;

@@ -98,6 +98,14 @@ $(function() {
       
     };
     
+    /**
+     * Set the importing sql
+     */
+     this.set_importing_sql = function(){
+       
+       $('textarea[name="confirm_sql"]').val( $.ajaxResponse.responseText );
+       
+     };
     
   };
   var Callback = new CallbackClass();
@@ -540,14 +548,20 @@ $(function() {
       toggle_item('switching-item-add_first_line', 'hide');
     }
     
-    if (typeof delay_load_importing_sql !== 'undefined' && delay_load_importing_sql) {
-      console.info('delay_load_ok!');
-    }
-    
     // Submit import step 1
-    $('#button-submit-import_step1').on('click', function(e){
+    $('#button-submit-import_step1').on('click', function(){
       var values = _.pluck($('#import-table-add_first_line').pillbox('items'), 'value');
       $('#import-table-add_first_line-instance').val(values.join(','));
+    });
+    
+    // On ready import step 2
+    if (typeof delay_load_importing_sql !== 'undefined' && delay_load_importing_sql) {
+      $('#button-submit-import_step2').removeAttr('disabled');
+    }
+    
+    // Submit import step 2
+    $('#button-submit-import_step2').on('click', function(e){
+      $('#confirm_sql').val('');
     });
     
     // Switch of all checking of checkbox

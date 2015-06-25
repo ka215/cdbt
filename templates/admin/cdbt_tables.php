@@ -913,7 +913,7 @@ foreach ($this->allow_file_types as $file_type) {
     $add_first_line = $this->strtoarray($session_var[$this->domain_name]['add_first_line']);
   }
   
-var_dump($session_var);
+//var_dump($session_var);
 ?>
   <div class="step-pane bg-default active alert" data-step="1">
     <h4><?php _e('Upload import file', CDBT); ?></h4>
@@ -996,9 +996,10 @@ var_dump($session_var);
       <?php elseif ('sql' === $session_var[$this->domain_name]['import_filetype']) : ?>
         <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
         <div class="col-sm-9">
-          <textarea name="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php /* Ajaxで遅延読み込み？ echo base64_decode($session_var[$this->domain_name]['upfile']); */  ?></textarea>
+          <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo base64_decode($session_var[$this->domain_name]['upfile']); ?></textarea>
           <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); /*バイナリデータを含んでいるSQLは正常にインポートされない場合があります。*/?></p>
         </div>
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr($session_var[$this->domain_name]['upfile']); ?>">
       <?php endif; ?>
     <?php else : ?>
     <?php endif; ?>
@@ -1017,6 +1018,15 @@ var_dump($session_var);
   <div class="step-pane bg-info alert" data-step="3">
     <h4><?php _e('Checking the import result', CDBT); ?></h4>
     <div class="step-body">
+  <?php if ($wizard_step === 3 && isset($session_var[$this->domain_name]['import_result'])) : ?>
+    <?php if ($session_var[$this->domain_name]['import_result']) : ?>
+      
+    <?php else : ?>
+      
+    <?php endif; ?>
+  <?php else : ?>
+    
+  <?php endif; ?>
     </div>
   </div>
   
