@@ -14,7 +14,14 @@ if ( !class_exists( 'CdbtDB' ) ) :
  * @see CustomDataBaseTables\Lib\CdbtConfig
  */
 class CdbtDB extends CdbtConfig {
-
+  
+  var $show_errors = false;
+  
+  var $suppress_errors = false;
+  
+  var $db_errors = [];
+  
+  
   /**
    * Initialize settings of database and tables for this plugin (non-save to database)
    *
@@ -56,10 +63,64 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Showing of database errors
-    $this->show_errors = true;
-    $this->show_errors( $this->show_errors );
+    if ($this->show_errors) {
+      $this->wpdb->show_errors();
+    } else {
+      $this->wpdb->hide_errors();
+    }
+    $this->wpdb->suppress_errors = $this->suppress_errors;
     
   }
+  
+  
+  /**
+   * Retrieve the error information from the global DB error object.
+   *
+   * @since 2.0.0
+   *
+   * @return boolean
+   */
+  protected function check_db_error() {
+    global $EZSQL_ERROR;
+    if (!empty($EZSQL_ERROR)) {
+      foreach ($EZSQL_ERROR as $_i => $_ary) {
+        if (preg_match('/^(describe).*$/iU', $_ary['query'])) 
+          continue;
+        
+        $this->db_errors[] = $EZSQL_ERROR[$_i];
+        $this->logger($_ary['error_str']);
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }
+  
+  
+  /**
+   * Retrieve an error message or a query of occured error after the database error checking.
+   * Also, an error message with query string will write to the log at the same time.
+   *
+   * @since 2.0.0
+   *
+   * @param string $get_type [require] For default `error_str`; or `query`
+   * @return string
+   */
+  protected function retrieve_db_error( $get_type='error_str' ) {
+    if (empty($get_type) || !in_array($get_type, [ 'error_str', 'query' ])) 
+      $get_type = 'error_str';
+    
+    $_return = '';
+    if ($this->debug && $this->check_db_error()) {
+      $_err = end($this->db_errors);
+      $_return = "<br>\n" . $_err[$get_type];
+      $this->logger( sprintf( '%s "%s"', $_err['error_str'], $_err['query'] ) );
+    }
+    
+    return $_return;
+  }
+  
   
   /**
    * Methods operate database with wrapping the wpdb
@@ -128,6 +189,7 @@ class CdbtDB extends CdbtConfig {
     dbDelta($sql);
     if (!empty($this->wpdb->last_error) && !$this->check_table_exists($table_name)) {
       $message = __('Failed to create table.', CDBT);
+      $message .= $this->retrieve_db_error();
       $this->logger( $message );
       return false;
     }
@@ -352,6 +414,7 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $table_name );
     } else {
       $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $table_name );
+      $message .= $this->retrieve_db_error();
     }
     
     // Fire after the truncated table
@@ -388,6 +451,7 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Table of "%s" has been removed successfully.', CDBT), $table_name );
     } else {
       $message = sprintf( __('Failed to remove the table of "%s".', CDBT), $table_name );
+      $message .= $this->retrieve_db_error();
     }
     
     // Fire after the dropped table
@@ -431,11 +495,13 @@ class CdbtDB extends CdbtConfig {
             $message = sprintf( __('Then copied the data to replication table "%s".', CDBT), $replicate_table );
           } else {
             $message = __('Table replication has been completed, but have failed to copy the data.', CDBT);
+            $message .= $this->retrieve_db_error();
           }
         }
       }
     } else {
       $message = sprintf( __('Failed to replicated table "%s" creation.', CDBT), $replicate_table );
+      $message .= $this->retrieve_db_error();
     }
     
     // Fire after the duplicated table
@@ -769,6 +835,7 @@ class CdbtDB extends CdbtConfig {
         $retvar = $this->wpdb->insert_id;
     } else {
       $message = __('Failed to insert data.', CDBT);
+      $message .= $this->retrieve_db_error();
       $this->logger( $message );
     }
     
@@ -921,6 +988,7 @@ class CdbtDB extends CdbtConfig {
     $retvar = $this->strtobool($result);
     if (!$retvar) {
       $message = __('Failed to modify your specified data.', CDBT);
+      $message .= $this->retrieve_db_error();
       $this->logger( $message );
     }
     
@@ -1076,6 +1144,7 @@ class CdbtDB extends CdbtConfig {
     $retvar = $this->strtobool($result);
     if (!$retvar) {
       $message = sprintf( __('Failed to remove data of the deletion condition of "%s".', CDBT), $where_clause );
+      $message .= $this->retrieve_db_error();
       $this->logger( $message );
     }
     
@@ -1100,7 +1169,12 @@ class CdbtDB extends CdbtConfig {
    */
   protected function run_query( $query=null ) {
     
-    return $this->wpdb->query( stripslashes_deep($query) );
+    $retvar = $this->wpdb->query( stripslashes_deep($query) );
+    if (!$retvar) {
+      $message = $this->retrieve_db_error();
+      $this->logger( $message );
+    }
+    return $retvar;
     
   }
   
@@ -1192,14 +1266,11 @@ class CdbtDB extends CdbtConfig {
    * @return boolean
    */
   protected function compare_reservation_tables( $table_name=null ) {
-    /*
-    $naked_table_name = preg_replace('/^'. $wpdb->prefix .'(.*)$/iU', '$1', $table_name);
-    $reservation_names = array(
-      'commentmeta', 'comments', 'links', 'options', 'postmeta', 'posts', 'term_relationships', 'term_taxonomy', 'terms', 'usermeta', 'users', 
-      'blogs', 'blog_versions', 'registration_log', 'signups', 'site', 'sitecategories', 'sitemeta', 
-    );
-    return in_array($naked_table_name, $reservation_names);
-    */
+    if (empty($table_name)) 
+      return false;
+    
+    return in_array($table_name, $this->core_tables);
+    
   }
   
   
@@ -1221,6 +1292,35 @@ class CdbtDB extends CdbtConfig {
     }
     
     return $list_array;
+  }
+  
+  
+  /**
+   * Create the SQL statement for the import.
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require] 
+   * @param array $importation_base_data [require] 
+   * @return mixed 
+   */
+  public function create_import_sql( $table_name=null, $importation_base_data=[] ) {
+    if (empty($table_name) || empty($importation_base_data)) 
+      return false;
+    
+    $_columns = array_shift($importation_base_data);
+    $rows = [];
+    foreach ($importation_base_data as $_row) {
+      $_esc_values = [];
+      foreach ($_row as $_value) {
+        $_esc_values[] = esc_sql($_value);
+      }
+      $_rows[] = "('". implode("','", $_esc_values) ."')";
+    }
+//    $importation_sql = sprintf("INSERT INTO `%s` (`%s`) VALUES %s ON DUPLICATE KEY UPDATE;", $table_name, implode('`,`', $_columns), implode(',', $_rows));
+    $importation_sql = sprintf("INSERT INTO `%s` (`%s`) VALUES %s;", $table_name, implode('`,`', $_columns), implode(',', $_rows));
+    
+    return $importation_sql;
   }
   
   

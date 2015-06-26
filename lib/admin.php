@@ -482,7 +482,7 @@ class CdbtAdmin extends CdbtDB {
     <div id="message" class="<?php echo $classes; ?>">
       <ul>
       <?php foreach( $messages as $message ): ?>
-        <li><?php echo esc_html($message); ?></li>
+        <li><?php echo $message; ?></li>
       <?php endforeach; ?>
       </ul>
     </div>
@@ -496,7 +496,7 @@ class CdbtAdmin extends CdbtDB {
    *
    * @since 2.0.0
    */
-  private function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
+  private function register_admin_notices( $code=null, $message, $expire_seconds=1, $is_init=false ) {
     $code = empty($code) ? CDBT . '-error' : $code;
     if (!$this->errors || $is_init) 
       $this->errors = new \WP_Error();
@@ -1075,20 +1075,60 @@ class CdbtAdmin extends CdbtDB {
             if ($_FILES[$this->domain_name]['size']['upfile'] > 0) {
               // Check file type and format
               if ($this->validate->check_file_type($_FILES[$this->domain_name]['type']['upfile'], $post_data['import_filetype'], $_FILES[$this->domain_name]['name']['upfile'])) {
-                $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
                 switch($post_data['import_filetype']){
                   case 'csv': 
                   case 'tsv': 
-                    
+                    $_raw_array = $this->xsvtoarray( $_FILES[$this->domain_name]['tmp_name']['upfile'], $post_data['import_filetype'] );
+                    if (empty($_raw_array)) {
+                      $message = __('アップロードされたファイルをパースできませんでした。ファイルに不備がある可能性があります。', CDBT);
+                    } else
+                    if (count(end($_raw_array)) !== count($add_first_row)) {
+                      $message = __('インポートするデータ数が指定されたカラムの数と一致しません。インポートデータに合わせてカラムの指定を行ってください。', CDBT);
+                    } else {
+                      if ( empty( array_diff($add_first_row, stripslashes_deep(end($_raw_array))) ) ) 
+                        array_pop($_raw_array);
+                      
+                      if ( empty( array_diff($add_first_row, stripslashes_deep(reset($_raw_array))) ) ) 
+                        array_shift($_raw_array);
+                      
+                      if (empty($_raw_array)) {
+                        $message = __('アップロードファイルにインポートするデータが含まれていません。', CDBT);
+                      } else {
+//var_dump( array_merge( $add_first_row, $_raw_array ) );
+                        $importation_sql = $this->create_import_sql( $_POST['import_to'], array_merge( [$add_first_row], $_raw_array ) );
+                        if ($importation_sql !== false) 
+                          $escaped_sql = base64_encode($importation_sql);
+                      }
+                    }
                     break;
                   case 'json': 
-                    
+                  	$_json_data = @file_get_contents($_FILES[$this->domain_name]['tmp_name']['upfile']);
+                    $_raw_array = json_decode($_json_data);
+                    $_importation_base = $_columns = [];
+                    $_i = 0;
+                    foreach ($_raw_array as $_row) {
+                      $_values = [];
+                      foreach ($_row as $_key => $_value) {
+                        if ($_i === 0) {
+                          $_columns[] = $_key;
+                        }
+                        $_values[] = esc_sql($_value);
+                      }
+                      $_importation_base[] = $_values;
+                      $_i++;
+                    }
+                    $importation_sql = $this->create_import_sql( $_POST['import_to'], array_merge( [$_columns], $_importation_base ) );
+                    if ($importation_sql !== false) 
+                      $escaped_sql = base64_encode($importation_sql);
                     break;
                   case 'sql': 
+                    $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
                     $escaped_sql = $this->esc_binary_data($bin_context, 'bin_data');
                     break;
                 }
-                $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $escaped_sql;
+                if (isset($escaped_sql) && !empty($escaped_sql)) {
+                  $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $escaped_sql;
+                }
               } else {
                 $message = __('Uploaded file format is different from the specified format.', CDBT); /*アップロードされたファイル形式が指定された形式と異なります。*/
               }
@@ -1104,14 +1144,17 @@ class CdbtAdmin extends CdbtDB {
         } else
         if (intval($post_data['import_current_step']) === 2) {
           // Run the data import
-var_dump($post_data['import_sql']);
+//var_dump($post_data['import_sql']);
           $result = $this->run_query(base64_decode($post_data['import_sql']));
-var_dump($result); // insert文の実行結果はinsert成功したrow数
-          $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = $result;
-          
+          if ($result) {
+            // Row number of execution results if successful insertion
+            $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = true;
+            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = sprintf( __('%d of the data has been successfully imported.', CDBT), intval($result) );
+          } else {
+            $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = false;
+            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = __('Failed to import the data.', CDBT); /* データのインポートに失敗しました。 */
+          }
           $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 3;
-//        } else
-//        if (intval($post_data['import_current_step']) === 3) {
         }
         
         break;

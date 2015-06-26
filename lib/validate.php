@@ -530,10 +530,10 @@ class CdbtValidator extends CommonValidator {
       $result = in_array($file_mime_type, [ 'text/plain', 'text/csv', 'text/comma-separated-values', 'application/csv', 'application/vnd.ms-excel', 'application/msexcel' ]);
     }
     if ('tsv' === $candidate_type) {
-      $result = in_array($file_mime_type, [ 'text/plain', 'text/tsv', 'text/tab-separated-values', 'application/tsv', 'application/vnd.ms-excel', 'application/msexcel' ]);
+      $result = in_array($file_mime_type, [ 'text/plain', 'text/tsv', 'text/tab-separated-values', 'application/tsv', 'application/vnd.ms-excel', 'application/msexcel', 'application/octet-stream' ]);
     }
     if ('json' === $candidate_type) {
-      $result = in_array($file_mime_type, [ 'application/json', 'text/javascript', 'application/javascript', 'application/x-javascript' ]);
+      $result = in_array($file_mime_type, [ 'application/json', 'text/javascript', 'application/javascript', 'application/x-javascript', 'application/octet-stream' ]);
     }
     if ('sql' === $candidate_type) {
       $result = in_array($file_mime_type, [ 'text/plain', 'text/sql', 'text/x-sql', 'application/sql', 'application/octet-stream' ]);

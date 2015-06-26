@@ -290,6 +290,7 @@ class CdbtUtility {
         }
         $output_data = implode("\n", $escaped_data);
         $file_size = strlen($output_data);
+        $file_content_type = 'csv' === $data_sources['export_filetype'] ? 'text/comma-separated-values' : 'text/tab-separated-values';
         
         break;
       case 'json': 
@@ -301,6 +302,7 @@ class CdbtUtility {
         	$output_data = $json_data;
         }
         $file_size = strlen($output_data);
+        $file_content_type = 'application/json';
         
         break;
       case 'sql': 
@@ -312,6 +314,7 @@ class CdbtUtility {
         	$output_data = $sql_text;
         }
         $file_size = strlen($output_data);
+        $file_content_type = 'text/x-sql';
         
         break;
       default:
@@ -322,7 +325,8 @@ class CdbtUtility {
     
     if ($download_ready) {
       try {
-        header( 'Content-Type: application/octet-stream' );
+//        header( 'Content-Type: application/octet-stream' );
+        header( 'Content-Type: ' . $file_content_type );
         header( 'Content-Disposition: attachment; filename=' . $file_name );
         header( 'Content-Length: ' . $file_size );
         $fp = fopen('php://output', 'w');
@@ -350,8 +354,40 @@ class CdbtUtility {
     return $download_result;
     
   }
-
-
+  
+  
+  /**
+   * Convert to the array of uploading file of the CSV or TSV
+   *
+   * @since 2.0.0
+   *
+   * @param string $file_path [require] Temporary file path of the submitted file as $_FILES
+   * @param string $file_type [require] `csv` or `tsv`
+   * @return array (no assoc)
+   */
+  public function xsvtoarray( $file_path=null, $file_type='csv' ) {
+    static $return_array = [];
+    
+    if (empty($file_path) || !file_exists($file_path) || !in_array($file_type, [ 'csv', 'tsv' ])) 
+      return $return_array;
+    
+    if (false === ($fh = fopen($file_path, 'r'))) 
+      return $return_array;
+    
+    $_delimiter = $file_type === 'csv' ? ',' : "\t";
+    $_enclosure = '"';
+    $_escape = '\\';
+    
+    while (false !== ($_buff = fgetcsv($fh, 0, $_delimiter, $_enclosure, $_escape))) {
+      $return_array[] = $_buff;
+    }
+    
+    fclose($fh);
+    
+    return $return_array;
+  }
+  
+  
   /**
    * Escape an array as a single line string for CSV or TSV
    *

@@ -910,7 +910,7 @@ foreach ($this->allow_file_types as $file_type) {
   $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
   
   if (isset($session_var[$this->domain_name]['add_first_line']) && !empty($session_var[$this->domain_name]['add_first_line'])) {
-    $add_first_line = $this->strtoarray($session_var[$this->domain_name]['add_first_line']);
+    $add_first_line = !is_array($session_var[$this->domain_name]['add_first_line']) ? $this->strtoarray($session_var[$this->domain_name]['add_first_line']) : $session_var[$this->domain_name]['add_first_line'];
   }
   
 //var_dump($session_var);
@@ -991,9 +991,7 @@ foreach ($this->allow_file_types as $file_type) {
     <div class="step-body">
       <div class="form-group">
     <?php if ($wizard_step === 2 && isset($session_var[$this->domain_name]['import_filetype'])) : ?>
-      <?php if (in_array($session_var[$this->domain_name]['import_filetype'], ['csv', 'tsv'])) : ?>
-      <?php elseif ('json' === $session_var[$this->domain_name]['import_filetype']) : ?>
-      <?php elseif ('sql' === $session_var[$this->domain_name]['import_filetype']) : ?>
+      <?php if (in_array($session_var[$this->domain_name]['import_filetype'], ['csv', 'tsv', 'json', 'sql'])) : ?>
         <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
         <div class="col-sm-9">
           <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo base64_decode($session_var[$this->domain_name]['upfile']); ?></textarea>
@@ -1001,7 +999,6 @@ foreach ($this->allow_file_types as $file_type) {
         </div>
         <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr($session_var[$this->domain_name]['upfile']); ?>">
       <?php endif; ?>
-    <?php else : ?>
     <?php endif; ?>
       </div>
     </div>
@@ -1015,17 +1012,17 @@ foreach ($this->allow_file_types as $file_type) {
   <?php endif; ?>
   </div>
   
-  <div class="step-pane bg-info alert" data-step="3">
+  <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3">
     <h4><?php _e('Checking the import result', CDBT); ?></h4>
     <div class="step-body">
-  <?php if ($wizard_step === 3 && isset($session_var[$this->domain_name]['import_result'])) : ?>
-    <?php if ($session_var[$this->domain_name]['import_result']) : ?>
-      
+  <?php if ($wizard_step === 3) : ?>
+      <p><?php echo $session_var['result_message']; ?></p>
+    <?php if ($session_var['import_result']) : ?>
+      <button type="button" class="btn btn-default"id="to-view-data"><?php _e('See Table Data', CDBT); ?></button>
     <?php else : ?>
-      
+      <p>デバッグモードを有効にしている場合、インポートエラーの詳細ログが出力されます。</p>
+      <button type="button" class="btn btn-default" id="retry-import"><?php _e('Retry Import', CDBT); ?></button>
     <?php endif; ?>
-  <?php else : ?>
-    
   <?php endif; ?>
     </div>
   </div>

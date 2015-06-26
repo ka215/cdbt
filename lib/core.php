@@ -102,6 +102,7 @@ class CdbtCore extends CdbtUtility {
     
   }
   
+  
   /**
    * Run the hooked action before http header response
    *

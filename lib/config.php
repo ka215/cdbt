@@ -58,6 +58,9 @@ class CdbtConfig extends CdbtCore {
     
     $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
     
+    // Switching debug mode
+    $this->debug = $this->strtobool($this->options['debug_mode']);
+//var_dump([$this->debug, $this->options['debug_mode'] ]);
     
   }
 
@@ -79,7 +82,7 @@ class CdbtConfig extends CdbtCore {
       'resume_options' => false, 
       'enable_core_tables' => false, // add new from ver.2
       'display_datetime_format' => $default_datetime_format, // add new from ver.2
-      'debug_mode' => false, // add new from ver.2
+      'debug_mode' => $this->debug, // add new from ver.2
       'use_wp_prefix' => true, 
       'charset' => 'utf8', 
       'timezone' => $default_timezone, 
