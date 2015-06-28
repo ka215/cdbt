@@ -873,7 +873,7 @@ foreach ($this->allow_file_types as $file_type) {
   
   <div class="well-sm">
     <p class="text-info">
-      <?php printf(__('Import the data into the current specified table "%s". Import is done in the wizard format along the procedure. Please follow the instructions of each step.', CDBT), $target_table); /*現在の指定テーブル「%s」にデータをインポートします。インポートは手順に沿ってウィザード形式で行われます。各ステップの指示に従ってください。*/ ?>
+      <?php printf(__('Import the data into the current specified table "%s". Import is done in the wizard format along the procedure. Please follow the instructions of each step.', CDBT), $target_table); ?>
     </p>
   </div>
 <?php
@@ -995,7 +995,7 @@ foreach ($this->allow_file_types as $file_type) {
         <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
         <div class="col-sm-9">
           <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo base64_decode($session_var[$this->domain_name]['upfile']); ?></textarea>
-          <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); /*バイナリデータを含んでいるSQLは正常にインポートされない場合があります。*/?></p>
+          <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); ?></p>
         </div>
         <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr($session_var[$this->domain_name]['upfile']); ?>">
       <?php endif; ?>
@@ -1020,7 +1020,7 @@ foreach ($this->allow_file_types as $file_type) {
     <?php if ($session_var['import_result']) : ?>
       <button type="button" class="btn btn-default"id="to-view-data"><?php _e('See Table Data', CDBT); ?></button>
     <?php else : ?>
-      <p>デバッグモードを有効にしている場合、インポートエラーの詳細ログが出力されます。</p>
+      <p><?php _e('If you have enabled debug mode, it will be outputted error of the importation details to debug log.', CDBT); ?></p>
       <button type="button" class="btn btn-default" id="retry-import"><?php _e('Retry Import', CDBT); ?></button>
     <?php endif; ?>
   <?php endif; ?>

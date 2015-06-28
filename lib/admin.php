@@ -1053,7 +1053,7 @@ class CdbtAdmin extends CdbtDB {
           'import_current_step' => 1, 
         ];
         if (!isset($post_data['import_current_step']) || empty($post_data['import_current_step'])) {
-          $message = __('Invalid step transition.', CDBT); /*不正なステップ遷移です。*/
+          $message = __('Invalid step transition.', CDBT);
         } else
         if (intval($post_data['import_current_step']) === 1) {
 //var_dump($post_data);
@@ -1080,10 +1080,10 @@ class CdbtAdmin extends CdbtDB {
                   case 'tsv': 
                     $_raw_array = $this->xsvtoarray( $_FILES[$this->domain_name]['tmp_name']['upfile'], $post_data['import_filetype'] );
                     if (empty($_raw_array)) {
-                      $message = __('アップロードされたファイルをパースできませんでした。ファイルに不備がある可能性があります。', CDBT);
+                      $message = __('The uploaded file could not be parsed. It likely has deficiencies in the file.', CDBT);
                     } else
                     if (count(end($_raw_array)) !== count($add_first_row)) {
-                      $message = __('インポートするデータ数が指定されたカラムの数と一致しません。インポートデータに合わせてカラムの指定を行ってください。', CDBT);
+                      $message = __('The number of data to be imported is not consistent with the number of the specified column. Please specify the column to match the import data again.', CDBT);
                     } else {
                       if ( empty( array_diff($add_first_row, stripslashes_deep(end($_raw_array))) ) ) 
                         array_pop($_raw_array);
@@ -1092,7 +1092,7 @@ class CdbtAdmin extends CdbtDB {
                         array_shift($_raw_array);
                       
                       if (empty($_raw_array)) {
-                        $message = __('アップロードファイルにインポートするデータが含まれていません。', CDBT);
+                        $message = __('It does not contain the data to import in your uploaded files.', CDBT);
                       } else {
 //var_dump( array_merge( $add_first_row, $_raw_array ) );
                         $importation_sql = $this->create_import_sql( $_POST['import_to'], array_merge( [$add_first_row], $_raw_array ) );
@@ -1130,13 +1130,13 @@ class CdbtAdmin extends CdbtDB {
                   $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name]['upfile'] = $escaped_sql;
                 }
               } else {
-                $message = __('Uploaded file format is different from the specified format.', CDBT); /*アップロードされたファイル形式が指定された形式と異なります。*/
+                $message = __('Uploaded file format is different from the specified format.', CDBT);
               }
             } else {
-              $message = __('Import file has not been uploaded.', CDBT); /*インポートファイルがアップロードされていません。*/
+              $message = __('Import file has not been uploaded.', CDBT);
             }
           } else {
-            $message = __('Uploaded file format is invalid, or parameter is not enough.', CDBT); /*ファイル形式に不備があるか、もしくはパラメータが足りません。*/
+            $message = __('Uploaded file format is invalid, or parameter is not enough.', CDBT);
           }
           if (empty($message)) {
             $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 2;
@@ -1152,7 +1152,7 @@ class CdbtAdmin extends CdbtDB {
             $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = sprintf( __('%d of the data has been successfully imported.', CDBT), intval($result) );
           } else {
             $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = false;
-            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = __('Failed to import the data.', CDBT); /* データのインポートに失敗しました。 */
+            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = __('Failed to import the data.', CDBT);
           }
           $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 3;
         }
