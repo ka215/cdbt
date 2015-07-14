@@ -40,8 +40,8 @@ $default_action = 'update';
       <div role="tabpanel" class="tab-pane active">
 <?php if ($current_tab == 'general_setting') : ?>
   <div class="well-sm">
-    <p class="text-info"><?php /* esc_html_e('The "Custom DataBase Tables" is ...', $this->domain_name); */ ?>
-      この設定ページでは、「Custom DataBase Tables」プラグインの動作全体に影響する<strong>共通設定</strong>を編集できます。<br>
+    <p class="text-info">
+      <?php _e('In this configuration page, you can edit the common settings that affect the overall operation of the "Custom DataBase Tables" plugin.', $this->domain_name); /* この設定ページでは、「Custom DataBase Tables」プラグインの動作全体に影響する共通設定を編集できます。*/ ?><br>
     </p>
   </div>
   
@@ -51,87 +51,87 @@ $default_action = 'update';
       <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
       <input type="hidden" name="action" value="<?php echo $default_action; ?>">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
-      <h4 class="title">プラグインの設定</h4>
+      <h4 class="title"><?php _e('Plugin Setting', $this->domain_name); /*プラグインの設定*/ ?></h4>
       <div class="form-group">
-        <label class="col-sm-2 control-label">設定値のクリーニング</label>
+        <label class="col-sm-2 control-label"><?php _e('Cleaning of the set value', $this->domain_name); /*設定値のクリーニング*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-1">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[cleaning_options]" type="checkbox" value="1" <?php checked('1', $options['cleaning_options']); ?>>
-              <span class="checkbox-label">共通設定を保存する時に、データベースに存在しないテーブル設定を削除するなど、設定値のクリーニングを行う。</span>
+              <span class="checkbox-label"><?php _e('When you save common settings, such as deleting the table settings that do not exist in the database, to perform the cleaning of the set value.', $this->domain_name); /*共通設定を保存する時に、データベースに存在しないテーブル設定を削除するなど、設定値のクリーニングを行う。*/ ?></span>
             </label>
           </div>
         </div>
       </div><!-- /option-item-1 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label">アンインストール設定</label>
+        <label class="col-sm-2 control-label"><?php _e('Uninstall setting', $this->domain_name); /*アンインストール設定*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-4">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[uninstall_options]" type="checkbox" value="1" <?php checked('1', $options['uninstall_options']); ?>>
-              <span class="checkbox-label">このプラグインをアンインストールする時に、プラグインに関わるすべての設定情報を削除する（作成したテーブルは削除されません）。</span>
+              <span class="checkbox-label"><?php _e('This plugin when you want to uninstall, remove all of the configuration information related to plugin (created table is not deleted).', $this->domain_name); /*このプラグインをアンインストールする時に、プラグインに関わるすべての設定情報を削除する（作成したテーブルは削除されません）。*/ ?></span>
             </label>
           </div>
         </div>
       </div><!-- /option-item-4 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label">管理テーブルの復元</label>
+        <label class="col-sm-2 control-label"><?php _e('Restoration of the management table', $this->domain_name); /*管理テーブルの復元*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-7">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[resume_options]" type="checkbox" value="1" <?php checked('1', $options['resume_options']); ?>>
-              <span class="checkbox-label">過去のプラグイン設定から管理対象テーブルを再設定します。ただし、復元時にデータベースに存在していないテーブルは復旧できません。</span>
+              <span class="checkbox-label"><?php _e('It will re-configure managed table from the past of the plug-in configuration. However, the table that does not exist in the database at the time of restoration can not be recovered.', $this->domain_name); /*過去のプラグイン設定から管理対象テーブルを再設定します。ただし、復元時にデータベースに存在していないテーブルは復旧できません。*/ ?></span>
             </label>
           </div>
         </div>
       </div><!-- /option-item-7 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label">WordPressコアテーブル管理</label>
+        <label class="col-sm-2 control-label"><?php _e('WordPress core table management', $this->domain_name); /*WordPressコアテーブル管理*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-10">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[enable_core_tables]" type="checkbox" value="1" <?php checked('1', $options['enable_core_tables']); ?>>
-              <span class="checkbox-label">WordPressのコアテーブルを管理対象テーブルにします。テーブル管理から、データの閲覧、登録、編集、インポート／エクスポートが行えるようになります。 <?php $this->during_trial( 'enable_core_tables' ); ?></span>
+              <span class="checkbox-label"><?php _e('It makes the core table of WordPress to the managed table. From table management, data browsing, registration, editing, it will allow the import / export.', $this->domain_name); /*WordPressのコアテーブルを管理対象テーブルにします。テーブル管理から、データの閲覧、登録、編集、インポート／エクスポートが行えるようになります。*/ ?> <?php $this->during_trial( 'enable_core_tables' ); ?></span>
             </label>
           </div>
         </div>
       </div><!-- /option-item-10 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label">表示日時のフォーマット</label>
+        <label class="col-sm-2 control-label"><?php _e('The format of the display date and time', $this->domain_name); /*表示日時のフォーマット*/ ?></label>
         <div class="col-sm-4">
           <input type="text" id="option-item-11" name="<?php echo $this->domain_name; ?>[display_datetime_format]" class="form-control" value="<?php echo $options['display_datetime_format']; ?>" placeholder="<?php echo get_option('links_updated_date_format'); ?>">
         </div><div class="col-sm-1"> <?php $this->during_trial( 'display_datetime_format' ); ?></div>
         <div class="col-sm-offset-2 col-sm-10">
-          <p class="help-block">プラグインで表示されるdatetime型データの表示フォーマットを定義できます。デフォルトではWordPressの一般設定の日時フォーマットを利用します。</p>
+          <p class="help-block"><?php _e('You can define the display format of datetime type data that is displayed in the plug-in. By default, it will use the date and time format of the WordPress general settings.', $this->domain_name); /*プラグインで表示されるdatetime型データの表示フォーマットを定義できます。デフォルトではWordPressの一般設定の日時フォーマットを利用します。*/ ?></p>
         </div>
       </div><!-- /option-item-11 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label">デバッグモード</label>
+        <label class="col-sm-2 control-label"><?php _e('Debug mode', $this->domain_name); /*デバッグモード*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-15">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_mode]" type="checkbox" value="1" <?php checked('1', $options['debug_mode']); ?>>
-              <span class="checkbox-label">デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力されます。不具合の調査を行う時などに利用してください。 <?php $this->during_trial( 'debug_mode' ); ?></span>
+              <span class="checkbox-label"><?php _e('When you enable debug mode, an error that occurred in the plug-in will be output as a log. Please use, such as when to carry out the failure of the investigation.', $this->domain_name); /*デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力されます。不具合の調査を行う時などに利用してください。*/ ?> <?php $this->during_trial( 'debug_mode' ); ?></span>
             </label>
           </div>
         </div>
       </div><!-- /option-item-15 -->
       <div class="clearfix"><br></div>
-      <h4 class="title">テーブル作成時の設定</h4>
+      <h4 class="title"><?php _e('Set at the time of table creation', $this->domain_name); /*テーブル作成時の設定*/ ?></h4>
       <div class="form-group">
-        <label class="col-sm-2 control-label">テーブル接頭辞</label>
+        <label class="col-sm-2 control-label"><?php _e('Table prefix', $this->domain_name); /*テーブル接頭辞*/ ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-21">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[use_wp_prefix]" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
-              <span class="checkbox-label">新しいテーブルを作成する時にテーブル名にWordPressの設定（wp-config.php）で定義されているテーブル接頭辞<code><?php global $wpdb; echo $wpdb->prefix; ?></code>を自動付与する。</span>
+              <span class="checkbox-label"><?php global $wpdb; printf( _e('And automatically grant table prefix %s defined in the WordPress set in the table name (wp-config.php) when creating a new table.', $this->domain_name), '<code>'. $wpdb->prefix .'</code>' ); /*新しいテーブルを作成する時にテーブル名にWordPressの設定（wp-config.php）で定義されているテーブル接頭辞%sを自動付与する。*/ ?></span>
             </label>
-            <p class="help-block">なお、この設定はテーブル作成時に個別に変更可能です。</p>
+            <p class="help-block"><?php _e('Note that this setting can be changed individually at the time of table creation.', $this->domain_name); /*なお、この設定はテーブル作成時に個別に変更可能です。*/ ?></p>
           </div>
         </div>
       </div><!-- /option-item-21 -->
       <div class="form-group">
-        <label for="option-item-22" class="col-sm-2 control-label">テーブルの文字コード</label>
+        <label for="option-item-22" class="col-sm-2 control-label"><?php _e('Table character set', $this->domain_name); /*テーブルの文字コード*/ ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-22">
             <input type="text" name="<?php echo $this->domain_name; ?>[charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control">
@@ -144,11 +144,11 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルの文字コードの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_charset' ); ?></p>
+          <p class="help-block"><?php _e('Timezone at the time of data registration', $this->domain_name); /*このプラグインで作成するテーブルの文字コードの初期値となります。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_charset' ); ?></p>
         </div>
       </div>
       <div class="form-group">
-        <label for="option-item-23" class="col-sm-2 control-label">データ登録時のタイムゾーン</label>
+        <label for="option-item-23" class="col-sm-2 control-label"><?php _e('', $this->domain_name); /*データ登録時のタイムゾーン*/ ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-4 pull-left" data-initialize="combobox" id="option-item-23">
             <input type="text" name="<?php echo $this->domain_name; ?>[timezone]" value="<?php esc_attr_e($options['timezone']); ?>" class="form-control">
@@ -161,14 +161,14 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block inline-help"> 現在利用中のMySQLデータベースのタイムゾーン: <code><?php echo apply_filters( 'sanitize_option_timezone_string', $options['timezone'], 'timezone_string'); ?></code></p>
+          <p class="help-block inline-help"> <?php _e('Timezone of the MySQL database of currently available in', $this->domain_name); /*現在利用中のMySQLデータベースのタイムゾーン*/ ?>: <code><?php echo apply_filters( 'sanitize_option_timezone_string', $options['timezone'], 'timezone_string'); ?></code></p>
           <div class="clearfix">
-            <p class="help-block">このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイムゾーンに応じて値をローカライズします。<?php $this->during_trial( 'localize_timezone' ); ?></p>
+            <p class="help-block"><?php _e('The from the plugin when storing data of datetime type table and localize the value according to the set timezone.', $this->domain_name); /*このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイムゾーンに応じて値をローカライズします。*/ ?> <?php $this->during_trial( 'localize_timezone' ); ?></p>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <label for="option-item-24" class="col-sm-2 control-label">初期データベースエンジン</label>
+        <label for="option-item-24" class="col-sm-2 control-label"><?php _e('Initial database engine', $this->domain_name); /*初期データベースエンジン*/ ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-24">
             <input type="text" name="<?php echo $this->domain_name; ?>[default_db_engine]" value="<?php esc_attr_e($options['default_db_engine']); ?>" class="form-control">
@@ -181,11 +181,11 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルのデータベースエンジンの初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_db_engine' ); ?></p>
+          <p class="help-block"><?php _e('This initial value is the database engine of the table created by the plugin.', $this->domain_name); /*このプラグインで作成するテーブルのデータベースエンジンの初期値となります。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_db_engine' ); ?></p>
         </div>
       </div>
       <div class="form-group">
-        <label for="option-item-25" class="col-sm-2 control-label">初期表示レコード数</label>
+        <label for="option-item-25" class="col-sm-2 control-label"><?php _e('Initial display number of records', $this->domain_name); /*初期表示レコード数*/ ?></label>
         <div class="col-sm-10">
           <div class="spinbox disits-3" data-initialize="spinbox" id="option-item-25">
             <input type="text" name="<?php echo $this->domain_name; ?>[default_per_records]" value="<?php echo intval($options['default_per_records']); ?>" class="form-control input-mini spinbox-input">
@@ -194,7 +194,7 @@ $default_action = 'update';
               <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
             </div>
           </div>
-          <p class="help-block">このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となります。<a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
+          <p class="help-block"><?php _e('This initial value is the number of displayed records per one page of the table created by the plugin.', $this->domain_name); /*このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となります。*/ ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
         </div>
       </div>
 
@@ -280,7 +280,7 @@ input.large-text, textarea.large-text { width: 99%; }
 
       <div class="col-sm-offset-2 col-sm-10">
         <ul id="foot-note-1" class="foot-note">
-          <li><span class="dashicons dashicons-info"></span> すでに作成済みのテーブルには反映されません。変更したい場合は個別にテーブル設定を変更してください。</li>
+          <li><span class="dashicons dashicons-info"></span> <?php _e('Already it is not reflected in the previously created table. Please change the table settings individually if you want to change it.', $this->domain_name); /*すでに作成済みのテーブルには反映されません。変更したい場合は個別にテーブル設定を変更してください。*/ ?></li>
         </ul>
       </div>
       <div class="form-group">
@@ -289,17 +289,6 @@ input.large-text, textarea.large-text { width: 99%; }
         </div>
       </div>
     </form>
-<!--
-    <form method="post" action="" novalidate="novalidate">
-      <input type="hidden" name="admin_page" value="">
-      <input type="hidden" name="action" value="resume">
-      <input type="hidden" id="_wpnonce" name="_wpnonce" value="">
-      <input type="hidden" name="_wp_http_referer" value="">
-      <p class="resume" style="position: relative; top: -60px; left: 140px;">
-        <input type="submit" name="resume" id="resume" class="button button-default" value="<?php _e('Resume Tables', $this->domain_name); ?>">
-      </p>
-    </form>
--->
   </div>
 <?php endif; ?>
   
@@ -308,8 +297,34 @@ input.large-text, textarea.large-text { width: 99%; }
     $this->log_distination_path = $this->plugin_dir . 'debug.log';
 ?>
   
-  <p>デバッグログの表示</p>
-  <textarea name="debug-log" rows="20" style="width: 80%;"><?php echo file_get_contents($this->log_distination_path); ?></textarea>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('You can check the log of the time "Custom DataBase Tables" plug-ins of various processes executed in this section.', $this->domain_name); /*このセクションでは「Custom DataBase Tables」プラグインの各種処理実行時のログを確認できます。*/ ?><br>
+      <?php _e('Available as a debugging log to follow the flow of the processing such as when trouble occurs.', $this->domain_name); /*不具合発生時等の処理の流れを追うためのデバッグログとしてご利用いただけます。*/ ?>
+    </p>
+  </div>
+  
+  <div class="debug-section">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="<?php echo $default_action; ?>">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <div class="form-group">
+        <div class="col-sm-11">
+          <textarea name="debug-log" id="debug-log-viewer" rows="20" class="form-control" readonly><?php echo file_get_contents($this->log_distination_path); ?></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="col-sm-2">
+          <input type="submit" name="submit" id="debug-submit" class="btn btn-primary pull-left" value="<?php _e('Clear Logs', $this->domain_name); ?>">
+        </div>
+      </div>
+      
+    </form>
+  </div>
   
 <?php endif; ?>
   

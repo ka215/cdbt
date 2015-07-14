@@ -818,6 +818,19 @@ $(function() {
   }
   
   
+  
+  /**
+   * Helper UI scripts for debug section
+   */
+  if ('cdbt_options' === $.QueryString.page && 'debug' === $.QueryString.tab) {
+    
+    //$('#debug-log-viewer').scrollTop = $('#debug-log-viewer').scrollHeight;
+    var psta = $('#debug-log-viewer');
+    psta.scrollTop(psta[0].scrollHeight - psta.height());
+    
+  }
+  
+  
 });
 /**
  * Common processing that does not depend on jQuery
