@@ -128,9 +128,10 @@ class CdbtAdmin extends CdbtDB {
     $this->core_actions();
     
     // Capabilities
-    $this->minimum_capability = apply_filters( 'cdbt_admin_minimum_capability', 'edit_posts' ); // -> Contributor
-    $this->webmaster_capability = apply_filters( 'cdbt_admin_webmaster_capability', 'edit_pages' ); // -> Editor
-    $this->maximum_capability = apply_filters( 'cdbt_admin_maximum_capability', 'activate_plugins' ); // -> Administrator, and Super Admin
+    $this->minimum_capability = 'edit_posts'; // -> Contributor
+    $this->webmaster_capability = 'edit_pages'; // -> Editor
+    $this->maximum_capability = 'activate_plugins'; // -> Administrator, and Super Admin
+    $this->operate_capability = 'cdbt_operate_plugin';
     
     // Paths
     $this->admin_template_dir = apply_filters( 'cdbt_admin_template_dir', $this->plugin_dir . 'templates/admin/' );
@@ -268,7 +269,7 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_menus() {
-    $operating_capability = $this->minimum_capability;
+    $operating_capability = apply_filters( 'cdbt_operating_capability', $this->maximum_capability );
     
     $menus = [];
     
@@ -279,7 +280,7 @@ class CdbtAdmin extends CdbtDB {
       'cdbt_management_console', 
       array($this, 'admin_page_render'), 
       'dashicons-admin-generic', 
-      $this->admin_menu_position( 'top' )
+      $this->admin_menu_position( 'bottom' )
     );
     
     $menus[] = add_submenu_page( 

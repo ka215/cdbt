@@ -30,7 +30,7 @@ $this->destroy_session();
   <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Management Console', CDBT); ?></h2>
   
   <div class="introduction">
-    <p>Welcome to "Custom DataBase Tables" plugin! This page is tutorial of about plugin.</p>
+    <p><?php _e('Welcome to the "Custom DataBase Tables" plugin! In this page is introductions about feature of plugin, and be able to go short trip as the tutorial.', CDBT); ?></p>
   </div>
   
   <?php
@@ -44,11 +44,11 @@ $this->destroy_session();
     'displayMaxStep' => 5, 
     'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), __('Step4', CDBT), __('Step5', CDBT) ], 
     'stepContents' => [ 
-      [ 'title' => 'Custom DataBase Tables version 2 arrival now!', 'bgcolor' => 'bg-default', 'content' => '<p><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>' ], 
-      [ 'title' => 'Version 2 has powered up all feature!', 'bgcolor' => 'bg-danger', 'content' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' ], 
-      [ 'title' => 'Step3 Title', 'bgcolor' => 'bg-info', 'content' => 'content3' ], 
-      [ 'title' => 'Step4 Title', 'bgcolor' => 'bg-success', 'content' => 'content4' ], 
-      [ 'title' => 'Step5 Title', 'bgcolor' => 'bg-warning', 'content' => 'content5' ], 
+      [ 'title' => __('Custom DataBase Tables version 2 arrival now!', CDBT), 'bgcolor' => 'bg-default', 'content' => '<p><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur? [33] At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>' ], 
+      [ 'title' => __('Version 2 has powered up all feature!', CDBT), 'bgcolor' => 'bg-danger', 'content' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' ], 
+      [ 'title' => __('Let&#39;s create a new table!', CDBT), 'bgcolor' => 'bg-info', 'content' => __('Since not yet written content, please wait.', CDBT) ], 
+      [ 'title' => __('Let&#39;s use the shortcode!', CDBT), 'bgcolor' => 'bg-success', 'content' => __('Since not yet written content, please wait.', CDBT) ], 
+      [ 'title' => __('Cooperation with external site by API', CDBT), 'bgcolor' => 'bg-warning', 'content' => __('Since not yet written content, please wait.', CDBT) ], 
     ], 
     'disablePreviousStep' => false, 
   ];
@@ -56,6 +56,7 @@ $this->destroy_session();
   
   ?>
   
+<?php /*
   <div class="wizard" data-initialize="wizard" id="welcome-wizard">
     <ul class="steps">
     <?php foreach ($wizard_step['name'] as $i => $step_name) : ?>
@@ -65,12 +66,12 @@ $this->destroy_session();
     <?php endforeach; ?>
     </ul>
     <div class="actions">
-      <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span>Prev</button>
-      <button type="button" class="btn btn-default btn-next" data-last="Complete">Next<span class="glyphicon glyphicon-arrow-right"></span></button>
+      <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span><?php _e('Prev', CDBT); ?></button>
+      <button type="button" class="btn btn-default btn-next" data-last="Complete"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>
     </div>
     <div class="step-content">
 <?php
-  /* Wizard Step1 Block */
+  /* Wizard Step1 Block * /
       if (1 <= $wizard_step['display_max']) : ?>
       <div class="step-pane active sample-pane alert" data-step="1">
         <h4>`$this` Object</h4>
@@ -78,11 +79,11 @@ $this->destroy_session();
 
 var_dump($this);
 
-      /* var_dump($this); */ ?></p>
+        ?></p>
       </div>
 <?php
       endif;
-  /* Wizard Step2 Block */
+  /* Wizard Step2 Block * /
       if (2 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-info alert" data-step="2">
         <h4>Current Plugin Options</h4>
@@ -90,7 +91,7 @@ var_dump($this);
       </div>
 <?php
       endif;
-  /* Wizard Step3 Block */
+  /* Wizard Step3 Block * /
       if (3 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-danger alert" data-step="3">
         <h4>`$this->get_table_status( 'wp_a' )`</h4>
@@ -98,7 +99,7 @@ var_dump($this);
       </div>
 <?php
       endif;
-  /* Wizard Step4 Block */
+  /* Wizard Step4 Block * /
       if (4 <= $wizard_step['display_max']) : ?>
       <div class="step-pane sample-pane bg-danger alert" data-step="4">
         <h4>Design Template</h4>
@@ -109,6 +110,7 @@ var_dump($this);
     </div><!-- /.step-content -->
   </div><!-- /.wizard -->
   <div class="clearfix"><div style="height: 2em;"></div></div>
+*/ ?>
   
   <div class="panel panel-default other-note">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>

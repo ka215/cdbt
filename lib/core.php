@@ -181,6 +181,10 @@ class CdbtCore extends CdbtUtility {
       return;
     
     $this->plugin_enabled = true;
+    
+    $role = get_role( 'administrator' );
+    $role->add_cap( 'cdbt_operate_plugin', false ); 
+    
     $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has activated.', CDBT));
     $this->logger( $message );
     
@@ -197,6 +201,10 @@ class CdbtCore extends CdbtUtility {
       return;
     
     $this->plugin_enabled = false;
+    
+    $role = get_role( 'administrator' );
+    $role->remove_cap( 'cdbt_operate_plugin' ); 
+    
     $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has been deactivation.', CDBT));
     $this->logger( $message );
     
