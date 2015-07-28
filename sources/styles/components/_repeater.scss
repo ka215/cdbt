@@ -1,3 +1,9 @@
+.repeater-check-switch {
+  display: inline-block;
+  float: left;
+  margin-right: 8px;
+}
+
 .repeater-list-wrapper {
   overflow: hidden;
   overflow-y: hidden;
@@ -10,23 +16,46 @@
     tbody {
       tr {
         
+        th {
+          height: 100%;
+          line-height: 0;
+          
+          &.col-tl-tablename { width: 200px; }
+          &.col-tl-records { width: 136px; text-align: left; }
+          &.col-tl-pk { width: 100px; }
+          &.col-tl-charset { width: 100px; }
+          &.col-tl-collation { width: 160px; }
+          &.col-tl-engine { width: 100px; }
+          &.col-tl-ppr { width: 80px; }
+          &.col-tl-operation { max-width: 180px; }
+        }
+        
         td {
           position: relative;
           
           .repeater-list-check {
-            position: absolute;
+            position: relative;
             float: left;
+            width: 28px;
             
             span {
               color: $brand-primary;
             }
           }
           .cdbt-repeater-left-main {
-            position: absolute;
+            position: relative;
             top: auto;
-            left: 28px;
           }
           
+          &.col-tl-tablename { width: 200px; }
+          &.col-tl-records { text-align: right; }
+          &.col-tl-ppr { text-align: right; }
+          &.col-tl-operation { text-align: center; }
+          
+          .tl-operation-buttons {
+            margin: auto;
+            width: 180px;
+          }
         }
         
         &:hover {

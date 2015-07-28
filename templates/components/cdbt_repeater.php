@@ -186,6 +186,11 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
     <div class="repeater-header">
       <div class="repeater-header-left">
         <span class="repeater-title"></span>
+      <?php if ($enable_editor) : ?>
+        <div class="repeater-check-switch">
+          <button type="button" class="btn btn-default" id="repeater-check-switch" title="<?php _e('Switch Checking', CDBT); ?>"><i class="fa fa-check-square-o"></i><span class="sr-only"><?php _e('Switch Checking', CDBT); ?></span></button>
+        </div>
+      <?php endif; ?>
       <?php if ($enable_search) : ?>
         <div class="repeater-search">
           <div class="search input-group">
@@ -563,6 +568,19 @@ endif; ?>
     
     thumbnail_template: <?php echo $thumbnail_template; ?>,
     
+  });
+
+  $('#repeater-check-switch').on('click', function(){
+    if (repeater.repeater('list_getSelectedItems').length > 0) {
+      repeater.repeater('list_clearSelectedItems');
+    } else {
+      var _index = 0;
+      $('input.row_where_condition').each(function(){
+        var _ary = $(this).val().split(':');
+        repeater.repeater('list_setSelectedItems', [ { index: _index }, { property: _ary[0], value: _ary[1] }]);
+        _index++;
+      });
+    }
   });
 
 };

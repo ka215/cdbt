@@ -155,7 +155,7 @@ if (!isset($this->component_options['formElements']) || empty($this->component_o
 ?>
 <div class="cdbt-entry-data-form">
   <form method="post" action="<?php echo $action_url; ?>" class="form-horizontal"<?php if ($is_file_upload) : ?> enctype="multipart/form-data"<?php endif; ?>>
-    <?php if (empty(!$hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
+    <?php if (!empty($hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="<?php echo $form_action; ?>">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
     <?php wp_nonce_field( $wp_nonce_action ); ?>

@@ -308,19 +308,28 @@ input.large-text, textarea.large-text { width: 99%; }
     <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
       <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
       <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
-      <input type="hidden" name="action" value="<?php echo $default_action; ?>">
+      <input type="hidden" name="action" value="debug_log">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
       <div class="form-group">
         <div class="col-sm-11">
-          <textarea name="debug-log" id="debug-log-viewer" rows="20" class="form-control" readonly><?php echo file_get_contents($this->log_distination_path); ?></textarea>
+          <textarea name="<?php echo $this->domain_name; ?>[debug-log]" id="debug-log-viewer" rows="20" class="form-control" readonly><?php echo file_get_contents($this->log_distination_path); ?></textarea>
         </div>
       </div>
       
       <div class="form-group">
-        <div class="col-sm-2">
+        <div class="col-sm-1">
           <input type="submit" name="submit" id="debug-submit" class="btn btn-primary pull-left" value="<?php _e('Clear Logs', $this->domain_name); ?>">
         </div>
+        <div class="checkbox highlight col-sm-10" id="debug-log-option">
+          <label class="checkbox-custom highlight" data-initialize="checkbox">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_log_option]" type="checkbox" value="1">
+            <span class="checkbox-label"><?php _e('Remove the current log after backup of the log file.', $this->domain_name); /* ログファイルのバックアップ後に現在のログを削除する。 */ ?></span>
+          </label>
+        </div>
+        <p class="help-block col-sm-offset-1 col-sm-10">
+          <?php printf( __('Note: Backup files stores to the directory of %s.', $this->domain_name), '<code>'. $this->plugin_dir .'backup/</code>' ); /* バックアップファイルは %s に保存されます。*/ ?>
+        </p>
       </div>
       
     </form>

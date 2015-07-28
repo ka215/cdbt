@@ -152,7 +152,7 @@ trait CdbtExtras {
     if (!is_array($columns) && in_array($columns, [ 'table_list' ])) {
       if ('table_list' === $columns) {
         // For customColumnRenderer() in the repeater script
-        $custom_column_content = "'<div><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
+        $custom_column_content = "'<div class=\"tl-operation-buttons\"><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
         $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-sliders\"></i></a>";
         $custom_column_content .= "</div><div class=\"btn-group operate-data-btn-group\" role=\"group\" aria-label=\"operateDataButtons\">";
         $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-eye\"></i></a>";
@@ -169,8 +169,7 @@ trait CdbtExtras {
             'property' => 'table_name', 
             'sortable' => true, 
             'sortDirection' => 'asc', 
-            'className' => null, 
-            'width' => 240, 
+            'className' => 'col-tl-tablename', 
             'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\">'+rowData.table_name+'</a></div><div class=\"small text-muted cdbt-repeater-left-sub\">'+rowData.logical_name+'</div>'"
           ], 
           [ 'label' => __('Records', CDBT), 
@@ -178,32 +177,33 @@ trait CdbtExtras {
             'sortable' => true, 
             'sortDirection' => 'asc', 
             'dataNumric' => true, 
-            'className' => 'text-right', 
-            'width' => 100 
+            'className' => 'col-tl-records', 
           ], 
           [ 'label' => __('PrimaryKey', CDBT), 
             'property' => 'primary_key', 
             'sortable' => false, 
+            'className' => 'col-tl-pk', 
           ], 
           [ 'label' => __('Charset', CDBT), 
             'property' => 'charset', 
             'sortable' => false, 
-            'width' => 100, 
+            'className' => 'col-tl-charset', 
           ], 
           [ 'label' => __('Collation', CDBT), 
             'property' => 'collation', 
             'sortable' => false, 
+            'className' => 'col-tl-collation', 
           ], 
           [ 'label' => __('Engine', CDBT), 
             'property' => 'engine', 
             'sortable' => false, 
+            'className' => 'col-tl-engine', 
           ], 
           [ 'label' => __('PerPageRecords', CDBT), 
             'property' => 'per_records', 
             'sortable' => false, 
             'dataNumric' => true, 
-            'className' => 'text-center', 
-            'width' => 80, 
+            'className' => 'col-tl-ppr', 
           ], 
 //          [ 'label' => __('AvgRowLength', CDBT), 
 //            'property' => 'avg_row_length', 
@@ -222,8 +222,7 @@ trait CdbtExtras {
           [ 'label' => __('Operation', CDBT), 
             'property' => 'operate_table_url', 
             'sortable' => false, 
-            'className' => 'row text-center', 
-            'width' => 240, 
+            'className' => 'col-tl-operation', 
             'customColumnRenderer' => $custom_column_content, 
           ], 
         ];

@@ -354,7 +354,8 @@ class CdbtDB extends CdbtConfig {
       $message = __('Specified table does not exist.', CDBT);
     
     $result = $this->array_flatten($this->wpdb->get_results( $this->wpdb->prepare( 'SHOW TABLE STATUS LIKE %s;', esc_sql($table_name) ), ARRAY_A ));
-    if (!is_array($result) || empty($result) || empty(array_values($result))) 
+    $_values = array_values($result);
+    if (!is_array($result) || empty($result) || empty($_values)) 
       $message = __('Table status does not exist.', CDBT);
     
     if (!empty($message)) {
@@ -824,7 +825,8 @@ class CdbtDB extends CdbtConfig {
       return false;
     }
     
-    if (empty(array_diff_key($insert_data, $field_format))) {
+    $_diff_result = array_diff_key($insert_data, $field_format);
+    if (empty($_diff_result)) {
       $result = $this->wpdb->insert( $table_name, $insert_data, array_values($field_format) );
     } else {
       $result = $this->wpdb->insert( $table_name, $insert_data );
@@ -976,8 +978,10 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Main processing of data update
-    if (empty(array_diff_key($data, $data_field_format))) {
-      if (empty(array_diff_key($where_data, $where_field_format))) {
+    $_diff_result = array_diff_key($data, $data_field_format);
+    if (empty($_diff_result)) {
+      $_diff_result = array_diff_key($where_data, $where_field_format);
+      if (empty($_diff_result)) {
         $result = $this->wpdb->update( $table_name, $data, $where_data, array_values($data_field_format), array_values($where_field_format) );
       } else {
         $result = $this->wpdb->update( $table_name, $data, $where_data, array_values($data_field_format) );
@@ -1136,7 +1140,8 @@ class CdbtDB extends CdbtConfig {
       }
     }
     
-    if (empty(array_diff_key($delete_where, $field_format))) {
+    $_diff_result = array_diff_key($delete_where, $field_format);
+    if (empty($_diff_result)) {
       $result = $this->wpdb->delete( $table_name, $delete_where, array_values($field_format) );
     } else {
       $result = $this->wpdb->delete( $table_name, $delete_where );
@@ -1485,7 +1490,8 @@ class CdbtDB extends CdbtConfig {
             if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
               $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
             } else {
-              $regist_data[$post_key] = !empty($_date.$_hour.$_minute.$_second) ? $_date.$_hour.$_minute.$_second : $table_schema[$post_key]['default'];
+              $_datetime = $_date . $_hour . $_minute . $_second;
+              $regist_data[$post_key] = !empty($_datetime) ? $_datetime : $table_schema[$post_key]['default'];
             }
           } else {
             $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;

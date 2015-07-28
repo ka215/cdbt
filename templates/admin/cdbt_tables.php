@@ -12,12 +12,12 @@
  */
 $options = get_option($this->domain_name);
 $tabs = [
-  'table_list' => esc_html__('Table List', CDBT), 
-  'wp_core_table' => esc_html__('Core Tables', CDBT), 
-  'create_table' => esc_html__('Create Table', CDBT), 
-  'modify_table' => esc_html__('Modify Table', CDBT), 
-  'operate_table' => esc_html__('Operate Table', CDBT), 
-  'operate_data' => esc_html__('Operate Data', CDBT), 
+  'table_list' => __('Table List', CDBT), 
+  'wp_core_table' => __('Core Tables', CDBT), 
+  'create_table' => __('Create Table', CDBT), 
+  'modify_table' => __('Modify Table', CDBT), 
+  'operate_table' => __('Operate Table', CDBT), 
+  'operate_data' => __('Operate Data', CDBT), 
 ];
 $default_tab = 'table_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
@@ -41,7 +41,7 @@ foreach ($this->allow_file_types as $file_type) {
  */
 ?>
 <div id="page-head" name="page-head" class="wrap">
-  <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Tables Management', CDBT); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT Tables Management', CDBT); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -53,7 +53,7 @@ foreach ($this->allow_file_types as $file_type) {
   </div>
   
 <?php if ($current_tab == 'table_list') : ?>
-  <h4 class="tab-annotation"><?php esc_html_e('Enabled Table List', CDBT); ?></h4>
+  <h4 class="tab-annotation"><?php _e('Enabled Table List', CDBT); ?></h4>
   <?php if ( 0 === count($enable_table) ) : ?>
     <p><?php _e('Currently, manageable table in the plugin does not exist.', CDBT); ?></p>
     <p><?php printf( __('If you want to create a new table, please %sclick here%s.', CDBT), '<a href="'. add_query_arg('tab', 'create_table') .'">', '</a>' ); ?></p>
@@ -71,7 +71,7 @@ foreach ($this->allow_file_types as $file_type) {
 <?php endif; /* End of `table_list` tab contents */ ?>
   
 <?php if ($current_tab == 'wp_core_table') : ?>
-  <h4 class="tab-annotation"><?php esc_html_e('WordPress Core Table List', CDBT); ?></h4>
+  <h4 class="tab-annotation"><?php _e('WordPress Core Table List', CDBT); ?></h4>
     
 <?php
   /**

@@ -52,10 +52,11 @@ class CdbtUtility {
       return;
     
     if (empty($message) || '' === trim($message)) {
-      if (!is_wp_error($this->errors) || empty($this->errors->get_error_message())) 
+      $message = $this->errors->get_error_message();
+      if (!is_wp_error($this->errors) || empty($message)) 
         return;
       
-      $message = apply_filters( 'cdbt_log_message', $this->errors->get_error_message(), $this->errors );
+      $message = apply_filters( 'cdbt_log_message', $message, $this->errors );
     }
     
     if (!in_array(intval($logging_type), [ 0, 1, 3, 4 ])) 

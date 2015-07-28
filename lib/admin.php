@@ -693,9 +693,59 @@ class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function do_cdbt_options_debug() {
+    static $message = '';
     
-    // None at the moment
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'debug_log' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
     
+    $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
+    
+    // sanitaize checkbox values
+    $checkbox_options = [ 'debug_log_option' ];
+    foreach ($checkbox_options as $option_name) {
+      if (!array_key_exists($option_name, $submit_options)) 
+        $submit_options[$option_name] = false;
+    }
+    
+    $_source = $this->plugin_dir . 'debug.log';
+    if (!file_exists($_source)) {
+      $this->register_admin_notices( CDBT . '-error', __('Log file does not exist.', CDBT), 3, true ); /* ログファイルがありません。 */
+      return;
+    }
+    
+    // Backup log file
+    $_content = trim($submit_options['debug-log']);
+    if ( $submit_options['debug_log_option'] && !empty($_content) ) {
+      $_dist = $this->plugin_dir . 'backup/debug-' . date('Ymd', time()) . '.log';
+      if (!@opendir($this->plugin_dir . 'backup')) {
+        if (!wp_mkdir_p($this->plugin_dir . 'backup')) {
+          $this->register_admin_notices( CDBT . '-error', __('Could not make a directory for backup. Then, it was interrupted of log deletion.', CDBT), 3, true ); /* バックアップ用のディレクトリ作成ができませんでした。ログ削除は中断されました。 */
+          return;
+        }
+      }
+      if (!@copy($_source, $_dist)) {
+        system(sprintf('mv %s %s', $_source, $_dist), $result);
+        if (1 === $result) {
+          $this->register_admin_notices( CDBT . '-error', __('Could not copy of the log file.', CDBT), 3, true ); /* ログファイルのコピーができませんでした。 */
+          return;
+        }
+      }
+    }
+    
+    // Remove log contents
+    if ($_fp = @fopen($_source, 'w')) {
+      if (false === @fwrite($_fp, '')) {
+        $this->register_admin_notices( CDBT . '-error', __('Could not clear the log.', CDBT), 3, true ); /* ログの削除ができませんでした。 */
+        return;
+      }
+    }
+    fclose($_fp);
+    
+    $this->register_admin_notices( CDBT . '-notice', __('Have cleared the log.', CDBT), 3, true );
   }
 
 
@@ -1086,10 +1136,12 @@ class CdbtAdmin extends CdbtDB {
                     if (count(end($_raw_array)) !== count($add_first_row)) {
                       $message = __('The number of data to be imported is not consistent with the number of the specified column. Please specify the column to match the import data again.', CDBT);
                     } else {
-                      if ( empty( array_diff($add_first_row, stripslashes_deep(end($_raw_array))) ) ) 
+                      $_diff_result = array_diff($add_first_row, stripslashes_deep(end($_raw_array)));
+                      if ( empty($_diff_result) ) 
                         array_pop($_raw_array);
                       
-                      if ( empty( array_diff($add_first_row, stripslashes_deep(reset($_raw_array))) ) ) 
+                      $_diff_result = array_diff($add_first_row, stripslashes_deep(reset($_raw_array)));
+                      if ( empty($_diff_result) ) 
                         array_shift($_raw_array);
                       
                       if (empty($_raw_array)) {

@@ -163,9 +163,13 @@ $(function() {
       $('.operate-data-btn-group>button').on('click', function(){
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
       });
+      
+      $('[class^=col-tl-]').removeAttr('style');
+      $('th.sortable').on('click', function(){
+        $('[class^=col-tl-]').removeAttr('style');
+      });
+      
     }
-    
-    
   }
   
   /**

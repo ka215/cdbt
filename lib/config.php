@@ -290,7 +290,8 @@ class CdbtConfig extends CdbtCore {
     $prev_options = $this->options;
     
     if (empty($option_key)) {
-      if ( empty(array_diff(array_keys($prev_options), array_keys($new_data))) ) {
+      $_diff_result = array_diff(array_keys($prev_options), array_keys($new_data));
+      if ( empty($_diff_result) ) {
         // 
         // Filter to clean up the option settings in depending with the setting of "cleaning_options"
         // 

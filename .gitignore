@@ -6,6 +6,7 @@ docs/
 dist/
 bower_components/
 node_modules/
+backup/
 npm-debug.log
 debug.log
 outer_defined_translations.php
@@ -16,6 +17,7 @@ lib/cdbt.*
 templates/cdbt-*
 old.*
 /docs
+/backup
 /sources/styles/old.admin-styles.css
 /sources/styles/admin-styles.css
 /sources/styles/main.scss

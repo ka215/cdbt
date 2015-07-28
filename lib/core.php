@@ -156,16 +156,17 @@ class CdbtCore extends CdbtUtility {
         $this->errors->add('lack_extension_error', sprintf(__('Please install the extension %s to run this plugin.', $this->domain_name), $extension));
     }
     
-    if (!is_wp_error($this->errors) || empty($this->errors->get_error_message())) {
+    $message = $this->errors->get_error_message();
+    if (!is_wp_error($this->errors) || empty($message)) {
       $this->plugin_enabled = true;
       return;
     }
     
     unset( $_GET['activate'] );
     
-    $this->logger( $this->errors->get_error_message() );
+    $this->logger( $message );
     
-    printf( '<div class="error"><p>%s</p><p>%s</p></div>', $this->errors->get_error_message(), sprintf(__('The %s has been deactivated.', $this->domain_name), __('Custom DataBase Tables', $this->domain_name)) );
+    printf( '<div class="error"><p>%s</p><p>%s</p></div>', $message, sprintf(__('The %s has been deactivated.', $this->domain_name), __('Custom DataBase Tables', $this->domain_name)) );
     
     deactivate_plugins( $this->plugin_main_file );
   }
