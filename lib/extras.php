@@ -115,7 +115,7 @@ trait CdbtExtras {
           'operate_data_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_data' ]))) ), 
           'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
           'thumbnail_title' => $value, // optional
-          'thumbnail_bgcolor' => 'tranceparent', // optional
+          'thumbnail_bgcolor' => 'transparent', // optional
           'thumbnail_width' => 64, // optional
           'thumbnail_height' => 64, // optional
           'thumbnail_class' => null, // optional
@@ -226,6 +226,19 @@ trait CdbtExtras {
             'customColumnRenderer' => $custom_column_content, 
           ], 
         ];
+      } else
+      if ('shortcode_list' === $columns) {
+        
+        $columns = [
+          [ 'label' => __('ShortcodeName', CDBT), 
+            'property' => 'shortcode_name', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-sl-scname', 
+            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-table=\"'+rowData.shortcode_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
+          ], 
+        ];
+        
       }
     }
     

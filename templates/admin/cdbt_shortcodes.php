@@ -37,11 +37,30 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
   
 <?php if ($current_tab == 'shortcode_list') : ?>
   <h4 class="tab-annotation"><?php _e('Shortcode List', CDBT); ?></h4>
-  <form id="" name="" action="" method="post" class="">
-    
-    <?php echo 'Shortcodes'; ?>
-    
-  </form>
+  <?php 
+  /**
+   * Define the localized variables for tab of `shortcode_list`
+   */
+  
+  $datasource = [];
+  $datasource[] = [
+    'cdbt_index_id' => 1, 
+    'shortcode_name' => 'cdbt-view', 
+    'description' => 'description', 
+    'operate_shortcode_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_shortcode' ]))) ), 
+    'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
+    'thumbnail_title' => '', // optional
+    'thumbnail_bgcolor' => 'transparent', // optional
+    'thumbnail_width' => 64, // optional
+    'thumbnail_height' => 64, // optional
+    'thumbnail_class' => null, // optional
+  ];
+  
+  //$datasource = $this->create_tablelist_datasorce($enable_table);
+  $conponent_options = $this->create_scheme_datasource( 'cdbtShortcodes', 0, 10, 'shortcode_list', $datasource );
+  $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
+  
+  ?>
 <?php endif; ?>
   
 <?php if ($current_tab == 'shortcode_entry') : ?>
