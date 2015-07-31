@@ -399,9 +399,12 @@ class CdbtConfig extends CdbtCore {
     static $message = '';
     
     $primary_keys = [];
-    foreach ($this->get_table_schema($table_name) as $column => $scheme) {
-      if ($scheme['primary_key']) 
-        $primary_keys[] = $column;
+    $_table_schema = $this->get_table_schema($table_name);
+    if (is_array($_table_schema)) {
+      foreach ($_table_schema as $column => $scheme) {
+        if ($scheme['primary_key']) 
+          $primary_keys[] = $column;
+      }
     }
     $table_status = $this->get_table_status( $table_name );
     $table_charset = $this->db_default_charset;

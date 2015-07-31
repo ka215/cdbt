@@ -13,12 +13,16 @@
 $options = get_option($this->domain_name);
 $tabs = [
   'shortcode_list' => __('Shortcode List', CDBT), 
-  'shortcode_entry' => __('Shortcode Register', CDBT), 
+  'shortcode_regist' => __('Shortcode Register', CDBT), 
   'shortcode_edit' => __('Edit Shortcode', CDBT), 
 ];
 $default_tab = 'shortcode_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 
+foreach ($this->cdbt_sessions as $_session_key => $_val) {
+  if ($current_tab !== $_session_key) 
+    $this->destroy_session($_session_key);
+}
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -36,40 +40,297 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
   </div>
   
 <?php if ($current_tab == 'shortcode_list') : ?>
-  <h4 class="tab-annotation"><?php _e('Shortcode List', CDBT); ?></h4>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('This shortcode list has been managing in the plugin. Your newly created shortcodes, you can use very conveniently by registering to this plugin.', CDBT); /* プラグインが管理しているショートコードの一覧です。新たに作成したショートコードは、登録することで簡単に再利用できるようになります。 */?>
+    </p>
+  </div>
+
   <?php 
   /**
    * Define the localized variables for tab of `shortcode_list`
    */
   
   $datasource = [];
-  $datasource[] = [
-    'cdbt_index_id' => 1, 
-    'shortcode_name' => 'cdbt-view', 
-    'description' => 'description', 
-    'operate_shortcode_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_shortcode' ]))) ), 
-    'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
-    'thumbnail_title' => '', // optional
-    'thumbnail_bgcolor' => 'transparent', // optional
-    'thumbnail_width' => 64, // optional
-    'thumbnail_height' => 64, // optional
-    'thumbnail_class' => null, // optional
-  ];
-  
-  //$datasource = $this->create_tablelist_datasorce($enable_table);
+  if (is_array($shortcodes = $this->get_shortcode_list()) && !empty($shortcodes)) {
+    $_index = 1;
+    foreach ($shortcodes as $shortcode_name => $attributes) {
+      $datasource[] = [
+        'cdbt_index_id' => $_index, 
+        'shortcode_id' => empty($attributes['alias_id']) ? '-' : $attributes['alias_id'], 
+        'shortcode_name' => $shortcode_name, 
+        'description' => $attributes['description'], 
+        'shortcode_type' => $attributes['type'], 
+        'shortcode_author' => 0 === $attributes['author'] ? '-' : get_the_author_meta('display_name', $attributes['author']), 
+        'permission' => $attributes['permission'], 
+        'operate_shortcode_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'shortcode_' ]))) ), 
+      ];
+    }
+  }
   $conponent_options = $this->create_scheme_datasource( 'cdbtShortcodes', 0, 10, 'shortcode_list', $datasource );
   $this->component_render('repeater', $conponent_options); // by trait `DynamicTemplate`
   
   ?>
 <?php endif; ?>
   
-<?php if ($current_tab == 'shortcode_entry') : ?>
+<?php if ($current_tab == 'shortcode_regist') : 
+  /**
+   * Define the localized variables for tab of `regist_shortcode`
+   */
+  
+  if (isset($this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab])) {
+    // Set variables from session
+    $session_vars = $this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab];
+  }
+  
+  $base_shortcode = '';
+  if (isset($session_vars)) {
+    $base_shortcode = esc_html($session_vars[$this->domain_name]['base_name']);
+  } elseif (isset($this->cdbt_sessions[$current_tab])) {
+    $base_shortcode = isset($this->cdbt_sessions[$current_tab]['target_shortcode']) ? $this->cdbt_sessions[$current_tab]['target_shortcode'] : '';
+  }
+  
+  $_shortcodes = $this->get_shortcode_list('built-in');
+  $_tables = $this->get_table_list();
+  
+?>
   <h4 class="tab-annotation"><?php _e('Shortcode Register', CDBT); ?></h3>
-  <form id="" name="" action="" method="post" class="">
-    
-    <?php echo 'Shortcodes'; ?>
-    
-  </form>
+  
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('新しいショートコードを作成します。下記の項目を入力してください。', CDBT); /*  */?>
+    </p>
+  </div>
+  
+  <div class="cdbt-regist-shortcode">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="regist_shortcode">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <div class="form-group">
+        <label for="regist-shortcode-base_name" class="col-sm-2 control-label"><?php _e('Base shortcode name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="regist-shortcode-base_name">
+            <input type="text" name="<?php echo $this->domain_name; ?>[base_name]" value="<?php echo $base_shortcode; ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php $i = 0; foreach ($_shortcodes as $shortcode_name => $attributes) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $shortcode_name; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <p class="help-block"></p>
+        </div>
+      </div><!-- /regist-shortcode-target_table -->
+      <div class="form-group">
+        <label for="regist-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="regist-shortcode-target_table">
+            <input type="text" name="<?php echo $this->domain_name; ?>[target_table]" value="<?php if (isset($session_vars)) { esc_html_e($session_vars[$this->domain_name]['target_table']); } else { echo ''; } ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($_tables as $i => $table) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $table; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <p class="help-block"></p>
+        </div>
+      </div><!-- /regist-shortcode-target_table [v,i,e] -->
+      
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[entry_page]" value=""><!-- entry_page [e] -->
+      
+      <div class="form-group">
+        <label for="regist-shortcode-look_feel" class="col-sm-2 control-label"><?php _e('Look and feel', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="regist-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['bootstrap_style'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <span class="checkbox-label"><?php _e('Use bootstrap style; If false is output by the static table tag layout in non the Repeater format. Also does not have any pagination when false.', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox" id="regist-shortcode-look_feel2"><!-- display_list_num [v,e] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_list_num]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['display_list_num'])) { ?> checked="checked"<?php } } else { ?><?php } ?>">
+              <span class="checkbox-label"><?php _e('Display list number; The default value has changed to false from v2.0.0', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox" id="regist-shortcode-look_feel3"><!-- display_search [v] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['display_search'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <span class="checkbox-label"><?php _e('Display search; Is enabled only if "bootstrap_style" is true.', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox" id="regist-shortcode-look_feel4"><!-- display_title [v,i,e] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['display_title'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <span class="checkbox-label"><?php _e('Display title', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox" id="regist-shortcode-look_feel5"><!-- enable_sort [v,e] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_sort]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['enable_sort'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>>
+              <span class="checkbox-label"><?php _e('Enable sort; Is enabled only if "bootstrap_style" is true.', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox" id="regist-shortcode-look_feel6"><!-- display_index_row [v] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_index_row]" type="checkbox" value="1"<?php if (isset($session_vars)) { if (isset($session_vars[$this->domain_name]['look_feel']['display_index_row'])) { ?> checked="checked"<?php } } else { ?> checked="checked"<?php } ?>">
+              <span class="checkbox-label"><?php _e('Display index row', CDBT); ?></span>
+            </label>
+          </div>
+        </div>
+      </div><!-- /regist-shortcode-look_feel -->
+      
+      <div class="form-group">
+        <label for="regist-shortcode-exclude_cols" class="col-sm-2 control-label"><?php _e('Exclude Columns', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-exclude_cols" name="<?php echo $this->domain_name; ?>[exclude_cols]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['exclude_cols']; ?>" class="form-control" placeholder="col1,col2,col3,...">
+          <p class="help-block"><?php _e('String as array (not assoc); For example `col1,col2,col3,...`', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-exclude_cols [v,e] -->
+      <div class="form-group">
+        <label for="regist-shortcode-add_class" class="col-sm-2 control-label"><?php _e('Add Classes', CDBT); ?></label>
+        <div class="col-sm-7">
+          <input id="regist-shortcode-add_class" name="<?php echo $this->domain_name; ?>[add_class]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['add_class']; ?>" class="form-control" placeholder="class1 class2 class3 ...">
+          <p class="help-block"><?php _e('Separator is a single-byte space character', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-add_class [v,i,e] -->
+      <div class="form-group">
+        <label for="regist-shortcode-narrow_keyword" class="col-sm-2 control-label"><?php _e('Narrow Keywords', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-narrow_keyword" name="<?php echo $this->domain_name; ?>[narrow_keyword]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['narrow_keyword']; ?>" class="form-control" placeholder="keyword1,keyword2,... or col1:keyword1,col2:keyword2,...">
+          <p class="help-block"><?php _e('String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-narrow_keyword [v] -->
+      <div class="form-group">
+        <label for="regist-shortcode-hidden_cols" class="col-sm-2 control-label"><?php _e('Hidden Columns', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-hidden_cols" name="<?php echo $this->domain_name; ?>[hidden_cols]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['hidden_cols']; ?>" class="form-control" placeholder="col1,col2,col3,...">
+          <p class="help-block"><?php _e('String as array (not assoc); For example `col1,col2,col3,...`', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-hidden_cols [i] -->
+      <div class="form-group">
+        <label for="regist-shortcode-display_cols" class="col-sm-2 control-label"><?php _e('Display Columns', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-display_cols" name="<?php echo $this->domain_name; ?>[display_cols]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['display_cols']; ?>" class="form-control" placeholder="col1,col2,col3,...">
+          <p class="help-block"><?php _e('String as array (not assoc); For example `col1,col2,col3,...` If overlapped with `exclude_cols`, set to override the `exclude_cols`.', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-display_cols [v] -->
+      <div class="form-group">
+        <label for="regist-shortcode-order_cols" class="col-sm-2 control-label"><?php _e('Order Columns', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-order_cols" name="<?php echo $this->domain_name; ?>[order_cols]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['order_cols']; ?>" class="form-control" placeholder="col1,col2,col3,...">
+          <p class="help-block"><?php _e('String as array (not assoc); For example `col3,col2,col1,...` If overlapped with `display_cols`, set to override the `display_cols`.', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-order_cols [v] -->
+      <div class="form-group">
+        <label for="regist-shortcode-sort_order" class="col-sm-2 control-label"><?php _e('Sort Order', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-sort_order" name="<?php echo $this->domain_name; ?>[sort_order]" type="text" value="<?php if (isset($session_vars)) { echo $session_vars[$this->domain_name]['sort_order']; } else { echo 'created:desc'; } ?>" class="form-control" placeholder="updated:desc,ID:asc,...">
+          <p class="help-block"><?php _e('String as hash for example `updated:desc,ID:asc,...`', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-sort_order [v] -->
+
+      <div class="form-group">
+        <label for="create-table-limit_items" class="col-sm-2 control-label"><?php _e('Limit Items', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3" data-initialize="spinbox" id="create-table-limit_items">
+            <input type="text" name="<?php echo $this->domain_name; ?>[limit_items]" value="<?php if (isset($session_vars)) echo intval($session_vars[$this->domain_name]['limit_items']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('The default value is overwritten by the value of the max_show_records of the specified table.', CDBT); ?></p>
+        </div>
+      </div><!-- /create-table-limit_items [v] -->
+      
+      <div class="form-group">
+        <label for="regist-shortcode-image_render" class="col-sm-2 control-label"><?php _e('Render image type', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="regist-shortcode-image_render">
+            <input type="text" name="<?php echo $this->domain_name; ?>[image_render]" value="<?php if (isset($session_vars)) { esc_html_e($session_vars[$this->domain_name]['image_render']); } else { echo 'responsive'; } ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ([ 'rounded', 'circle', 'thumbnail', 'responsive' ] as $i => $_render) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $_render; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('class name for directly image render: `rounded`, `circle`, `thumbnail`, `responsive`, (until `minimum`, `modal` )', CDBT); ?></p>
+        </div>
+      </div><!-- /regist-shortcode-image_render [v] -->
+
+<!--
+view_data_list() {
+    extract( shortcode_atts([
+      /* Added new attribute from 2.0.0 is follows: */
+      'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
+      'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
+      'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
+      'thumbnail_title_column' => '', // Column name to be used as a thumbnail title
+      'thumbnail_width' => 100, // Integer of thumbnail block size
+      'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
+      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+    ], $attributes) );
+
+entry_data_form() {
+    extract( shortcode_atts([
+      /* Added new attribute from 2.0.0 is follows: */
+      'action_url' => '', // String of url for form action [optional] For using shortcode of `cdbt-edit`
+      'form_action' => 'entry_data', // String of action name as method after submiting [optional] Is `edit_data` if edit data
+      'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
+      'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
+      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+    ], $attributes) );
+
+editable_data_list() {
+    extract( shortcode_atts([
+      /* Added new attribute from 2.0.0 is follows: */
+      'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
+      'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
+      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+    ], $attributes) );
+-->
+      
+      <div class="form-group">
+        <label for="regist-shortcode-generate_shortcode" class="col-sm-2 control-label"><?php _e('Generated Shortcode', CDBT); ?></label>
+        <div class="col-sm-9">
+          <textarea id="regist-shortcode-generate_shortcode" name="<?php echo $this->domain_name; ?>[generate_shortcode]" class="form-control" rows="5" readonly><?php if (isset($session_vars)) echo esc_textarea(stripslashes_deep($session_vars[$this->domain_name]['generate_shortcode'])); ?></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="regist-shortcode-alias_code" class="col-sm-2 control-label"><?php _e('Alias Shortcode', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="regist-shortcode-alias_code" name="<?php echo $this->domain_name; ?>[alias_code]" type="text" value="<?php if (isset($session_vars)) echo $session_vars[$this->domain_name]['alias_code']; ?>" class="form-control" readonly>
+        </div>
+      </div>
+      
+      <div class="clearfix"><br></div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary"><?php _e('Save Shortcode', CDBT); ?></button>
+        </div>
+      </div>
+      
+      <div class="pull-right">
+        <a href="#"><i class="fa fa-arrow-up"></i></a>
+      </div>
+      <div class="clearfix"></div>
+      
+    </form>
+  </div><!-- /.cdbt-create-shortcode -->
 <?php endif; ?>
   
 <?php if ($current_tab == 'shortcode_edit') : ?>

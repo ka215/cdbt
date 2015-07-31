@@ -170,6 +170,44 @@ $(function() {
       });
       
     }
+    if (_.contains([ 'cdbtShortcodes' ], $('.repeater').attr('id'))) {
+      $('.cdbt-repeater-left-main>a, .scl-operation-buttons button').on('click', function(){
+        var post_raw_data = $(this).data();
+        var post_data = {
+          'session_key': 'shortcode_' + post_raw_data.operateAction, 
+          'default_action': post_raw_data.operateAction, 
+          'target_shortcode': post_raw_data.targetSc, 
+          'target_scid': post_raw_data.targetScid, 
+          'callback_url': post_raw_data.baseUrl + post_raw_data.operateAction, 
+        };
+        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+      });
+      
+      $('.cdbt-repeater-row').each(function(){
+        var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
+        var sc_type = $(this).children('.col-scl-type').text();
+        var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
+        if ('built-in' === sc_type) {
+          first_col.attr('data-operate-action', 'regist');
+          last_col.children('.operate-shortcode-edit-btn-group').remove();
+          
+        } else
+        if ('deprecated' === sc_type) {
+          first_col.replaceWith( first_col.text() );
+          last_col.remove();
+        } else {
+          first_col.attr('data-operate-action', 'edit');
+          last_col.children('.operate-shortcode-register-btn-group').remove();
+          
+        }
+      });
+      
+      $('[class^=col-scl-]').removeAttr('style');
+      $('th.sortable').on('click', function(){
+        $('[class^=col-scl-]').removeAttr('style');
+      });
+      
+    }
   }
   
   /**

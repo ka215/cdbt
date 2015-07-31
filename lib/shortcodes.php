@@ -14,24 +14,81 @@ trait CdbtShortcodes {
   private $shortcodes;
   
   /**
-   * 
+   * Register the built-in shortcodes
    *
    * @since 2.0.0
    **/
   protected function shortcode_register() {
     
     $this->shortcodes = [
-      'cdbt-view'     => 'view_data_list', 
-      'cdbt-entry'    => 'entry_data_form', 
-      'cdbt-edit'      => 'editable_data_list', 
-      'cdbt-extract'  => 'view_data_list', // Deprecated from v2.0.0; It has been merged into `cdbt-view`
-      'cdbt-submit'  => 'submit_custom_query', // Deprecated from v2.0.0
+      'cdbt-view' => [
+        'method' => 'view_data_list', 
+        'description' => __('Retrieve a table data that match the specified conditions, then it outputs as list.', CDBT), /* This shortcode is able to output the data of the specified table as a list format. */
+        'type' => 'built-in', 
+        'author' => 0, 
+        'permission' => 0, 
+        'alias_id' => null, 
+      ],
+      'cdbt-entry' => [
+        'method' => 'entry_data_form', 
+        'description' => __('Render the data registration form for the specified table.', CDBT), 
+        'type' => 'built-in', 
+        'author' => 0, 
+        'permission' => 4, 
+        'alias_id' => null, 
+      ],
+      'cdbt-edit' => [
+        'method' => 'editable_data_list', 
+        'description' => __('Render the editable data list for the specified table.', CDBT), 
+        'type' => 'built-in', 
+        'author' => 0, 
+        'permission' => 7, 
+        'alias_id' => null, 
+      ],
+      'cdbt-extract' => [
+        'method' => 'view_data_list', // Deprecated from v2.0.0; It has been merged into `cdbt-view`
+        'description' => __('Deprecated from v2.0.0', CDBT), 
+        'type' => 'deprecated', 
+        'author' => 0, 
+        'permission' => 0, 
+        'alias_id' => null, 
+      ],
+      'cdbt-submit' => [
+        'method' => 'submit_custom_query', // Deprecated from v2.0.0
+        'description' => __('Deprecated from v2.0.0', CDBT), 
+        'type' => 'deprecated', 
+        'author' => 0, 
+        'permission' => 9, 
+        'alias_id' => null, 
+      ],
     ];
-    foreach ($this->shortcodes as $shortcode_name => $method_name) {
-      if (method_exists($this, $method_name)) 
-        add_shortcode( $shortcode_name, array($this, $method_name) );
+    foreach ($this->shortcodes as $shortcode_name => $_attributes) {
+      if (method_exists($this, $_attributes['method'])) 
+        add_shortcode( $shortcode_name, array($this, $_attributes['method']) );
     }
     
+  }
+  
+  
+  /**
+   * Retrieve specific shortcode list as an array
+   *
+   * @since 2.0.0
+   *
+   * @param string $shortcode_type [optional]
+   * @return array $shortcode_list
+   **/
+  public function get_shortcode_list( $shortcode_type=null ) {
+    $shortcode_list = $this->shortcodes;
+    
+    if (!empty($shortcode_type)) {
+      foreach ($shortcode_list as $shortcode_name => $_attributes) {
+        if ($shortcode_type !== $_attributes['type']) 
+          unset($shortcode_list[$shortcode_name]);
+      }
+    }
+    
+    return $shortcode_list;
   }
   
   

@@ -831,7 +831,11 @@ class CdbtAdmin extends CdbtDB {
         return;
       }
       
-      $resume_table_name = array_map( 'stripslashes_deep', $_POST[$this->domain_name]['resume_table'] );
+      if (is_array($_POST[$this->domain_name]['resume_table'])) {
+        $resume_table_name = array_map( 'stripslashes_deep', $_POST[$this->domain_name]['resume_table'] );
+      } else {
+        $resume_table_name = stripslashes_deep($_POST[$this->domain_name]['resume_table']);
+      }
       $resume_table_options = [];
       // Filter the sub-option of the table to resume
       //

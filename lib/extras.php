@@ -149,7 +149,7 @@ trait CdbtExtras {
     
     $custom_row_scripts = [];
     
-    if (!is_array($columns) && in_array($columns, [ 'table_list' ])) {
+    if (!is_array($columns) && in_array($columns, [ 'table_list', 'shortcode_list' ])) {
       if ('table_list' === $columns) {
         // For customColumnRenderer() in the repeater script
         $custom_column_content = "'<div class=\"tl-operation-buttons\"><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
@@ -228,14 +228,58 @@ trait CdbtExtras {
         ];
       } else
       if ('shortcode_list' === $columns) {
+        // For customColumnRenderer() in the repeater script
+        $custom_column_content = "'<div class=\"scl-operation-buttons\"><div class=\"btn-group operate-shortcode-register-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"regist\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Regist Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Regist Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
+        $custom_column_content .= "</div><div class=\"btn-group operate-shortcode-edit-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
+        $custom_column_content .= "</div></div>'";
+        
+        // For customRowRenderer() in the repeater script
+        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.shortcode_name + ('-' === helpers.rowData.shortcode_id ? '' : '-' + helpers.rowData.shortcode_id));";
+        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
         
         $columns = [
           [ 'label' => __('ShortcodeName', CDBT), 
             'property' => 'shortcode_name', 
             'sortable' => true, 
             'sortDirection' => 'asc', 
-            'className' => 'col-sl-scname', 
-            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-table=\"'+rowData.shortcode_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
+            'className' => 'col-scl-name', 
+            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
+          ], 
+          [ 'label' => __('SCID', CDBT), 
+            'property' => 'shortcode_id', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-scl-id', 
+          ], 
+          [ 'label' => __('Description', CDBT), 
+            'property' => 'description', 
+            'sortable' => false, 
+            'className' => 'col-scl-desc', 
+          ], 
+          [ 'label' => __('Type', CDBT), 
+            'property' => 'shortcode_type', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-scl-type', 
+          ], 
+          [ 'label' => __('Author', CDBT), 
+            'property' => 'shortcode_author', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-scl-author', 
+          ], 
+          [ 'label' => __('Permission', CDBT), 
+            'property' => 'permission', 
+            'sortable' => false, 
+            'className' => 'col-scl-permission', 
+          ], 
+          [ 'label' => __('Operation', CDBT), 
+            'property' => 'operate_shortcode_url', 
+            'sortable' => false, 
+            'className' => 'col-scl-operation', 
+            'customColumnRenderer' => $custom_column_content, 
           ], 
         ];
         
