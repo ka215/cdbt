@@ -247,7 +247,7 @@ trait CdbtExtras {
             'className' => 'col-scl-name', 
             'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
           ], 
-          [ 'label' => __('SCID', CDBT), 
+          [ 'label' => __('CSID', CDBT), 
             'property' => 'shortcode_id', 
             'sortable' => true, 
             'sortDirection' => 'asc', 

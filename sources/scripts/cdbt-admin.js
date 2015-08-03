@@ -859,6 +859,36 @@ $(function() {
     
   }
   
+  /**
+   * Helper UI scripts for shortcode regist section
+   */
+  if ('cdbt_shortcodes' === $.QueryString.page && 'shortcode_regist' === $.QueryString.tab) {
+    
+    var controllForms = function(){
+      var base_shortcode = $('#regist-shortcode-base_name').combobox('selectedItem').text;
+      if ('cdbt-view' === base_shortcode) {
+        $('[class^=on-]').each(function(){
+console.info($(this).attr('class'));
+          if (!$(this).hasClass('on-v')) {
+            $(this).hide();
+          }
+        });
+      } else
+      if ('cdbt-entry' === base_shortcode) {
+        
+      } else
+      if ('cdbt-edit' === base_shortcode) {
+        
+      }
+      
+    };
+    
+    $('#regist-shortcode-base_name').on('changed.fu.combobox', function(){
+      controllForms();
+    });
+    controllForms();
+    
+  }
   
   
   /**
