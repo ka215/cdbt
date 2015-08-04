@@ -160,9 +160,14 @@ trait CdbtExtras {
         $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Edit Data', CDBT) ."\"><span class=\"sr-only\">". __('Edit Data', CDBT) ."</span><i class=\"fa fa-pencil-square-o\"></i></a>";
         $custom_column_content .= "</div></div>'";
         
+        $repeater_custom_methods = [];
         // For customRowRenderer() in the repeater script
-        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.table_name);";
-        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
+        $repeater_custom_methods['customRowScripts'] = [
+          "item.attr('id', 'row-' + helpers.rowData.table_name);", 
+          "item.attr('class', 'cdbt-repeater-row');"
+        ];
+        //$custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.table_name);";
+        //$custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
         
         $columns = [
           [ 'label' => __('TableName', CDBT), 
@@ -235,9 +240,16 @@ trait CdbtExtras {
         $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
         $custom_column_content .= "</div></div>'";
         
+        $repeater_custom_methods = [];
         // For customRowRenderer() in the repeater script
-        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.shortcode_name + ('-' === helpers.rowData.shortcode_id ? '' : '-' + helpers.rowData.shortcode_id));";
-        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
+        $repeater_custom_methods['customRowScripts'] = [
+          "item.attr('id', 'row-' + helpers.rowData.shortcode_name + ('-' === helpers.rowData.shortcode_id ? '' : '-' + helpers.rowData.shortcode_id));", 
+          "item.attr('class', 'cdbt-repeater-row');"
+        ];
+        // For after rendered
+        $repeater_custom_methods['afterRender'] = "function(){ console.info('rendered'); }";
+//        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.shortcode_name + ('-' === helpers.rowData.shortcode_id ? '' : '-' + helpers.rowData.shortcode_id));";
+//        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
         
         $columns = [
           [ 'label' => __('ShortcodeName', CDBT), 
@@ -253,7 +265,7 @@ trait CdbtExtras {
             'sortDirection' => 'asc', 
             'className' => 'col-scl-id', 
           ], 
-          [ 'label' => __('Description', CDBT), 
+          [ 'label' => __('Description/AliasShortcode', CDBT), 
             'property' => 'description', 
             'sortable' => false, 
             'className' => 'col-scl-desc', 
@@ -305,8 +317,11 @@ trait CdbtExtras {
       'data' => $datasource, 
     ];
     
-    if (!empty($custom_row_scripts)) {
-      $conponent_options['customRowScripts'] = $custom_row_scripts;
+    if (isset($repeater_custom_methods) && !empty($repeater_custom_methods)) {
+      foreach ($repeater_custom_methods as $_key => $_val) {
+        $conponent_options[$_key] = $_val;
+      }
+      //$conponent_options['customRowScripts'] = $custom_row_scripts;
     }
     
     return $conponent_options;

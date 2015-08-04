@@ -18,6 +18,7 @@
  * 'columns' => @array(assoc) is listing label [require]
  * 'data' => @array(assoc) is listing data [require]
  * 'addClass' => @string [optional]
+ * 'afterRender' => @string [optional] javascript callback name
  * 'thumbnailTemplate' => @string [optional]
  */
 
@@ -167,6 +168,13 @@ if (!isset($this->component_options['addClass']) || empty($this->component_optio
   $add_class = '';
 } else {
   $add_class = $this->component_options['addClass'];
+}
+
+// `afterRender` section
+if (!isset($this->component_options['afterRender']) || empty($this->component_options['afterRender'])) {
+  $after_render = '';
+} else {
+  $after_render = $this->component_options['afterRender'];
 }
 
 // `thumbnailTemplate` section
@@ -534,18 +542,41 @@ endif; ?>
       start: startIndex,
       end: endIndex,
       columns: columns,
-      items: data
+      items: data,
     };
     
     callback(dataSource);
 
   }
   
+  function customAfterRender(helpers, callback) {
+//      var renderRepeater = function(){
+        $('.cdbt-repeater-row').each(function(){
+          var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
+          var sc_type = $(this).children('.col-scl-type').text();
+          var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
+          if ('built-in' === sc_type) {
+            first_col.attr('data-operate-action', 'regist');
+            last_col.children('.operate-shortcode-edit-btn-group').remove();
+            
+          } else
+          if ('deprecated' === sc_type) {
+            first_col.replaceWith( first_col.text() );
+            last_col.remove();
+          } else {
+            first_col.attr('data-operate-action', 'edit');
+            last_col.children('.operate-shortcode-register-btn-group').remove();
+            
+          }
+        });
+//      };
+  }
+  
   // 初期化処理 - initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
     list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
-    list_noItemsHTML: '<?php esc_html_e( 'nothing to see here... move along', CDBT); ?>',
+    list_noItemsHTML: "<?php esc_html_e( 'nothing to see here... move along', CDBT); ?>",
     
     // カスタムレンダラを介して列出力をオーバーライドする - override the column output via a custom renderer.
     // これにより各列の出力のカスタムマークアップが可能になる - this will allow you to output custom markup for each column.
@@ -554,6 +585,9 @@ endif; ?>
     // カスタムレンダラを介して行出力をオーバーライドする - override the row output via a custom renderer.
     // この例では、各行に「id」属性を追加するために使用している - this example will use this to add an "id" attribute to each row.
     list_rowRendered: customRowRenderer,
+    
+    <?php /* if (!empty($after_render)) printf('render: %s,', $after_render); */ ?>
+    after: $(this).bind('afterRender', function(e){ console.info(e); }), 
     
     // データ検索処理のためのデータソースをセットアップする - setup your custom datasource to handle data retrieval;
     // 任意のページング、ソート、フィルタリング、検索ロジックを担当する - responsible for any paging, sorting, filtering, searching logic
@@ -569,7 +603,9 @@ endif; ?>
     thumbnail_template: <?php echo $thumbnail_template; ?>,
     
   });
-
+  
+  repeater.on('afterRender', function(e){ console.info(e); });
+  
   $('#repeater-check-switch').on('click', function(){
     if (repeater.repeater('list_getSelectedItems').length > 0) {
       repeater.repeater('list_clearSelectedItems');

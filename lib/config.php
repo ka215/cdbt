@@ -17,6 +17,8 @@ class CdbtConfig extends CdbtCore {
   
   var $option_template = array();
   
+  var $option_shortcodes = array();
+  
   var $allow_file_types; // For import and export
   
   var $db_charsets;

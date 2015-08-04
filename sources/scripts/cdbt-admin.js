@@ -152,26 +152,26 @@ $(function() {
     };
     
     if (_.contains([ 'cdbtAdminTables', 'cdbtWpCoreTables' ], $('.repeater').attr('id'))) {
-      $('.cdbt-repeater-left-main>a').on('click', function(){
+      $(document).on('click', '.cdbt-repeater-left-main>a', function(){
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_table' }) );
       });
       
-      $('.operate-table-btn-group>button').on('click', function(){
+      $(document).on('click', '.operate-table-btn-group>button', function(){
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_table' }) );
       });
       
-      $('.operate-data-btn-group>button').on('click', function(){
+      $(document).on('click', '.operate-data-btn-group>button', function(){
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
       });
       
       $('[class^=col-tl-]').removeAttr('style');
-      $('th.sortable').on('click', function(){
+      $(document).on('click', 'th.sortable', function(){
         $('[class^=col-tl-]').removeAttr('style');
       });
       
     }
     if (_.contains([ 'cdbtShortcodes' ], $('.repeater').attr('id'))) {
-      $('.cdbt-repeater-left-main>a, .scl-operation-buttons button').on('click', function(){
+      $(document).on('click', '.cdbt-repeater-left-main>a, .scl-operation-buttons button', function(){
         var post_raw_data = $(this).data();
         var post_data = {
           'session_key': 'shortcode_' + post_raw_data.operateAction, 
@@ -183,27 +183,37 @@ $(function() {
         return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
       });
       
-      $('.cdbt-repeater-row').each(function(){
-        var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
-        var sc_type = $(this).children('.col-scl-type').text();
-        var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
-        if ('built-in' === sc_type) {
-          first_col.attr('data-operate-action', 'regist');
-          last_col.children('.operate-shortcode-edit-btn-group').remove();
-          
-        } else
-        if ('deprecated' === sc_type) {
-          first_col.replaceWith( first_col.text() );
-          last_col.remove();
-        } else {
-          first_col.attr('data-operate-action', 'edit');
-          last_col.children('.operate-shortcode-register-btn-group').remove();
-          
-        }
+      var renderRepeater = function(){
+        $('.repeater-list-heading').each(function(){
+          $(this).parent('th[class^="col-scl-"]').css('height', parseInt($(this).css('height')));
+        });
+        $('.cdbt-repeater-row').each(function(){
+          var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
+          var sc_type = $(this).children('.col-scl-type').text();
+          var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
+          if ('built-in' === sc_type) {
+            first_col.attr('data-operate-action', 'regist');
+            last_col.children('.operate-shortcode-edit-btn-group').remove();
+            
+          } else
+          if ('deprecated' === sc_type) {
+            first_col.replaceWith( first_col.text() );
+            last_col.remove();
+          } else {
+            first_col.attr('data-operate-action', 'edit');
+            last_col.children('.operate-shortcode-register-btn-group').remove();
+            
+          }
+        });
+      };
+      
+      $(document).on('click submit keydown', '#cdbtShortcodes', function(){
+        renderRepeater();
       });
+      renderRepeater();
       
       $('[class^=col-scl-]').removeAttr('style');
-      $('th.sortable').on('click', function(){
+      $(document).on('click', 'th.sortable', function(){
         $('[class^=col-scl-]').removeAttr('style');
       });
       
@@ -865,21 +875,35 @@ $(function() {
   if ('cdbt_shortcodes' === $.QueryString.page && 'shortcode_regist' === $.QueryString.tab) {
     
     var controllForms = function(){
-      var base_shortcode = $('#regist-shortcode-base_name').combobox('selectedItem').text;
-      if ('cdbt-view' === base_shortcode) {
-        $('[class^=on-]').each(function(){
-console.info($(this).attr('class'));
-          if (!$(this).hasClass('on-v')) {
-            $(this).hide();
-          }
-        });
-      } else
-      if ('cdbt-entry' === base_shortcode) {
-        
-      } else
-      if ('cdbt-edit' === base_shortcode) {
-        
+      var base_shortcode = $('#regist-shortcode-base_name').combobox('selectedItem').text, target_class = '';
+      switch(base_shortcode) {
+        case 'cdbt-view':
+          target_class = 'on-v';
+          break;
+        case 'cdbt-entry':
+          target_class = 'on-i';
+          break;
+        case 'cdbt-edit':
+          target_class = 'on-e';
+          break;
+        default:
+          target_class = '';
+          break;
       }
+      $('.switching-item').each(function(){
+        if ('' !== target_class) {
+          $('.toggle-group').css('display', 'block');
+        } else {
+          $('.toggle-group').css('display', 'none');
+        }
+        if ($(this).hasClass(target_class)) {
+          $(this).css({ position: 'static', display: 'block' });
+          $(this).find('input').removeAttr('disabled');
+        } else {
+          $(this).css({ position: 'absolute', display: 'none' });
+          $(this).find('input').attr('disabled', 'disabled');
+        }
+      });
       
     };
     
@@ -887,6 +911,60 @@ console.info($(this).attr('class'));
       controllForms();
     });
     controllForms();
+    
+    var generateShortcode = function(){
+      var items = $('input[name^="custom-database-tables["]');
+      var preview = $('#regist-shortcode-generate_shortcode');
+      var alias = $('#regist-shortcode-alias_code');
+      var base_shortcode = '[base_name table="target_table"attributes]', attributes = '', shortcode = '';
+      if ('' === $('input[name="custom-database-tables[base_name]"]').val() || '' === $('input[name="custom-database-tables[target_table]"]').val()) {
+        preview.val('');
+        alias.val('');
+        return false;
+      }
+      items.each(function(){
+        if ('disabled' !== $(this).attr('disabled')) {
+          var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)\])$/i, item_name;
+          if (_.contains([ 'text' ], $(this).attr('type')) && '' !== $(this).val()) {
+            item_name = $(this).attr('name').replace(reg, "$1");
+            if (_.contains([ 'base_name', 'target_table' ], item_name)) {
+              base_shortcode = base_shortcode.replace(item_name, $(this).val());
+            } else {
+              if ('alias_code' !== item_name) {
+                attributes += ' '+item_name+'="'+$(this).val()+'"';
+              }
+            }
+          }
+          if (_.contains([ 'checkbox' ], $(this).attr('type'))) {
+            var _tmp = $(this).attr('name').replace(reg, "$1,$3");
+            _tmp = _tmp.split(',');
+            item_name = _tmp[1].length > 0 ? _tmp[1] : _tmp[0];
+            if ($(this).checkbox('isChecked')) {
+              attributes += ' '+item_name+'="true"';
+            }
+          }
+        }
+      });
+      shortcode = base_shortcode.replace('attributes', attributes);
+      preview.val(shortcode);
+      if ('' !== preview.val() && '' !== $('input[name="custom-database-tables[csid]"]').val()) {
+        var alias_code = base_shortcode.replace('attributes', ' csid="'+$('input[name="custom-database-tables[csid]"]').val()+'"');
+        alias.val(alias_code);
+      }
+    };
+    
+    $('input[name^="custom-database-tables["]').on('click blur keydown keypress paste', function(){
+      generateShortcode();
+    });
+    $('.checkbox input').on('change', function(){
+      generateShortcode();
+    });
+    $('.spinbox').on('changed.fu.spinbox', function(){
+      generateShortcode();
+    });
+    $('.combobox').on('changed.fu.combobox', function(){
+      generateShortcode();
+    });
     
   }
   

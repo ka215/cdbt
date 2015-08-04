@@ -67,6 +67,8 @@ trait CdbtShortcodes {
         add_shortcode( $shortcode_name, array($this, $_attributes['method']) );
     }
     
+    $this->option_shortcodes = get_option($this->domain_name . '-shortcodes', $this->option_shortcodes);
+    
   }
   
   
@@ -81,6 +83,21 @@ trait CdbtShortcodes {
   public function get_shortcode_list( $shortcode_type=null ) {
     $shortcode_list = $this->shortcodes;
     
+    $custom_shortcodes = $this->get_shortcode_option();
+    if (!empty($custom_shortcodes)) {
+      $_add_shortcodes = [];
+      foreach ($custom_shortcodes as $_i => $_shortcode_options) {
+        $_add_shortcodes[$_shortcode_options['base_name'] .':'. $_shortcode_options['csid']] = [
+          'description' => $_shortcode_options['alias_code'], 
+          'type' => 'custom', 
+          'author' => isset($_shortcode_options['author']) ? intval($_shortcode_options['author']) : 0, 
+          'permission' => $this->shortcodes[$_shortcode_options['base_name']]['permission'], 
+          'alias_id' => $_shortcode_options['csid'], 
+        ];
+      }
+      $shortcode_list = array_merge($shortcode_list, $_add_shortcodes);
+    }
+    
     if (!empty($shortcode_type)) {
       foreach ($shortcode_list as $shortcode_name => $_attributes) {
         if ($shortcode_type !== $_attributes['type']) 
@@ -89,6 +106,59 @@ trait CdbtShortcodes {
     }
     
     return $shortcode_list;
+  }
+  
+  
+  /**
+   * Retrieve specific shortcode options via `get_option()`
+   *
+   * @since 2.0.0
+   *
+   * @param integer $csid [optional] Target data of a specific shortcode if specified custom shortcode id, otherwise the all shortcodes
+   * @return array $shortcode_options
+   **/
+  public function get_shortcode_option( $csid=null ) {
+    $stored_shortcodes = get_option($this->domain_name . '-shortcodes', $this->option_shortcodes);
+    $shortcode_options = [];
+    
+    if (!empty($stored_shortcodes) && intval($csid) > 0) {
+      foreach ($stored_shortcodes as $_i => $_shortcode_option) {
+        if (intval($csid) === intval($_shortcode_option['csid'])) {
+          $shortcode_options = $_shortcode_option;
+          break;
+        }
+      }
+    } else {
+      $shortcode_options = $stored_shortcodes;
+    }
+    
+    return $shortcode_options;
+  }
+  
+  
+  /**
+   * Retrieve unique csid that has been increment
+   *
+   * @since 2.0.0
+   *
+   * @return integer $increment_csid
+   **/
+  public function get_increment_unique_csid() {
+    $stored_shortcodes = $this->get_shortcode_option();
+    $ids = [];
+    
+    if (!empty($stored_shortcodes)) {
+      foreach ($stored_shortcodes as $_shortcode_option) {
+        if (is_array($_shortcode_option) && array_key_exists('csid', $_shortcode_option)) 
+          $ids[] = intval($_shortcode_option['csid']);
+      }
+      if (!empty($ids)) 
+        $increment_csid = max($ids) + 1;
+    }
+    if (!isset($increment_csid)) 
+      $increment_csid = 1;
+    
+    return $increment_csid;
   }
   
   
