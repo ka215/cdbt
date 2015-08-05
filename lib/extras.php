@@ -238,6 +238,7 @@ trait CdbtExtras {
         $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"regist\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Regist Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Regist Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
         $custom_column_content .= "</div><div class=\"btn-group operate-shortcode-edit-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
         $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Delete Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></a>";
         $custom_column_content .= "</div></div>'";
         
         $repeater_custom_methods = [];
@@ -252,20 +253,20 @@ trait CdbtExtras {
 //        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
         
         $columns = [
-          [ 'label' => __('ShortcodeName', CDBT), 
-            'property' => 'shortcode_name', 
-            'sortable' => true, 
-            'sortDirection' => 'asc', 
-            'className' => 'col-scl-name', 
-            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
-          ], 
           [ 'label' => __('CSID', CDBT), 
             'property' => 'shortcode_id', 
             'sortable' => true, 
             'sortDirection' => 'asc', 
             'className' => 'col-scl-id', 
           ], 
-          [ 'label' => __('Description/AliasShortcode', CDBT), 
+          [ 'label' => __('Shortcode Name / Alias Shortcode', CDBT), 
+            'property' => 'shortcode_name', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-scl-name', 
+            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
+          ], 
+          [ 'label' => __('Description', CDBT), 
             'property' => 'description', 
             'sortable' => false, 
             'className' => 'col-scl-desc', 

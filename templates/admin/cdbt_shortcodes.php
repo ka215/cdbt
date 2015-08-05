@@ -94,6 +94,8 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
   $_tables = $this->get_table_list();
   
   $current_csid = $this->get_increment_unique_csid();
+  
+  $user_ID = get_current_user_id();
 ?>
   <div class="well-sm">
     <p class="text-info">
@@ -385,8 +387,17 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         </div>
       </div><!-- /regist-shortcode-where_clause [i] -->
       
+      <div class="form-group">
+        <label for="regist-shortcode-description" class="col-sm-2 control-label"><?php _e('Description', CDBT); ?></label>
+        <div class="col-sm-9">
+          <textarea id="regist-shortcode-description" name="<?php echo $this->domain_name; ?>[description]" class="form-control" rows="2" placeholder="Enter description as meno"><?php if (isset($this_tab_vars['description'])) echo esc_textarea(stripslashes_deep($this_tab_vars['description'])); ?></textarea>
+          <p class="help-block"><?php _e('Please enter as like description of shortcode that will be displayed in the list screen.', CDBT); /* 一覧画面に表示されるショートコードの説明文などを入力してください。 */ ?></p>
+        </div>
+      </div><!-- /regist-shortcode-description -->
+      
       <div class="form-group switching-item on-v on-i on-e">
         <input type="hidden" name="<?php echo $this->domain_name; ?>[csid]" value="<?php echo $current_csid; ?>"><!-- Valid value of "Custom Shortcode ID" is 1 or more integer. [v,i,e] -->
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[author]" value="<?php echo $user_ID; ?>"><!-- Current user ID -->
       </div>
       
       <div class="clearfix"><br></div>

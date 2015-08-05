@@ -141,6 +141,22 @@ $(function() {
     // repeater();
     _.each(repeater, function(k,v){ return repeater[v](); });
     
+    var adjustCellSize = function() {
+      $('.repeater table.table thead th').each(function(){
+        var label_elm = $(this).find('.repeater-list-heading');
+        $(this).removeAttr('style');
+        label_elm.removeAttr('style');
+        //console.info([$(this).attr('class'), $(this).width(), $(this).height(), parseInt(label_elm.css('width')), parseInt(label_elm.css('height')), label_elm.width(), label_elm.height()]);
+        //var fixed_width = _.max([ $(this).width(), parseInt(label_elm.css('width')), label_elm.width() ]);
+        var fixed_width = parseInt(label_elm.css('width'));
+        //var fixed_height = _.max([ $(this).height(), parseInt(label_elm.css('height')), label_elm.height() ]);
+        var fixed_height = parseInt(label_elm.css('height'));
+        //console.info([ fixed_width, fixed_height ]);
+        $(this).removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
+        label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
+      });
+    };
+    
     var locationToOperation = function( post_raw_data ) {
       var post_data = {
         'session_key': post_raw_data.sessionKey, 
@@ -164,11 +180,6 @@ $(function() {
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
       });
       
-      $('[class^=col-tl-]').removeAttr('style');
-      $(document).on('click', 'th.sortable', function(){
-        $('[class^=col-tl-]').removeAttr('style');
-      });
-      
     }
     if (_.contains([ 'cdbtShortcodes' ], $('.repeater').attr('id'))) {
       $(document).on('click', '.cdbt-repeater-left-main>a, .scl-operation-buttons button', function(){
@@ -184,9 +195,6 @@ $(function() {
       });
       
       var renderRepeater = function(){
-        $('.repeater-list-heading').each(function(){
-          $(this).parent('th[class^="col-scl-"]').css('height', parseInt($(this).css('height')));
-        });
         $('.cdbt-repeater-row').each(function(){
           var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
           var sc_type = $(this).children('.col-scl-type').text();
@@ -205,6 +213,7 @@ $(function() {
             
           }
         });
+        adjustCellSize();
       };
       
       $(document).on('click submit keydown', '#cdbtShortcodes', function(){
@@ -212,12 +221,12 @@ $(function() {
       });
       renderRepeater();
       
-      $('[class^=col-scl-]').removeAttr('style');
       $(document).on('click', 'th.sortable', function(){
-        $('[class^=col-scl-]').removeAttr('style');
+        adjustCellSize();
       });
       
     }
+    adjustCellSize();
   }
   
   /**

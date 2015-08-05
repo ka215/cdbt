@@ -13,22 +13,102 @@
   
   table {
     
-    tbody {
+    thead {
       tr {
+        position: relative;
         
         th {
-          height: 100%;
-          line-height: 0;
+          position: relative;
+          padding: 0 8px!important;
+/*          line-height: 1!important;
+          min-height: 35px!important;*/
+          background: none!important;
+          background-color: #f9f9f9!important;
+          font-size: 12px;
+          border-left: 1px solid #ddd!important;
+          vertical-align: middle!important;
+          overflow: hidden;
           
-          &.col-tl-tablename { width: 200px; }
-          &.col-tl-records { width: 136px; text-align: left; }
+          &:first-child {
+            border-left: 0px!important;
+          }
+          
+          &:hover {
+            background: none!important;
+            background-color: transparent!important;
+          }
+          
+          &.sortable {
+            background: none!important;
+            background-color: transparent!important;
+            
+            &:hover {
+              background: none!important;
+              background-color: transparent!important;
+            }
+          }
+          
+          &.sorted {
+            background-color: $info!important;
+            
+            &:hover {
+              background-color: $info!important;
+            }
+          }
+          
+          .repeater-list-heading {
+            padding: 8px;
+/*            line-height: 1!important;
+            min-height: 35px!important;*/
+            background: none!important;
+            background-color: transparent!important;
+            width: inherit;
+            max-width: inherit!important;
+            border: 1px solid transparent!important;
+            font-size: 12px;
+            
+            &:hover {
+              background: none!important;
+              background-color: transparent!important;
+            }
+            
+            &.sorted {
+              background-color: $info!important;
+              color: #fff;
+              
+              &:hover {
+                background-color: $info!important;
+                color: #fff;
+              }
+            }
+            
+            span.glyphicon {
+              float: left!important;
+            }
+          }
+          
+          &.col-tl-tablename { width: 315px; /* 200->315 */ }
+          &.col-tl-records { width: 136px; /* 136<-218 */ }
           &.col-tl-pk { width: 100px; }
           &.col-tl-charset { width: 100px; }
           &.col-tl-collation { width: 160px; }
           &.col-tl-engine { width: 100px; }
           &.col-tl-ppr { width: 80px; }
           &.col-tl-operation { max-width: 180px; }
+          &.col-scl-id { width: 64px; text-align: center; }
+          &.col-scl-name { min-width: 400px; }
+          &.col-scl-desc { min-width: 200px; }
+          &.col-scl-type { width: 100px; }
+          &.col-scl-author { width: 100px; }
+          &.col-scl-permission { width: 100px; }
+          &.col-scl-operation { min-width: 100px; }
+          
         }
+        
+      }
+    }
+    tbody {
+      tr {
         
         td {
           position: relative;
@@ -47,10 +127,12 @@
             top: auto;
           }
           
-          &.col-tl-tablename { width: 200px; }
-          &.col-tl-records { text-align: right; }
-          &.col-tl-ppr { text-align: right; }
-          &.col-tl-operation { text-align: center; }
+          &.col-tl-records, .col-tl-records { text-align: right; }
+          &.col-tl-ppr, .col-tl-ppr { text-align: right; }
+          &.col-tl-operation, .col-tl-operation { text-align: center; }
+          &.col-scl-id { width: 80px!important; text-align: center; }
+          &.col-scl-type { text-align: center; }
+          &.col-scl-operation { text-align: center; }
           
           .tl-operation-buttons {
             margin: auto;

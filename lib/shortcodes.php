@@ -87,8 +87,8 @@ trait CdbtShortcodes {
     if (!empty($custom_shortcodes)) {
       $_add_shortcodes = [];
       foreach ($custom_shortcodes as $_i => $_shortcode_options) {
-        $_add_shortcodes[$_shortcode_options['base_name'] .':'. $_shortcode_options['csid']] = [
-          'description' => $_shortcode_options['alias_code'], 
+        $_add_shortcodes[stripslashes_deep($_shortcode_options['alias_code'])] = [
+          'description' => isset($_shortcode_options['description']) && !empty($_shortcode_options['description']) ? esc_html($_shortcode_options['description']) : '-', 
           'type' => 'custom', 
           'author' => isset($_shortcode_options['author']) ? intval($_shortcode_options['author']) : 0, 
           'permission' => $this->shortcodes[$_shortcode_options['base_name']]['permission'], 
