@@ -185,13 +185,27 @@ $(function() {
       $(document).on('click', '.cdbt-repeater-left-main>a, .scl-operation-buttons button', function(){
         var post_raw_data = $(this).data();
         var post_data = {
-          'session_key': 'shortcode_' + post_raw_data.operateAction, 
           'default_action': post_raw_data.operateAction, 
           'target_shortcode': post_raw_data.targetSc, 
           'target_scid': post_raw_data.targetScid, 
-          'callback_url': post_raw_data.baseUrl + post_raw_data.operateAction, 
+          'callback_url': post_raw_data.baseUrl, 
         };
-        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+        if ('regist' === post_raw_data.operateAction || 'edit' === post_raw_data.operateAction) {
+          post_data = _.extend(post_data, { 'session_key': 'shortcode_' + post_raw_data.operateAction });
+          return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+        }
+        if ('delete' === post_raw_data.operateAction) {
+          //post_data = _.extend(post_data, { 'session_key': 'shortcode_list', 'event': 'delete_shortcode' });
+          post_data = {
+            id: 'cdbtModal', 
+            insertContent: true, 
+            modalTitle: 'delete_shortcode', 
+            modaleBody: '', 
+            modaleHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');", 
+            modalExtras: { 'target_scid': post_raw_data.targetScid }, 
+          };
+          init_modal( post_data );
+        }
       });
       
       var renderRepeater = function(){
@@ -202,13 +216,13 @@ $(function() {
           if ('built-in' === sc_type) {
             first_col.attr('data-operate-action', 'regist');
             last_col.children('.operate-shortcode-edit-btn-group').remove();
-            
           } else
           if ('deprecated' === sc_type) {
             first_col.replaceWith( first_col.text() );
             last_col.remove();
           } else {
-            first_col.attr('data-operate-action', 'edit');
+            //first_col.attr('data-operate-action', 'edit');
+            first_col.replaceWith('<code>'+first_col.text()+'</code>');
             last_col.children('.operate-shortcode-register-btn-group').remove();
             
           }
@@ -878,13 +892,35 @@ $(function() {
     
   }
   
+  
   /**
-   * Helper UI scripts for shortcode regist section
+   * Helper UI scripts for shortcode list section
    */
-  if ('cdbt_shortcodes' === $.QueryString.page && 'shortcode_regist' === $.QueryString.tab) {
+  if ('cdbt_shortcodes' === $.QueryString.page && 'shortcode_list' === $.QueryString.tab) {
+    
+    // Run of delete shortcode after confirmation
+    $(document).on('click', '#run_delete_shortcode', function(){
+      var post_data = {
+        'csid': $(this).data('csid'), 
+        'operate_action': 'delete', 
+        'event': 'delete_shortcode', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    
+  }
+  
+  
+  /**
+   * Helper UI scripts for shortcode regist and shortcode edit section
+   */
+  if ('cdbt_shortcodes' === $.QueryString.page && ('shortcode_regist' === $.QueryString.tab || 'shortcode_edit' === $.QueryString.tab)) {
+    var is_regist = 'shortcode_regist' === $.QueryString.tab ? true : false;
+    var prefix = is_regist ? 'regist' : 'edit';
     
     var controllForms = function(){
-      var base_shortcode = $('#regist-shortcode-base_name').combobox('selectedItem').text, target_class = '';
+      var base_shortcode = is_regist ? $('#regist-shortcode-base_name').combobox('selectedItem').text : $('#edit-shortcode-base_name').val();
+      var target_class = '';
       switch(base_shortcode) {
         case 'cdbt-view':
           target_class = 'on-v';
@@ -923,8 +959,8 @@ $(function() {
     
     var generateShortcode = function(){
       var items = $('input[name^="custom-database-tables["]');
-      var preview = $('#regist-shortcode-generate_shortcode');
-      var alias = $('#regist-shortcode-alias_code');
+      var preview = $('#'+prefix+'-shortcode-generate_shortcode');
+      var alias = $('#'+prefix+'-shortcode-alias_code');
       var base_shortcode = '[base_name table="target_table"attributes]', attributes = '', shortcode = '';
       if ('' === $('input[name="custom-database-tables[base_name]"]').val() || '' === $('input[name="custom-database-tables[target_table]"]').val()) {
         preview.val('');
@@ -973,6 +1009,19 @@ $(function() {
     });
     $('.combobox').on('changed.fu.combobox', function(){
       generateShortcode();
+    });
+    
+    $('#'+prefix+'-shortcode-preview').on('click', function(){
+      var post_data = {
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalSize: 'large', 
+        modalTitle: 'preview_shortcode', 
+        modalBody: '', 
+        //modalHideEvent: $common_modal_hide, 
+        modalExtras: { shortcode: $('#'+prefix+'-shortcode-generate_shortcode').val() }
+      };
+      init_modal( post_data );
     });
     
   }

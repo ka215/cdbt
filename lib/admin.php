@@ -1394,7 +1394,7 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * Page: cdbt_shortcodes | Tab: (any)
+   * Page: cdbt_shortcodes | Tab: shortcode_regist
    *
    * @since 2.0.0
    */
@@ -1437,7 +1437,6 @@ class CdbtAdmin extends CdbtDB {
     foreach ($checkbox_options as $option_name) {
       $post_data[$option_name] = array_key_exists($option_name, $post_data) ? $this->strtobool($post_data[$option_name]) : false;
     }
-//var_dump($post_data);
     
     $stored_shortcode = $this->get_shortcode_option(intval($post_data['csid']));
     if (empty($stored_shortcode)) {
@@ -1450,6 +1449,79 @@ class CdbtAdmin extends CdbtDB {
       }
     } else {
       $message = __('Could not save because the specific custom shortcode id already exists.', CDBT);
+    }
+    
+    if (!empty($message)) {
+      $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+    }
+    return;
+    
+  }
+
+
+  /**
+   * Page: cdbt_shortcodes | Tab: shortcode_edit
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_shortcodes_shortcode_edit() {
+    static $message = '';
+    $notice_class = CDBT . '-error';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'edit_shortcode' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      return;
+    }
+    
+    if ( get_magic_quotes_gpc() ) 
+      $_POST = array_map( 'stripslashes_deep', $_POST );
+    
+    $post_data = [];
+    foreach($_POST[$this->domain_name] as $_key => $_val) {
+      if (is_array($_val)) {
+        $post_data = array_merge($post_data, $this->array_flatten($_val));
+      } else {
+        $post_data[$_key] = $_val;
+      }
+    }
+    
+    // Check the required item is whether it is empty
+    $check_items = [ 'base_name', 'target_table', 'csid' ];
+    foreach ($check_items as $item_key) {
+      if (!isset($post_data[$item_key]) || empty($post_data[$item_key])) 
+        $errors[] = sprintf( __('%s does not exist.', CDBT), __($item_key, CDBT) );
+    }
+    if (!empty($errors)) {
+      $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
+      return;
+    }
+    
+    // sanitaize checkbox values
+    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    foreach ($checkbox_options as $option_name) {
+      $post_data[$option_name] = array_key_exists($option_name, $post_data) ? $this->strtobool($post_data[$option_name]) : false;
+    }
+    
+    $stored_shortcode = $this->get_shortcode_option(intval($post_data['csid']));
+    if (!empty($stored_shortcode)) {
+      $all_shortcodes = $this->get_shortcode_option();
+      foreach ($all_shortcodes as $_i => $shortcode_option) {
+        if (intval($post_data['csid']) === intval($shortcode_option['csid'])) {
+          $all_shortcodes[$_i] = $post_data;
+          break;
+        }
+      }
+      if (update_option($this->domain_name . '-shortcodes', $all_shortcodes, 'no')) {
+        $notice_class = CDBT . '-notice';
+        $message = sprintf(__('Have been updated successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
+      } else {
+        $message = __('Could not update the custom shortcode.', CDBT);
+      }
+    } else {
+      $message = __('Could not update because the specified custom shortcode does not exist.', CDBT);
     }
     
     if (!empty($message)) {
@@ -1537,6 +1609,17 @@ class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
+        case 'delete_shortcode': 
+          $_current_shortcode = $this->get_shortcode_option($args['modalExtras']['target_scid']);
+          $args['modalTitle'] = __('Remove the shortcode', CDBT);
+          $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf('<div style="margin: 1em;"><pre><code>%s</code></pre></div>', stripslashes_deep($_current_shortcode['generate_shortcode']));
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Delete', CDBT)), ];
+          $args['modalShowEvent'] = "$('#run_delete_shortcode').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
+        case 'preview_shortcode': 
+          $args['modalTitle'] = __('Preview shortcode', CDBT);
+          $args['modalBody'] = stripslashes_deep($args['modalExtras']['shortcode']);
           break;
         default:
           break;

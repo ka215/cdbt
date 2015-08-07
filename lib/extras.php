@@ -235,10 +235,10 @@ trait CdbtExtras {
       if ('shortcode_list' === $columns) {
         // For customColumnRenderer() in the repeater script
         $custom_column_content = "'<div class=\"scl-operation-buttons\"><div class=\"btn-group operate-shortcode-register-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"regist\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Regist Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Regist Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"regist\" data-base-url=\"'+rowData.operate_shortcode_url+'regist\" class=\"btn btn-default\" title=\"". __('Regist Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Regist Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
         $custom_column_content .= "</div><div class=\"btn-group operate-shortcode-edit-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_shortcode_url+'\" class=\"btn btn-default\" title=\"". __('Delete Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'edit\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_shortcode_url+'list\" class=\"btn btn-default\" title=\"". __('Delete Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></a>";
         $custom_column_content .= "</div></div>'";
         
         $repeater_custom_methods = [];
@@ -249,8 +249,6 @@ trait CdbtExtras {
         ];
         // For after rendered
         $repeater_custom_methods['afterRender'] = "function(){ console.info('rendered'); }";
-//        $custom_row_scripts[] = "item.attr('id', 'row-' + helpers.rowData.shortcode_name + ('-' === helpers.rowData.shortcode_id ? '' : '-' + helpers.rowData.shortcode_id));";
-//        $custom_row_scripts[] = "item.attr('class', 'cdbt-repeater-row');";
         
         $columns = [
           [ 'label' => __('CSID', CDBT), 
@@ -322,7 +320,6 @@ trait CdbtExtras {
       foreach ($repeater_custom_methods as $_key => $_val) {
         $conponent_options[$_key] = $_val;
       }
-      //$conponent_options['customRowScripts'] = $custom_row_scripts;
     }
     
     return $conponent_options;

@@ -109,7 +109,7 @@ if (isset($this->component_options['modalShowEvent']) && !empty($this->component
         <?php if (!empty($modal_title)) : ?><h4 class="modal-title" id="cdbtModalLabel"><?php echo $modal_title; ?></h4><?php endif; ?>
       </div>
       <div class="modal-body">
-        <?php echo $modal_body; ?>
+        <?php echo do_shortcode($modal_body); ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"><?php _e('Close', CDBT); ?></button>

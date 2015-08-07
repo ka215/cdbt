@@ -340,7 +340,7 @@ trait CdbtAjax {
   
   
   /**
-   * Render the editting data form via Ajax
+   * Render the editing data form via Ajax
    *
    * @since 2.0.0
    *
@@ -352,6 +352,47 @@ trait CdbtAjax {
     if (array_key_exists('shortcode', $args)) {
       die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
     }
+    
+  }
+  
+  
+  /**
+   * Run of shortcode deletion via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_delete_shortcode( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    if (array_key_exists('csid', $args) && array_key_exists('operate_action', $args) && 'delete' === $args['operate_action']) {
+      $stored_shortcodes = $this->get_shortcode_option();
+      $base_items = count($stored_shortcodes);
+      if (!empty($stored_shortcodes) && intval($args['csid']) > 0) {
+        foreach ($stored_shortcodes as $_i => $_shortcode_option) {
+          if (intval($args['csid']) === intval($_shortcode_option['csid'])) {
+        	  unset($stored_shortcodes[$_i]);
+        	  break;
+        	}
+        }
+      }
+      if (count($stored_shortcodes) < $base_items) {
+        if (update_option($this->domain_name . '-shortcodes', $stored_shortcodes, 'no')) {
+          $notices_class = CDBT . '-notice';
+          $message = sprintf(__('Have deleted a custom shortcode, that ID is follow: %d.', CDBT), intval($args['csid']));
+        } else {
+        	$message = __('Failed to delete the custom shortcode.', CDBT);
+        }
+      } else {
+        $message = __('Specified custom shortcode does not exist.', CDBT);
+      }
+    }
+    
+    $this->register_admin_notices( $notices_class, $message, 3, true );
+    die('location.reload();');
     
   }
 
