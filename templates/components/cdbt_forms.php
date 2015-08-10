@@ -115,9 +115,13 @@ if (is_admin()) {
   $hidden_fields[] = sprintf( '<input type="hidden" name="page" value="%s">', $_current_page );
   $hidden_fields[] = sprintf( '<input type="hidden" name="active_tab" value="%s">', $_current_tab );
   
-  $wp_nonce_action = 'cdbt_management_console-' . $_current_page;
+  if ($_current_page) {
+    $wp_nonce_action = 'cdbt_management_console-' . $_current_page;
+  } else {
+    $wp_nonce_action = 'cdbt_entry_data-' . $this->component_options['entryTable'];
+  }
 } else {
-  $wp_nonce_action = 'cdbt_entry_data_' . $this->component_options['entryTable'];
+  $wp_nonce_action = 'cdbt_entry_data-' . $this->component_options['entryTable'];
 }
 unset($_current_url, $_current_page, $_current_tab);
 

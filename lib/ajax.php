@@ -129,6 +129,9 @@ trait CdbtAjax {
           $_SESSION[$session_key][$key] = $value;
         }
         
+        if (isset($args['table'])) 
+          $_SESSION[$session_key]['nonce'] = wp_create_nonce( 'cdbt_entry_data-' . $args['table'] );
+        
         if (isset($callback)) 
           die( $callback );
         
@@ -160,6 +163,25 @@ trait CdbtAjax {
     
     die($modal_contents);
     
+  }
+  
+  
+  /**
+   * Retrieve the generated nonce string via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [optional] Array of options for modal component
+   * @return void Output the HTML document for callback on the frontend
+   */
+  public function ajax_event_retrieve_nonce( $args=[] ) {
+    $nonce = '';
+    
+    if (array_key_exists('table', $args)) {
+      $nonce = wp_create_nonce( 'cdbt_entry_data-' . $args['table'] );
+    }
+    
+    wp_die($nonce);
   }
   
   
