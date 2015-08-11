@@ -70,7 +70,7 @@ if (isset($this->component_options['useBootstrap'])) {
 
 // `outputTitle` section
 if (isset($this->component_options['outputTitle']) && !empty($this->component_options['outputTitle'])) {
-  $form_title = esc_html($this->component_options['outputTitle']);
+  $form_title = $this->component_options['outputTitle'];
 } else {
   $form_title = '';
 }

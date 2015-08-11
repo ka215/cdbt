@@ -27,6 +27,7 @@ $(function() {
   $.ajaxUrl = cdbt_main_vars.ajax_url;
   $.nonce = '';
   $.emitMessage = cdbt_main_vars.emit_message;
+  $.emitType = cdbt_main_vars.emit_type;
   if ($.isDebug) {
     // check debug mode
     console.info( $.extend({ debugMode: 'ON' }, $.QueryString) );
@@ -158,28 +159,17 @@ $(function() {
         var label_elm = $(this).find('.repeater-list-heading');
         $(this).removeAttr('style');
         label_elm.removeAttr('style');
-        //console.info([$(this).attr('class'), $(this).width(), $(this).height(), parseInt(label_elm.css('width')), parseInt(label_elm.css('height')), label_elm.width(), label_elm.height()]);
+        // if ($.isDebug) { console.info([$(this).attr('class'), $(this).width(), $(this).height(), parseInt(label_elm.css('width')), parseInt(label_elm.css('height')), label_elm.width(), label_elm.height()]); }
         //var fixed_width = _.max([ $(this).width(), parseInt(label_elm.css('width')), label_elm.width() ]);
         var fixed_width = parseInt(label_elm.css('width'));
         //var fixed_height = _.max([ $(this).height(), parseInt(label_elm.css('height')), label_elm.height() ]);
         var fixed_height = parseInt(label_elm.css('height'));
-        //console.info([ fixed_width, fixed_height ]);
+        // if ($.isDebug) { console.info([ fixed_width, fixed_height ]); }
         $(this).removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
         label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
       });
     };
     
-/*
-    var locationToOperation = function( post_raw_data ) {
-      var post_data = {
-        'session_key': post_raw_data.sessionKey, 
-        'default_action': post_raw_data.operateAction, 
-        'target_table': post_raw_data.targetTable, 
-        'callback_url': post_raw_data.baseUrl, 
-      };
-      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-    };
-*/
     
     var is_view_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-view-') === 0;
     var is_edit_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-edit-') === 0;
@@ -194,11 +184,6 @@ $(function() {
       /**
        * When edit via shortcode
        */
-/*
-      $(document).on('click', '.operate-data-btn-group>button', function(){
-        locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
-      });
-*/
       
       // Button effect
       var effect_buttons = function(){
@@ -230,7 +215,6 @@ $(function() {
         var selectedItem = $('.repeater[id^="cdbt-repeater-edit-'+targetTable+'"]').repeater('list_getSelectedItems');
         var post_data = {};
         $.sessionKey = 'cdbt-edit-' + targetTable;
-//console.info([dataAction, targetTable, selectedItem.length]);
         
         $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
         
@@ -246,7 +230,7 @@ $(function() {
             
           case 'edit': 
             post_data = {
-              id: 'cdbtEditData', // 'cdbtModal', 
+              id: 'cdbtEditData', 
               insertContent: true, 
               modalTitle: '', 
               modalBody: '', 
@@ -270,7 +254,7 @@ $(function() {
             break;
           case 'delete': 
             post_data = {
-              id: 'cdbtDeleteData', // 'cdbtModal', 
+              id: 'cdbtDeleteData', 
               insertContent: true, 
               modalTitle: '', 
               modalBody: '', 
@@ -315,12 +299,7 @@ $(function() {
           'event': 'retrieve_nonce', 
         };
         return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'text', 'submit_data_deletion' );
-//console.info(nonce);
-//console.info(generate_form);
-//        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
       });
-      
-      
       
     }
     adjustCellSize();
@@ -343,6 +322,15 @@ $(function() {
       }
     });
     setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
+  }
+  
+  /**
+   * Entry forms via shortcode `cdbt-entry`
+   */
+  if ($('.cdbt-entry-data-form').size() > 0) {
+    
+    $('.dropdown-toggle').dropdown();
+    
   }
   
   
@@ -421,19 +409,16 @@ $(function() {
    * Common display notice handler
    */
   if ('' !== $.emitMessage) {
-//console.info($.emitMessage);
-    if ($.isDebug) {
-      var post_data = {
-        id: 'cdbtModal', 
-        insertContent: true, 
-        modalTitle: 'notices_message', 
-        modalBody: $.emitMessage, 
-      };
-      init_modal( post_data );
-    } else {
-      $('#message').show();
-    }
+    var modal_title = 'notice' === $.emitType ? 'notices_updated' : 'notices_error';
+    var post_data = {
+      id: 'cdbtModal', 
+      insertContent: true, 
+      modalTitle: modal_title, 
+      modalBody: $.emitMessage, 
+    };
+    init_modal( post_data );
     $.emitMessage = cdbt_main_vars.emit_message = '';
+    $.emitType = 'error';
   }
   
   

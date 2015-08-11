@@ -11,18 +11,12 @@ if ( !class_exists( 'CdbtFrontend' ) ) :
 final class CdbtFrontend extends CdbtDB {
 
   /**
-   * Member is stored current queries
-   *
-   * @param array
-   */
-//  var $query = [];
-
-  /**
    * This message is going to emit to frontend
    *
    * @param string
    */
   var $emit_message;
+  var $emit_type;
 
   /**
    * Protected menber for wrapping of wpdb object
@@ -148,6 +142,7 @@ final class CdbtFrontend extends CdbtDB {
     
     // Emit Message Initialize
     $this->emit_message = '';
+    $this->emit_type = 'error';
     
   }
 
@@ -380,8 +375,8 @@ final class CdbtFrontend extends CdbtDB {
       wp_localize_script( 'cdbt-main-script', 'cdbt_main_vars', [
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
-//        'nonce' => wp_create_nonce($this->domain_name . '_' . 'shortcode-actions'), 
         'emit_message' => $this->emit_message, 
+        'emit_type' => $this->emit_type, 
       ]);
     }
   }
@@ -398,8 +393,6 @@ final class CdbtFrontend extends CdbtDB {
       return;
     }
     
-//var_dump([$_POST, $_SESSION]);
-    
     if (wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
       $worker_method = sprintf('do_%s', $_POST['action']);
       if (method_exists($this, $worker_method)) {
@@ -410,16 +403,13 @@ final class CdbtFrontend extends CdbtDB {
       } else {
         // invalid access
         $this->destroy_session( $worker_method );
-        $this->emit_message = __('Invalid access this page. method is none.', CDBT);
-        //$this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
+        $this->emit_message = __('Invalid access this page.', CDBT);
       }
     } else {
       // invalid access
       $this->destroy_session();
       $this->emit_message = __('Invalid access this page.', CDBT);
-      //$this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
     }
-    //$this->admin_notices();
     
   }
   
@@ -463,19 +453,17 @@ final class CdbtFrontend extends CdbtDB {
     $message = $this->access_page_authentication( [ 'edit_data' ] );
     if (!empty($message)) {
       $this->emit_message = $message;
-      //$this->register_admin_notices( CDBT . '-error', $message, 3, true );
       return;
     }
     
     $post_data = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
     
-//var_dump($post_data);
     $table_name = $_POST['table'];
     $register_data = $this->cleanup_data( $table_name, $post_data );
     $where_clause = unserialize(stripslashes_deep($_POST['where_clause']));
     if ($this->update_data( $table_name, $register_data, $where_clause )) {
-      $notice_class = CDBT . '-notice';
       $message = __('Update of the data has been completed successfully.', CDBT);
+      $this->emit_type = 'notice';
     } else {
       $message = sprintf(__('Could not update data of "%s" table.', CDBT), $table_name);
       $message .= "\n". __('Not done updating of data if there is no change to the data in updating before and after.', CDBT);
@@ -498,13 +486,12 @@ final class CdbtFrontend extends CdbtDB {
    */
   public function do_delete_data() {
     static $message = '';
-    $_POST[$this->domain_name] = 'deletion';
+    $_POST[$this->domain_name] = 'deletion'; // For page authentication dummy
     
     // Access authentication process to the page
     $message = $this->access_page_authentication( [ 'delete_data' ] );
     if (!empty($message)) {
       $this->emit_message = $message;
-      //$this->register_admin_notices( CDBT . '-error', $message, 3, true );
       return;
     }
     
@@ -520,6 +507,7 @@ final class CdbtFrontend extends CdbtDB {
         }
         if ($deleted_data === count($_where_conditions)) {
           $message = __('Specified data have been removed successfully.', CDBT);
+          $this->emit_type = 'notice';
         } else {
           $message = __('Some of the data could not remove.', CDBT);
         }
@@ -536,6 +524,41 @@ final class CdbtFrontend extends CdbtDB {
     if (!empty($message)) {
       $this->emit_message = $message;
       $this->destroy_session();
+    }
+    return;
+    
+  }
+  
+  
+  /**
+   * Insert data via shortcode `cdbt-entry` from the frontend
+   *
+   * @since 2.0.0
+   */
+  public function do_entry_data() {
+    static $message = '';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'entry_data' ] );
+    if (!empty($message)) {
+      $this->emit_message = $message;
+      return;
+    }
+    
+    $table_name = $_POST['table'];
+    $post_data = $_POST[$this->domain_name];
+    $register_data = $this->cleanup_data( $table_name, $post_data );
+    if ($this->insert_data( $table_name, $register_data )) {
+      $message = sprintf(__('Your entry data has been successfully registered to "%s" table.', CDBT), $table_name);
+      $this->emit_type = 'notice';
+      $this->destroy_session();
+    } else {
+      $message = sprintf(__('Could not insert data to "%s" table.', CDBT), $table_name);
+      $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
+    }
+    
+    if (!empty($message)) {
+      $this->emit_message = $message;
     }
     return;
     
