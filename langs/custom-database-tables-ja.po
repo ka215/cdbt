@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 2.0.0\n"
-"POT-Creation-Date: 2015-08-11 14:03+0900\n"
+"POT-Creation-Date: 2015-08-11 19:44+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -135,6 +135,8 @@ msgid ""
 "Could not make a directory for backup. Then, it was interrupted of log "
 "deletion."
 msgstr ""
+"バックアップ用のディレクトリを作成できませんでした。そのためログ削除を中断し"
+"ました。"
 
 #: ../../custom-database-tables/lib/admin.php:733
 msgid "Could not copy of the log file."
@@ -353,7 +355,7 @@ msgstr "カスタムショートコードを更新できませんでした。"
 
 #: ../../custom-database-tables/lib/admin.php:1524
 msgid "Could not update because the specified custom shortcode does not exist."
-msgstr ""
+msgstr "指定されたショートコードが存在しないため、更新できませんでした。"
 
 #: ../../custom-database-tables/lib/admin.php:1559
 msgid "Reporting Errors"
@@ -1301,8 +1303,8 @@ msgid "Shortcode Name / Alias Shortcode"
 msgstr "ショートコード名／エイリアスコード"
 
 #: ../../custom-database-tables/lib/extras.php:267
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:391
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:748
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:355
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:676
 msgid "Description"
 msgstr "備考"
 
@@ -1333,34 +1335,39 @@ msgid "Render the editable data list for the specified table."
 msgstr "指定されたテーブルの編集可能データ一覧をレンダリングします。"
 
 #: ../../custom-database-tables/lib/shortcodes.php:50
+msgid ""
+"Deprecated since version 2; This shortcode has been merged into \"cdbt-view"
+"\"."
+msgstr "バージョン2で非推奨になりました。「cdbt-view」をお使いください。"
+
 #: ../../custom-database-tables/lib/shortcodes.php:58
-msgid "Deprecated from v2.0.0"
-msgstr ""
+msgid "Deprecated since version 2."
+msgstr "バージョン2で非推奨になりました。"
 
 #: ../../custom-database-tables/lib/shortcodes.php:277
-#: ../../custom-database-tables/lib/shortcodes.php:546
-#: ../../custom-database-tables/lib/shortcodes.php:816
+#: ../../custom-database-tables/lib/shortcodes.php:554
+#: ../../custom-database-tables/lib/shortcodes.php:832
 msgid "You do not have viewing permits of this content."
 msgstr "あなたはこのコンテンツを閲覧する権限がありません。"
 
-#: ../../custom-database-tables/lib/shortcodes.php:313
+#: ../../custom-database-tables/lib/shortcodes.php:321
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1220
 #, php-format
 msgid "View Data in \"%s\" Table"
 msgstr "%sテーブルのデータ閲覧"
 
-#: ../../custom-database-tables/lib/shortcodes.php:318
-#: ../../custom-database-tables/lib/shortcodes.php:853
+#: ../../custom-database-tables/lib/shortcodes.php:326
+#: ../../custom-database-tables/lib/shortcodes.php:877
 msgid "Data in this table does not exist."
 msgstr "このテーブルにはデータがありません。"
 
-#: ../../custom-database-tables/lib/shortcodes.php:577
+#: ../../custom-database-tables/lib/shortcodes.php:593
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1221
 #, php-format
 msgid "Entry Data to \"%s\" Table"
 msgstr "「%s」テーブルへデータを登録"
 
-#: ../../custom-database-tables/lib/shortcodes.php:848
+#: ../../custom-database-tables/lib/shortcodes.php:872
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1222
 #, php-format
 msgid "Edit Data of \"%s\" Table"
@@ -1552,6 +1559,9 @@ msgid ""
 "the current CDBT V2 is about <strong style=\"font-size: 32px; color: #dc4c3a;"
 "\">85%</strong>.<br>Please wait for until complete."
 msgstr ""
+"しかしまだリリースバージョンではありません。<br>現在のCDBT V2の完成度は "
+"<strong style=\"font-size: 32px; color: #dc4c3a;\">85%</strong> です。<br>完"
+"成までお待ちください。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:54
 msgid "Step5"
@@ -1798,8 +1808,8 @@ msgstr "初期表示レコード数"
 #: ../../custom-database-tables/templates/admin/cdbt_options.php:193
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:253
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:328
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:610
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:685
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:574
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:649
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:243
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:590
 #: ../../custom-database-tables/templates/components/cdbt_forms.php:219
@@ -1809,8 +1819,8 @@ msgstr "増やす"
 #: ../../custom-database-tables/templates/admin/cdbt_options.php:194
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:254
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:329
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:611
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:686
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:575
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:650
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:244
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:591
 #: ../../custom-database-tables/templates/components/cdbt_forms.php:220
@@ -1887,13 +1897,13 @@ msgid "Here will create a new shortcode. Please enter the following item."
 msgstr "新しいショートコードを作成します。以下の項目を入力してください。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:114
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:481
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:445
 msgid "Base shortcode name"
 msgstr "ベースショートコード名"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:114
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:131
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:488
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:452
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:122
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:203
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:921
@@ -1917,292 +1927,305 @@ msgid "require"
 msgstr "必須"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:131
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:488
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:452
 msgid "Target table name"
 msgstr "対象テーブル名"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:149
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:506
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:470
 msgid "Advanced setting of shortcode"
 msgstr "ショートコードの高度な設定"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:156
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:513
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:477
 msgid "Toggle of look and feel"
 msgstr "外観の切替え"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:161
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:518
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:482
 msgid ""
-"Use bootstrap style; If false is output by the static table tag layout in "
-"non the Repeater format. Also does not have any pagination when false."
+"Whether of using Bootstrap style; It is output by the static table tag "
+"layout in non the Repeater format, also does not have any pagination if "
+"disabled."
 msgstr ""
+"Bootstrapスタイルを使用するかどうか。無効にするとページネーションのない非"
+"Repeater形式の静的テーブルレイアウトで出力されます。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:167
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:524
-msgid "Display list number; The default value has changed to false from v2.0.0"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:488
+msgid ""
+"Whether of displaying list number; The default value has changed to disabled "
+"from v2.0.0"
 msgstr ""
+"リスト番号を表示するかどうか。初期値はバージョン2から表示しないに変更されまし"
+"た。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:173
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:530
-msgid "Display search; Is enabled only if \"bootstrap_style\" is true."
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:494
+msgid ""
+"Whether of displaying search box; Is enabled only if \"bootstrap style\" is "
+"checked."
 msgstr ""
+"検索ボックスを表示するかどうか。「Bootstrapスタイル使用」にチェックされている"
+"場合のみ有効です。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:179
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:536
-msgid "Display title"
-msgstr "タイトル表示"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:500
+msgid "Whether of displaying title."
+msgstr "タイトルを表示するかどうか。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:185
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:542
-msgid "Enable sort; Is enabled only if \"bootstrap_style\" is true."
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:506
+msgid ""
+"Whether of enabling sort; Is enabled only if \"bootstrap style\" is checked."
 msgstr ""
+"並べ替えを有効にするかどうか。「Bootstrapスタイル使用」にチェックされている場"
+"合のみ有効です。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:191
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:548
-msgid "Display index row"
-msgstr "カラム名表示"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:512
+msgid ""
+"Whether of displaying the index row; In the index row, it is rendered the "
+"column name of table."
+msgstr ""
+"インデックス行を表示するかどうか。インデックス行にはテーブルのカラム名が出力"
+"されます。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:198
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:555
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:519
 msgid "Exclude Columns"
 msgstr "除外するカラム"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:201
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:222
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:558
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:579
-msgid "String as array (not assoc); For example `col1,col2,col3,...`"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:522
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:543
+msgid ""
+"Please enter the column name that does not output at the specific string of "
+"comma-separated. For example, \"col1,col2,...\" so on."
 msgstr ""
+"出力しないカラム名をカンマ区切りの文字列で入力ください。入力例: \"col1,"
+"col2,...\""
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:205
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:562
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:526
 msgid "Add Classes"
 msgstr "追加クラス"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:208
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:565
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:529
 msgid "Separator is a single-byte space character"
 msgstr "区切り文字は半角空白です"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:212
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:569
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:533
 msgid "Narrow Keywords"
 msgstr "絞り込みキーワード"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:215
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:572
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:536
 msgid ""
-"String as array (not assoc) is `find_data()`; For example `keyword1,"
-"keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,"
-"col2:keyword2,...`"
+"Please enter the narrow keywords in a comma-separated. For example, "
+"\"keyword1,keyword2,...\" or \"col1:keyword1,col2:keyword2,...\" so on."
 msgstr ""
+"絞り込むキーワードをカンマ区切りで入力してください。入力例: \"keyword1,"
+"keyword2,...\" または \"col1:keyword1,col2:keyword2,...\""
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:219
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:576
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:540
 msgid "Hidden Columns"
 msgstr "非表示化カラム"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:226
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:583
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:547
 msgid "Display Columns"
 msgstr "表示するカラム"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:229
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:586
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:550
 msgid ""
-"String as array (not assoc); For example `col1,col2,col3,...` If overlapped "
-"with `exclude_cols`, set to override the `exclude_cols`."
+"Please enter the displaying column name in comma-delimited. If it overlap "
+"with excluding column, this setting takes precedence.."
 msgstr ""
+"表示するカラム名をカンマ区切りで入力してください。もし除外するカラムと重複し"
+"た場合はこちらの設定が優先されます。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:233
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:590
-msgid "Order Columns"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:554
+msgid "Column Order"
 msgstr "カラム表示順"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:236
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:593
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:557
 msgid ""
-"String as array (not assoc); For example `col3,col2,col1,...` If overlapped "
-"with `display_cols`, set to override the `display_cols`."
+"Please enter the displaying column order in comma-delimited. If it overlap "
+"with display columns, this setting takes precedence."
 msgstr ""
+"カラムの表示順をカンマ区切りで入力してください。もし表示するカラムと重複した"
+"場合はこちらの設定が優先されます。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:240
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:597
-msgid "Sort Order"
-msgstr "ソート順"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:561
+msgid "Column Sort Order"
+msgstr "カラムのソート順"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:243
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:600
-msgid "String as hash for example `updated:desc,ID:asc,...`"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:564
+msgid ""
+"Please enter the default column sort order at comma-delimited. For example, "
+"\"updated:desc,ID:asc,...\" so on."
 msgstr ""
+"カラムの初期ソート順をカンマ区切りで入力してください。入力例: \"updated:desc,"
+"ID:asc,...\""
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:248
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:605
-msgid "Limit Items"
-msgstr "最大表示データ数"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:569
+msgid "Limit Records Per Page"
+msgstr "ページごとのレコード数制限"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:257
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:614
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:578
 msgid ""
 "The default value is overwritten by the value of the max_show_records of the "
 "specified table."
 msgstr "デフォルト値は指定テーブルの最大レコード表示数によって上書きされます。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:262
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:355
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:619
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:712
-msgid "Render image type"
-msgstr "レンダリング画像の形式"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:583
+msgid "Rendering Image Type"
+msgstr "出力画像の形式"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:275
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:632
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:596
 msgid ""
-"class name for directly image render: `rounded`, `circle`, `thumbnail`, "
-"`responsive`, (until `minimum`, `modal` )"
+"Please choose class name for rendering image tag. This is enabled only if "
+"\"bootstrap style\" is checked."
 msgstr ""
+"画像タグを出力するためのクラス名を選択してください。「Bootstrapスタイル」を使"
+"用している場合のみ有効です。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:280
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:637
-msgid "Display filter"
-msgstr "フィルター表示"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:601
+msgid "Display Filter Box"
+msgstr "フィルターボックス表示"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:285
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:303
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:341
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:642
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:660
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:698
-msgid "Is enabled only if \"bootstrap_style\" is true."
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:606
+msgid ""
+"Whether of displaying the filter box; Is enabled only if \"bootstrap style\" "
+"is checked."
 msgstr ""
+"フィルタボックスを表示するかどうか。「Bootstrapスタイル」を使用している場合の"
+"み有効です。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:291
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:648
-msgid "Filters definition"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:612
+msgid "Filters Definition"
 msgstr "フィルター定義"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:294
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:651
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:615
 msgid ""
-"String as array (assoc); For example `filter1:label1,filter2:label2,...`"
+"Please enter the pair of the filter value and displaying label at comma-"
+"separator. For example, \"filter1:label1,filter2:label2,...\" so on."
 msgstr ""
+"フィルタ値と表示ラベルをカンマ区切りで入力ください。入力例: \"filter1:label1,"
+"filter2:label2,...\""
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:298
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:655
-msgid "Display view"
-msgstr "ビュー切替表示"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:619
+msgid "Enable Switching View"
+msgstr "ビュー切替の有効化"
+
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:303
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:624
+msgid ""
+"You are able to switch list view and thumbnail view if checked; This is "
+"enabled only if \"bootstrap style\" checked."
+msgstr ""
+"有効化するとリストビューとサムネイルビューを切替えられます。「Bootstrapスタイ"
+"ル」使用時のみ有効です。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:309
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:666
-msgid "Thumbnail column"
-msgstr "サムネイル用カラム"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:630
+msgid "Thumbnail Image Column"
+msgstr "サムネイル画像カラム"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:313
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:670
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:634
 msgid ""
-"Column name to be used as a thumbnail image (image binary or a URL of image "
-"must be stored in this column)"
+"The data of this column used as a thumbnail image. In this column, it must "
+"be stored the image binary or a image URL."
 msgstr ""
+"指定のカラムデータをサムネイル画像として使用します。カラムには画像のバイナリ"
+"かURLが格納されている必要があります。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:316
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:673
-msgid "Thumbnail title column"
-msgstr "サムネイルタイトルのカラム"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:637
+msgid "Thumbnail Title column"
+msgstr "サムネイル用タイトルカラム"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:320
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:677
-msgid "Column name to be used as a thumbnail title"
-msgstr ""
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:641
+msgid "This column name to use as the title of the thumbnail image."
+msgstr "サムネイル画像のタイトルとして使用するカラム。"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:323
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:680
-msgid "Thumbnail width"
-msgstr "サムネイルの横幅"
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:332
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:689
-msgid "Integer of thumbnail block size."
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:644
+msgid "Thumbnail Block Size"
 msgstr "サムネイルのサイズ"
 
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:332
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:653
+msgid "Please enter the integer for width of thumbnail block."
+msgstr "サムネイルブロックの横幅を入力してください。"
+
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:336
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:693
-msgid "Ajax load"
-msgstr "Ajaxローディング"
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:657
+msgid "Loading Via Ajax"
+msgstr "Ajaxデータロード"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:348
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:705
-msgid "Action url"
-msgstr "アクションURL"
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:351
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:708
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:341
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:662
 msgid ""
-"String of url for form action [optional] For using shortcode of `cdbt-edit`"
+"It will be on loading data via Ajax if checked this; Sorry, this feature is "
+"currently disabled yet."
 msgstr ""
+"有効にするとAjaxを介してデータをロードします。申し訳ありませんが、この機能は"
+"まだ利用できません。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:368
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:725
-msgid ""
-"String of action name as method after submiting [optional] Is `edit_data` if "
-"edit data"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:372
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:729
-msgid "Display submit"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:377
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:734
-msgid "Boolean [optional] For using shortcode of `cdbt-edit`"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:383
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:740
-msgid "Where clause"
-msgstr "Where句（絞り込み条件）"
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:386
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:743
-msgid ""
-"String as array (assoc); For example `col1:value1,col2:value2,...`, For "
-"using shortcode of `cdbt-edit`"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:394
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:751
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:358
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:679
 msgid ""
 "Please enter as like description of shortcode that will be displayed in the "
 "list screen."
 msgstr "一覧画面に表示されるショートコードの説明などを入力してください。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:404
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:761
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:368
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:689
 msgid "Generated shortcode confirmation"
 msgstr "生成ショートコードの確認"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:407
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:764
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:371
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:692
 msgid "Generated Shortcode"
 msgstr "生成ショートコード"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:413
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:770
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:377
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:698
 msgid "Alias Shortcode"
 msgstr "ショートコードエイリアス"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:422
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:779
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:386
 msgid "Save Shortcode"
 msgstr "ショートコードを保存"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:423
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:780
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:387
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:708
 msgid "Preview Shortcode"
 msgstr "ショートコードプレビュー"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:448
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:412
 #, php-format
 msgid ""
 "Please select a custom shortcode that you want to edit %sat the shortcode "
@@ -2210,15 +2233,19 @@ msgid ""
 msgstr ""
 "%sショートコード一覧%s で編集したいカスタムショートコードを選択してください。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:451
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:415
 msgid ""
 "Custom shortcode can not edit other than the registrant or privilege "
 "administrator."
 msgstr "カスタムショートコードは、登録者および特権管理者以外は編集できません。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:469
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:433
 msgid "You can edit the settings of custom shortcode at here."
 msgstr "ここではカスタムショートコードの設定を変更できます。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:707
+msgid "Update Shortcode"
+msgstr "ショートコードを更新"
 
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:15
 msgid "Table List"
@@ -4115,6 +4142,33 @@ msgstr "いいえ"
 #, php-format
 msgid "Enter %s"
 msgstr "%sを入力してください"
+
+#~ msgid "Display title"
+#~ msgstr "タイトル表示"
+
+#~ msgid "Display index row"
+#~ msgstr "カラム名表示"
+
+#~ msgid "Order Columns"
+#~ msgstr "カラム表示順"
+
+#~ msgid "Limit Items"
+#~ msgstr "最大表示データ数"
+
+#~ msgid "Display view"
+#~ msgstr "ビュー切替表示"
+
+#~ msgid "Thumbnail width"
+#~ msgstr "サムネイルの横幅"
+
+#~ msgid "Ajax load"
+#~ msgstr "Ajaxローディング"
+
+#~ msgid "Action url"
+#~ msgstr "アクションURL"
+
+#~ msgid "Where clause"
+#~ msgstr "Where句（絞り込み条件）"
 
 #~ msgid "WordPress core table management"
 #~ msgstr "WordPressのコアテーブル管理"

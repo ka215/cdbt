@@ -46,16 +46,16 @@ trait CdbtShortcodes {
         'alias_id' => null, 
       ],
       'cdbt-extract' => [
-        'method' => 'view_data_list', // Deprecated from v2.0.0; It has been merged into `cdbt-view`
-        'description' => __('Deprecated from v2.0.0', CDBT), 
+        'method' => 'view_data_list', 
+        'description' => __('Deprecated since version 2; This shortcode has been merged into "cdbt-view".', CDBT), 
         'type' => 'deprecated', 
         'author' => 0, 
         'permission' => 0, 
         'alias_id' => null, 
       ],
       'cdbt-submit' => [
-        'method' => 'submit_custom_query', // Deprecated from v2.0.0
-        'description' => __('Deprecated from v2.0.0', CDBT), 
+        'method' => 'submit_custom_query', 
+        'description' => __('Deprecated since version 2.', CDBT), /* バージョン2で非推奨になりました。 */
         'type' => 'deprecated', 
         'author' => 0, 
         'permission' => 9, 
