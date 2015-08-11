@@ -556,7 +556,7 @@ endif; ?>
           var sc_type = $(this).children('.col-scl-type').text();
           var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
           if ('built-in' === sc_type) {
-            first_col.attr('data-operate-action', 'regist');
+            first_col.attr('data-operate-action', 'register');
             last_col.children('.operate-shortcode-edit-btn-group').remove();
             
           } else

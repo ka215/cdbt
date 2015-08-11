@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 2.0.0\n"
-"POT-Creation-Date: 2015-08-11 10:57+0900\n"
+"POT-Creation-Date: 2015-08-11 14:03+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -1280,7 +1280,7 @@ msgid "Operation"
 msgstr "オペレーション"
 
 #: ../../custom-database-tables/lib/extras.php:238
-msgid "Regist Shortcode"
+msgid "Register Shortcode"
 msgstr "ショートコードの登録"
 
 #: ../../custom-database-tables/lib/extras.php:240
@@ -1549,8 +1549,8 @@ msgstr ""
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:42
 msgid ""
 "However, it is not yet in the release version.<br>Degree of completion of "
-"the current CDBT V2 is about <strong style=\"font-size: 32px;\">80%</strong>."
-"<br>Please wait for until complete."
+"the current CDBT V2 is about <strong style=\"font-size: 32px; color: #dc4c3a;"
+"\">85%</strong>.<br>Please wait for until complete."
 msgstr ""
 
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:54
@@ -1871,7 +1871,7 @@ msgid "Shortcode List"
 msgstr "ショートコード一覧"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:16
-msgid "Shortcode Register"
+msgid "Shortcode register"
 msgstr "ショートコード登録"
 
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:45

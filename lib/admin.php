@@ -1394,16 +1394,16 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * Page: cdbt_shortcodes | Tab: shortcode_regist
+   * Page: cdbt_shortcodes | Tab: shortcode_register
    *
    * @since 2.0.0
    */
-  public function do_cdbt_shortcodes_shortcode_regist() {
+  public function do_cdbt_shortcodes_shortcode_register() {
     static $message = '';
     $notice_class = CDBT . '-error';
     
     // Access authentication process to the page
-    $message = $this->access_page_authentication( [ 'regist_shortcode' ] );
+    $message = $this->access_page_authentication( [ 'register_shortcode' ] );
     if (!empty($message)) {
       $this->register_admin_notices( $notice_class, $message, 3, true );
       return;

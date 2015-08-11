@@ -1395,7 +1395,7 @@ class CdbtDB extends CdbtConfig {
     if (false === ($table_schema = $this->get_table_schema($table_name))) 
       return false;
     
-    $regist_data = [];
+    $register_data = [];
     foreach ($post_data as $post_key => $post_value) {
       if (array_key_exists($post_key, $table_schema)) {
         $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
@@ -1408,13 +1408,13 @@ class CdbtDB extends CdbtConfig {
             //
             // @since 2.0.0
             $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
-            $regist_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
+            $register_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
           } else {
             // Sanitization data from text field
             if (is_email($post_value)) {
-              $regist_data[$post_key] = sanitize_email($post_value);
+              $register_data[$post_key] = sanitize_email($post_value);
             } else {
-              $regist_data[$post_key] = sanitize_text_field($post_value);
+              $register_data[$post_key] = sanitize_text_field($post_value);
             }
           }
         }
@@ -1422,17 +1422,17 @@ class CdbtDB extends CdbtConfig {
         if (array_key_exists('numeric', $detect_column_type)) {
           if (array_key_exists('integer', $detect_column_type)) {
             // Sanitization data of integer
-            $regist_data[$post_key] = $table_schema[$post_key]['unsigned'] ? absint($post_value) : intval($post_value);
+            $register_data[$post_key] = $table_schema[$post_key]['unsigned'] ? absint($post_value) : intval($post_value);
           } else
           if (array_key_exists('float', $detect_column_type)) {
             // Sanitization data of float
-            $regist_data[$post_key] = 'decimal' === $detect_column_type['float'] ? strval(floatval($post_value)) : floatval($post_value);
+            $register_data[$post_key] = 'decimal' === $detect_column_type['float'] ? strval(floatval($post_value)) : floatval($post_value);
           } else
           if (array_key_exists('binary', $detect_column_type)) {
             // Sanitization data of bainary bit
-            $regist_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+            $register_data[$post_key] = sprintf("b'%s'", decbin($post_value));
           } else {
-            $regist_data[$post_key] = intval($post_value);
+            $register_data[$post_key] = intval($post_value);
           }
         }
         
@@ -1440,9 +1440,9 @@ class CdbtDB extends CdbtConfig {
           if ('enum' === $detect_column_type['list']) {
             // Validation data of enum element
             if (in_array($post_value, $this->parse_list_elements($table_schema[$post_key]['type_format']))) {
-              $regist_data[$post_key] = $post_value;
+              $register_data[$post_key] = $post_value;
             } else {
-              $regist_data[$post_key] = $table_schema[$post_key]['default'];
+              $register_data[$post_key] = $table_schema[$post_key]['default'];
             }
           } else
           if ('set' === $detect_column_type['list']) {
@@ -1454,7 +1454,7 @@ class CdbtDB extends CdbtConfig {
               if (in_array($item, $list_array)) 
                 $_save_array[] = $item;
             }
-            $regist_data[$post_key] = implode(',', $_save_array);
+            $register_data[$post_key] = implode(',', $_save_array);
             unset($list_array, $_save_array, $item);
           }
         }
@@ -1488,17 +1488,17 @@ class CdbtDB extends CdbtConfig {
             }
             // Rasterization data of datetime
             if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
-              $regist_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
+              $register_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
             } else {
               $_datetime = $_date . $_hour . $_minute . $_second;
-              $regist_data[$post_key] = !empty($_datetime) ? $_datetime : $table_schema[$post_key]['default'];
+              $register_data[$post_key] = !empty($_datetime) ? $_datetime : $table_schema[$post_key]['default'];
             }
           } else {
-            $regist_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
+            $register_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
           }
           // Validation data of datetime
-          if (!$this->validate->checkDateTime($regist_data[$post_key], 'Y-m-d H:i:s')) {
-            $regist_data[$post_key] = '0000-00-00 00:00:00';
+          if (!$this->validate->checkDateTime($register_data[$post_key], 'Y-m-d H:i:s')) {
+            $register_data[$post_key] = '0000-00-00 00:00:00';
           }
           
           $_prev_timezone = date_default_timezone_get();
@@ -1508,8 +1508,8 @@ class CdbtDB extends CdbtConfig {
           $_localize_timezone = apply_filters( 'cdbt_local_timezone_datetime', $this->options['timezone'] );
           date_default_timezone_set( $_localize_timezone );
           
-          $_timestamp = '0000-00-00 00:00:00' === $regist_data[$post_key] ? date_i18n('U') : strtotime($regist_data[$post_key]);
-          $regist_data[$post_key] = date_i18n( 'Y-m-d H:i:s', $_timestamp );
+          $_timestamp = '0000-00-00 00:00:00' === $register_data[$post_key] ? date_i18n('U') : strtotime($register_data[$post_key]);
+          $register_data[$post_key] = date_i18n( 'Y-m-d H:i:s', $_timestamp );
           
           date_default_timezone_set( $_prev_timezone );
           unset($_date, $_hour, $_minute, $_second, $_prev_timezone, $_localize_timezone, $_timestamp);
@@ -1561,12 +1561,12 @@ class CdbtDB extends CdbtConfig {
       if (!empty($uploaded_data)) {
         // Rasterization data of file
         foreach ($uploaded_data as $column => $file_data) {
-          $regist_data[$column] = $this->get_binary_context( $file_data['tmp_name'], $file_data['name'], $file_data['type'], $file_data['size'], true );
+          $register_data[$column] = $this->get_binary_context( $file_data['tmp_name'], $file_data['name'], $file_data['type'], $file_data['size'], true );
         }
       }
     }
     
-    return !empty($regist_data) ? $regist_data : false;
+    return !empty($register_data) ? $register_data : false;
     
   }
   

@@ -302,8 +302,16 @@ trait CdbtShortcodes {
     } else {
       $image_render = strtolower($image_render);
     }
-    if ($this->validate->checkInt($csid)) {
+    if ($csid > 0 && $this->validate->checkInt($csid)) {
       // csidに対応したショートコードが存在するかのチェックを行う
+      $loaded_settings = $this->get_shortcode_option($csid);
+      if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
+        foreach ($loaded_settings as $_key => $_val) {
+          if (!in_array($_key, [ 'base_name', 'target_table', 'description', 'csid', 'author', 'generate_shortcode', 'alias_code' ])) {
+            ${$_key} = $_val;
+          }
+        }
+      }
     } else {
       $csid = 0;
     }
@@ -566,8 +574,16 @@ trait CdbtShortcodes {
       }
       $add_class = implode(' ', $add_classes);
     }
-    if ($this->validate->checkInt($csid)) {
+    if ($csid > 0 && $this->validate->checkInt($csid)) {
       // csidに対応したショートコードが存在するかのチェックを行う
+      $loaded_settings = $this->get_shortcode_option($csid);
+      if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
+        foreach ($loaded_settings as $_key => $_val) {
+          if (!in_array($_key, [ 'base_name', 'target_table', 'description', 'csid', 'author', 'generate_shortcode', 'alias_code' ])) {
+            ${$_key} = $_val;
+          }
+        }
+      }
     } else {
       $csid = 0;
     }
@@ -837,8 +853,16 @@ trait CdbtShortcodes {
       $add_class = implode(' ', $add_classes);
     }
     $image_render = 'responsive';
-    if ($this->validate->checkInt($csid)) {
+    if ($csid > 0 && $this->validate->checkInt($csid)) {
       // csidに対応したショートコードが存在するかのチェックを行う
+      $loaded_settings = $this->get_shortcode_option($csid);
+      if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
+        foreach ($loaded_settings as $_key => $_val) {
+          if (!in_array($_key, [ 'base_name', 'target_table', 'description', 'csid', 'author', 'generate_shortcode', 'alias_code' ])) {
+            ${$_key} = $_val;
+          }
+        }
+      }
     } else {
       $csid = 0;
     }

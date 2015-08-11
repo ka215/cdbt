@@ -190,7 +190,7 @@ $(function() {
           'target_scid': post_raw_data.targetScid, 
           'callback_url': post_raw_data.baseUrl, 
         };
-        if ('regist' === post_raw_data.operateAction || 'edit' === post_raw_data.operateAction) {
+        if ('register' === post_raw_data.operateAction || 'edit' === post_raw_data.operateAction) {
           post_data = _.extend(post_data, { 'session_key': 'shortcode_' + post_raw_data.operateAction });
           return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
         }
@@ -214,7 +214,7 @@ $(function() {
           var sc_type = $(this).children('.col-scl-type').text();
           var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
           if ('built-in' === sc_type) {
-            first_col.attr('data-operate-action', 'regist');
+            first_col.attr('data-operate-action', 'register');
             last_col.children('.operate-shortcode-edit-btn-group').remove();
           } else
           if ('deprecated' === sc_type) {
@@ -912,14 +912,14 @@ $(function() {
   
   
   /**
-   * Helper UI scripts for shortcode regist and shortcode edit section
+   * Helper UI scripts for shortcode register and shortcode edit section
    */
-  if ('cdbt_shortcodes' === $.QueryString.page && ('shortcode_regist' === $.QueryString.tab || 'shortcode_edit' === $.QueryString.tab)) {
-    var is_regist = 'shortcode_regist' === $.QueryString.tab ? true : false;
-    var prefix = is_regist ? 'regist' : 'edit';
+  if ('cdbt_shortcodes' === $.QueryString.page && ('shortcode_register' === $.QueryString.tab || 'shortcode_edit' === $.QueryString.tab)) {
+    var is_register = 'shortcode_register' === $.QueryString.tab ? true : false;
+    var prefix = is_register ? 'register' : 'edit';
     
     var controllForms = function(){
-      var base_shortcode = is_regist ? $('#regist-shortcode-base_name').combobox('selectedItem').text : $('#edit-shortcode-base_name').val();
+      var base_shortcode = is_register ? $('#register-shortcode-base_name').combobox('selectedItem').text : $('#edit-shortcode-base_name').val();
       var target_class = '';
       switch(base_shortcode) {
         case 'cdbt-view':
@@ -952,7 +952,7 @@ $(function() {
       
     };
     
-    $('#regist-shortcode-base_name').on('changed.fu.combobox', function(){
+    $('#register-shortcode-base_name').on('changed.fu.combobox', function(){
       controllForms();
     });
     controllForms();
