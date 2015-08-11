@@ -116,15 +116,17 @@ $default_action = 'update';
           </div>
         </div>
       </div><!-- /option-item-15 -->
+      
       <div class="clearfix"><br></div>
       <h4 class="title"><?php _e('Initial definition for table creation', $this->domain_name); ?></h4>
+      
       <div class="form-group">
         <label class="col-sm-2 control-label"><?php _e('Table prefix', $this->domain_name); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-21">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[use_wp_prefix]" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
-              <span class="checkbox-label"><?php global $wpdb; printf( _e('Automatically prepend table prefix %s defined at the WordPress config (wp-config.php) when you create a new table.', $this->domain_name), '<code>'. $wpdb->prefix .'</code>' ); ?></span>
+              <span class="checkbox-label"><?php global $wpdb; printf( __('Automatically prepend table prefix %s defined at the WordPress config (wp-config.php) when you create a new table.', $this->domain_name), '<code>'. $wpdb->prefix .'</code>' ); ?></span>
             </label>
             <p class="help-block"><?php _e('This setting can be changed individually at the time of table creation.', $this->domain_name); ?></p>
           </div>
@@ -146,7 +148,7 @@ $default_action = 'update';
           </div>
           <p class="help-block"><?php _e('This setting is default character set when created the table.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_charset' ); ?></p>
         </div>
-      </div>
+      </div><!-- /option-item-22 -->
       <div class="form-group">
         <label for="option-item-23" class="col-sm-2 control-label"><?php _e('Default timezone', $this->domain_name); ?></label>
         <div class="col-sm-10">
@@ -166,7 +168,7 @@ $default_action = 'update';
             <p class="help-block"><?php _e('When this plugin insert the datetime type data, localized the value according to the set timezone.', $this->domain_name); ?> <?php $this->during_trial( 'localize_timezone' ); ?></p>
           </div>
         </div>
-      </div>
+      </div><!-- /option-item-23 -->
       <div class="form-group">
         <label for="option-item-24" class="col-sm-2 control-label"><?php _e('Default database engine', $this->domain_name); ?></label>
         <div class="col-sm-10">
@@ -183,7 +185,7 @@ $default_action = 'update';
           </div>
           <p class="help-block"><?php _e('This initial value is the database engine of the table created by the plugin.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_db_engine' ); ?></p>
         </div>
-      </div>
+      </div><!-- /option-item-24 -->
       <div class="form-group">
         <label for="option-item-25" class="col-sm-2 control-label"><?php _e('Initial display number of records', $this->domain_name); ?></label>
         <div class="col-sm-10">
@@ -196,7 +198,7 @@ $default_action = 'update';
           </div>
           <p class="help-block"><?php _e('This initial value is the number of displayed records per one page of the table created by the plugin.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
         </div>
-      </div>
+      </div><!-- /option-item-25 -->
 
 <!--
 input.reguler-text { width: 25em; }
@@ -283,6 +285,24 @@ input.large-text, textarea.large-text { width: 99%; }
           <li><span class="dashicons dashicons-info"></span> <?php _e('Already it is not reflected in the previously created table. Please change the table settings individually if you want to change it.', $this->domain_name); ?></li>
         </ul>
       </div>
+      
+      <div class="clearfix"><br></div>
+      <h4 class="title"><?php _e('Advanced Plugin Settings', $this->domain_name); /* 高度なプラグイン設定 */ ?></h4>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label"><?php _e('Included Assets Definition', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="option-item-31">
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets]" type="checkbox" value="1" <?php checked('1', $options['include_assets']); ?>>
+              <span class="checkbox-label"><?php _e('各種アセットの読み込みを制御します。テーマや他のプラグインとのアセットが競合する場合に設定を変更してください。', $this->domain_name); ?></span>
+            </label>
+          </div>
+        </div>
+      </div><!-- /option-item-31 -->
+      
+      
+      <div class="clearfix"><br></div>
       <div class="form-group">
         <div class="col-sm-2">
           <input type="submit" name="submit" id="submit" class="btn btn-primary pull-right" value="<?php _e('Save Changes', $this->domain_name); ?>">

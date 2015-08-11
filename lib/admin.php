@@ -303,10 +303,10 @@ class CdbtAdmin extends CdbtDB {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT APIs Management', $this->domain_name), 
-      __('APIs', $this->domain_name), 
+      __('CDBT Web APIs Management', $this->domain_name), 
+      __('Web APIs', $this->domain_name), 
       $operating_capability, 
-      'cdbt_apis', 
+      'cdbt_web_apis', 
       array($this, 'admin_page_render') 
     );
     
@@ -1534,11 +1534,13 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * Page: cdbt_apis | Tab: (any)
+   * Page: cdbt_api_keys | Tab: apikey_register
    *
    * @since 2.0.0
    */
-  public function do_cdbt_apis_tabs() {
+  public function do_cdbt_api_keys_apikey_register() {
+    
+    
     
   }
   

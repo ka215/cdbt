@@ -98,7 +98,7 @@ if (!$is_split) :
     </ul>
     <div class="actions">
       <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span><?php _e('Prev', CDBT); ?></button>
-      <button type="button" class="btn btn-default btn-next" data-last="Complete"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>
+      <button type="button" class="btn btn-default btn-next" data-last="<?php _e('Complete', CDBT); ?>"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>
     </div>
     <div class="step-content">
     <?php foreach ($wizard_steps as $i => $step_values) : ?>

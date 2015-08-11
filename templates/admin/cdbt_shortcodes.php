@@ -42,7 +42,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
 <?php if ($current_tab == 'shortcode_list') : ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('This shortcode list has been managing in the plugin. Your newly created shortcodes, you can use very conveniently by registering to this plugin.', CDBT); ?>
+      <?php _e('This shortcode list has been managing in the plugin. Your newly created shortcodes, you can use very conveniently by registering to this plugin.', CDBT); ?> <?php $this->during_trial( 'shortcode_list' ); ?>
     </p>
   </div>
 
@@ -99,7 +99,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
 ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('Here will create a new shortcode. Please enter the following item.', CDBT); ?>
+      <?php _e('Here will create a new shortcode. Please enter the following item.', CDBT); ?> <?php $this->during_trial( 'shortcode_register' ); ?>
     </p>
   </div>
   
@@ -430,7 +430,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
 ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('You can edit the settings of custom shortcode at here.', CDBT); ?>
+      <?php _e('You can edit the settings of custom shortcode at here.', CDBT); ?> <?php $this->during_trial( 'shortcode_edit' ); ?>
     </p>
   </div>
   
@@ -719,7 +719,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
 <?php } else { ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php echo $_wall_message; ?>
+      <?php echo $_wall_message; ?> <?php $this->during_trial( 'shortcode_edit' ); ?>
     </p>
   </div>
 <?php }

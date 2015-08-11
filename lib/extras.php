@@ -60,6 +60,13 @@ trait CdbtExtras {
       'view_data', 
       'entry_data', 
       'edit_data', 
+      'shortcode_list', 
+      'shortcode_register', 
+      'shortcode_edit', 
+      'hosts_list', 
+      'apikey_generator', 
+      'apikey_requests', 
+      
     ];
     if (in_array($feature_name, $new_features)) {
       printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );
