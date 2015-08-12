@@ -7,7 +7,7 @@ if ( !defined( 'CDBT' ) ) exit;
 
 if ( !class_exists( 'CdbtAdmin' ) ) :
 
-class CdbtAdmin extends CdbtDB {
+final class CdbtAdmin extends CdbtDB {
 
   /**
    * Member is stored current queries
@@ -100,6 +100,7 @@ class CdbtAdmin extends CdbtDB {
   use CdbtAjax;
   use DynamicTemplate;
   use CdbtShortcodes;
+  use CdbtApis;
   use CdbtExtras;
 
 
@@ -149,6 +150,9 @@ class CdbtAdmin extends CdbtDB {
     
     // Shortcode Initialize
     $this->shortcode_register();
+    
+    // Web API Initialize
+    $this->init_allowed_hosts();
     
   }
 
@@ -1534,13 +1538,79 @@ class CdbtAdmin extends CdbtDB {
 
 
   /**
-   * Page: cdbt_api_keys | Tab: apikey_register
+   * Page: cdbt_web_apis | Tab: apikey_generator
    *
    * @since 2.0.0
    */
-  public function do_cdbt_api_keys_apikey_register() {
+  public function do_cdbt_web_apis_apikey_generator() {
+    static $message = '';
+    $notice_class = CDBT . '-error';
     
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'generate' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      return;
+    }
     
+    if ( get_magic_quotes_gpc() ) 
+      $_POST = array_map( 'stripslashes_deep', $_POST );
+    
+    // Check the required items
+    $_post_data = $_POST[$this->domain_name];
+    if (!isset($_post_data['host_name']) || empty($_post_data['host_name'])) {
+      $message = __('Request origin host does not specified.', CDBT);
+    } else {
+      if (preg_match('/^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/', $_post_data['host_name'])) {
+        // done
+      } else
+      if (preg_match('/^((http|https|ftp):\/\/|)([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $_post_data['host_name'], $matches)) {
+        $_post_data['host_name'] = $matches[3];
+      } else {
+        $message = __('Specified request origin host is invalid.', CDBT);
+      }
+    }
+    if (empty($message) && (!isset($_post_data['permission']) || empty($_post_data['permission']))) {
+      $message = __('Hosts that do not allow all of the request methods can not be registered.', CDBT);
+    }
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+      return;
+    }
+    
+    // 
+    $_permit_bit_var = '';
+    foreach ($this->request_methods as $_method) {
+      $_permit_bit_var .= isset($_post_data['permission'][$_method]) && $this->strtobool($_post_data['permission'][$_method]) ? '1' : '0';
+    }
+    
+    $_new_host = [
+      'host_name' => $_post_data['host_name'], 
+      'api_key' => $this->generate_api_key($_post_data['host_name']), 
+      'desc' => esc_textarea($_post_data['description']), 
+      'permission' => $_permit_bit_var, 
+      'generated' => date('Y-m-d H:i:s'),
+    ];
+    
+    $_current_hosts = $this->allowed_hosts;
+    $_ids = array_keys($_current_hosts);
+    $_max_host_id = count($_ids) > 0 ? max(array_keys($_current_hosts)) : 0;
+    if (!isset($_current_hosts[$_max_host_id + 1])) {
+      $_current_hosts[$_max_host_id + 1] = $_new_host;
+      $this->options['api_hosts'] = $_current_hosts;
+      if (update_option($this->domain_name, $this->options)) {
+        $notice_class = CDBT . '-notice';
+        $message = sprintf(__('The "%s" was registered as a host to allow the API request.', CDBT), $_post_data['host_name']);
+        $this->destroy_session();
+      } else {
+        $message = __('Failed to generate the API key.', CDBT);
+      }
+    }
+    
+    if (!empty($message)) {
+      $this->register_admin_notices( $notice_class, $message, 3, true );
+    }
+    return;
     
   }
   
@@ -1618,6 +1688,12 @@ class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf('<div style="margin: 1em;"><pre><code>%s</code></pre></div>', stripslashes_deep($_current_shortcode['generate_shortcode']));
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_shortcode').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
+        case 'delete_host': 
+          $args['modalTitle'] = __('Remove the allowed host', CDBT);
+          $args['modalBody'] = sprintf(__('You can not restore the allowed host %s after deleted. Are you sure to delete this host settings?', CDBT), $args['modalExtras']['host_name']);
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_host" class="btn btn-primary" data-hostid="%s">%s</button>', $args['modalExtras']['host_id'], __('Delete', CDBT)), ];
+          $args['modalShowEvent'] = "$('#run_delete_host').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'preview_shortcode': 
           $args['modalTitle'] = __('Preview shortcode', CDBT);

@@ -18,6 +18,7 @@ $files = [
   'ajax.php',          // Trait for using ajax
   'tmpl.php',          // Trait for dynamic rendering templates
   'shortcodes.php', // Trait for shortcodes definitions
+  'webapis.php',     // Trait for web apis definitions
   'extras.php',       // Trait for enhancements (for customization)
   'admin.php',       // Entry point class for admin panels
   'main.php',        // Entry point class for web frontend

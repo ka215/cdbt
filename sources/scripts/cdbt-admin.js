@@ -240,6 +240,42 @@ $(function() {
       });
       
     }
+    if (_.contains([ 'cdbtAllowedHosts' ], $('.repeater').attr('id'))) {
+      $(document).on('click', '.operate-webapi-deletion-btn-group button', function(){
+        var post_raw_data = $(this).data();
+        if ('delete' === post_raw_data.operateAction) {
+          var post_data = {
+            id: 'cdbtModal', 
+            insertContent: true, 
+            modalTitle: 'delete_host', 
+            modaleBody: '', 
+            modaleHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');", 
+            modalExtras: { 'host_name': post_raw_data.targetHost, 'host_id': post_raw_data.targetHostid }, 
+          };
+          init_modal( post_data );
+        }
+      });
+      
+      var customColsRender = function(){
+        $('td.col-ahl-permission').each(function(){
+          var permissions = $(this).text().split(',');
+          var content = _.reduce(permissions, function(m, v){ return m + '<span class="label label-primary" style="margin-right: 4px;">' + v + '</span>'; }, '');
+          $(this).html(content);
+        });
+        adjustCellSize();
+      };
+      
+      $(document).on('click submit keydown', '#cdbtShortcodes', function(){
+        customColsRender();
+      });
+      customColsRender();
+      
+      $(document).on('click', 'th.sortable', function(){
+        customColsRender();
+        adjustCellSize();
+      });
+      
+    }
     adjustCellSize();
   }
   
@@ -1022,6 +1058,24 @@ $(function() {
         modalExtras: { shortcode: $('#'+prefix+'-shortcode-generate_shortcode').val() }
       };
       init_modal( post_data );
+    });
+    
+  }
+  
+  
+  /**
+   * Helper UI scripts for webapi hosts list section
+   */
+  if ('cdbt_web_apis' === $.QueryString.page && 'hosts_list' === $.QueryString.tab) {
+    
+    // Run of delete host after confirmation
+    $(document).on('click', '#run_delete_host', function(){
+      var post_data = {
+        'host_id': $(this).data('hostid'), 
+        'operate_action': 'delete', 
+        'event': 'delete_host', 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
     });
     
   }

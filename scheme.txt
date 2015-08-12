@@ -13,8 +13,8 @@ custom-database-tables/
 │  ├db.php		<-- プラグイン用データベース制御クラス「CdbtDB」。「CdbtConfig」を継承する
 │  ├─┬ajax.php	<-- AJAX制御用トレイト
 │  │   ├tmpl.php	<-- テンプレート制御用トレイト。動的テンプレート読み込みクロージャあり
-│  │   ├shortcode.php	<-- ショートコード制御用トレイト。
-│  │   ├webapi.php	<-- WEBAPI制御用トレイト。
+│  │   ├shortcodes.php	<-- ショートコード制御用トレイト。
+│  │   ├webapis.php	<-- WEBAPI制御用トレイト。
 │  │   └extras.php	<-- プラグイン拡張用トレイト
 │  ├admin.php		<-- 管理画面用finalクラス「CdbtAdmin」。「CdbtDB」を継承する
 │  ├main.php		<-- フロントエンド用finalクラス「CdbtFrontend」。「CdbtDB」を継承する

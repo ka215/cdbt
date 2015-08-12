@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Custom Database Tables 2.0.0\n"
-"POT-Creation-Date: 2015-08-11 19:44+0900\n"
+"POT-Creation-Date: 2015-08-12 17:55+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-2: ../../custom-database-tables/.git\n"
 "X-Poedit-SearchPathExcluded-3: ../../custom-database-tables/assets\n"
 
-#: ../../custom-database-tables/functions.php:33
+#: ../../custom-database-tables/functions.php:34
 #, php-format
 msgid "Error locating %s for inclusion"
 msgstr "インクルードパス「%s」のエラー"
@@ -39,98 +39,98 @@ msgstr "メソッド \"%s\" がありません。"
 msgid "Property \"%s\" does not exist."
 msgstr "プロパティ \"%s\" がありません。"
 
-#: ../../custom-database-tables/lib/admin.php:277
+#: ../../custom-database-tables/lib/admin.php:281
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:30
 msgid "CDBT Management Console"
 msgstr "カスタムDBテーブル 管理画面"
 
-#: ../../custom-database-tables/lib/admin.php:278
+#: ../../custom-database-tables/lib/admin.php:282
 msgid "CDBT"
 msgstr "CDBT"
 
-#: ../../custom-database-tables/lib/admin.php:288
+#: ../../custom-database-tables/lib/admin.php:292
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:44
 msgid "CDBT Tables Management"
 msgstr "カスタムDBテーブル テーブル管理"
 
-#: ../../custom-database-tables/lib/admin.php:289
+#: ../../custom-database-tables/lib/admin.php:293
 msgid "Tables"
 msgstr "テーブル管理"
 
-#: ../../custom-database-tables/lib/admin.php:297
+#: ../../custom-database-tables/lib/admin.php:301
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:32
 msgid "CDBT Shortcodes Management"
 msgstr "CDBT ショートコード管理"
 
-#: ../../custom-database-tables/lib/admin.php:298
+#: ../../custom-database-tables/lib/admin.php:302
 msgid "Shortcodes"
 msgstr "ショートコード管理"
 
-#: ../../custom-database-tables/lib/admin.php:306
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:28
-msgid "CDBT APIs Management"
-msgstr "カスタムDBテーブル API管理"
+#: ../../custom-database-tables/lib/admin.php:310
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:28
+msgid "CDBT Web APIs Management"
+msgstr "カスタムDBテーブル WEB API管理"
 
-#: ../../custom-database-tables/lib/admin.php:307
-msgid "APIs"
-msgstr "API管理"
+#: ../../custom-database-tables/lib/admin.php:311
+msgid "Web APIs"
+msgstr "WEB API管理"
 
-#: ../../custom-database-tables/lib/admin.php:315
+#: ../../custom-database-tables/lib/admin.php:319
 #: ../../custom-database-tables/templates/admin/cdbt_options.php:30
 msgid "CDBT Plugin Options"
 msgstr "カスタムDBテーブル プラグイン設定"
 
-#: ../../custom-database-tables/lib/admin.php:316
+#: ../../custom-database-tables/lib/admin.php:320
 msgid "Plugin Options"
 msgstr "プラグイン設定"
 
-#: ../../custom-database-tables/lib/admin.php:463
+#: ../../custom-database-tables/lib/admin.php:467
 #: ../../custom-database-tables/lib/cdbt.class.php:288
 msgid "Custom DB Tables"
 msgstr "カスタム DB テーブル"
 
-#: ../../custom-database-tables/lib/admin.php:531
+#: ../../custom-database-tables/lib/admin.php:535
 #: ../../custom-database-tables/lib/cdbt.class.php:278
 msgid "Settings"
 msgstr "設定"
 
-#: ../../custom-database-tables/lib/admin.php:539
+#: ../../custom-database-tables/lib/admin.php:543
 #: ../../custom-database-tables/templates/cdbt-edit.php:217
 #: ../../custom-database-tables/templates/cdbt-list.php:182
 #: ../../custom-database-tables/templates/cdbt-public-edit.php:270
 msgid "Edit"
 msgstr "編集"
 
-#: ../../custom-database-tables/lib/admin.php:595
-#: ../../custom-database-tables/lib/admin.php:600
-#: ../../custom-database-tables/lib/main.php:406
-#: ../../custom-database-tables/lib/main.php:411
+#: ../../custom-database-tables/lib/admin.php:599
+#: ../../custom-database-tables/lib/admin.php:604
+#: ../../custom-database-tables/lib/main.php:410
+#: ../../custom-database-tables/lib/main.php:415
 msgid "Invalid access this page."
 msgstr "このページへのアクセスが不正です。"
 
-#: ../../custom-database-tables/lib/admin.php:623
-#: ../../custom-database-tables/lib/main.php:436
+#: ../../custom-database-tables/lib/admin.php:627
+#: ../../custom-database-tables/lib/main.php:440
 msgid "Illegal access is."
 msgstr "不正なアクセスです。"
 
-#: ../../custom-database-tables/lib/admin.php:626
-#: ../../custom-database-tables/lib/admin.php:629
+#: ../../custom-database-tables/lib/admin.php:630
+#: ../../custom-database-tables/lib/admin.php:633
 msgid "You do not have access privileges on this page."
 msgstr "このページにアクセスする権限がありません。"
 
-#: ../../custom-database-tables/lib/admin.php:682
+#: ../../custom-database-tables/lib/admin.php:686
 msgid "Plugin options saved."
 msgstr "プラグイン設定を保存しました。"
 
-#: ../../custom-database-tables/lib/admin.php:684
+#: ../../custom-database-tables/lib/admin.php:688
 msgid "Could not save options."
 msgstr "設定を保存できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:716
+#: ../../custom-database-tables/lib/admin.php:720
 msgid "Log file does not exist."
 msgstr "ログファイルがありません。"
 
-#: ../../custom-database-tables/lib/admin.php:726
+#: ../../custom-database-tables/lib/admin.php:730
 msgid ""
 "Could not make a directory for backup. Then, it was interrupted of log "
 "deletion."
@@ -138,62 +138,62 @@ msgstr ""
 "バックアップ用のディレクトリを作成できませんでした。そのためログ削除を中断し"
 "ました。"
 
-#: ../../custom-database-tables/lib/admin.php:733
+#: ../../custom-database-tables/lib/admin.php:737
 msgid "Could not copy of the log file."
 msgstr "ログファイルをコピーできませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:742
+#: ../../custom-database-tables/lib/admin.php:746
 msgid "Could not clear the log."
 msgstr "ログを消去できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:748
+#: ../../custom-database-tables/lib/admin.php:752
 msgid "Have cleared the log."
 msgstr "ログを消去しました。"
 
-#: ../../custom-database-tables/lib/admin.php:777
-#: ../../custom-database-tables/lib/admin.php:1428
-#: ../../custom-database-tables/lib/admin.php:1495
+#: ../../custom-database-tables/lib/admin.php:781
+#: ../../custom-database-tables/lib/admin.php:1432
+#: ../../custom-database-tables/lib/admin.php:1499
 #, php-format
 msgid "%s does not exist."
 msgstr "%sがありません。"
 
-#: ../../custom-database-tables/lib/admin.php:788
+#: ../../custom-database-tables/lib/admin.php:792
 #, php-format
 msgid "Contains characters which cannot be used in %s."
 msgstr "%s中に使用できない文字が含まれています。"
 
-#: ../../custom-database-tables/lib/admin.php:828
+#: ../../custom-database-tables/lib/admin.php:832
 msgid "Incorporatable table does not exist."
 msgstr "取り込み可能なテーブルがありません。"
 
-#: ../../custom-database-tables/lib/admin.php:846
+#: ../../custom-database-tables/lib/admin.php:850
 msgid "Table incorporation has been completed successfully."
 msgstr "テーブルの取り込みが正常に完了しました。"
 
-#: ../../custom-database-tables/lib/admin.php:849
+#: ../../custom-database-tables/lib/admin.php:853
 msgid "Failed the table incorporation."
 msgstr "テーブルの取り込みに失敗しました。"
 
-#: ../../custom-database-tables/lib/admin.php:894
+#: ../../custom-database-tables/lib/admin.php:898
 msgid "Invalid sql statement of `ALTER TABLE`."
 msgstr "\"ALTER TABLE\"のSQL文が無効です。"
 
-#: ../../custom-database-tables/lib/admin.php:895
+#: ../../custom-database-tables/lib/admin.php:899
 msgid "Failed to run the query of `ALTER TABLE`."
 msgstr "\"ALTER TABLE\"のクエリ実行に失敗しました。"
 
-#: ../../custom-database-tables/lib/admin.php:986
-#: ../../custom-database-tables/lib/admin.php:1041
+#: ../../custom-database-tables/lib/admin.php:990
+#: ../../custom-database-tables/lib/admin.php:1045
 msgid "Modification was successful."
 msgstr "変更に成功しました。"
 
-#: ../../custom-database-tables/lib/admin.php:991
-#: ../../custom-database-tables/lib/admin.php:1046
+#: ../../custom-database-tables/lib/admin.php:995
+#: ../../custom-database-tables/lib/admin.php:1050
 msgid "Failed to update of the plugin options."
 msgstr "プラグイン設定の更新に失敗しました。"
 
-#: ../../custom-database-tables/lib/admin.php:995
-#: ../../custom-database-tables/lib/admin.php:1049
+#: ../../custom-database-tables/lib/admin.php:999
+#: ../../custom-database-tables/lib/admin.php:1053
 msgid ""
 "There was no item to be modify. Please run again after you correct the item "
 "you want to modify."
@@ -201,22 +201,22 @@ msgstr ""
 "修正すべき項目がありませんでした。変更したい項目を修正後に再度実行してくださ"
 "い。"
 
-#: ../../custom-database-tables/lib/admin.php:1054
-#: ../../custom-database-tables/lib/admin.php:1289
-#: ../../custom-database-tables/lib/admin.php:1384
+#: ../../custom-database-tables/lib/admin.php:1058
+#: ../../custom-database-tables/lib/admin.php:1293
+#: ../../custom-database-tables/lib/admin.php:1388
 msgid "Illegal operation was called."
 msgstr "無効な操作が呼び出されました。"
 
-#: ../../custom-database-tables/lib/admin.php:1091
-#: ../../custom-database-tables/lib/admin.php:1326
+#: ../../custom-database-tables/lib/admin.php:1095
+#: ../../custom-database-tables/lib/admin.php:1330
 msgid "Could not change the operate table."
 msgstr "操作テーブルを変更できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1111
+#: ../../custom-database-tables/lib/admin.php:1115
 msgid "Invalid step transition."
 msgstr "不正なステップ遷移です。"
 
-#: ../../custom-database-tables/lib/admin.php:1138
+#: ../../custom-database-tables/lib/admin.php:1142
 msgid ""
 "The uploaded file could not be parsed. It likely has deficiencies in the "
 "file."
@@ -224,7 +224,7 @@ msgstr ""
 "アップロードされたファイルをパースできませんでした。ファイルに不備がある可能"
 "性があります。"
 
-#: ../../custom-database-tables/lib/admin.php:1141
+#: ../../custom-database-tables/lib/admin.php:1145
 msgid ""
 "The number of data to be imported is not consistent with the number of the "
 "specified column. Please specify the column to match the import data again."
@@ -232,54 +232,54 @@ msgstr ""
 "インポートするデータ数が指定されたカラムの数と一致しません。インポートデータ"
 "に合わせてカラムの指定を行ってください。"
 
-#: ../../custom-database-tables/lib/admin.php:1152
+#: ../../custom-database-tables/lib/admin.php:1156
 msgid "It does not contain the data to import in your uploaded files."
 msgstr "アップロードファイルにインポートするデータが含まれていません。"
 
-#: ../../custom-database-tables/lib/admin.php:1190
+#: ../../custom-database-tables/lib/admin.php:1194
 msgid "Uploaded file format is different from the specified format."
 msgstr "アップロードされたファイル形式が指定された形式と異なります。"
 
-#: ../../custom-database-tables/lib/admin.php:1193
+#: ../../custom-database-tables/lib/admin.php:1197
 msgid "Import file has not been uploaded."
 msgstr "インポートファイルがアップロードされていません。"
 
-#: ../../custom-database-tables/lib/admin.php:1196
+#: ../../custom-database-tables/lib/admin.php:1200
 msgid "Uploaded file format is invalid, or parameter is not enough."
 msgstr "ファイル形式に不備があるか、もしくはパラメータが足りません。"
 
-#: ../../custom-database-tables/lib/admin.php:1209
+#: ../../custom-database-tables/lib/admin.php:1213
 #, php-format
 msgid "%d of the data has been successfully imported."
 msgstr "%d件のデータが正常にインポートされました。"
 
-#: ../../custom-database-tables/lib/admin.php:1212
+#: ../../custom-database-tables/lib/admin.php:1216
 msgid "Failed to import the data."
 msgstr "データのインポートに失敗しました。"
 
-#: ../../custom-database-tables/lib/admin.php:1243
+#: ../../custom-database-tables/lib/admin.php:1247
 msgid "Duplicate table name is not specified."
 msgstr "複製テーブル名が指定されていません。"
 
-#: ../../custom-database-tables/lib/admin.php:1246
+#: ../../custom-database-tables/lib/admin.php:1250
 msgid "Parameter for duplicating the table is incomplete."
 msgstr "テーブル複製を行うためのパラーメータが不完全です。"
 
-#: ../../custom-database-tables/lib/admin.php:1249
+#: ../../custom-database-tables/lib/admin.php:1253
 msgid "Original table for duplicating is not specified."
 msgstr "複製元のテーブルが指定されていません。"
 
-#: ../../custom-database-tables/lib/admin.php:1252
+#: ../../custom-database-tables/lib/admin.php:1256
 msgid ""
 "Duplicate table name already exists. Please specify a different table name."
 msgstr ""
 "重複するテーブル名がすでに存在しています。別のテーブル名を指定してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1260
+#: ../../custom-database-tables/lib/admin.php:1264
 msgid "Duplication of the table has been completed successfully."
 msgstr "テーブルの複製が正常に完了しました。"
 
-#: ../../custom-database-tables/lib/admin.php:1262
+#: ../../custom-database-tables/lib/admin.php:1266
 msgid ""
 "Duplication of table has been completed, but have failed to register as a "
 "manageable table of plugin. Please retry from resuming the table."
@@ -287,42 +287,42 @@ msgstr ""
 "テーブル複製は完了しましたが、プラグインで管理可能なテーブルとして登録するこ"
 "とができませんでした。既存テーブルの組み込みから再試行してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1265
+#: ../../custom-database-tables/lib/admin.php:1269
 msgid "Failed to replication of the table."
 msgstr "テーブルの複製に失敗しました。"
 
-#: ../../custom-database-tables/lib/admin.php:1354
-#: ../../custom-database-tables/lib/main.php:552
+#: ../../custom-database-tables/lib/admin.php:1358
+#: ../../custom-database-tables/lib/main.php:556
 #, php-format
 msgid "Your entry data has been successfully registered to \"%s\" table."
 msgstr "あなたが登録したデータが正常に「%s」テーブルに登録されました。"
 
-#: ../../custom-database-tables/lib/admin.php:1356
-#: ../../custom-database-tables/lib/main.php:556
+#: ../../custom-database-tables/lib/admin.php:1360
+#: ../../custom-database-tables/lib/main.php:560
 #, php-format
 msgid "Could not insert data to \"%s\" table."
 msgstr "「%s」テーブルへデータの登録ができませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1375
-#: ../../custom-database-tables/lib/main.php:465
+#: ../../custom-database-tables/lib/admin.php:1379
+#: ../../custom-database-tables/lib/main.php:469
 msgid "Update of the data has been completed successfully."
 msgstr "データの更新が正常に完了しました。"
 
-#: ../../custom-database-tables/lib/admin.php:1377
-#: ../../custom-database-tables/lib/main.php:468
+#: ../../custom-database-tables/lib/admin.php:1381
+#: ../../custom-database-tables/lib/main.php:472
 #, php-format
 msgid "Could not update data of \"%s\" table."
 msgstr "「%s」テーブルのデータを更新できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1378
-#: ../../custom-database-tables/lib/main.php:469
+#: ../../custom-database-tables/lib/admin.php:1382
+#: ../../custom-database-tables/lib/main.php:473
 msgid ""
 "Not done updating of data if there is no change to the data in updating "
 "before and after."
 msgstr "更新前後でデータに変更がない場合、データの更新は行われません。"
 
-#: ../../custom-database-tables/lib/admin.php:1379
-#: ../../custom-database-tables/lib/main.php:470
+#: ../../custom-database-tables/lib/admin.php:1383
+#: ../../custom-database-tables/lib/main.php:474
 msgid ""
 "Or, it is possible that the record having the same data could not be updated "
 "in order that existed in the other."
@@ -330,55 +330,77 @@ msgstr ""
 "もしくは、同じデータを持つレコードが他に存在していたために更新されなかった可"
 "能性もあります。"
 
-#: ../../custom-database-tables/lib/admin.php:1446
+#: ../../custom-database-tables/lib/admin.php:1450
 #, php-format
 msgid "Have been saved successfully as a custom shortcode ID: %d."
 msgstr "カスタムショートコードID: %d として正常に保存されました。"
 
-#: ../../custom-database-tables/lib/admin.php:1448
+#: ../../custom-database-tables/lib/admin.php:1452
 msgid "Could not save the custom shortcode."
 msgstr "カスタムショートコードを保存できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1451
+#: ../../custom-database-tables/lib/admin.php:1455
 msgid "Could not save because the specific custom shortcode id already exists."
 msgstr ""
 "指定のカスタムショートコードIDが既に存在しているため保存できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1519
+#: ../../custom-database-tables/lib/admin.php:1523
 #, php-format
 msgid "Have been updated successfully as a custom shortcode ID: %d."
 msgstr "カスタムショートコードID: %d の更新に成功しました。"
 
-#: ../../custom-database-tables/lib/admin.php:1521
+#: ../../custom-database-tables/lib/admin.php:1525
 msgid "Could not update the custom shortcode."
 msgstr "カスタムショートコードを更新できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1524
+#: ../../custom-database-tables/lib/admin.php:1528
 msgid "Could not update because the specified custom shortcode does not exist."
 msgstr "指定されたショートコードが存在しないため、更新できませんでした。"
 
-#: ../../custom-database-tables/lib/admin.php:1559
+#: ../../custom-database-tables/lib/admin.php:1562
+msgid "Request origin host does not specified."
+msgstr "リクエスト元ホストが指定されていません。"
+
+#: ../../custom-database-tables/lib/admin.php:1570
+msgid "Specified request origin host is invalid."
+msgstr "リクエスト元ホストの指定が無効です。"
+
+#: ../../custom-database-tables/lib/admin.php:1574
+msgid ""
+"Hosts that do not allow all of the request methods can not be registered."
+msgstr "すべてのリクエストメソッドを許可しないホストは登録できません。"
+
+#: ../../custom-database-tables/lib/admin.php:1603
+#, php-format
+msgid "The \"%s\" was registered as a host to allow the API request."
+msgstr "「%s」をAPIリクエストを許可するホストとして登録しました。 "
+
+#: ../../custom-database-tables/lib/admin.php:1606
+msgid "Failed to generate the API key."
+msgstr "APIキーの生成に失敗しました。"
+
+#: ../../custom-database-tables/lib/admin.php:1631
 msgid "Reporting Errors"
 msgstr "エラーレポート"
 
-#: ../../custom-database-tables/lib/admin.php:1559
+#: ../../custom-database-tables/lib/admin.php:1631
 msgid "Reporting Results"
 msgstr "結果レポート"
 
-#: ../../custom-database-tables/lib/admin.php:1563
+#: ../../custom-database-tables/lib/admin.php:1635
 msgid "Modification item none"
 msgstr "変更項目なし"
 
-#: ../../custom-database-tables/lib/admin.php:1564
+#: ../../custom-database-tables/lib/admin.php:1636
 msgid "Please run again after you correct the item you want to modify."
 msgstr "変更したい項目を修正した後に再度実行してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1570
+#: ../../custom-database-tables/lib/admin.php:1642
 #, php-format
 msgid "Export data from \"%s\" table"
 msgstr "「%s」テーブルからデータをエクスポート"
 
-#: ../../custom-database-tables/lib/admin.php:1571
+#: ../../custom-database-tables/lib/admin.php:1643
 msgid ""
 "If specified table has a lot of data for exporting, it may take long time "
 "until the download is complete.<br>Please start the export if it is good."
@@ -387,18 +409,18 @@ msgstr ""
 "ドが完了するまで長い時間がかかる場合があります。<br>よろしければ、エクスポー"
 "トを開始してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1573
+#: ../../custom-database-tables/lib/admin.php:1645
 #: ../../custom-database-tables/outer_defined_translations.php:18
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1138
 msgid "Export"
 msgstr "エクスポート"
 
-#: ../../custom-database-tables/lib/admin.php:1578
+#: ../../custom-database-tables/lib/admin.php:1650
 #, php-format
 msgid "Truncate data in \"%s\" table"
 msgstr "%sテーブルのデータを初期化"
 
-#: ../../custom-database-tables/lib/admin.php:1579
+#: ../../custom-database-tables/lib/admin.php:1651
 msgid ""
 "When you truncate a table, all data that currently stored will be lost. "
 "Then, you can not resume this process.<br>Do you want to truncate this table "
@@ -408,17 +430,17 @@ msgstr ""
 "れます。さらに、このプロセスはやり直すことができません。<br>本当にテーブル初"
 "期化を行ってもよろしいですか？"
 
-#: ../../custom-database-tables/lib/admin.php:1580
+#: ../../custom-database-tables/lib/admin.php:1652
 #: ../../custom-database-tables/outer_defined_translations.php:20
 msgid "Truncate"
 msgstr "初期化"
 
-#: ../../custom-database-tables/lib/admin.php:1584
+#: ../../custom-database-tables/lib/admin.php:1656
 #, php-format
 msgid "Remove the \"%s\" table"
 msgstr "「%s」テーブルの削除"
 
-#: ../../custom-database-tables/lib/admin.php:1585
+#: ../../custom-database-tables/lib/admin.php:1657
 msgid ""
 "If you have removed a table, at same time all data that currently stored "
 "will be lost. Then, you can not resume this process.<br>Do you want to "
@@ -428,9 +450,10 @@ msgstr ""
 "失われます。さらに、削除後はこのプロセスをやり直すことができません。<br>本当"
 "にテーブルを削除しますか？"
 
-#: ../../custom-database-tables/lib/admin.php:1586
-#: ../../custom-database-tables/lib/admin.php:1610
-#: ../../custom-database-tables/lib/admin.php:1617
+#: ../../custom-database-tables/lib/admin.php:1658
+#: ../../custom-database-tables/lib/admin.php:1682
+#: ../../custom-database-tables/lib/admin.php:1689
+#: ../../custom-database-tables/lib/admin.php:1695
 #: ../../custom-database-tables/lib/cdbt.scripts.php:91
 #: ../../custom-database-tables/lib/cdbt.scripts.php:199
 #: ../../custom-database-tables/lib/cdbt.scripts.php:1055
@@ -443,44 +466,44 @@ msgstr ""
 msgid "Delete"
 msgstr "削除"
 
-#: ../../custom-database-tables/lib/admin.php:1590
+#: ../../custom-database-tables/lib/admin.php:1662
 msgid "Table is not selected"
 msgstr "テーブルが選択されていません"
 
-#: ../../custom-database-tables/lib/admin.php:1591
+#: ../../custom-database-tables/lib/admin.php:1663
 msgid "Please retry to operate that after the table selection."
 msgstr "テーブル選択後に再試行してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1594
+#: ../../custom-database-tables/lib/admin.php:1666
 msgid "Data is not selected"
 msgstr "データが選択されていません"
 
-#: ../../custom-database-tables/lib/admin.php:1595
+#: ../../custom-database-tables/lib/admin.php:1667
 msgid "Please retry to operate that after the data selection."
 msgstr "データ選択後に再試行してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1598
+#: ../../custom-database-tables/lib/admin.php:1670
 msgid "Selected data is too many"
 msgstr "選択されたデータが多すぎます"
 
-#: ../../custom-database-tables/lib/admin.php:1599
+#: ../../custom-database-tables/lib/admin.php:1671
 msgid "Please retry after selecting one data you want to edit."
 msgstr "編集したい1つのデータを選択後に再試行してください。"
 
-#: ../../custom-database-tables/lib/admin.php:1602
+#: ../../custom-database-tables/lib/admin.php:1674
 msgid "Edit Data Form"
 msgstr "データ編集フォーム"
 
-#: ../../custom-database-tables/lib/admin.php:1604
+#: ../../custom-database-tables/lib/admin.php:1676
 msgid "Update"
 msgstr "更新"
 
-#: ../../custom-database-tables/lib/admin.php:1608
+#: ../../custom-database-tables/lib/admin.php:1680
 #, php-format
 msgid "Remove the selected %s of data"
 msgstr "選択された%sのデータを削除"
 
-#: ../../custom-database-tables/lib/admin.php:1609
+#: ../../custom-database-tables/lib/admin.php:1681
 msgid ""
 "You can not restore that data after deleted the data. Are you sure to delete "
 "the data?"
@@ -488,11 +511,11 @@ msgstr ""
 "データ削除後にそのデータを復元することはできません。データ削除を実行してもよ"
 "ろしいですか？"
 
-#: ../../custom-database-tables/lib/admin.php:1615
+#: ../../custom-database-tables/lib/admin.php:1687
 msgid "Remove the shortcode"
 msgstr "ショートコードの削除"
 
-#: ../../custom-database-tables/lib/admin.php:1616
+#: ../../custom-database-tables/lib/admin.php:1688
 msgid ""
 "You can not restore the shortcode settings after deleted. Are you sure to "
 "delete this shortcode settings?"
@@ -500,7 +523,20 @@ msgstr ""
 "削除後にショートコードの設定を復元することはできません。このショートコード設"
 "定を削除してもよろしいですか？"
 
-#: ../../custom-database-tables/lib/admin.php:1621
+#: ../../custom-database-tables/lib/admin.php:1693
+msgid "Remove the allowed host"
+msgstr "許可されたホストの削除"
+
+#: ../../custom-database-tables/lib/admin.php:1694
+#, php-format
+msgid ""
+"You can not restore the allowed host %s after deleted. Are you sure to "
+"delete this host settings?"
+msgstr ""
+"削除後に許可されたホスト %s の設定を復元することはできません。このホスト設定"
+"を削除してもよろしいですか？"
+
+#: ../../custom-database-tables/lib/admin.php:1699
 msgid "Preview shortcode"
 msgstr "ショートコードのプレビュー"
 
@@ -566,22 +602,22 @@ msgstr "テーブル削除に必要なパラメータが不足しています"
 
 #: ../../custom-database-tables/lib/ajax.php:311
 #: ../../custom-database-tables/lib/ajax.php:354
-#: ../../custom-database-tables/lib/main.php:520
+#: ../../custom-database-tables/lib/main.php:524
 msgid "Parameters required for data deletion is missing."
 msgstr "データ削除に必要なパラメータが不足しています。"
 
 #: ../../custom-database-tables/lib/ajax.php:344
-#: ../../custom-database-tables/lib/main.php:509
+#: ../../custom-database-tables/lib/main.php:513
 msgid "Specified data have been removed successfully."
 msgstr "指定されたデータの削除に成功しました。"
 
 #: ../../custom-database-tables/lib/ajax.php:346
-#: ../../custom-database-tables/lib/main.php:512
+#: ../../custom-database-tables/lib/main.php:516
 msgid "Some of the data could not remove."
 msgstr "いくつかのデータが削除できませんでした。"
 
 #: ../../custom-database-tables/lib/ajax.php:349
-#: ../../custom-database-tables/lib/main.php:515
+#: ../../custom-database-tables/lib/main.php:519
 msgid "Specified conditions for finding to delete data is invalid."
 msgstr "削除するデータを検索するための指定条件が無効です。"
 
@@ -597,6 +633,18 @@ msgstr "カスタムショートコードの削除に失敗しました。"
 #: ../../custom-database-tables/lib/ajax.php:412
 msgid "Specified custom shortcode does not exist."
 msgstr "指定のカスタムショートコードがありません。"
+
+#: ../../custom-database-tables/lib/ajax.php:449
+msgid "Have deleted the specific allowed host."
+msgstr "指定のホストを削除しました。"
+
+#: ../../custom-database-tables/lib/ajax.php:451
+msgid "Failed to delete the specified host."
+msgstr "指定ホストの削除に失敗しました。"
+
+#: ../../custom-database-tables/lib/ajax.php:454
+msgid "Specified host does not exist."
+msgstr "指定のホストがありません。"
 
 #: ../../custom-database-tables/lib/cdbt.ajax.php:30
 #: ../../custom-database-tables/lib/cdbt.ajax.php:143
@@ -739,6 +787,7 @@ msgid "Set Preset"
 msgstr "セットする"
 
 #: ../../custom-database-tables/lib/cdbt.class.php:191
+#: ../../custom-database-tables/lib/extras.php:319
 #: ../../custom-database-tables/templates/cdbt-admin-table-creator.php:18
 msgid "ID"
 msgstr "ID"
@@ -977,47 +1026,47 @@ msgstr "文字数"
 msgid "The missing options is as follow: %s"
 msgstr "次のとおり、不足している設定があります: %s"
 
-#: ../../custom-database-tables/lib/config.php:215
+#: ../../custom-database-tables/lib/config.php:220
 msgid "Plugin options has upgraded."
 msgstr "プラグイン設定をアップグレードしました。"
 
-#: ../../custom-database-tables/lib/config.php:245
+#: ../../custom-database-tables/lib/config.php:250
 msgid "Table settings in plugin option is empty."
 msgstr "プラグインオプションのテーブル設定が空です。"
 
-#: ../../custom-database-tables/lib/config.php:282
+#: ../../custom-database-tables/lib/config.php:287
 #, php-format
 msgid "New options is not specified when the method \"%s\" call."
 msgstr ""
 "メソッド「%s」呼び出しにおいて新しいオプション設定が指定されていません。"
 
-#: ../../custom-database-tables/lib/config.php:285
+#: ../../custom-database-tables/lib/config.php:290
 #, php-format
 msgid "Illegal action is specified to the method \"%s\" call."
 msgstr "メソッド「%s」呼び出しにおいて不正なアクションが指定されています。"
 
-#: ../../custom-database-tables/lib/config.php:302
-#: ../../custom-database-tables/lib/config.php:374
+#: ../../custom-database-tables/lib/config.php:307
+#: ../../custom-database-tables/lib/config.php:379
 msgid "Failed to save the option."
 msgstr "オプション設定の保存に失敗しました。"
 
-#: ../../custom-database-tables/lib/config.php:304
+#: ../../custom-database-tables/lib/config.php:309
 msgid "Options format is invalid."
 msgstr "オプション設定のフォーマットが不正です。"
 
-#: ../../custom-database-tables/lib/config.php:308
+#: ../../custom-database-tables/lib/config.php:313
 msgid "Specified option key does not exist in option settings."
 msgstr "オプション設定内のオプションキーの指定がありません。"
 
-#: ../../custom-database-tables/lib/config.php:339
+#: ../../custom-database-tables/lib/config.php:344
 msgid "Table settings for removing does not exist."
 msgstr "削除するテーブル設定がありません。"
 
-#: ../../custom-database-tables/lib/config.php:354
+#: ../../custom-database-tables/lib/config.php:359
 msgid "Api key settings for removing does not exist."
 msgstr "削除するAPIキー設定がありません。"
 
-#: ../../custom-database-tables/lib/config.php:376
+#: ../../custom-database-tables/lib/config.php:381
 msgid "Update process of setting did not take place."
 msgstr "設定の更新処理は行われませんでした。"
 
@@ -1222,103 +1271,130 @@ msgstr "エクスポートする対象カラムが指定されていません。
 msgid "Export target column \"%s\" does not exist."
 msgstr "エクスポート対象の「%s」カラムがありません。"
 
-#: ../../custom-database-tables/lib/extras.php:65
+#: ../../custom-database-tables/lib/extras.php:72
 msgid "Trialling"
 msgstr "試用中"
 
-#: ../../custom-database-tables/lib/extras.php:156
+#: ../../custom-database-tables/lib/extras.php:163
 msgid "Oparate Table"
 msgstr "テーブル操作"
 
-#: ../../custom-database-tables/lib/extras.php:158
+#: ../../custom-database-tables/lib/extras.php:165
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:744
 msgid "View Data"
 msgstr "データ閲覧"
 
-#: ../../custom-database-tables/lib/extras.php:159
+#: ../../custom-database-tables/lib/extras.php:166
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:745
 msgid "Entry Data"
 msgstr "データ登録"
 
-#: ../../custom-database-tables/lib/extras.php:160
+#: ../../custom-database-tables/lib/extras.php:167
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:746
 #: ../../custom-database-tables/templates/components/cdbt_repeater.php:246
 msgid "Edit Data"
 msgstr "データ編集"
 
-#: ../../custom-database-tables/lib/extras.php:173
+#: ../../custom-database-tables/lib/extras.php:180
 #: ../../custom-database-tables/outer_defined_translations.php:13
 msgid "TableName"
 msgstr "テーブル名"
 
-#: ../../custom-database-tables/lib/extras.php:180
+#: ../../custom-database-tables/lib/extras.php:187
 #: ../../custom-database-tables/outer_defined_translations.php:15
 msgid "Records"
 msgstr "データ数"
 
-#: ../../custom-database-tables/lib/extras.php:187
+#: ../../custom-database-tables/lib/extras.php:194
 msgid "PrimaryKey"
 msgstr "主キー"
 
-#: ../../custom-database-tables/lib/extras.php:192
+#: ../../custom-database-tables/lib/extras.php:199
 msgid "Charset"
 msgstr "文字コード"
 
-#: ../../custom-database-tables/lib/extras.php:197
+#: ../../custom-database-tables/lib/extras.php:204
 msgid "Collation"
 msgstr "照合順序"
 
-#: ../../custom-database-tables/lib/extras.php:202
+#: ../../custom-database-tables/lib/extras.php:209
 msgid "Engine"
 msgstr "DBエンジン"
 
-#: ../../custom-database-tables/lib/extras.php:207
+#: ../../custom-database-tables/lib/extras.php:214
 msgid "PerPageRecords"
 msgstr "ページ毎データ数"
 
-#: ../../custom-database-tables/lib/extras.php:227
-#: ../../custom-database-tables/lib/extras.php:289
+#: ../../custom-database-tables/lib/extras.php:234
+#: ../../custom-database-tables/lib/extras.php:296
 msgid "Operation"
 msgstr "オペレーション"
 
-#: ../../custom-database-tables/lib/extras.php:238
+#: ../../custom-database-tables/lib/extras.php:245
 msgid "Register Shortcode"
 msgstr "ショートコードの登録"
 
-#: ../../custom-database-tables/lib/extras.php:240
+#: ../../custom-database-tables/lib/extras.php:247
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:17
 msgid "Edit Shortcode"
 msgstr "ショートコード編集"
 
-#: ../../custom-database-tables/lib/extras.php:241
+#: ../../custom-database-tables/lib/extras.php:248
+#: ../../custom-database-tables/lib/extras.php:308
 msgid "Delete Shortcode"
 msgstr "ショートコード削除"
 
-#: ../../custom-database-tables/lib/extras.php:254
+#: ../../custom-database-tables/lib/extras.php:261
 msgid "CSID"
 msgstr "CSID"
 
-#: ../../custom-database-tables/lib/extras.php:260
+#: ../../custom-database-tables/lib/extras.php:267
 msgid "Shortcode Name / Alias Shortcode"
 msgstr "ショートコード名／エイリアスコード"
 
-#: ../../custom-database-tables/lib/extras.php:267
+#: ../../custom-database-tables/lib/extras.php:274
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:355
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:676
 msgid "Description"
 msgstr "備考"
 
-#: ../../custom-database-tables/lib/extras.php:272
+#: ../../custom-database-tables/lib/extras.php:279
 msgid "Type"
 msgstr "タイプ"
 
-#: ../../custom-database-tables/lib/extras.php:278
+#: ../../custom-database-tables/lib/extras.php:285
 msgid "Author"
 msgstr "作成者"
 
-#: ../../custom-database-tables/lib/extras.php:284
+#: ../../custom-database-tables/lib/extras.php:291
+#: ../../custom-database-tables/lib/extras.php:342
 msgid "Permission"
 msgstr "利用権限"
+
+#: ../../custom-database-tables/lib/extras.php:308
+msgid "Delete Host"
+msgstr "ホスト削除"
+
+#: ../../custom-database-tables/lib/extras.php:325
+msgid "Host Name"
+msgstr "ホスト名"
+
+#: ../../custom-database-tables/lib/extras.php:331
+msgid "API Key"
+msgstr "APIキー"
+
+#: ../../custom-database-tables/lib/extras.php:337
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:115
+msgid "Description Host"
+msgstr "ホストの説明"
+
+#: ../../custom-database-tables/lib/extras.php:347
+msgid "Generated Date"
+msgstr "作成日時"
+
+#: ../../custom-database-tables/lib/extras.php:353
+msgid "Deletion"
+msgstr "削除"
 
 #: ../../custom-database-tables/lib/shortcodes.php:26
 msgid ""
@@ -1422,6 +1498,10 @@ msgid ""
 "statement."
 msgstr "文字コードの設定値とSQL文で指定された値が異なります。"
 
+#: ../../custom-database-tables/lib/webapis.php:34
+msgid "Converted from version 1.x"
+msgstr "バージョン1.x から変換"
+
 #: ../../custom-database-tables/outer_defined_translations.php:6
 msgid "http://ka2.org/"
 msgstr "http://ka2.org/"
@@ -1487,24 +1567,6 @@ msgstr "データ登録"
 #: ../../custom-database-tables/outer_defined_translations.php:24
 msgid "EditData"
 msgstr "データ編集"
-
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:15
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:39
-msgid "API Key List"
-msgstr "APIキーリスト"
-
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:16
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:48
-msgid "API Key Register"
-msgstr "APIキー登録"
-
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:17
-msgid "Edit API key"
-msgstr "APIキー編集"
-
-#: ../../custom-database-tables/templates/admin/cdbt_apis.php:57
-msgid "Edit API Key"
-msgstr "APIキー編集"
 
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:16
 #: ../../custom-database-tables/templates/admin/cdbt_management_console.php:54
@@ -1746,15 +1808,15 @@ msgstr ""
 "デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力され"
 "ます。不具合の調査を行う時などに利用してください。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:120
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:121
 msgid "Initial definition for table creation"
 msgstr "テーブル作成時の初期値設定"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:122
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:124
 msgid "Table prefix"
 msgstr "テーブル接頭辞"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:127
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:129
 #, php-format
 msgid ""
 "Automatically prepend table prefix %s defined at the WordPress config (wp-"
@@ -1763,27 +1825,27 @@ msgstr ""
 "新しいテーブルを作成する時にテーブル名にWordPressの設定（wp-config.php）で定"
 "義されているテーブル接頭辞%sを自動付与する。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:129
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:131
 msgid "This setting can be changed individually at the time of table creation."
 msgstr "この設定はテーブル作成時に個別に変更可能です。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:134
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:136
 msgid "Table character set"
 msgstr "テーブルの文字コード"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:147
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:149
 msgid "This setting is default character set when created the table."
 msgstr "この設定は作成されるテーブルの文字コードの初期値になります。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:151
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:153
 msgid "Default timezone"
 msgstr "デフォルトタイムゾーン"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:164
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:166
 msgid "Currently timezone of the MySQL database"
 msgstr "現在のMySQLデータベースのタイムゾーン"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:166
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:168
 msgid ""
 "When this plugin insert the datetime type data, localized the value "
 "according to the set timezone."
@@ -1791,21 +1853,21 @@ msgstr ""
 "このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイ"
 "ムゾーンに応じて値をローカライズします。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:171
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:173
 msgid "Default database engine"
 msgstr "デフォルトDBエンジン"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:184
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:186
 msgid ""
 "This initial value is the database engine of the table created by the plugin."
 msgstr ""
 "プラグインで作成されるテーブルのデータベースエンジンの初期値になります。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:188
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:190
 msgid "Initial display number of records"
 msgstr "初期表示レコード数"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:193
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:195
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:253
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:328
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:574
@@ -1816,7 +1878,7 @@ msgstr "初期表示レコード数"
 msgid "Increase"
 msgstr "増やす"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:194
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:196
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:254
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:329
 #: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:575
@@ -1827,7 +1889,7 @@ msgstr "増やす"
 msgid "Decrease"
 msgstr "減らす"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:197
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:199
 msgid ""
 "This initial value is the number of displayed records per one page of the "
 "table created by the plugin."
@@ -1835,7 +1897,7 @@ msgstr ""
 "このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となり"
 "ます。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:283
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:285
 msgid ""
 "Already it is not reflected in the previously created table. Please change "
 "the table settings individually if you want to change it."
@@ -1843,12 +1905,26 @@ msgstr ""
 "すでに作成済みのテーブルには反映されません。変更したい場合は個別にテーブル設"
 "定を変更してください。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:288
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:290
+msgid "Advanced Plugin Settings"
+msgstr "高度なプラグイン設定"
+
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:293
+msgid "Included Assets Definition"
+msgstr "インクルードされるアセット定義"
+
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:298
+msgid ""
+"各種アセットの読み込みを制御します。テーマや他のプラグインとのアセットが競合"
+"する場合に設定を変更してください。"
+msgstr ""
+
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:308
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:674
 msgid "Save Changes"
 msgstr "変更を保存"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:302
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:322
 msgid ""
 "In this section you can check the log of various processes executed at the "
 "\"Custom DataBase Tables\" plugin."
@@ -1856,22 +1932,22 @@ msgstr ""
 "このセクションでは「Custom DataBase Tables」プラグインの各種処理実行時のログ"
 "を確認できます。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:303
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:323
 msgid ""
 "Available as a debugging log to follow the flow of the processing such as "
 "when trouble occurs."
 msgstr ""
 "不具合発生時等の処理の流れを追うためのデバッグログとしてご利用いただけます。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:322
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:342
 msgid "Clear Logs"
 msgstr "ログ削除"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:327
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:347
 msgid "Remove the current log after backup of the log file."
 msgstr "ログファイルのバックアップ後に現在のログを削除する。"
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:331
+#: ../../custom-database-tables/templates/admin/cdbt_options.php:351
 #, php-format
 msgid "Note: Backup files stores to the directory of %s."
 msgstr "注: バックアップファイルは %s ディレクトリに格納されます。"
@@ -1913,6 +1989,7 @@ msgstr "ベースショートコード名"
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1113
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1163
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1170
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:108
 #: ../../custom-database-tables/templates/components/cdbt_forms.php:200
 #: ../../custom-database-tables/templates/components/cdbt_forms.php:214
 #: ../../custom-database-tables/templates/components/cdbt_forms.php:231
@@ -2874,6 +2951,90 @@ msgstr "テーブル設定のバックアップ"
 #: ../../custom-database-tables/templates/admin/cdbt_tables.php:1211
 msgid "Please select the table to perform data manipulation."
 msgstr "データ操作を行うためのテーブルを選択してください。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:15
+msgid "Allowed Hosts"
+msgstr "許可されたホスト"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:16
+msgid "API Key generator"
+msgstr "APIキー生成"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:17
+msgid "API Requests"
+msgstr "APIリクエスト"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:43
+msgid ""
+"From the external sites will be able to access and manipulate the table that "
+"is managed by this plugin by using the API key."
+msgstr ""
+"外部の許可ホストからはAPIキーを使用することでこのプラグインで管理しているテー"
+"ブルにアクセスして操作することができるようになります。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:44
+#, php-format
+msgid "Learn more %sabout currently available API request%s."
+msgstr "現在利用可能な%sAPIリクエストについてはこちら%sをご覧ください。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:45
+msgid "Currently list of hosts that was allowed API request is as follows."
+msgstr "現在APIリクエストが許可されているホストの一覧は下記の通りです。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:46
+#, php-format
+msgid ""
+"The currently allowed host does not exists. Please %sregister the host%s."
+msgstr ""
+"現在許可されているホストはありません。%sホストの登録%sを行ってください。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:80
+msgid "You can generate an API key for any host, and register to the plugin."
+msgstr "任意のホスト用のAPIキーを生成して、プラグインに登録を行います。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:105
+msgid "Allowing Hosts Registration"
+msgstr "許可するホストの登録"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:108
+msgid "Request Origin Host"
+msgstr "リクエスト元ホスト"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:110
+msgid "Enter the FQDN or IP address"
+msgstr "FQDNかIPアドレスを入力してください"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:112
+#, php-format
+msgid ""
+"Please enter the FQDN (for example, the site name such as %s) or IP address "
+"of the requesting origin site."
+msgstr ""
+"リクエスト元となるサイトの FQDN（例えば、%sのようなサイト名）もしくは IPアド"
+"レス を入力してください。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:118
+msgid ""
+"Please enter as like description about this host that will be displayed in "
+"the list screen."
+msgstr "一覧画面に表示されるホストについての説明文などを入力してください。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:122
+msgid "Request Method Permissions"
+msgstr "リクエストメソッド使用権限"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:134
+#, php-format
+msgid "Allow the request of %s method."
+msgstr "%sメソッドのリクエストを許可する。"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:144
+msgid "Generate API Key"
+msgstr "APIキーを生成する"
+
+#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:160
+msgid "Here you can create the API request (URL) and test it."
+msgstr "ここではAPIリクエスト（URL）の作成とテストを行うことができます。"
 
 #: ../../custom-database-tables/templates/cdbt-admin-controller.php:6
 #: ../../custom-database-tables/templates/cdbt-edit.php:5
@@ -4101,6 +4262,10 @@ msgid "Prev"
 msgstr "前へ"
 
 #: ../../custom-database-tables/templates/components/cdbt_wizard.php:101
+msgid "Complete"
+msgstr "終了"
+
+#: ../../custom-database-tables/templates/components/cdbt_wizard.php:101
 #: ../../custom-database-tables/templates/components/cdbt_wizard.php:139
 msgid "Next"
 msgstr "次へ"
@@ -4142,6 +4307,15 @@ msgstr "いいえ"
 #, php-format
 msgid "Enter %s"
 msgstr "%sを入力してください"
+
+#~ msgid "API Key List"
+#~ msgstr "APIキーリスト"
+
+#~ msgid "Edit API key"
+#~ msgstr "APIキー編集"
+
+#~ msgid "Edit API Key"
+#~ msgstr "APIキー編集"
 
 #~ msgid "Display title"
 #~ msgstr "タイトル表示"

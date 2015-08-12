@@ -115,8 +115,8 @@ class CdbtConfig extends CdbtCore {
           ], 
         ], 
       ], 
-      'api_key' => [
-        // {host_name} => {api_key}
+      'api_hosts' => [
+        // {host_id(not zero)} => [ 'host_name' => {host_name}, 'api_key' => {api_key}, 'desc' => {description}, 'permission' => {permission(bit)}, 'generated' => {generated_date(datetime)} ]
       ],
     ];
     
@@ -194,6 +194,11 @@ class CdbtConfig extends CdbtCore {
   public function upgrade_options() {
     $default_options = $this->set_option_template();
     $new_options = [];
+    
+    if (preg_match('/^1\..*$/U', $this->options['plugin_version'])) {
+      // When upgrading from version 1.x do backup
+      add_option($this->domain_name . '/backup-v1', $this->options, '', 'no');
+    }
     
     foreach ($default_options as $key => $value) {
       if (!array_key_exists($key, $this->options)) {

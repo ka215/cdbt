@@ -417,5 +417,47 @@ trait CdbtAjax {
     die('location.reload();');
     
   }
+  
+  
+  /**
+   * Run of allowed host deletion via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_delete_host( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    if (array_key_exists('host_id', $args) && array_key_exists('operate_action', $args) && 'delete' === $args['operate_action']) {
+      $current_hosts = $this->get_allowed_hosts();
+      $base_items = count($current_hosts);
+      if (!empty($current_hosts) && intval($args['host_id']) > 0) {
+        foreach ($current_hosts as $_id => $_host) {
+          if (intval($args['host_id']) === intval($_id)) {
+        	  unset($current_hosts[$_id]);
+        	  break;
+        	}
+        }
+      }
+      if (count($current_hosts) < $base_items) {
+        $this->options['api_hosts'] = $current_hosts;
+        if (update_option($this->domain_name, $this->options)) {
+          $notices_class = CDBT . '-notice';
+          $message = __('Have deleted the specific allowed host.', CDBT);
+        } else {
+        	$message = __('Failed to delete the specified host.', CDBT);
+        }
+      } else {
+        $message = __('Specified host does not exist.', CDBT);
+      }
+    }
+    
+    $this->register_admin_notices( $notices_class, $message, 3, true );
+    die('location.reload();');
+    
+  }
 
 }

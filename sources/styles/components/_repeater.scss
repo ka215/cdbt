@@ -102,6 +102,12 @@
           &.col-scl-author { width: 100px; }
           &.col-scl-permission { width: 100px; }
           &.col-scl-operation { min-width: 100px; }
+          &.col-ahl-id { width: 64px; text-align: center; }
+          &.col-ahl-name { min-width: 200px; }
+          &.col-ahl-apikey { min-width: 200px; }
+          &.col-ahl-permission { min-width: 140px; }
+          &.col-ahl-generated { width: 160px; }
+          &.col-ahl-operation { max-width: 64px; text-align: center; }
           
         }
         
@@ -133,6 +139,8 @@
           &.col-scl-id { width: 80px!important; text-align: center; }
           &.col-scl-type { text-align: center; }
           &.col-scl-operation { text-align: center; }
+          &.col-ahl-permission { width: 140px; }
+          &.col-ahl-operation { text-align: center; }
           
           .tl-operation-buttons {
             margin: auto;

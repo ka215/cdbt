@@ -156,15 +156,15 @@ trait CdbtExtras {
     
     $custom_row_scripts = [];
     
-    if (!is_array($columns) && in_array($columns, [ 'table_list', 'shortcode_list' ])) {
+    if (!is_array($columns) && in_array($columns, [ 'table_list', 'shortcode_list', 'host_list' ])) {
       if ('table_list' === $columns) {
         // For customColumnRenderer() in the repeater script
         $custom_column_content = "'<div class=\"tl-operation-buttons\"><div class=\"btn-group operate-table-btn-group\" role=\"group\" aria-label=\"operateTableButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-sliders\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"detail\" data-base-url=\"'+rowData.operate_table_url+'\" class=\"btn btn-default\" title=\"". __('Oparate Table', CDBT) ."\"><span class=\"sr-only\">". __('Oparate Table', CDBT) ."</span><i class=\"fa fa-sliders\"></i></button>";
         $custom_column_content .= "</div><div class=\"btn-group operate-data-btn-group\" role=\"group\" aria-label=\"operateDataButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-eye\"></i></a>";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"entry\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Entry Data', CDBT) ."\"><span class=\"sr-only\">". __('Entry Data', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
-        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Edit Data', CDBT) ."\"><span class=\"sr-only\">". __('Edit Data', CDBT) ."</span><i class=\"fa fa-pencil-square-o\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"view\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('View Data', CDBT) ."\"><span class=\"sr-only\">". __('View Data', CDBT) ."</span><i class=\"fa fa-eye\"></i></button>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"entry\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Entry Data', CDBT) ."\"><span class=\"sr-only\">". __('Entry Data', CDBT) ."</span><i class=\"fa fa-plus\"></i></button>";
+        $custom_column_content .= "<button type=\"button\" data-target-table=\"'+rowData.table_name+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_data_url+'\" class=\"btn btn-default\" title=\"". __('Edit Data', CDBT) ."\"><span class=\"sr-only\">". __('Edit Data', CDBT) ."</span><i class=\"fa fa-pencil-square-o\"></i></button>";
         $custom_column_content .= "</div></div>'";
         
         $repeater_custom_methods = [];
@@ -242,10 +242,10 @@ trait CdbtExtras {
       if ('shortcode_list' === $columns) {
         // For customColumnRenderer() in the repeater script
         $custom_column_content = "'<div class=\"scl-operation-buttons\"><div class=\"btn-group operate-shortcode-register-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"register\" data-base-url=\"'+rowData.operate_shortcode_url+'register\" class=\"btn btn-default\" title=\"". __('Register Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Register Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"\" data-operate-action=\"register\" data-base-url=\"'+rowData.operate_shortcode_url+'register\" class=\"btn btn-default\" title=\"". __('Register Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Register Shortcode', CDBT) ."</span><i class=\"fa fa-plus\"></i></button>";
         $custom_column_content .= "</div><div class=\"btn-group operate-shortcode-edit-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'edit\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></a>";
-        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_shortcode_url+'list\" class=\"btn btn-default\" title=\"". __('Delete Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></a>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"edit\" data-base-url=\"'+rowData.operate_shortcode_url+'edit\" class=\"btn btn-default\" title=\"". __('Edit Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Edit Shortcode', CDBT) ."</span><i class=\"fa fa-edit\"></i></button>";
+        $custom_column_content .= "<button type=\"button\" data-target-sc=\"\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_shortcode_url+'list\" class=\"btn btn-default\" title=\"". __('Delete Shortcode', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></button>";
         $custom_column_content .= "</div></div>'";
         
         $repeater_custom_methods = [];
@@ -301,6 +301,63 @@ trait CdbtExtras {
           ], 
         ];
         
+      } else
+      if ('host_list' === $columns) {
+        // For customColumnRenderer() in the repeater script
+        $custom_column_content = "'<div class=\"ahl-operation-buttons\"><div class=\"btn-group operate-webapi-deletion-btn-group\" role=\"group\" aria-label=\"operateShortcodeButtons\">";
+        $custom_column_content .= "<button type=\"button\" data-target-host=\"host_name\" data-target-hostid=\"'+rowData.host_id+'\" data-operate-action=\"delete\" data-base-url=\"'+rowData.operate_webapi_url+'\" class=\"btn btn-default\" title=\"". __('Delete Host', CDBT) ."\"><span class=\"sr-only\">". __('Delete Shortcode', CDBT) ."</span><i class=\"fa fa-trash-o\"></i></button>";
+        $custom_column_content .= "</div>'";
+        
+        $repeater_custom_methods = [];
+        // For customRowRenderer() in the repeater script
+        $repeater_custom_methods['customRowScripts'] = [
+          "item.attr('id', 'row-' + helpers.rowData.host_name + '-' + helpers.rowData.host_id);", 
+          "item.attr('class', 'cdbt-repeater-row');"
+        ];
+        
+        $columns = [
+          [ 'label' => __('ID', CDBT), 
+            'property' => 'host_id', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-ahl-id', 
+          ], 
+          [ 'label' => __('Host Name', CDBT), 
+            'property' => 'host_name', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-ahl-name', 
+          ], 
+          [ 'label' => __('API Key', CDBT), 
+            'property' => 'api_key', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-ahl-apikey', 
+          ], 
+          [ 'label' => __('Description Host', CDBT), 
+            'property' => 'description', 
+            'sortable' => false, 
+            'className' => 'col-ahl-desc', 
+          ], 
+          [ 'label' => __('Permission', CDBT), 
+            'property' => 'permission', 
+            'sortable' => false, 
+            'className' => 'col-ahl-permission', 
+          ], 
+          [ 'label' => __('Generated Date', CDBT), 
+            'property' => 'generated', 
+            'sortable' => true, 
+            'sortDirection' => 'asc', 
+            'className' => 'col-ahl-generated', 
+          ], 
+          [ 'label' => __('Deletion', CDBT), 
+            'property' => 'operate_webapi_url', 
+            'sortable' => false, 
+            'className' => 'col-ahl-operation', 
+            'customColumnRenderer' => $custom_column_content, 
+          ], 
+        ];
+
       }
     }
     

@@ -97,6 +97,7 @@ final class CdbtFrontend extends CdbtDB {
   use CdbtAjax;
   use DynamicTemplate;
   use CdbtShortcodes;
+  use CdbtApis;
   use CdbtExtras;
 
   /**
@@ -139,6 +140,9 @@ final class CdbtFrontend extends CdbtDB {
     
     // Shortcode Initialize
     $this->shortcode_register();
+    
+    // Web API Initialize
+    $this->init_allowed_hosts();
     
     // Emit Message Initialize
     $this->emit_message = '';
