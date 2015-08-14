@@ -124,9 +124,9 @@ trait CdbtApis {
     if (is_admin()) 
       return;
     
-    $_cdbt_api_key = trim($wp_query->query['cdbt_api_key']);
-    $_cdbt_table = trim($wp_query->query['cdbt_table']);
-    $_cdbt_request_method = trim($wp_query->query['cdbt_api_request']);
+    $_cdbt_api_key = isset($wp_query->query['cdbt_api_key']) ? trim($wp_query->query['cdbt_api_key']) : '';
+    $_cdbt_table = isset($wp_query->query['cdbt_table']) ? trim($wp_query->query['cdbt_table']) : '';
+    $_cdbt_request_method = isset($wp_query->query['cdbt_api_request']) ? trim($wp_query->query['cdbt_api_request']) : '';
     if (isset($_cdbt_api_key) && !empty($_cdbt_api_key)) {
       $request_uri = stripslashes_deep($_SERVER['REQUEST_URI']);
       $request_date = date('c', $_SERVER['REQUEST_TIME']);
