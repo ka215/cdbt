@@ -19,6 +19,7 @@ $tabs = [
 $default_tab = 'hosts_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 
+$_allowed_hosts = $this->get_allowed_hosts();
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -35,9 +36,7 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
     </ul>
   </div>
   
-<?php if ($current_tab == 'hosts_list') : 
-  $_allowed_hosts = $this->get_allowed_hosts();
-?>
+<?php if ($current_tab == 'hosts_list') : ?>
   <div class="well-sm">
     <p class="text-info">
       <?php _e('From the external sites will be able to access and manipulate the table that is managed by this plugin by using the API key.', CDBT); ?> <?php $this->during_trial( 'hosts_list' ); ?><br>
@@ -154,17 +153,176 @@ $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this
   </div><!-- /.cdbt-webapis-options -->
 <?php endif; ?>
   
-<?php if ($current_tab == 'api_requests') : ?>
+<?php if ($current_tab == 'api_requests') : 
+  
+  $enable_table = $this->get_table_list( 'enable' );
+  $enable_table = !is_array($enable_table) ? [] : $enable_table;
+  
+  $selectable_table = $options['enable_core_tables'] ? array_merge($enable_table, $this->core_tables) : $enable_table;
+  sort($selectable_table);
+  
+?>
   <div class="well-sm">
     <p class="text-info">
       <?php _e('Here you can create the API request (URL) and test it.', CDBT); ?> <?php $this->during_trial( 'apikey_requests' ); ?>
     </p>
   </div>
-  <form id="" name="" action="" method="post" class="">
-    
-    <?php $this->during_trial( 'api_requests' ); ?>
-    
-  </form>
+  <div class="cdbt-webapis-request">
+    <form class="form-horizontal">
+      
+      <div class="form-group">
+        <label for="edit-webapi-request-allowed_host" class="col-sm-2 control-label"><?php _e('Allowed Host Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <div class="col-sm-10">
+          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-allowed_host">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+              <span class="selected-label">&nbsp;</span>
+              <span class="caret"></span>
+              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li data-value="" ><a href="#" class="text-muted"><?php if (!empty($_allowed_hosts)) { _e('Please choose item', CDBT); } else { _e('Allowed host is none', CDBT); } ?></a></li>
+            <?php foreach($_allowed_hosts as $_host_id => $_host) : ?>
+              <li data-value="<?php echo $_host_id; ?>"><a href="#"><?php echo $_host_id .': '. $_host['host_name']; ?></a></li>
+            <?php endforeach; ?>
+            </ul>
+            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[allowed_host]" readonly="readonly" aria-hidden="true" type="text"/>
+          </div>
+          <p class="help-block"></p>
+        </div>
+      </div><!-- /edit-webapi-request-allowed_host -->
+      <div class="form-group">
+        <label for="edit-webapi-request-target_table" class="col-sm-2 control-label"><?php _e('Target Table', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <div class="col-sm-10">
+          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-target_table">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+              <span class="selected-label">&nbsp;</span>
+              <span class="caret"></span>
+              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li data-value="" ><a href="#" class="text-muted"><?php if (!empty($selectable_table)) { _e('Please choose item', CDBT); } else { _e('Selectable table is none', CDBT); } ?></a></li>
+            <?php foreach($selectable_table as $_table) : ?>
+              <li data-value="<?php echo $_table; ?>"><a href="#"><?php echo $_table; ?></a></li>
+            <?php endforeach; ?>
+            </ul>
+            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[target_table]" readonly="readonly" aria-hidden="true" type="text"/>
+          </div>
+          <p class="help-block"></p>
+        </div>
+      </div><!-- /edit-webapi-request-target_table -->
+      <div class="form-group">
+        <label for="edit-webapi-request-method" class="col-sm-2 control-label"><?php _e('Request Method', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <div class="col-sm-10">
+          <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-method">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+              <span class="selected-label">&nbsp;</span>
+              <span class="caret"></span>
+              <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li data-value="" ><a href="#" class="text-muted"><?php _e('Please choose item', CDBT); ?></a></li>
+            <?php foreach($this->request_methods as $_method) : ?>
+              <li data-value="<?php echo $_method; ?>"><a href="#"><?php echo $_method; ?></a></li>
+            <?php endforeach; ?>
+            </ul>
+            <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[method]" readonly="readonly" aria-hidden="true" type="text"/>
+          </div>
+          <p class="help-block"></p>
+        </div>
+      </div><!-- /edit-webapi-request-method -->
+      <input type="hidden" id="current_host_apikey" value="" disabled="disabled">
+      
+      <div class="clearfix"><br></div>
+      <h4 class="title" id="api-request-queries"><i class="fa fa-cogs text-muted"></i> <?php _e('Request Queries Definition', CDBT); ?></h4>
+      
+      <div class="form-group switching-item search-key">
+        <label for="edit-webapi-request-search_key" class="col-sm-2 control-label"><?php _e('Search Keywords Specification', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="edit-webapi-request-search_key" name="<?php echo $this->domain_name; ?>[search_key]" type="text" value="<?php if (isset($this_tab_vars['search_key'])) echo $this_tab_vars['search_key']; ?>" class="form-control" placeholder="keyword1,keyword2,...">
+          <p class="help-block"><?php _e('If you want to narrow down the data by keyword, please specify the keywords of comma-separator. For example, "keyword1,keyword2,..." so on.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-search_key -->
+      <div class="form-group switching-item target-columns">
+        <label for="edit-webapi-request-target_columns" class="col-sm-2 control-label"><?php _e('Target Columns Specification', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="edit-webapi-request-target_columns" name="<?php echo $this->domain_name; ?>[target_columns]" type="text" value="<?php if (isset($this_tab_vars['target_columns'])) echo $this_tab_vars['target_columns']; ?>" class="form-control" placeholder="col1,col2,col3,...">
+          <p class="help-block"><?php _e('Please enter the column names of comma-separator if you want to get the data from specific columns. For example, "col1,col2,..." so on.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-target_columns -->
+      <div class="form-group switching-item conditions">
+        <label for="edit-webapi-request-conditions" class="col-sm-2 control-label"><?php _e('Where Conditions', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="edit-webapi-request-conditions" name="<?php echo $this->domain_name; ?>[conditions]" type="text" value="<?php if (isset($this_tab_vars['conditions'])) echo $this_tab_vars['conditions']; ?>" class="form-control" placeholder="col1:value1,col2:value2,...">
+          <p class="help-block"><?php _e('Please specify the conditions of the data to retrieve as the hash value in the pair of column name and value. For example, "col1:value1,col2:value2,..." so on.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-conditions -->
+      <div class="form-group switching-item upsert_data">
+        <label for="edit-webapi-request-upsert_data" class="col-sm-2 control-label"><?php _e('Upsert Data', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="edit-webapi-request-upsert_data" name="<?php echo $this->domain_name; ?>[upsert_data]" type="text" value="<?php if (isset($this_tab_vars['upsert_data'])) echo $this_tab_vars['upsert_data']; ?>" class="form-control" placeholder="col1:value1,col2:value2,...">
+          <p class="help-block"><?php _e('Please specify the data insertion or updation as the hash values in the pairs of column name and value. For example, "col1:value1,col2:value2,..." so on.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-upsert_data -->
+      <div class="form-group switching-item pk_value">
+        <label for="edit-webapi-request-pk_value" class="col-sm-2 control-label"><?php _e('Primary Key Value', CDBT); ?></label>
+        <div class="col-sm-3">
+          <input id="edit-webapi-request-pk_value" name="<?php echo $this->domain_name; ?>[pk_value]" type="text" value="<?php if (isset($this_tab_vars['pk_value'])) echo $this_tab_vars['pk_value']; ?>" class="form-control" placeholder="primary key value">
+        </div>
+        <p class="help-block col-sm-offset-2 col-sm-9"><?php _e('Please specify the value of the primary key of the operation target data.', CDBT); /**/ ?></p>
+      </div><!-- /edit-webapi-request-pk_value -->
+      <div class="form-group switching-item orders">
+        <label for="edit-webapi-request-orders" class="col-sm-2 control-label"><?php _e('Orders', CDBT); ?></label>
+        <div class="col-sm-8">
+          <input id="edit-webapi-request-orders" name="<?php echo $this->domain_name; ?>[orders]" type="text" value="<?php if (isset($this_tab_vars['orders'])) echo $this_tab_vars['orders']; ?>" class="form-control" placeholder="col1:asc,col2:desc,...">
+          <p class="help-block"><?php _e('Please specify the sort order of the retrieve data at the hash value in the pair of the column name and the order. For example, "col1:asc,col2:desc,..." so on.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-orders -->
+      <div class="form-group switching-item limit">
+        <label for="edit-webapi-request-limit" class="col-sm-2 control-label"><?php _e('Limit of Getting Data', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3" data-initialize="spinbox" id="edit-webapi-request-limit">
+            <input type="text" name="<?php echo $this->domain_name; ?>[limit]" value="<?php if (isset($this_tab_vars['limit'])) echo intval($this_tab_vars['limit']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('This specifies the maximum number of retrieved data.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-limit -->
+      <div class="form-group switching-item offset">
+        <label for="edit-webapi-request-offset" class="col-sm-2 control-label"><?php _e('Starting Offset', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3" data-initialize="spinbox" id="edit-webapi-request-offset">
+            <input type="text" name="<?php echo $this->domain_name; ?>[offset]" value="<?php if (isset($this_tab_vars['offset'])) echo intval($this_tab_vars['offset']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('This specifies the starting offset number to retrieve data.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-webapi-request-offset -->
+      
+      <div class="clearfix"><br></div>
+      <h4 class="title" id="preview-request"><i class="fa fa-link text-muted"></i> <?php _e('Generated API Request', CDBT); ?></h4>
+      
+      <div class="form-group">
+        <label for="edit-webapi-request-generate_uri" class="col-sm-2 control-label"><?php _e('Generated URI', CDBT); ?></label>
+        <div class="col-sm-9">
+          <textarea id="edit-webapi-request-generate_uri" name="<?php echo $this->domain_name; ?>[generate_uri]" class="form-control" rows="5" readonly><?php if (isset($this_tab_vars['generate_uri'])) echo esc_textarea(stripslashes_deep($this_tab_vars['generate_uri'])); ?></textarea>
+        </div>
+      </div><!-- /edit-webapi-request-generate_uri -->
+      
+      <div class="clearfix"><br></div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="button" class="btn btn-primary" id="webapi-preview" disabled="disabled"><?php _e('Preview Request', CDBT); ?></button>
+        </div>
+      </div>
+      
+    </form>
+  </div><!-- /.cdbt-webapis-request -->
 <?php endif; ?>
   
 </div><!-- /.wrap -->

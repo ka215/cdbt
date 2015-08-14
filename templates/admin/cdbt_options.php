@@ -287,15 +287,15 @@ input.large-text, textarea.large-text { width: 99%; }
       </div>
       
       <div class="clearfix"><br></div>
-      <h4 class="title"><?php _e('Advanced Plugin Settings', $this->domain_name); /* 高度なプラグイン設定 */ ?></h4>
+      <h4 class="title"><?php _e('Advanced Plugin Settings', $this->domain_name); ?></h4>
       
       <div class="form-group">
         <label class="col-sm-2 control-label"><?php _e('Included Assets Definition', $this->domain_name); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-31">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets]" type="checkbox" value="1" <?php checked('1', $options['include_assets']); ?>>
-              <span class="checkbox-label"><?php _e('各種アセットの読み込みを制御します。テーマや他のプラグインとのアセットが競合する場合に設定を変更してください。', $this->domain_name); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets]" type="checkbox" value="1" <?php /*checked('1', $options['include_assets']);*/ ?>>
+              <span class="checkbox-label"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); /*各種アセットの読み込みを制御します。テーマや他のプラグインとのアセットが競合する場合に設定を変更してください。*/?></span> <?php $this->during_trial( 'include_assets' ); ?>
             </label>
           </div>
         </div>

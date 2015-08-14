@@ -66,7 +66,7 @@ trait CdbtExtras {
       'hosts_list', 
       'apikey_generator', 
       'apikey_requests', 
-      
+      'include_assets', 
     ];
     if (in_array($feature_name, $new_features)) {
       printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );

@@ -456,8 +456,31 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    die('location.reload();');
+    wp_die('location.reload();');
     
   }
+  
+  
+  /**
+   * Retrieve api key via Ajax
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_get_apikey( $args=[] ) {
+    static $api_key = '';
+    
+    if (array_key_exists('host_id', $args) && array_key_exists('operate_action', $args) && 'retrieve' === $args['operate_action']) {
+      $current_hosts = $this->get_allowed_hosts($args['host_id']);
+      if ($current_hosts) {
+        $api_key = $current_hosts['api_key'];
+      }
+    }
+    
+    wp_die($api_key);
+  }
+  
 
 }

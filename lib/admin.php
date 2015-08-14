@@ -378,12 +378,10 @@ final class CdbtAdmin extends CdbtDB {
     
     $assets = [
       'styles' => [
-//        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->version, 'all' ], 
         'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->version, 'all' ], 
         'cdbt-fuelux' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
       ], 
       'scripts' => [
-//        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
         'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array(), null, true ], 
@@ -436,8 +434,6 @@ final class CdbtAdmin extends CdbtDB {
       wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', [
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
-//        'ajax_nonce' => wp_create_nonce($this->domain_name . '_' . $this->plugin_ajax_action), 
-//        'get_text' => json_encode([ 'ID' => __('ID', CDBT), 'created' => __('created', CDBT), 'updated' => __('updated', CDBT) ]), 
       ]);
     }
   }
@@ -449,8 +445,10 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_header() {
-    
-    // Currently none
+    // Added action hook for using `add_action('cdbt_admin_header')`
+    // 
+    // @since 2.0.0
+    do_action( 'cdbt_admin_header' );
     
   }
 
@@ -465,6 +463,12 @@ final class CdbtAdmin extends CdbtDB {
       printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->version );
     
     printf( "<script>jQuery(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
+    
+    // Added action hook for using `add_action('cdbt_admin_footer')`
+    // 
+    // @since 1.0.0
+    do_action( 'cdbt_admin_footer' );
+    
   }
 
 
@@ -476,9 +480,17 @@ final class CdbtAdmin extends CdbtDB {
   public function admin_notices() {
     if (false !== get_transient( CDBT . '-error' )) {
       $messages = get_transient( CDBT . '-error' );
+      // Added filter hook for using `add_filter('cdbt_admin_error')`
+      //
+      // @since 1.0.0
+      $messages = apply_filters( 'cdbt_admin_error', $messages);
       $classes = 'error';
     } elseif (false !== get_transient( CDBT . '-notice' )) {
       $messages = get_transient( CDBT . '-notice' );
+      // Added filter hook for using `add_filter('cdbt_admin_notice')`
+      //
+      // @since 1.0.0
+      $messages = apply_filters( 'cdbt_admin_notice', $messages);
       $classes = 'updated';
     }
     
@@ -503,6 +515,10 @@ final class CdbtAdmin extends CdbtDB {
    */
   private function register_admin_notices( $code=null, $message, $expire_seconds=1, $is_init=false ) {
     $code = empty($code) ? CDBT . '-error' : $code;
+    // Filter of expiry time at displaying the notice message on the admin screen
+    //
+    // @since 2.0.0
+    $expire_seconds = apply_filters( 'cdbt_transient_expire', $expire_seconds, $code, $message, $is_init );
     if (!$this->errors || $is_init) 
       $this->errors = new \WP_Error();
     
@@ -511,7 +527,6 @@ final class CdbtAdmin extends CdbtDB {
       set_transient( $code, $this->errors->get_error_messages(), $expire_seconds );
     }
     
-    // return $this->errors;
   }
 
 
@@ -564,6 +579,9 @@ final class CdbtAdmin extends CdbtDB {
       $position = intval($position) > 0 ? intval($position) : $defined_position['default'];
     }
     
+    // Filter of menu position of this plugin in the admin menu
+    //
+    // @since 2.0.0
     return apply_filters( 'cdbt_admin_menu_position', $position );
   }
 
@@ -1698,6 +1716,13 @@ final class CdbtAdmin extends CdbtDB {
         case 'preview_shortcode': 
           $args['modalTitle'] = __('Preview shortcode', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalExtras']['shortcode']);
+          break;
+        case 'preview_request_api': 
+//var_dump($args['modalExtras']['request_uri']);
+//       	$response = @file_get_contents($args['modalExtras']['request_uri']);
+//var_dump($response);
+          $args['modalTitle'] = __('Preview Request Web API', CDBT);
+          $args['modalBody'] = '<iframe src="'. $args['modalExtras']['request_uri'] .'" style="width: 100%; height: 100%; overflow: hidden;"></iframe>';
           break;
         default:
           break;

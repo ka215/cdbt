@@ -101,11 +101,20 @@ $(function() {
     /**
      * Set the importing sql
      */
-     this.set_importing_sql = function(){
-       
-       $('textarea[name="confirm_sql"]').val( $.ajaxResponse.responseText );
-       
-     };
+    this.set_importing_sql = function(){
+      
+      $('textarea[name="confirm_sql"]').val( $.ajaxResponse.responseText );
+      
+    };
+    
+    /**
+     * Set the retrieving api key
+     */
+    this.set_api_key = function(){
+      
+      $('#current_host_apikey').val( $.ajaxResponse.responseText );
+      
+    };
     
   };
   var Callback = new CallbackClass();
@@ -259,7 +268,7 @@ $(function() {
       var customColsRender = function(){
         $('td.col-ahl-permission').each(function(){
           var permissions = $(this).text().split(',');
-          var content = _.reduce(permissions, function(m, v){ return m + '<span class="label label-primary" style="margin-right: 4px;">' + v + '</span>'; }, '');
+          var content = _.reduce(permissions, function(m, v){ return m + '<span class="label label-primary" style="display: inline-block; margin-right: 4px;">' + v + '</span>'; }, '');
           $(this).html(content);
         });
         adjustCellSize();
@@ -1076,6 +1085,148 @@ $(function() {
         'event': 'delete_host', 
       };
       cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    
+  }
+  
+  
+  /**
+   * Helper UI scripts for webapi request edit section
+   */
+  if ('cdbt_web_apis' === $.QueryString.page && 'api_requests' === $.QueryString.tab) {
+    
+    var toggleForms = function(){
+      var request_method = $('#edit-webapi-request-method').selectlist('selectedItem').text;
+      var show_classes = [];
+      switch(request_method) {
+        case 'get_data':
+          show_classes = [ 'target-columns', 'conditions', 'orders', 'limit', 'offset' ];
+          break;
+        case 'find_data':
+          show_classes = [ 'search-key', 'target-columns', 'orders', 'limit', 'offset' ];
+          break;
+        case 'insert_data':
+          show_classes = [ 'upsert_data' ];
+          break;
+        case 'update_data':
+          show_classes = [ 'upsert_data', 'pk_value' ];
+          break;
+        case 'update_where':
+          show_classes = [ 'conditions', 'upsert_data' ];
+          break;
+        case 'delete_data':
+          show_classes = [ 'pk_value' ];
+          break;
+        default:
+          break;
+      }
+      $('.switching-item').each(function(){
+        var matches = _.intersection($(this).context.classList, show_classes);
+        if (matches.length > 0) {
+          $(this).css('display', 'block');
+        } else {
+          $(this).css('display', 'none');
+        }
+        if ($(this).hasClass(matches[0])) {
+          $(this).css({ position: 'static', display: 'block' });
+          $(this).find('input').removeAttr('disabled');
+        } else {
+          $(this).css({ position: 'absolute', display: 'none' });
+          $(this).find('input').attr('disabled', 'disabled');
+        }
+      });
+      
+    };
+    
+    $('#edit-webapi-request-method').on('changed.fu.selectlist', function(){
+      toggleForms();
+    });
+    toggleForms();
+    
+    var generateRequestUri = function(){
+      var items = $('input[name^="custom-database-tables["]');
+      var preview = $('#edit-webapi-request-generate_uri');
+      var base_uri = 'http://' + $('#edit-webapi-request-allowed_host').selectlist('selectedItem').text.replace(/\d+\:\s(.*)$/, '$1') + '/?';
+      var api_key = '' !== $('#current_host_apikey').val() ? $('#current_host_apikey').val() : '';
+      var target_table = '' !== $('#edit-webapi-request-target_table').selectlist('selectedItem').value ? $('#edit-webapi-request-target_table').selectlist('selectedItem').text : '';
+      var api_request = '' !== $('#edit-webapi-request-method').selectlist('selectedItem').value ? $('#edit-webapi-request-method').selectlist('selectedItem').text : '';
+      if (api_key !== '' && target_table !== '' && api_request !== '') {
+        base_uri += 'cdbt_api_key=' + api_key + '&cdbt_table=' + target_table + '&cdbt_api_request=' + api_request + '&';
+        
+        var queries = [];
+        items.each(function(){
+          if ('disabled' !== $(this).attr('disabled')) {
+            var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)\])$/i, item_name;
+            if (_.contains([ 'text' ], $(this).attr('type')) && '' !== $(this).val()) {
+              item_name = $(this).attr('name').replace(reg, "$1");
+              if (!_.contains([ 'allowed_host', 'target_table', 'method' ], item_name)) {
+                if ('search_key' === item_name) {
+                  queries.push(item_name + '=[' + $(this).val() + ']');
+                }
+                if ('target_columns' === item_name) {
+                  queries.push('columns=[' + $(this).val() + ']');
+                }
+                if ('conditions' === item_name) {
+                  queries.push( 'update_where' === api_request ? 'where_conditions={' + $(this).val() + '}' : item_name + '={' + $(this).val() + '}' );
+                }
+                if ('upsert_data' === item_name) {
+                  queries.push('data={' + $(this).val() + '}');
+                }
+                if ('pk_value' === item_name) {
+                  queries.push('primary_key_value=' + $(this).val());
+                }
+                if ('orders' === item_name) {
+                  queries.push('order={' + $(this).val() + '}');
+                }
+                if ('limit' === item_name || 'offset' === item_name) {
+                  if (Number($(this).val()) > 0) {
+                    queries.push(item_name + '=' + $(this).val());
+                  }
+                }
+              }
+            }
+          }
+        });
+        
+        preview.val(base_uri + queries.join('&'));
+        $('#webapi-preview').removeAttr('disabled');
+      } else {
+        $('#webapi-preview').attr('disabled', 'disabled');
+      }
+    };
+    
+    $('input[name^="custom-database-tables["]').on('click blur keydown keypress paste', function(){
+      generateRequestUri();
+    });
+    $('.spinbox').on('changed.fu.spinbox', function(){
+      generateRequestUri();
+    });
+    $('.selectlist').on('changed.fu.selectlist', function(){
+      if ('edit-webapi-request-allowed_host' === $(this).attr('id')) {
+        var post_data = {
+          'host_id': $(this).selectlist('selectedItem').value, 
+          'operate_action': 'retrieve', 
+          'event': 'get_apikey', 
+        };
+        cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'text', 'set_api_key' );
+      }
+      generateRequestUri();
+    });
+    generateRequestUri();
+    
+    $('#webapi-preview').on('click', function(){
+      cdbtCallAjax($('#edit-webapi-request-generate_uri').val(), 'get', '', 'json');
+/*
+      var post_data = {
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalSize: 'large', 
+        modalTitle: 'preview_request_api', 
+        modalBody: '', 
+        modalExtras: { request_uri: $('#edit-webapi-request-generate_uri').val() }
+      };
+      init_modal( post_data );
+*/
     });
     
   }
