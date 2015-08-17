@@ -905,6 +905,7 @@ final class CdbtAdmin extends CdbtDB {
     $table_name = $_POST['target_table'];
     $post_data = $_POST[$this->domain_name];
     $current_options = $this->get_table_option($table_name);
+    $after_modified = 'reload';
     switch($_POST['action']) {
       case 'modify_table': 
         
@@ -979,10 +980,11 @@ final class CdbtAdmin extends CdbtDB {
           if (!$this->validate->validate_alter_sql( $table_name, esc_sql($post_data['alter_table_sql']) )) {
             $message = $process_msg[0];
           } else {
-            $result = $this->run_query($_sql);
+            $result = $this->run_query(esc_sql($post_data['alter_table_sql']));
             if (!$result) {
               $message = $process_msg[1];
             } else {
+              $after_modified = 'redirect';
               $modify_done++;
             }
           }
@@ -1007,7 +1009,9 @@ final class CdbtAdmin extends CdbtDB {
             if ($this->update_options( $current_options, 'override', 'tables' )) {
               $message = __('Modification was successful.', CDBT); 
               $notice_class = CDBT . '-notice';
+              $this->destroy_session(__FUNCTION__);
               $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
+              $this->cdbt_sessions[$_POST['active_tab']]['to_redirect'] = 'redirect' === $after_modified ? add_query_arg([ 'page'=>'cdbt_tables', 'tab'=>'operate_table' ], admin_url('admin.php')) : '';
               unset($modification_option, $current_options, $key, $value, $_key, $_value);
             } else {
               $message = __('Failed to update of the plugin options.', CDBT);
@@ -1078,7 +1082,7 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     if (!empty($message)) {
-      $this->register_admin_notices( $notice_class, $message, 3, true );
+      $this->register_admin_notices( $notice_class, $message, 1, true );
     }
     return;
     

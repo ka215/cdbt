@@ -382,6 +382,7 @@ foreach ($this->allow_file_types as $file_type) {
   
   $is_enable_modify = false;
   $is_updated = false;
+  $to_redirect = '';
   $modify_table = '';
   $table_options = [];
   if (isset($this->cdbt_sessions[$current_tab]) && isset($this->cdbt_sessions[$current_tab]['target_table'])) {
@@ -396,6 +397,9 @@ foreach ($this->allow_file_types as $file_type) {
     }
     if (isset($this->cdbt_sessions[$current_tab]['is_modified']) && $this->cdbt_sessions[$current_tab]['is_modified']) {
       $is_updated = true;
+      if (isset($this->cdbt_sessions[$current_tab]['to_redirect']) && !empty($this->cdbt_sessions[$current_tab]['to_redirect'])) {
+        $to_redirect = $this->cdbt_sessions[$current_tab]['to_redirect'];
+      }
     }
     $table_options = $this->get_table_option($modify_table);
   }
@@ -682,8 +686,8 @@ foreach ($this->allow_file_types as $file_type) {
       
     </form>
   </div><!-- /.cdbt-modify-table -->
-<?php if (isset($this->cdbt_sessions[$current_tab]['is_modified']) && $this->cdbt_sessions[$current_tab]['is_modified']) : ?>
-  <script>/*location.reload();*/</script>
+<?php if (!empty($to_redirect)) : ?>
+  <input type="hidden" id="after-notice-redirection" value="<?php echo $to_redirect; ?>" disabled="disabled">
 <?php endif; ?>
 <?php endif; ?>
 <?php endif; /* End of `modify_table` tab contents */ ?>

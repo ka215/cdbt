@@ -85,7 +85,7 @@ if (isset($this->component_options['modalShow']) && !empty($this->component_opti
 if (isset($this->component_options['modalHideEvent']) && !empty($this->component_options['modalHideEvent'])) {
   $modal_hide_event = $this->component_options['modalHideEvent'];
 } else {
-  $modal_hide_event = 'return;';
+  $modal_hide_event = 'return';
 }
 
 // `modalShowEvent` section

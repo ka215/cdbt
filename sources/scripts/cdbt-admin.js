@@ -552,6 +552,19 @@ $(function() {
       }
     });
     
+    // Redirection after notice
+    if ($('#after-notice-redirection').size() > 0) {
+      $(document).on('hidden.bs.modal', '#cdbtModal', function(e){
+        post_data = {
+          'session_key': 'operate_table', 
+          'default_action': 'detail', 
+          'target_table': $('input[name=target_table]').val(), 
+          'callback_url': $('#after-notice-redirection').val(), 
+        };
+        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+      });
+    }
+    
   }
   
   
