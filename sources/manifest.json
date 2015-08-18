@@ -20,6 +20,11 @@
         "moment"
       ]
     },
+    "cdbt-table-creator.js": {
+      "files": [
+        "scripts/cdbt-table-creator.js"
+      ]
+    },
     "cdbt-main.css": {
       "files": [
         "styles/cdbt-main.scss"
@@ -29,6 +34,12 @@
     "cdbt-admin.css": {
       "files": [
         "styles/cdbt-admin.scss"
+      ],
+      "main": true
+    },
+    "cdbt-table-creator.css": {
+      "files": [
+        "styles/cdbt-table-creator.scss"
       ],
       "main": true
     },

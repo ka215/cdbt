@@ -96,6 +96,16 @@ foreach ($this->allow_file_types as $file_type) {
     $session_vars = $this->cdbt_sessions['do_' . $this->query['page'] . '_' . $current_tab];
   }
   
+  if (isset($this->cdbt_sessions[$current_tab]['to_redirect']) && !empty($this->cdbt_sessions[$current_tab]['to_redirect'])) {
+    if (isset($this->cdbt_sessions[$current_tab]['target_table']) && !empty($this->cdbt_sessions[$current_tab]['target_table'])) {
+      $target_table = $this->cdbt_sessions[$current_tab]['target_table'];
+    }
+    $to_redirect = $this->cdbt_sessions[$current_tab]['to_redirect'];
+  } else {
+    $target_table = '';
+    $to_redirect = '';
+  }
+  
 ?>
   <div class="well-sm">
     <p class="text-info">
@@ -371,6 +381,10 @@ foreach ($this->allow_file_types as $file_type) {
       
     </form>
   </div><!-- /.cdbt-create-table -->
+<?php if (!empty($to_redirect)) : ?>
+  <input type="hidden" name="target_table" value="<?php echo $target_table; ?>" disabled="disabled">
+  <input type="hidden" id="after-notice-redirection" value="<?php echo $to_redirect; ?>" disabled="disabled">
+<?php endif; ?>
 <?php endif; /* End of `create_table` tab contents */ ?>
   
 <?php if ($current_tab == 'modify_table') : ?>
@@ -553,7 +567,7 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p class="help-block">
             <?php _e('Example of SQL Statements:', CDBT); ?> <br>
-            <pre><code>ALTER TABLE prefix_new_table </code></pre>
+            <pre><code>ALTER TABLE prefix_new_table CHANGE `before_column` `after_column` varchar(100) NOT NULL COMMENT 'After Column' AFTER `first_column`;</code></pre>
           </p>
         </div>
       </div><!-- /modify-table-create_table_sql -->

@@ -380,7 +380,7 @@ $(function() {
   /**
    * Common display notice handler
    */
-  if ('' !== $('#message').text()) {
+  if ('' !== $('#message').text().trim()) {
     if ($.isDebug) {
       var post_data = {
         id: 'cdbtModal', 
@@ -461,6 +461,36 @@ $(function() {
       
       $('#create-table-create_table_sql').val( sql_template({ tableName: table_name, columnDefinition: "\n" + columns.join(",\n"), tableOptions: "\n" + table_options.join(' ')  }) );
       
+    });
+    
+    // Redirection after notice
+    if ($('#after-notice-redirection').size() > 0) {
+      $(document).on('hidden.bs.modal', '#cdbtModal', function(e){
+        var post_data = {
+          'session_key': 'operate_table', 
+          'default_action': 'detail', 
+          'target_table': $('input[name=target_table]').val(), 
+          'callback_url': $('#after-notice-redirection').val(), 
+        };
+        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+      });
+    }
+    
+    // Boot table creator via modal
+    $('a[data-toggle=tab]').on('shown.bs.tab', function(e) {
+      if ('table_creator' === e.target.hash.substr(1)) {
+        var post_data = {
+        	id: 'cdbtTableCreator', 
+          insertContent: true, 
+          modalSize: 'large', 
+          modalTitle: 'table_creator', 
+          modalBody: '', 
+          modalHideEvent: "$('#adminmenuwrap').show();$('a[data-toggle=tab]:first').tab('show');", 
+          modalShowEvent: "doTableCreator();", 
+          modalExtras: { 'column_definitions': $('#instance_create_table_sql').val(), }, 
+        };
+        init_modal( post_data );
+      }
     });
     
   }

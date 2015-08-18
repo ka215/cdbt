@@ -124,6 +124,7 @@ trait CdbtAjax {
         	
           if ('callback_url' === $key) {
             $callback = sprintf( "location.href = '%s';", $value );
+            $this->register_admin_notices( CDBT . '-notice', '', 0, true );
           }
           
           $_SESSION[$session_key][$key] = $value;

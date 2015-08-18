@@ -328,6 +328,7 @@ final class CdbtAdmin extends CdbtDB {
     
     foreach ($menus as $menu) {
       add_action( 'admin_enqueue_scripts', array($this, 'admin_assets'), 99 ); // Note: priority = 99 is after the multibyte-patch plugin.
+      add_filter( 'cdbt_admin_assets', array($this, 'enqueue_jquery_ui'), 10, 2 );
       add_action( 'cdbt_admin_localize_script', array($this, 'admin_localize_script') );
       add_action( "admin_head-$menu", array($this, 'admin_header') );
       add_action( "admin_footer-$menu", array($this, 'admin_footer') );
@@ -382,17 +383,11 @@ final class CdbtAdmin extends CdbtDB {
         'cdbt-fuelux' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
       ], 
       'scripts' => [
-        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
+        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, false ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array(), null, true ], 
+        // 'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
         'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
-//        'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
-//        'jquery-ui-core' => null, 
-//        'jquery-ui-widget' => null, 
-//        'jquery-ui-mouse' => null, 
-//        'jquery-ui-position' => null, 
-//        'jquery-ui-sortable' => null, 
-//        'jquery-ui-autocomplete' => null, 
       ]
     ];
     //
@@ -421,6 +416,28 @@ final class CdbtAdmin extends CdbtDB {
         
       }
     }
+  }
+
+
+  public function enqueue_jquery_ui( $assets=[], $nowpage=null ) {
+    if ('cdbt_tables' === $nowpage && isset($this->query['tab']) && in_array($this->query['tab'], [ 'create_table', 'modify_table' ])) {
+      $add_styles = [
+        'cdbt-table-creator-style' => [ $this->plugin_url . 'assets/styles/cdbt-table-creator.css', true, $this->version, 'all' ],
+      ];
+      $assets['styles'] = array_merge($assets['styles'], $add_styles);
+      $add_scripts = [
+        'jquery-ui-core' => null, 
+        'jquery-ui-widget' => null, 
+        'jquery-ui-mouse' => null, 
+        'jquery-ui-position' => null, 
+        'jquery-ui-sortable' => null, 
+        'jquery-ui-autocomplete' => null, 
+        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', array('jquery-ui-core'), null, true ],
+      ];
+      $assets['scripts'] = array_merge($assets['scripts'], $add_scripts);
+    }
+    
+    return $assets;
   }
 
 
@@ -827,7 +844,9 @@ final class CdbtAdmin extends CdbtDB {
       if ($is_created) {
         if ($this->add_new_table( $source_data['table_name'], 'regular', $source_data )) {
           $notice_class = CDBT . '-notice';
-          $this->destroy_session();
+          $this->destroy_session(__FUNCTION__);
+          $this->cdbt_sessions[$_POST['active_tab']]['target_table'] = $source_data['table_name'];
+          $this->cdbt_sessions[$_POST['active_tab']]['to_redirect'] = add_query_arg([ 'page'=>'cdbt_tables', 'tab'=>'operate_table' ], admin_url('admin.php'));
         } else {
           $notice_class = CDBT . '-error';
         }
@@ -872,7 +891,7 @@ final class CdbtAdmin extends CdbtDB {
         $notice_class = CDBT . '-error';
       }
       
-      $this->register_admin_notices( $notice_class, $message, 3, true );
+      $this->register_admin_notices( $notice_class, $message, 1, true );
       $this->logger( $message );
       $this->destroy_session();
       return;
@@ -1728,6 +1747,19 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Preview Request Web API', CDBT);
           $args['modalBody'] = '<iframe src="'. $args['modalExtras']['request_uri'] .'" style="width: 100%; height: 100%; overflow: hidden;"></iframe>';
           break;
+        case 'table_creator': 
+        	$conponent_options = [
+        	  'targetTable' => isset($args['modalExtras']['target_table']) ? $args['modalExtras']['target_table'] : '', 
+            'columnDefinitions' => isset($args['modalExtras']['column_definitions']) ? $args['modalExtras']['column_definitions'] : '', 
+          ];
+        	ob_start();
+        	$this->component_render('table_creator', $conponent_options); // by trait `DynamicTemplate`
+        	$_component = ob_get_contents();
+        	ob_end_clean();
+        	$args['modalTitle'] = __('Table Creator', CDBT);
+          $args['modalBody'] = __('<p class="text-info">テーブルクリエーターでは直感的にテーブルのカラム構成を作成できます。なお、このウィンドウを閉じても「テーブル作成」か「リセット」をしない限り設定内容はキャッシュされます。</p>', CDBT) . $_component;
+          $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
+        	break;
         default:
           break;
       }
