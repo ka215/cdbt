@@ -30,9 +30,9 @@ doTableCreator = function(){
     adjustModal( true );
     
     $('#sortable').sortable({
-      items: 'li:not(.ui-state-disabled)', 
+      items: 'tr:not(.ui-state-disabled)', 
       placeholder: 'ui-state-highlight', 
-    }).css({ position: 'relative', display: 'block' });
+    }).css({ position: 'relative' });
     $('#sortable').disableSelection();
     
     

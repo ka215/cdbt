@@ -54,6 +54,29 @@ $value_primary_key = __('ID', CDBT);
 $value_created = __('Created Date', CDBT);
 $value_updated = __('Updated Date', CDBT);
 
+$index_row_labels = [
+  'col_order' => '', 
+  'col_name' => __('Column Name', CDBT), 
+  'type_format' => __('Type Format', CDBT), 
+  'length' => __('Display Length', CDBT), 
+  'not_null' => __('Not Null', CDBT), 
+  'default' => __('Default Value', CDBT), 
+  'attributes' => __('Attributes', CDBT), 
+  'autoincrement' => __('Autoincrement', CDBT), 
+  'key_index' => __('Key / Index', CDBT), 
+  'extra' => __('Extra', CDBT), 
+  'comment' => __('Comment', CDBT), 
+  'controll' => '', 
+];
+
+$index_row_base = '<tr class="index-row ui-state-disabled">%s</tr>';
+$index_row_cols = [];
+foreach ($index_row_labels as $col_slug => $col_label) {
+  $index_row_cols[] = sprintf('<th class="%s">%s</th>', $col_slug, $col_label);
+}
+$index_row = sprintf($index_row_base, implode("\n", $index_row_cols));
+
+/*
 $index_row = sprintf('<li class="index-row"><label class="null"></label><label class="w-xl">%s</label><label>%s</label><label class="w-sm">%s</label><label class="w-xs">%s</label><label>%s</label><label>%s</label><label class="w-xs">%s</label><label>%s</label><label class="w-lg">%s</label><label class="w-xl">%s</label><label class="null"></label></li>', 
 	__('column name', CDBT), 
 	__('type format', CDBT), 
@@ -65,8 +88,9 @@ $index_row = sprintf('<li class="index-row"><label class="null"></label><label c
 	__('key', CDBT), 
 	__('extra', CDBT), 
 	__('comment', CDBT));
+*/
 
-$preset_col_type = array( 
+$preset_col_type = [ 
 	'int' => 11, // = int(11)
 	'tinyint' => 4, // = tinyint(4)
 	'smallint' => 6, // = smallint(6)
@@ -96,11 +120,54 @@ $preset_col_type = array(
 	'time' => null, 
 	'timestamp' => null, // NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 	'year' => 4, // = year(4)
-);
+];
 $col_type_options = '';
 foreach($preset_col_type as $key => $val) {
 	$col_type_options .= sprintf('<option value="%s">%s</option>', $val, $key);
 }
+
+$body_row_base = '<tr class="row ui-state-default tbl_cols preset">%s</tr>';
+$body_row_cols = <<<EOH
+  <td class="col_order">
+    <i class="fa fa-arrows-v"></i>
+  </td>
+  <td class="col_name">
+    <input class="form-control input-sm" name="col_name_" type="text" placeholder=".input-sm">
+  </td>
+  <td class="type_format">
+    <select class="form-control input-sm" name="type_format_">$col_type_options</select>
+  </td>
+  <td class="length">
+    <input class="form-control input-sm" name="length_" type="text" placeholder=".input-sm">
+  </td>
+  <td class="not_null">
+    <input class="form-control input-sm" name="not_null_" type="checkbox" value="1">
+  </td>
+  <td class="default">
+    <input class="form-control input-sm" name="default_" type="text" placeholder=".input-sm">
+  </td>
+  <td class="attributes">
+    <select class="form-control input-sm" name="attributes_"><option value="" class="numgrp bingrp"></option><option value="unsigned" class="numgrp">unsigned</option><option value="zerofill" class="numgrp">zerofill</option><option value="binary" class="bingrp">binary</option><option value="ascii" class="bingrp">ascii</option><option value="unicode" class="bingrp">unicode</option></select>
+  </td>
+  <td class="autoincrement">
+    <input class="form-control input-sm" name="autoincrement_" type="checkbox" value="1">
+  </td>
+  <td class="key_index">
+    <select class="form-control input-sm" name="key_index_"><option value=""></option><option value="primary key" disabled="disabled">primary key</option><option value="index">index</option><option value="unique">unique</option><option value="fulltext">fulltext</option><option value="foreign key">foreign key</option></select>
+  </td>
+  <td class="extra">
+    <input class="form-control input-sm" name="extra_" type="text" placeholder=".input-sm">
+  </td>
+  <td class="comment">
+    <input class="form-control input-sm" name="comment_" type="text" placeholder=".input-sm">
+  </td>
+  <td class="controll">
+    <button type="button" name="add-column" id="add-preset-column" class="btn btn-primary btn-sm" title="Add Preset Column"><i class="fa fa-plus"><span class="sr-only">Add Preset Column</span></i></button>
+  </td>
+EOH;
+$body_row = sprintf($body_row_base, $body_row_cols);
+
+/*
 $row = <<<EOH
 <li class="ui-state-default ui-state-disabled tbl_cols">
 	<label class="handler row-index-num num-disabled">1</label>
@@ -159,9 +226,17 @@ $row = <<<EOH
 	<label class="delete-row"><button type="button" name="col_delete_ud" class="btn btn-info btn-sm" disabled="disabled"><span class="glyphicon glyphicon-remove"></span></button></label>
 </li>
 EOH;
+*/
 
 ?>
-<ul id="sortable">
-<?php echo $index_row; ?>
-<?php echo $row; ?>
-</ul>
+<table>
+  <thead>
+  <?php echo $index_row; ?>
+  </thead>
+  <tbody id="sortable"><!-- <ul id="sortable"> -->
+  <?php echo $body_row; /*$row;*/ ?>
+  </tbody><!-- </ul> -->
+  <tfoot>
+  <?php echo $index_row; ?>
+  </tfoot>
+</table>
