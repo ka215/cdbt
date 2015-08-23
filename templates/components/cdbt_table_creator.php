@@ -90,40 +90,41 @@ $index_row = sprintf('<li class="index-row"><label class="null"></label><label c
 	__('comment', CDBT));
 */
 
-$preset_col_type = [ 
-	'int' => 11, // = int(11)
-	'tinyint' => 4, // = tinyint(4)
-	'smallint' => 6, // = smallint(6)
-	'mediumint' => 9, // = mediumint(9)
-	'bigint' => 20, // = bigint(20)
-	'float' => 'Array', // or null
-	'double' => 'Array', // or null // = double precision = real
-	'decimal' => 'Array', // = decimal(10,0) = numeric = fixed
-	'bool' => 1, // = tinyint(1) = boolean
-	'bit' => 1,
-	'varchar' => 'int', // = varchar(*)  *0-65535 int unit is bytes
-	'char' => 'int', // = char(*) = national char(*) = nchar(*) = character(*)  *0-255 int unit is bytes
-	'text' => null, 
-	'tinytext' => null, 
-	'mediumtext' => null, 
-	'longtext' => null, 
-	'blob' => null, 
-	'tinyblob' => null, 
-	'mediumblob' => null, 
-	'longblob' => null, 
-	'binary' => 1, // = binary(*)  *0-255 int unit is bytes
-	'varbinary' => 'int', // = varbinary(*)  *0-65535 int unit is bytes
-	'enum' => 'Array', 
-	'set' => 'Array', 
-	'date' => null, 
-	'datetime' => null, 
-	'time' => null, 
-	'timestamp' => null, // NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-	'year' => 4, // = year(4)
+$preset_col_types = [ 
+  'tinyint' => [ 'arg_type' => 'precision', 'default' => 4, 'min' => 1, 'max' => 4, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: 精度。数字全体の有効桁数
+  'smallint' => [ 'arg_type' => 'precision', 'default' => 6, 'min' => 1, 'max' => 6, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: 精度。数字全体の有効桁数
+  'mediumint' => [ 'arg_type' => 'precision', 'default' => 9, 'min' => 1, 'max' => 9, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: 精度。数字全体の有効桁数
+  'int' => [ 'arg_type' => 'precision', 'default' => 11, 'min' => 1, 'max' => 11, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'integer' ] ], // precision: 精度。数字全体の有効桁数
+  'bigint' => [ 'arg_type' => 'precision', 'default' => 20, 'min' => 1, 'max' => 20, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: 精度。数字全体の有効桁数
+  'float' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => null, 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // 小数部を含んで6桁まで入力された通りに保存する用途であれば、float型を使う
+  'double' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => null, 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'double precision', 'real' ] ], // precisionが25以上のfloat(*)はdoubleと同等
+  'decimal' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => [ 10, 0 ], 'min' => [ 1, 0 ], 'max' => [ 65, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'dec', 'numeric', 'fixed' ] ], // 小数点以下を指定して型を揃えて正確に扱うならば、decimal型を使う （例:緯度経度情報）
+  'bool' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [ 'boolean' ] ], // tinyint(1)のエイリアス
+  'bit' => [ 'arg_type' => 'precision', 'default' => 1, 'min' => 1, 'max' => 64, 'atts' => null, 'alias' => [] ], // precisionはbitのByte数
+  'varchar' => [ 'arg_type' => 'maxlength', 'default' => 1, 'min' => 0, 'max' => 255, 'atts' => [ 'binary' ], 'alias' => [ 'national varchar' ] ], // maxlengthが255より大きい場合はtext型に変換される
+  'char' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => [ 'binary', 'ascii', 'unicode' ], 'alias' => [ 'national char', 'nchar', 'character' ] ], // maxlength省略時はchar(1)となる
+  'tinytext' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 255文字
+  'text' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 65535文字
+  'mediumtext' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 16777215文字
+  'longtext' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 4294967295文字
+  'tinyblob' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 255Byte
+  'blob' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 64KB
+  'mediumblob' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 16MB
+  'longblob' => [ 'arg_type' => null, 'default' => null, 'min' => null, 'max' => null, 'atts' => null, 'alias' => [] ], // 最大長 4GB
+  'binary' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => null, 'alias' => [ 'char byte' ] ], // 最大長 255Byte、指定バイト数より格納値が少ない場合に末尾を0x00で埋める
+  'varbinary' => [ 'arg_type' => 'maxlength', 'default' => 65535, 'min' => 0, 'max' => 65535, 'atts' => null, 'alias' => [] ], // 最大長 64KB、末尾の0x00埋めを行わない
+  'enum' => [ 'arg_type' => 'array', 'default' => null, 'min' => 1, 'max' => 65535, 'atts' => null, 'alias' => [] ], // ユニークリスト 65535個まで
+  'set' => [ 'arg_type' => 'array', 'default' => null, 'min' => 0, 'max' => 64, 'atts' => null, 'alias' => [] ], // ユニークリスト 64個まで
+  'date' => [ 'arg_type' => null, 'default' => null, 'min' => '1000-01-01', 'max' => '9999-12-31', 'atts' => null, 'alias' => [] ], // 'YYYY-MM-DD'形式文字列か数値を使用できる
+  'datetime' => [ 'arg_type' => null, 'default' => null, 'min' => '1000-01-01 00:00:00', 'max' => '9999-12-31 23:59:59', 'atts' => null, 'alias' => [] ], // 'YYYY-MM-DD HH:MM:SS'形式文字列か数値を使用できる
+  'time' => [ 'arg_type' => null, 'default' => null, 'min' => '-838:59:59', 'max' => '838:59:59', 'atts' => null, 'alias' => [] ], // 'HH:MM:SS'形式文字列か数値を使用できる
+  'timestamp' => [ 'arg_type' => [ 6, 8, 12, 14 ], 'default' => null, 'min' => 6, 'max' => 14, 'atts' => [ 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP' ],  'alias' => [] ], // 引数は表示形式の桁数（'YYMMDD','YYYYMMDD','YYMMDDHHMMSS', 'YYYYMMDDHHMMSS'）を表す
+  'year' => [ 'arg_type' => [ 2, 4 ], 'default' => 4, 'min' => 2, 'max' => 4, 'atts' => null, 'alias' => [] ], // 'YYYY'か'YY'形式の文字列か数値を使用できる
 ];
 $col_type_options = '';
-foreach($preset_col_type as $key => $val) {
-	$col_type_options .= sprintf('<option value="%s">%s</option>', $val, $key);
+foreach($preset_col_types as $_key => $_val) {
+  $default_value = is_array($_val['default']) ? implode(',', $_val['default']) : $_val['default'];
+  $col_type_options .= sprintf('<option value="%s">%s</option>', $default_value, $_key);
 }
 
 $body_row_base = '<tr class="row ui-state-default tbl_cols preset">%s</tr>';
