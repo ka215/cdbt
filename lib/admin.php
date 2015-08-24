@@ -448,10 +448,16 @@ final class CdbtAdmin extends CdbtDB {
    */
   public function admin_localize_script( $asset_data ) {
     if ( array_key_exists( 'cdbt-admin-script', $asset_data ) ) {
-      wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', [
+      $cdbt_admin_vars = [
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
-      ]);
+      ];
+      if (array_key_exists( 'cdbt-table-creator-script', $asset_data ) ) {
+        $cdbt_admin_vars['column_types'] =  null;
+        $cdbt_admin_vars['cdbt_tc_translate'] = null;
+      }
+      
+      wp_localize_script( 'cdbt-admin-script', 'cdbt_admin_vars', $cdbt_admin_vars );
     }
   }
 

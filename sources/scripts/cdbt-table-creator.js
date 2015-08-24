@@ -35,6 +35,7 @@ doTableCreator = function(){
     }).css({ position: 'relative' });
     $('#sortable').disableSelection();
     
+    //console.info(cdbt_admin_vars.column_types);
     
   };
   
@@ -43,6 +44,60 @@ doTableCreator = function(){
     adjustModal( false );
   });
   initComponent();
+  
+  
+  /**
+   * Event handlers on the "Table Creator"
+   * -------------------------------------------------------------------------
+   */
+  
+  $('tr.preset').delegate('input', 'click', function(e){
+    //e.target.focus();
+  });
+  
+  // For column type of `enum` or `set`
+  $('[data-toggle="popover"]').popover({ 
+    html: true, 
+    content: function(){ 
+      // load current item
+      
+      return $('#cdbt_tc_preset_define_values_template').html();
+    }, 
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><button type="button" class="btn btn-primary btn-sm" disabled="disabled">'+ cdbt_admin_vars.cdbt_tc_translate.popoverSetValues +'</button></div></div>'
+  });
+  
+  
+  // This event will fire when clicked "Add New Column" button.
+  $('.cdbt_tc_preset_controll button[name=add-column]').on('click', function(){
+    var newRow = $('tr.preset').clone().delegate('input', 'click', function(e){
+      e.target.focus();
+    });
+    
+    var addNum = $('#sortable>tbody').children('tr').length + 1;
+    newRow.removeClass('preset').addClass('addnew');
+    newRow.children('td').each(function(){
+      if ($(this).hasClass('handler')) {
+        $(this).html('<strong>'+ addNum +'</strong>');
+      } else {
+        var item_name = $(this).find('input').attr('name');
+        $(this).find('input').removeAttr('id').attr('name', item_name + addNum);
+      }
+      if ($(this).hasClass('controll')) {
+        $(this).children('div').removeClass('cdbt_tc_preset_controll').addClass('cdbt_tc_controll');
+      }
+    });
+    
+    newRow.insertBefore('tr.preset');
+    
+  });
+  
+  
+  // This event will fire when clicked "Remove Column" button.
+  $(document).on('click', '.cdbt_tc_controll button[name=delete-column]', function(){
+    $(this).parent().parent().parent('tr.addnew').fadeOut('fast', function(){ $(this).remove(); });
+    
+    //renumber_row_index();
+  });
   
   
 };
