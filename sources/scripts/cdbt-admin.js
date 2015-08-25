@@ -401,7 +401,7 @@ $(function() {
   if ('cdbt_tables' === $.QueryString.page && 'create_table' === $.QueryString.tab) {
     // Table name live preview
     var livePreview = function(table_name) {
-      if ($('#instance_prefix_switcher').checkbox('isChecked')) {
+      if ($('.checkbox input[name="instance_prefix_switcher"]').is(':checked')) {
         table_name = $('#create-table-table_name div.input-group-addon').text() + table_name;
       }
       $('#live_preview code').text(table_name);
@@ -421,9 +421,9 @@ $(function() {
       livePreview($('#instance_table_name').val());
     };
     $('.checkbox input[name="instance_prefix_switcher"]').on('change', function(){
-      prefixSwitcher( $('#instance_prefix_switcher').checkbox('isChecked') );
+      prefixSwitcher( $(this).is(':checked') );
     });
-    prefixSwitcher( $('#instance_prefix_switcher').checkbox('isChecked') );
+    prefixSwitcher( $('.checkbox input[name="instance_prefix_switcher"]').is(':checked') );
     
     // Make a template from the set value
     $('#create-sql-support').on('click', function(){

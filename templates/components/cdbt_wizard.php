@@ -89,13 +89,15 @@ if (isset($this->component_options['disablePreviousStep']) && !empty($this->comp
 if (!$is_split) :
 ?>
   <div class="wizard" data-initialize="wizard" id="<?php echo $wizard_id; ?>">
-    <ul class="steps">
-    <?php foreach ($wizard_steps as $i => $step_values) : ?>
-      <?php if ($i < $display_max_step) : ?>
-      <li data-step="<?php echo $i+1; ?>" data-name="cdbt-step-<?php echo $i+1; ?>"<?php if ($current_step === $i+1) echo ' class="active"'; ?>><span class="badge"><?php echo $i+1; ?></span><?php echo $step_values['label']; ?><span class="chevron"></span></li>
-      <?php endif; ?>
-    <?php endforeach; ?>
-    </ul>
+    <div class="steps-container">
+      <ul class="steps" style="margin-left: 0">
+      <?php foreach ($wizard_steps as $i => $step_values) : ?>
+        <?php if ($i < $display_max_step) : ?>
+        <li data-step="<?php echo $i+1; ?>" data-name="cdbt-step-<?php echo $i+1; ?>"<?php if ($current_step === $i+1) echo ' class="active"'; ?>><span class="badge"><?php echo $i+1; ?></span><?php echo $step_values['label']; ?><span class="chevron"></span></li>
+        <?php endif; ?>
+      <?php endforeach; ?>
+      </ul>
+    </div>
     <div class="actions">
       <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span><?php _e('Prev', CDBT); ?></button>
       <button type="button" class="btn btn-default btn-next" data-last="<?php _e('Complete', CDBT); ?>"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>
@@ -127,13 +129,15 @@ var wizard = function() {
 <?php else : ?>
   <?php if ('before' === $render_part) : ?>
   <div class="wizard" data-initialize="wizard" id="<?php echo $wizard_id; ?>">
-    <ul class="steps">
-    <?php foreach ($wizard_steps as $i => $step_values) : ?>
-      <?php if ($i < $display_max_step) : ?>
-      <li data-step="<?php echo $i+1; ?>" data-name="cdbt-step-<?php echo $i+1; ?>"<?php if ($current_step === $i+1) echo ' class="active"'; ?>><span class="badge"><?php echo $i+1; ?></span><?php echo $step_values['label']; ?><span class="chevron"></span></li>
-      <?php endif; ?>
-    <?php endforeach; ?>
-    </ul>
+    <div class="steps-container">
+      <ul class="steps">
+      <?php foreach ($wizard_steps as $i => $step_values) : ?>
+        <?php if ($i < $display_max_step) : ?>
+        <li data-step="<?php echo $i+1; ?>" data-name="cdbt-step-<?php echo $i+1; ?>"<?php if ($current_step === $i+1) echo ' class="active"'; ?>><span class="badge"><?php echo $i+1; ?></span><?php echo $step_values['label']; ?><span class="chevron"></span></li>
+        <?php endif; ?>
+      <?php endforeach; ?>
+      </ul>
+    </div>
     <div class="actions">
       <button type="button" class="btn btn-default btn-prev"><span class="glyphicon glyphicon-arrow-left"></span><?php _e('Prev', CDBT); ?></button>
       <button type="button" class="btn btn-default btn-next" data-last="Complete"><?php _e('Next', CDBT); ?><span class="glyphicon glyphicon-arrow-right"></span></button>

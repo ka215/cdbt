@@ -503,7 +503,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel5"><!-- enable_sort [v,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_sort]" type="checkbox" value="1"<?php if (isset($this_tab_vars['enable_sort']) && $this_tab_vars['enable_sort']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of enabling sort; Is enabled only if "bootstrap style" is checked.', CDBT);　?></span>
+              <span class="checkbox-label"><?php _e('Whether of enabling sort; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel6"><!-- display_index_row [v] -->

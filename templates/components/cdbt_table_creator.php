@@ -43,7 +43,7 @@ $index_row_definitions = [
   'col_order'		=> [ 'label' => '<i class="fa fa-hand-rock-o"></i>', 'placeholder' => '', 'size' => [20, 20] ], 
   'col_name'		=> [ 'label' => __('Column Name', CDBT), 'placeholder' => __('Enter the column name', CDBT), 'size' => [140, 240] ], 
   'type_format'		=> [ 'label' => __('Type Format', CDBT), 'placeholder' => __('Choose or enter the column type', CDBT), 'size' => [128, 150] ], 
-  'length'			=> [ 'label' => __('Precision|Precision/Scale|Length|Define Values', CDBT), 'placeholder' => __('Edit Define Values', CDBT), 'size' => [190,200] ], 
+  'length'			=> [ 'label' => __('Sizing/Define Values', CDBT), 'placeholder' => __('Edit Define Values', CDBT), 'size' => [190,200] ], 
   'not_null'			=> [ 'label' => __('Not Null', CDBT), 'placeholder' => '', 'size' => [60, 60] ], 
   'default'			=> [ 'label' => __('Default Value', CDBT), 'placeholder' => __('Enter the default value', CDBT), 'size' => [110, 200] ], 
   'attributes'		=> [ 'label' => __('Attributes', CDBT), 'placeholder' => __('Choose or enter the attribute', CDBT), 'size' => [125, 140] ], 
@@ -126,30 +126,30 @@ $body_row_cols = <<<EOH
     </div>
   </td>
   <td class="length">
-    <div class="input-group cdbt_tc_precision" style="min-width: 114px;">
+    <div class="input-group cdbt_tc_precision">
       <span class="input-group-addon">(</span>
-      <input type="number" class="form-control" name="precision_" style="min-width: 54px; text-align: right; padding: 6px;">
+      <input type="number" class="form-control" name="precision_">
       <span class="input-group-addon">)</span>
     </div>
     <div class="input-group cdbt_tc_precision_scale" style="min-width: {$index_row_definitions['length']['size'][0]}px; max-width: {$index_row_definitions['length']['size'][1]}px;">
       <span class="input-group-addon">(</span>
-      <input type="number" class="form-control" name="precision_scale_m_" style="min-width: 50px; max-width: 60px; text-align: right; padding: 6px;">
+      <input type="number" class="form-control" name="precision_scale_m_">
       <span class="input-group-addon addon-middle">, </span>
-      <input type="number" class="form-control" name="precision_scale_d_" style="min-width: 50px; max-width: 60px; text-align: right; padding: 6px;">
+      <input type="number" class="form-control" name="precision_scale_d_">
       <span class="input-group-addon">)</span>
     </div>
-    <div class="input-group cdbt_tc_length" style="min-width: 114px;">
+    <div class="input-group cdbt_tc_length">
       <span class="input-group-addon">(</span>
-      <input type="number" class="form-control" name="length_" style="min-width: 54px; text-align: right; padding: 6px;">
+      <input type="number" class="form-control" name="length_">
       <span class="input-group-addon">)</span>
     </div>
-    <div class="cdbt_tc_define_values" style="min-width: 120px;">
-      <button type="button" class="btn btn-default" data-toggle="popover" data-placement="bottom" data-trigger="click" title="{$define_values_definition['label']}" data-content="{$define_values_definition['content']}"><i class="fa fa-edit"></i> {$index_row_definitions['length']['placeholder']}</button>
-      <input type="hidden" name="define_values_" value="">
+    <div class="cdbt_tc_define_values">
+      <button type="button" class="btn btn-default open_pillbox_" data-toggle="popover" data-placement="bottom" data-trigger="click" title="{$define_values_definition['label']}" data-content="{$define_values_definition['content']}"><i class="fa fa-edit"></i> {$index_row_definitions['length']['placeholder']}</button>
+      <input type="hidden" name="define_values_cache_" value="">
     </div>
   </td>
   <td class="not_null">
-    <div class="checkbox cdbt_tc_not_null" style="min-width: {$index_row_definitions['not_null']['size'][0]}px; max-width: {$index_row_definitions['not_null']['size'][1]}px; text-align: center;">
+    <div class="checkbox cdbt_tc_not_null" style="min-width: {$index_row_definitions['not_null']['size'][0]}px; max-width: {$index_row_definitions['not_null']['size'][1]}px;">
       <label class="checkbox-custom" data-initialize="checkbox">
         <input class="sr-only" type="checkbox" name="not_null_" value="1">
         <span class="checkbox-label"></span>
@@ -174,7 +174,7 @@ $body_row_cols = <<<EOH
     </div>
   </td>
   <td class="auto_increment">
-    <div class="checkbox cdbt_tc_auto_increment" style="min-width: {$index_row_definitions['auto_increment']['size'][0]}px; max-width: {$index_row_definitions['auto_increment']['size'][1]}px; text-align: center;">
+    <div class="checkbox cdbt_tc_auto_increment" style="min-width: {$index_row_definitions['auto_increment']['size'][0]}px; max-width: {$index_row_definitions['auto_increment']['size'][1]}px;">
       <label class="checkbox-custom" data-initialize="checkbox">
         <input class="sr-only" type="checkbox" name="auto_increment_" value="1">
         <span class="checkbox-label"></span>
@@ -204,7 +204,7 @@ $body_row_cols = <<<EOH
     </div>
   </td>
   <td class="controll">
-    <div class="cdbt_tc_preset_controll" style="min-width: {$index_row_definitions['controll']['size'][0]}px; max-width: {$index_row_definitions['controll']['size'][1]}px; text-align: center;">
+    <div class="cdbt_tc_preset_controll" style="min-width: {$index_row_definitions['controll']['size'][0]}px; max-width: {$index_row_definitions['controll']['size'][1]}px;">
       <button type="button" name="add-column" class="btn btn-primary" title="{$controll_buttons['add_column']}"><i class="fa fa-plus"><span class="sr-only">{$controll_buttons['add_column']}</span></i></button>
       <button type="button" name="delete-column" class="btn btn-default" title="{$controll_buttons['delete_column']}"><i class="fa fa-times"><span class="sr-only">{$controll_buttons['delete_column']}</span></i></button>
     </div>
@@ -214,19 +214,6 @@ $body_row = sprintf($body_row_base, $body_row_cols);
 
 ?>
 <style>
-table#table-creator-ui { font-size: 12px; border: 1px solid #ddd; }
-table#table-creator-ui input { font-size: 12px; }
-table#table-creator-ui th, table#table-creator-ui td { vertical-align: middle; }
-table#table-creator-ui td.col_order { text-align: center; font-size: 16px; }
-.handler { cursor: move; }
-.length, .attributes, .auto_increment, .extra { display: none; }
-.addon-middle { border-left: 0; border-right: solid 1px #eee; }
-input[name^=precision_scale_d_] + span.input-group-addon { position: relative; left: -1px; }
-#cdbt_tc_preset_define_values_template { display: none; }
-.popover-title { font-size: 14px!important; }
-.popover-footer { margin: 0; padding: 8px 14px; font-size: 12px; background-color: #f7f7f7; border-top: 1px solid #ebebeb; border-radius: 0 0 5px 5px; }
-.cdbt_tc_preset_controll button[name=delete-column] { display: none; }
-.cdbt_tc_controll button[name=add-column] { display: none; }
 </style>
 <table id="table-creator-ui" class="table table-striped table-hover">
   <thead>
@@ -252,7 +239,7 @@ input[name^=precision_scale_d_] + span.input-group-addon { position: relative; l
 */ -->
       <li class="pillbox-input-wrap btn-group">
         <a class="pillbox-more"><?php printf(__('and %s more...', CDBT), '<span class="pillbox-more-count"></span>'); ?></a>
-        <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="<?php _e('Add New Value', CDBT); ?>">
+        <input type="text" name="define_values_" class="form-control dropdown-toggle pillbox-add-item" placeholder="<?php _e('Add New Value', CDBT); ?>">
         <button type="button" class="dropdown-toggle sr-only">
           <span class="caret"></span>
           <span class="sr-only"><?php _e('Toggle Dropdown', CDBT); ?></span>

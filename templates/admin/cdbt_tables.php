@@ -138,8 +138,9 @@ foreach ($this->allow_file_types as $file_type) {
           </div>
           <p id="live_preview" class="help-block col-sm-10"> <?php _e('Live preview of setting name:', CDBT); ?> <code>tablename</code></p>
           <div class="checkbox" id="instance_prefix_switcher">
+          <?php $_enable_prefix = (isset($session_vars) && isset($session_vars['instance_prefix_switcher'])) || $this->strtobool($options['use_wp_prefix']) ? true : false; ?>
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="instance_prefix_switcher" type="checkbox" value="1" <?php if (isset($session_vars)) { checked('1', intval(isset($session_vars['instance_prefix_switcher']))); } else { checked('1', $options['use_wp_prefix']); } ?>>
+              <input class="sr-only" name="instance_prefix_switcher" type="checkbox" value="1"<?php if ($_enable_prefix) : ?> checked="checked"<?php endif; ?>>
               <span class="checkbox-label"><?php _e('I use a table prefix that is defined in the WordPress config (wp-config.php).', CDBT); ?></span>
             </label>
           </div>
