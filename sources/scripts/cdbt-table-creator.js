@@ -25,25 +25,25 @@ doTableCreator = function(){
   };
   
   // For column type of `enum` or `set`
-  var createPopover = function(){
-    $('.open_pillbox_').popover({ 
-      selector: '.cdbt-popover', 
-      trigger: 'manual', 
-      html: true, 
-      content: function(){ 
-        // load current item
-        
-        
-        var newPillbox = $('#cdbt_tc_preset_define_values_template').clone();
-        var currentRow = $(this).parent().parent().parent('tr');
-        var currentRowId = currentRow.hasClass('addnew') ? currentRow.data('id') : '';
-        var currentInputName = newPillbox.find('input').attr('name');
-        newPillbox.find('input').attr('name', currentInputName + currentRowId);
-        return newPillbox.html();
-      }, 
-      template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><button type="button" class="btn btn-primary btn-sm" disabled="disabled">'+ cdbt_admin_vars.cdbt_tc_translate.popoverSetValues +'</button></div></div>'
-    });
-  };
+  $(document).popover({ 
+    selector: '.open_pillbox_', 
+    html: true, 
+    content: function(){ 
+      // load current item
+      
+      
+      var newPillbox = $('#cdbt_tc_preset_define_values_template').clone();
+      var currentRow = $(this).parent().parent().parent('tr');
+      var currentRowId = currentRow.hasClass('addnew') ? currentRow.data('id') : '';
+      var currentInputName = newPillbox.find('input').attr('name');
+      newPillbox.find('input').attr('name', currentInputName + currentRowId);
+      return newPillbox.html();
+    }, 
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><button type="button" class="btn btn-primary btn-sm" disabled="disabled">'+ cdbt_admin_vars.cdbt_tc_translate.popoverSetValues +'</button></div></div>', 
+  }).on('click', '.open_pillbox_', function(e){
+    $('.open_pillbox_').not(this).popover('hide');
+    e.preventDefault();
+  });
   
   
   var initComponent = function(){
@@ -57,7 +57,6 @@ doTableCreator = function(){
     }).css({ position: 'relative' });
     $('#sortable').disableSelection();
     
-    createPopover();
     //console.info(cdbt_admin_vars.column_types);
     
   };
@@ -74,34 +73,41 @@ doTableCreator = function(){
    * -------------------------------------------------------------------------
    */
   
-  $('tr.preset').delegate('input', 'click', function(e){
-    //e.target.focus();
-  });
-  
   
   // Clear popover
   var clearPopover = function(){
-    //$('.open_pillbox_').attr('data-trigger', 'hover');
-    //$('.open_pillbox_').popover('hide');
-    $('.cdbt-popover').popover('hide');
+    $('.open_pillbox_').popover('hide');
+    $('.open_pillbox_').each(function(){
+      if (typeof $(this).attr('aria-describedby') !== 'undefined') {
+        $(this).popover('toggle');
+      }
+    });
   };
+  $('body').on('click', function(e){
+    $('.open_pillbox_').each(function(){
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+        $(this).popover('hide');
+      }
+    });
+  });
   
-  $(document).on('show.bs.popover', '.open_pillbox_', function(e){
+  $(document).on('shown.bs.popover', '.open_pillbox_', function(e){
     //$(this).attr('data-trigger', 'click');
   });
   
-  $(document).on('hide.bs.popover', '.open_pillbox_', function(e){
-    //$(this).attr('data-trigger', 'click');
+  $(document).on('hidden.bs.popover', '.open_pillbox_', function(e){
+    //$(this).attr('data-trigger', 'focus');
   });
   
   $(document).on('inserted.bs.popover', '.open_pillbox_', function(e){
-    console.info(e);
+    //console.info(e);
   });
   
+/*
   $(document).on('click', '.open_pillbox_', function(e){
-    $('.cdbt-popover').popover('show');
+    $(this).popover('show');
   });
-  
+*/  
   
   
   // Checking whether selected type is allowed type.
@@ -133,9 +139,13 @@ doTableCreator = function(){
   
   // This event will fire when clicked "Add New Column" button.
   $('.cdbt_tc_preset_controll button[name=add-column]').on('click', function(){
+    clearPopover();
+/*
     var newRow = $('tr.preset').clone().delegate('input', 'click', function(e){
       e.target.focus();
     });
+*/
+    var newRow = $('tr.preset').clone();
     
     var addNum = $('#sortable').children('tr').length;
     newRow.removeClass('preset').addClass('addnew').attr('data-id', addNum);
@@ -148,6 +158,9 @@ doTableCreator = function(){
           $(this).removeAttr('id').attr('name', item_name + addNum);
         });
       }
+//      if ($(this).hasClass('length')) {
+//        $(this).find('.open_pillbox_').popover('hide');
+//    }
       if ($(this).hasClass('auto_increment')) {
         $(this).find('.checkbox-custom').removeClass('checked');
         $(this).find('input').prop('checked', false);
@@ -157,9 +170,7 @@ doTableCreator = function(){
       }
     });
     
-    clearPopover();
     newRow.insertBefore('tr.preset');
-    createPopover();
     renumberRowIndex();
   });
   
