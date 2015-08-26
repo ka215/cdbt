@@ -213,8 +213,6 @@ EOH;
 $body_row = sprintf($body_row_base, $body_row_cols);
 
 ?>
-<style>
-</style>
 <table id="table-creator-ui" class="table table-striped table-hover">
   <thead>
   <?php echo $index_row; ?>
@@ -229,14 +227,14 @@ $body_row = sprintf($body_row_base, $body_row_cols);
 <div id="cdbt_tc_preset_define_values_template">
   <div class="pillbox" data-initialize="pillbox">
     <ul class="clearfix pill-group">
-<!-- /*
+<?php /*
       <li class="btn btn-default pill" data-value="foo">
         <span><?php _e('Item Name', CDBT); ?></span>
         <span class="glyphicon glyphicon-close">
           <span class="sr-only"><?php _e('Remove', CDBT); ?></span>
         </span>
       </li>
-*/ -->
+*/ ?>
       <li class="pillbox-input-wrap btn-group">
         <a class="pillbox-more"><?php printf(__('and %s more...', CDBT), '<span class="pillbox-more-count"></span>'); ?></a>
         <input type="text" name="define_values_" class="form-control dropdown-toggle pillbox-add-item" placeholder="<?php _e('Add New Value', CDBT); ?>">

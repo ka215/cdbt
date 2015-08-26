@@ -24,27 +24,6 @@ doTableCreator = function(){
     
   };
   
-  // For column type of `enum` or `set`
-  $(document).popover({ 
-    selector: '.open_pillbox_', 
-    html: true, 
-    content: function(){ 
-      // load current item
-      
-      
-      var newPillbox = $('#cdbt_tc_preset_define_values_template').clone();
-      var currentRow = $(this).parent().parent().parent('tr');
-      var currentRowId = currentRow.hasClass('addnew') ? currentRow.data('id') : '';
-      var currentInputName = newPillbox.find('input').attr('name');
-      newPillbox.find('input').attr('name', currentInputName + currentRowId);
-      return newPillbox.html();
-    }, 
-    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><button type="button" class="btn btn-primary btn-sm" disabled="disabled">'+ cdbt_admin_vars.cdbt_tc_translate.popoverSetValues +'</button></div></div>', 
-  }).on('click', '.open_pillbox_', function(e){
-    $('.open_pillbox_').not(this).popover('hide');
-    e.preventDefault();
-  });
-  
   
   var initComponent = function(){
     // Constractor
@@ -74,42 +53,6 @@ doTableCreator = function(){
    */
   
   
-  // Clear popover
-  var clearPopover = function(){
-    $('.open_pillbox_').popover('hide');
-    $('.open_pillbox_').each(function(){
-      if (typeof $(this).attr('aria-describedby') !== 'undefined') {
-        $(this).popover('toggle');
-      }
-    });
-  };
-  $('body').on('click', function(e){
-    $('.open_pillbox_').each(function(){
-      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-        $(this).popover('hide');
-      }
-    });
-  });
-  
-  $(document).on('shown.bs.popover', '.open_pillbox_', function(e){
-    //$(this).attr('data-trigger', 'click');
-  });
-  
-  $(document).on('hidden.bs.popover', '.open_pillbox_', function(e){
-    //$(this).attr('data-trigger', 'focus');
-  });
-  
-  $(document).on('inserted.bs.popover', '.open_pillbox_', function(e){
-    //console.info(e);
-  });
-  
-/*
-  $(document).on('click', '.open_pillbox_', function(e){
-    $(this).popover('show');
-  });
-*/  
-  
-  
   // Checking whether selected type is allowed type.
   var isAllowedType = function( type_str ) {
     var isMatch = false;
@@ -137,14 +80,152 @@ doTableCreator = function(){
   };
   
   
+  // Attached popover for column type of `enum` or `set`
+  // Firstly, initialize popover
+  $(document).popover({ 
+    selector: '.open_pillbox_', 
+    html: true, 
+    content: function(){ 
+      var newPillbox = $('#cdbt_tc_preset_define_values_template').clone();
+      var currentRow = $(this).parent().parent().parent('tr');
+      var currentRowId = currentRow.hasClass('addnew') ? currentRow.data('id') : '';
+      var currentInputName = newPillbox.find('input').attr('name');
+      newPillbox.find('input').attr('name', currentInputName + currentRowId);
+      return newPillbox.html();
+    }, 
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div><div class="popover-footer"><button type="button" name="set_values_" class="btn btn-primary btn-sm" disabled="disabled">'+ cdbt_admin_vars.cdbt_tc_translate.popoverSetValues +'</button></div></div>', 
+    //trigger: 'manual', 
+  });
+  // Clear popover
+  var clearPopover = function(){
+    // $('.open_pillbox_').popover('hide');
+    var excludeId = arguments.length > 0 ? arguments[0] : '';
+    $('.cdbt_tc_define_values').each(function(){
+      var currentRowId = $(this).parent().parent('tr').hasClass('addnew') ? $(this).parent().parent('tr').data('id') : 'preset';
+      var popover_debris = $(this).find('.popover');
+      if (!popover_debris.hasClass('in')) {
+        var debris_id = popover_debris.attr('id');
+        popover_debris.remove();
+        //console.info(debris_id);
+        if (typeof $(this).children('.open_pillbox_').attr('aria-describedby') !== 'undefined' && $(this).children('.open_pillbox_').attr('aria-describedby') === debris_id) {
+          $(this).children('.open_pillbox_').removeAttr('aria-describedby');
+        }
+      } else {
+        //console.info([ currentRowId, excludeId ]);
+        if (currentRowId !== excludeId) {
+          $(this).children('.open_pillbox_').trigger('click');
+        }
+      }
+    });
+  };
+  $(document).on('click', 'body', function(e){
+    var activeRowId = '';
+    if ($('.popover').size() > 0) {
+      $('.popover').each(function(){
+        if ($(this).hasClass('in')) {
+          activeRowId = $(this).parent().parent().parent('tr').hasClass('addnew') ? $(this).parent().parent().parent('tr').data('id') : 'preset';
+        }
+      });
+    }
+    $('.open_pillbox_').each(function(){
+      var currentRowId = $(this).parent().parent().parent('tr').hasClass('addnew') ? $(this).parent().parent().parent('tr').data('id') : 'preset';
+      if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+        clearPopover();
+      } else {
+        clearPopover(activeRowId);
+      }
+    });
+  });
+  // Event handler for popover
+  $(document).on('click', '.open_pillbox_', function(e){
+    e.stopPropagation();
+    e.preventDefault();
+  }).on('shown.bs.popover', '.open_pillbox_', function(e){
+    var currentRowId = $(this).parent().parent().parent('tr').hasClass('addnew') ? $(this).parent().parent().parent('tr').data('id') : 'preset';
+    clearPopover(currentRowId);
+    //$('.open_pillbox_').not(this).popover('hide');
+    // console.info(['shown', e]);
+  }).on('hidden.bs.popover', '.open_pillbox_', function(e){
+    // console.info(['hidden', e]);
+  }).on('inserted.bs.popover', '.open_pillbox_', function(e){
+    var currentRow = $(this).parent().parent().parent('tr');
+    var currentRowId = currentRow.hasClass('addnew') ? currentRow.data('id') : '';
+    //console.info([ currentRow, currentRowId ]);
+    var currentPopoverId = $(this).attr('aria-describedby'), currentPopover;
+    $('.popover').each(function(){
+      if ($(this).attr('id') === currentPopoverId) {
+        currentPopover = $(this);
+      }
+    });
+    if (typeof currentPopover !== 'undefined' && _.isObject(currentPopover)) {
+      var popoverButton = currentPopover.find('div.popover-footer>button');
+      //console.info([ currentPopover, popoverButton ]);
+      popoverButton.attr('name', 'set_values_' + currentRowId);
+      
+    }
+    // load current item from cache
+    var _temp = $('input[name=define_values_cache_'+currentRowId+']').val();
+    var loadedItems = _temp.split(',');
+    //console.info([_temp,loadedItems]);
+    if (_.isArray(loadedItems) && loadedItems.length > 0 && loadedItems[0] !== '') {
+      _.each(loadedItems, function(v,k){
+        return currentPopover.find('.pillbox').pillbox('addItems', k+1, [{ text: v, value: v }]);
+      });
+    }
+  });
+  
+  
+  // For Pillbox
+  // Toggle "Set Values" button
+  var toggleSetValues = function( items, target_id ){
+    var flag = items > 0 ? false : true;
+    $('button[name=set_values_'+target_id+']').prop('disabled', flag);
+  };
+  $(document).on('clicked.fu.pillbox', '.pillbox', function(e, item){
+    //console.info([ 'clicked', e, item ]);
+    var targetId = $(this).find('input[name^=define_values_]').attr('name').replace('define_values_', '');
+    var items = $(this).pillbox('itemCount');
+    toggleSetValues(items, targetId);
+  }).on('added.fu.pillbox', '.pillbox', function(e, item){
+    //console.info([ 'added', e, item ]);
+    var targetId = $(this).find('input[name^=define_values_]').attr('name').replace('define_values_', '');
+    var items = $(this).pillbox('itemCount');
+    toggleSetValues(items, targetId);
+  }).on('removed.fu.pillbox', '.pillbox', function(e, item){
+    //console.info([ 'removed', e, item ]);
+    var targetId = $(this).find('input[name^=define_values_]').attr('name').replace('define_values_', '');
+    var items = $(this).pillbox('itemCount');
+    toggleSetValues(items, targetId);
+  }).on('edited.fu.pillbox', '.pillbox', function(e, item){
+    //console.info([ 'edited', e, item ]);
+    var targetId = $(this).find('input[name^=define_values_]').attr('name').replace('define_values_', '');
+    var items = $(this).pillbox('itemCount');
+    toggleSetValues(items, targetId);
+  });
+  // This event will fire when clicked "Set Values" Button
+  $(document).on('click', '[name^=set_values_]', function(e){
+    var targetId = $(this).attr('name').replace('set_values_', ''), itemCount, items;
+    $('.pillbox').each(function(){
+      if ($(this).find('input[name^=define_values_]').attr('name') === 'define_values_' + targetId) {
+        itemCount = $(this).pillbox('itemCount');
+        items = $(this).pillbox('items');
+        if (itemCount > 0) {
+          var items_ary = _.pluck(items, 'value');
+          $('input[name=define_values_cache_'+targetId+']').val(items_ary.join(','));
+          
+          $(this).parent().parent().parent('.cdbt_tc_define_values').children('.open_pillbox_').trigger('click');
+          return;
+        }
+      }
+    });
+    return false;
+  });
+  
+  
   // This event will fire when clicked "Add New Column" button.
   $('.cdbt_tc_preset_controll button[name=add-column]').on('click', function(){
+    // Clear preset popover
     clearPopover();
-/*
-    var newRow = $('tr.preset').clone().delegate('input', 'click', function(e){
-      e.target.focus();
-    });
-*/
     var newRow = $('tr.preset').clone();
     
     var addNum = $('#sortable').children('tr').length;
@@ -158,9 +239,6 @@ doTableCreator = function(){
           $(this).removeAttr('id').attr('name', item_name + addNum);
         });
       }
-//      if ($(this).hasClass('length')) {
-//        $(this).find('.open_pillbox_').popover('hide');
-//    }
       if ($(this).hasClass('auto_increment')) {
         $(this).find('.checkbox-custom').removeClass('checked');
         $(this).find('input').prop('checked', false);
@@ -375,6 +453,22 @@ doTableCreator = function(){
   // This event will fire when clicked "Apply SQL" button.
   $('#apply_sql').on('click', function(){
     
+    var rawData = [], oneColumn;
+    $('#sortable').children('tr.addnew').each(function(){
+      oneColumn = {};
+      $(this).find('input').each(function(){
+        var key = $(this).attr('name').replace($(this).attr('name').substr($(this).attr('name').lastIndexOf('_')), '');
+        oneColumn[key] = _.contains([ 'checkbox', 'radio' ], $(this).attr('type')) ? $(this).prop('checked') : $(this).val();
+      });
+      if (typeof oneColumn.col_name !== 'undefined' && '' !== oneColumn.col_name) {
+        rawData.push(oneColumn);
+      }
+    });
+    console.info(rawData);
+    var sql = 'Column Definitions';
+    
+    // var sql = generateSQL(rawData);
+    $('#instance_create_table_sql').prop('disabled', false).val(sql);
     
     $('#cdbtTableCreator').modal('hide');
     
