@@ -1763,7 +1763,7 @@ final class CdbtAdmin extends CdbtDB {
         	$_component = ob_get_contents();
         	ob_end_clean();
         	$args['modalTitle'] = __('Table Creator', CDBT);
-          $args['modalBody'] = __('<p class="text-info">テーブルクリエーターでは直感的にテーブルのカラム構成を作成できます。なお、このウィンドウを閉じても「テーブル作成」か「リセット」をしない限り設定内容はキャッシュされます。</p>', CDBT) . $_component;
+          $args['modalBody'] = __('<p class="text-info">テーブルクリエーターでは直感的にテーブルのカラム構成を作成できます。なお、「SQLを適用する」を実行した設定内容はキャッシュされ、このウィンドウを閉じても失われません。</p>', CDBT) . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
         	break;
         default:

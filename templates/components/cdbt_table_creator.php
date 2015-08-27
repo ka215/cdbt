@@ -144,7 +144,7 @@ $body_row_cols = <<<EOH
       <span class="input-group-addon">)</span>
     </div>
     <div class="cdbt_tc_define_values">
-      <button type="button" class="btn btn-default open_pillbox_" data-placement="auto bottom" title="{$define_values_definition['label']}" data-content="{$define_values_definition['content']}"><i class="fa fa-edit"></i> {$index_row_definitions['length']['placeholder']}</button>
+      <button type="button" class="btn btn-default open_pillbox_" data-placement="bottom" title="{$define_values_definition['label']}" data-content="{$define_values_definition['content']}"><i class="fa fa-edit"></i> {$index_row_definitions['length']['placeholder']}</button>
       <input type="hidden" name="define_values_cache_" value="">
     </div>
   </td>

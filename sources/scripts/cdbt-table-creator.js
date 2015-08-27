@@ -36,7 +36,11 @@ doTableCreator = function(){
     }).css({ position: 'relative' });
     $('#sortable').disableSelection();
     
-    //console.info(cdbt_admin_vars.column_types);
+    var restoredCache = JSON.parse(localStorage.getItem('cdbt-tc-cache'));
+    if (restoredCache !== null && _.isArray(restoredCache) && restoredCache.length > 0) {
+      // Load column definitions from the saved cache
+      loadColumns( restoredCache );
+    }
     
   };
   
@@ -54,7 +58,7 @@ doTableCreator = function(){
   
   
   // Checking whether selected type is allowed type.
-  var isAllowedType = function( type_str ) {
+  function isAllowedType( type_str ) {
     var isMatch = false;
     var fixedType;
     for (var type in cdbt_admin_vars.column_types) {
@@ -65,11 +69,11 @@ doTableCreator = function(){
       }
     }
     return isMatch ? fixedType : isMatch;
-  };
+  }
   
   
   // Renumbering the reference number.
-  var renumberRowIndex = function(){
+  function renumberRowIndex(){
     var cnt = 0;
     $('#sortable').children('tr').each(function(){
       if (!$(this).hasClass('preset')) {
@@ -77,7 +81,7 @@ doTableCreator = function(){
         $(this).children('td.handler').html('<strong>'+cnt+'<strong>');
       }
     });
-  };
+  }
   
   
   // Attached popover for column type of `enum` or `set`
@@ -166,11 +170,12 @@ doTableCreator = function(){
     // load current item from cache
     var _temp = $('input[name=define_values_cache_'+currentRowId+']').val();
     var loadedItems = _temp.split(',');
-    //console.info([_temp,loadedItems]);
-    if (_.isArray(loadedItems) && loadedItems.length > 0 && loadedItems[0] !== '') {
+    //console.info([_temp, loadedItems]);
+    if (_.isArray(loadedItems) && loadedItems.length > 0 && loadedItems[0] !== '' && currentPopover.find('.pillbox').pillbox('itemCount') === 0) {
       _.each(loadedItems, function(v,k){
         return currentPopover.find('.pillbox').pillbox('addItems', k+1, [{ text: v, value: v }]);
       });
+      currentPopover.find('.popover-footer button').prop('disabled', false);
     }
   });
   
@@ -222,10 +227,8 @@ doTableCreator = function(){
   });
   
   
-  // This event will fire when clicked "Add New Column" button.
-  $('.cdbt_tc_preset_controll button[name=add-column]').on('click', function(){
-    // Clear preset popover
-    clearPopover();
+  // Insert new row to the specific position
+  function insertNewRow( insertPosition ){
     var newRow = $('tr.preset').clone();
     
     var addNum = $('#sortable').children('tr').length;
@@ -248,8 +251,23 @@ doTableCreator = function(){
       }
     });
     
-    newRow.insertBefore('tr.preset');
+    if ('after' === insertPosition) {
+      newRow.insertAfter('tr.preset');
+    } else {
+      newRow.insertBefore('tr.preset');
+    }
     renumberRowIndex();
+  }
+  
+  
+  // This event will fire when clicked "Add New Column" button.
+  $('.cdbt_tc_preset_controll button[name=add-column]').on('click', function(){
+    // Clear preset popover
+    clearPopover();
+    
+    // Insert new row
+    var insertPosition = 'before';
+    insertNewRow( insertPosition );
   });
   
   
@@ -278,21 +296,31 @@ doTableCreator = function(){
   
   
   // Toggle "Sizing/Define Values" cell
-  var switchingSizingCell = function( selectedItem, targetRowId ) {
+  function switchingSizingCell( selectedItem, targetRowId ) {
     
     var columnDefine = cdbt_admin_vars.column_types[selectedItem];
     var targetRow = 'preset' === targetRowId ? $('tr.preset>td.length') : $('tr[data-id='+ targetRowId +']>td.length');
-    var displayContent = '';
+    var displayContent = '', targetElement, currentDefault;
     //console.info(columnDefine);
     if (_.isArray(columnDefine.arg_type)) {
       $('.length').show();
       if ('scale' === columnDefine.arg_type[1]) {
         displayContent = 'cdbt_tc_precision_scale';
-        targetRow.children('.' + displayContent).find('input[name^=precision_scale_m_]').attr('min', columnDefine.min[0]).attr('max', columnDefine.max[0]).val(columnDefine.default[0]);
-        targetRow.children('.' + displayContent).find('input[name^=precision_scale_d_]').attr('min', columnDefine.min[1]).attr('max', columnDefine.max[1]).val(columnDefine.default[1]);
+        targetElement = targetRow.children('.' + displayContent).find('input[name^=precision_scale_m_]');
+        currentDefault = targetElement.val() !== '' ? targetElement.val() : columnDefine.default[0];
+        //targetRow.children('.' + displayContent).find('input[name^=precision_scale_m_]').attr('min', columnDefine.min[0]).attr('max', columnDefine.max[0]).val();
+        targetElement.attr('min', columnDefine.min[0]).attr('max', columnDefine.max[0]).val(currentDefault);
+        
+        targetElement = targetRow.children('.' + displayContent).find('input[name^=precision_scale_d_]');
+        currentDefault = targetElement.val() !== '' ? targetElement.val() : columnDefine.default[1];
+        //targetRow.children('.' + displayContent).find('input[name^=precision_scale_d_]').attr('min', columnDefine.min[1]).attr('max', columnDefine.max[1]).val(columnDefine.default[1]);
+        targetElement.attr('min', columnDefine.min[1]).attr('max', columnDefine.max[1]).val(currentDefault);
       } else {
         displayContent = 'cdbt_tc_precision';
-        targetRow.children('.' + displayContent).find('input[name^=precision_]').attr('min', columnDefine.min).attr('max', columnDefine.max).attr('pattern', '^['+columnDefine.arg_type.join('|')+']$').val(columnDefine.default);
+        targetElement = targetRow.children('.' + displayContent).find('input[name^=precision_]');
+        currentDefault = targetElement.val() !== '' ? targetElement.val() : columnDefine.default;
+        //targetRow.children('.' + displayContent).find('input[name^=precision_]').attr('min', columnDefine.min).attr('max', columnDefine.max).attr('pattern', '^['+columnDefine.arg_type.join('|')+']$').val(columnDefine.default);
+        targetElement.attr('min', columnDefine.min).attr('max', columnDefine.max).attr('pattern', '^['+columnDefine.arg_type.join('|')+']$').val(currentDefault);
       }
       targetRow.parent('tr').attr('data-sizing-cell', 'on');
     } else
@@ -300,11 +328,17 @@ doTableCreator = function(){
       $('.length').show();
       if ('precision' === columnDefine.arg_type) {
         displayContent = 'cdbt_tc_' + columnDefine.arg_type;
-        targetRow.children('.' + displayContent).find('input[name^=precision_]').attr('min', columnDefine.min).attr('max', columnDefine.max).val(columnDefine.default);
+        targetElement = targetRow.children('.' + displayContent).find('input[name^=precision_]');
+        currentDefault = targetElement.val() !== '' ? targetElement.val() : columnDefine.default;
+        //targetRow.children('.' + displayContent).find('input[name^=precision_]').attr('min', columnDefine.min).attr('max', columnDefine.max).val(columnDefine.default);
+        targetElement.attr('min', columnDefine.min).attr('max', columnDefine.max).val(currentDefault);
       }
       if ('maxlength' === columnDefine.arg_type) {
         displayContent = 'cdbt_tc_' + columnDefine.arg_type.replace('max', '');
-        targetRow.children('.' + displayContent).find('input[name^=length_]').attr('min', columnDefine.min).attr('max', columnDefine.max).val(columnDefine.default);
+        targetElement = targetRow.children('.' + displayContent).find('input[name^=length_]');
+        currentDefault = targetElement.val() !== '' ? targetElement.val() : columnDefine.default;
+        //targetRow.children('.' + displayContent).find('input[name^=length_]').attr('min', columnDefine.min).attr('max', columnDefine.max).val(columnDefine.default);
+        targetElement.attr('min', columnDefine.min).attr('max', columnDefine.max).val(currentDefault);
       }
       if ('array' === columnDefine.arg_type) {
         displayContent = 'cdbt_tc_define_values';
@@ -324,18 +358,18 @@ doTableCreator = function(){
       }
     });
     
-  };
+  }
   
   
   // Toggle "Attributes" cell
-  var switchingAttributesCell = function( selectedItem, targetRowId ) {
+  function switchingAttributesCell( selectedItem, targetRowId ) {
     
     var columnDefine = cdbt_admin_vars.column_types[selectedItem];
     var targetRow = 'preset' === targetRowId ? $('tr.preset>td.attributes') : $('tr[data-id='+ targetRowId +']>td.attributes');
     //console.info(columnDefine.atts);
     if (columnDefine.atts.length > 0) {
       $('.attributes').show();
-      targetRow.find('input').val('');
+      targetRow.find('input').val(targetRow.find('input').val() || '');
       targetRow.find('li').each(function(){
         if (_.contains(columnDefine.atts, $(this).data('value'))) {
           $(this).css({ display: 'block' });
@@ -353,11 +387,11 @@ doTableCreator = function(){
       }
     }
     
-  };
+  }
   
   
   // Toggle "Auto Incr." cell
-  var switchingAutoincrCell = function( selectedItem, targetRowId ) {
+  function switchingAutoincrCell( selectedItem, targetRowId ) {
     
     var targetRow = 'preset' === targetRowId ? $('tr.preset>td.auto_increment') : $('tr[data-id='+ targetRowId +']>td.auto_increment');
     if (selectedItem.indexOf('int') !== -1) {
@@ -372,11 +406,11 @@ doTableCreator = function(){
       }
     }
     
-  };
+  }
   
   
   // Toggle "Extra" cell
-  var switchingExtraCell = function( selectedItem, targetRowId ) {
+  function switchingExtraCell( selectedItem, targetRowId ) {
     
     var targetRow = 'preset' === targetRowId ? $('tr.preset>td.extra') : $('tr[data-id='+ targetRowId +']>td.extra');
     if ('timestamp' === selectedItem) {
@@ -390,7 +424,7 @@ doTableCreator = function(){
         $('.extra').hide();
       }
     }
-  };
+  }
   
   
   // This event will fire when changed "Type Format" combobox.
@@ -409,23 +443,25 @@ doTableCreator = function(){
   
   
   // Validating column definition when enabled auto increment
-  var validateAutoIncr = function( targetRowId ) {
+  function validateAutoIncr( targetRowId ) {
     
     $('#sortable').children('tr.addnew').each(function(){
       if ($(this).data('id') === targetRowId) {
         $(this).children('td.default').find('input').prop('disabled', true).val('');
       } else {
         $(this).children('td.default').find('input').prop('disabled', false);
-        $(this).children('td.auto_increment').find('.checkbox-custom').removeClass('checked');
-        $(this).children('td.auto_increment').find('input').prop('checked', false);
+        //$(this).children('td.auto_increment').find('.checkbox-custom').removeClass('checked');
+        //$(this).children('td.auto_increment').find('input').prop('checked', false);
+        $(this).children('td.auto_increment').find('.checkbox-custom').checkbox('uncheck');
       }
     });
     
-  };
+  }
   
   
   // This event will fire when checked "Auto Incr." checkbox.
   $(document).on('checked.fu.checkbox', '.auto_increment .checkbox', function (e) {
+  //$(document).on('checked.fu.checkbox', '.auto_increment .checkbox-custom', function (e) {
     var targetRowId = $(this).parent().parent('tr').hasClass('addnew') ? $(this).parent().parent('tr').data('id') : 'preset';
     if ('preset' !== targetRowId) {
       validateAutoIncr(targetRowId);
@@ -434,6 +470,7 @@ doTableCreator = function(){
   
   // This event will fire when unchecked "Auto Incr." checkbox.
   $(document).on('unchecked.fu.checkbox', '.auto_increment .checkbox', function (e) {
+  //$(document).on('unchecked.fu.checkbox', '.auto_increment .checkbox-custom', function (e) {
     var targetRow = $(this).parent().parent('tr').hasClass('addnew') ? $(this).parent().parent('tr') : 'preset';
     if ('preset' !== targetRow) {
       targetRow.children('td.default').find('input').prop('disabled', false);
@@ -453,7 +490,7 @@ doTableCreator = function(){
   // This event will fire when clicked "Apply SQL" button.
   $('#apply_sql').on('click', function(){
     
-    var rawData = [], oneColumn;
+    var cacheData = [], oneColumn;
     $('#sortable').children('tr.addnew').each(function(){
       oneColumn = {};
       $(this).find('input').each(function(){
@@ -461,17 +498,111 @@ doTableCreator = function(){
         oneColumn[key] = _.contains([ 'checkbox', 'radio' ], $(this).attr('type')) ? $(this).prop('checked') : $(this).val();
       });
       if (typeof oneColumn.col_name !== 'undefined' && '' !== oneColumn.col_name) {
-        rawData.push(oneColumn);
+        cacheData.push(oneColumn);
       }
     });
-    console.info(rawData);
-    var sql = 'Column Definitions';
+    if (cacheData.length > 0) {
+      localStorage.setItem('cdbt-tc-cache', JSON.stringify(cacheData));
+    } else {
+      localStorage.setItem('cdbt-tc-cache', null);
+    }
     
-    // var sql = generateSQL(rawData);
-    $('#instance_create_table_sql').prop('disabled', false).val(sql);
+    $('#instance_create_table_sql').val( generateSQL(cacheData) );
     
     $('#cdbtTableCreator').modal('hide');
     
   });
+  
+  
+  function generateSQL( cacheData ) {
+    var column_definition = [], sizing;
+    
+    _.each(cacheData, function(column){
+      if ('' !== column.length) {
+        sizing = column.length;
+      } else
+      if ('' !== column.precision) {
+        sizing = column.precision;
+      } else
+      if ('' !== column.precision_scale_d) {
+        sizing = column.precision_scale_d;
+        if ('' !== column.precision_scale_m) {
+          sizing += ',' + column.precision_scale_m;
+        }
+      } else
+      if ('' !== column.define_values_cache) {
+        var values = column.define_values_cache.split(',');
+        sizing = "'" + values.join("','") + "'";
+      }
+      column.sizing = '' !== sizing ? '(' + sizing + ')' : '';
+      column.attributes = '' !== column.attributes ? ' ' + column.attributes.toUpperCase() : '';
+      column.not_null = column.not_null ? ' NOT NULL' : '';
+      column.default = '' !== column.default ? " DEFAULT '" + column.default + "'" : '';
+      column.auto_increment = column.auto_increment ? ' AUTO_INCREMENT' : '';
+      column.extra = '' !== column.extra ? ' ' + column.extra.toUpperCase() : '';
+      column.comment = '' !== column.comment ? " COMMENT '" + column.comment + "'" : '';
+      
+      column_definition.push( "`"+ column.col_name +"` "+ column.type_format + column.sizing + column.attributes + column.not_null + column.default + column.auto_increment + column.extra + column.comment +", " );
+    });
+    
+    return column_definition.join("\n");
+  }
+  
+  
+  function loadColumns( restoredCache ) {
+    var preset = $('tr.preset'), checkbox, input, ai_col;
+    var rows = restoredCache.length;
+    var clearRows = {
+      'col_name': '', 'type_format': '', 'precision': '', 'precision_scale_d': '', 'precision_scale_m': '', 'length': '', 'define_values_cache': '', 'not_null': false, 'default': '', 'attributes': '', 'auto_increment': false, 'key_index': '', 'extra': '', 'comment': '',
+    };
+    restoredCache.push(clearRows);
+    
+    _.each(restoredCache, function(col){
+      
+      _.each(col, function(value, key){
+        
+        if (_.contains([ 'not_null', 'auto_increment' ], key)) {
+          checkbox = preset.find('.cdbt_tc_'+key+' .checkbox-custom');
+          if (value) {
+            checkbox.checkbox('check');
+            if ('auto_increment' === key) {
+              ai_col = col.col_name;
+            }
+          } else {
+            checkbox.checkbox('uncheck');
+          }
+        } else {
+          input = preset.find('input[name^='+key+']').val(value);
+        }
+        
+        return;
+      });
+      
+      if (rows > 0) {
+        insertNewRow( 'before' );
+        rows--;
+      }
+      return;
+    });
+    
+    $('tr.addnew').each(function(){
+      var currentRowId = $(this).data('id');
+      var currentType = $(this).find('input[name^=type_format_]').val();
+      var fixedType = isAllowedType(currentType);
+      if (currentType.length >= 3 && fixedType) {
+        switchingSizingCell( fixedType, currentRowId );
+        switchingAttributesCell( fixedType, currentRowId );
+        switchingAutoincrCell( fixedType, currentRowId );
+        switchingExtraCell( fixedType, currentRowId );
+      }
+      if ($(this).find('input[name^=col_name]').val() === ai_col) {
+        $(this).find('.cdbt_tc_auto_increment .checkbox-custom').checkbox('check');
+        //$(this).children('td.default').find('input').prop('disabled', true);
+        validateAutoIncr(currentRowId);
+      }
+    });
+    
+  }
+  
   
 };

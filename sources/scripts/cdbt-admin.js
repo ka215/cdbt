@@ -401,7 +401,8 @@ $(function() {
   if ('cdbt_tables' === $.QueryString.page && 'create_table' === $.QueryString.tab) {
     // Table name live preview
     var livePreview = function(table_name) {
-      if ($('.checkbox input[name="instance_prefix_switcher"]').is(':checked')) {
+      //if ($('.checkbox input[name="instance_prefix_switcher"]').is(':checked')) {
+      if ($('#instance_prefix_switcher .checkbox-custom').checkbox('isChecked')) {
         table_name = $('#create-table-table_name div.input-group-addon').text() + table_name;
       }
       $('#live_preview code').text(table_name);
@@ -423,7 +424,8 @@ $(function() {
     $('.checkbox input[name="instance_prefix_switcher"]').on('change', function(){
       prefixSwitcher( $(this).is(':checked') );
     });
-    prefixSwitcher( $('.checkbox input[name="instance_prefix_switcher"]').is(':checked') );
+    //prefixSwitcher( $('.checkbox input[name="instance_prefix_switcher"]').is(':checked') );
+    prefixSwitcher( $('#instance_prefix_switcher .checkbox-custom').checkbox('isChecked') );
     
     // Make a template from the set value
     $('#create-sql-support').on('click', function(){
@@ -431,7 +433,24 @@ $(function() {
       // use underscore.js
       var sql_template = _.template("CREATE TABLE <%= tableName %> ( <%= columnDefinition %> ) <%= tableOptions %>;");
       
-      var table_name = '', table_options = [], columns = [], keyindex = [];
+      var table_name = '', table_options = [], first_column = '', middle_columns = $('#instance_create_table_sql').val(), bottom_columns = [];
+      var keyindex = { 'primary_key': [], 'index': [], 'unique': [], 'fulltext': [], 'foreign_key': [] };
+      var restoredCache = JSON.parse(localStorage.getItem('cdbt-tc-cache'));
+      var used_col_name = [], has_auto_increment = false;
+      if ('' !== middle_columns && restoredCache !== null && _.isArray(restoredCache) && restoredCache.length > 0) {
+        _.each(restoredCache, function(col){
+          if ('' !== col.key_index) {
+            var key_index_slug = col.key_index.toLowerCase().replace(' ', '_');
+            keyindex[key_index_slug].push( col.col_name );
+          }
+          if (col.auto_increment) {
+            has_auto_increment = true;
+          }
+          used_col_name.push( col.col_name );
+        });
+      }
+//console.info(used_col_name);
+      
       if ('' !== $('input[name="custom-database-tables[table_name]"]').val()) {
         table_name = '`' + $('input[name="custom-database-tables[table_name]"]').val() + '`';
       }
@@ -446,20 +465,54 @@ $(function() {
         table_options.push( 'COMMENT=\'' + $('input[name="custom-database-tables[table_comment]"]').val() + '\'' );
       }
       
-      if ($('#automatically-add-columns1').checkbox('isChecked')) {
-        columns.push( '`ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT \'ID\'' );
-        keyindex.push( 'PRIMARY KEY (`ID`)' );
+      //if ($('#automatically-add-columns1').checkbox('isChecked')) {
+      //if ($('#automatically-add-columns1 input').prop('checked')) {
+      if ($('#automatically-add-columns1 .checkbox-custom').checkbox('isChecked')) {
+        if ('' !== middle_columns && (_.contains(used_col_name, 'ID') || keyindex.primary_key.length > 0)) {
+          $('#automatically-add-columns1 .checkbox-custom').checkbox('uncheck');
+        } else {
+          first_column = "`ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', ";
+          keyindex.primary_key.push( 'ID' );
+          has_auto_increment = true;
+        }
+      }
+      //if ($('#automatically-add-columns2').checkbox('isChecked')) {
+      //if ($('#automatically-add-columns2 input').prop('checked')) {
+      if ($('#automatically-add-columns2 .checkbox-custom').checkbox('isChecked')) {
+        if ('' !== middle_columns && _.contains(used_col_name, 'created')) {
+          $('#automatically-add-columns2 .checkbox-custom').checkbox('uncheck');
+        } else {
+          bottom_columns.push( "`created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Created Datetime'" );
+        }
+      }
+      //if ($('#automatically-add-columns3').checkbox('isChecked')) {
+      //if ($('#automatically-add-columns3 input').prop('checked')) {
+      if ($('#automatically-add-columns3 .checkbox-custom').checkbox('isChecked')) {
+        if ('' !== middle_columns && _.contains(used_col_name, 'updated')) {
+          $('#automatically-add-columns3 .checkbox-custom').checkbox('uncheck');
+        } else {
+          bottom_columns.push( "`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated Datetime'" );
+        }
+      }
+      
+      // Parse Key/Index
+      var keyindex_definitions = [];
+      _.each(keyindex, function(v, k){
+        if (v.length > 0) {
+          keyindex_definitions.push(k.toUpperCase().replace('_', ' ')+'(`'+v.join('`,`')+'`) ');
+        }
+      });
+      first_column = '' !== first_column ? first_column + "\n" : '';
+      middle_columns = '' !== middle_columns ? middle_columns + "\n" : '';
+      bottom_columns = bottom_columns.length > 0 ? bottom_columns.concat(keyindex_definitions) : keyindex_definitions;
+      var columns = "\n" + first_column + middle_columns + bottom_columns.join(", \n");
+      
+      // Table options
+      if (has_auto_increment) {
         table_options.push( 'AUTO_INCREMENT=1' );
       }
-      if ($('#automatically-add-columns2').checkbox('isChecked')) {
-        columns.push( '`created` datetime NOT NULL DEFAULT \'0000-00-00 00:00:00\' COMMENT \'Created Datetime\'' );
-      }
-      if ($('#automatically-add-columns3').checkbox('isChecked')) {
-        columns.push( '`updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT \'Updated Datetime\'' );
-      }
-      columns = columns.concat(keyindex);
       
-      $('#create-table-create_table_sql').val( sql_template({ tableName: table_name, columnDefinition: "\n" + columns.join(",\n"), tableOptions: "\n" + table_options.join(' ')  }) );
+      $('#create-table-create_table_sql').val( sql_template({ tableName: table_name, columnDefinition: columns, tableOptions: "\n" + table_options.join(' ')  }) );
       
     });
     
@@ -730,7 +783,8 @@ $(function() {
     // Switch of all checking of checkbox
     $('button[id^="switch-checkbox-"]').on('click', function(){
       var target_checkbox_container_id = 'export_columns' === $(this).attr('id').replace('switch-checkbox-', '') ? 'export-table-target_columns' : 'import-table-target_columns';
-      $('#' + target_checkbox_container_id + ' .checkbox input').checkbox('toggle');
+      //$('#' + target_checkbox_container_id + ' .checkbox input').checkbox('toggle');
+      $('#' + target_checkbox_container_id + ' .checkbox-custom').checkbox('toggle');
     });
     
     // Switch the display according to the selected value of the select list
@@ -754,7 +808,9 @@ $(function() {
       e.preventDefault();
       var export_columns = [];
       $('[id^="export-table-target_columns"]').each(function(){
-        if ($(this).checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
+        //if ($(this).checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
+        //if ($(this).find('input').prop('checked') && typeof $(this).children().children('input').val() !== 'undefined') {
+        if ($(this).find('.checkbox-custom').checkbox('isChecked') && typeof $(this).children().children('input').val() !== 'undefined') {
           export_columns.push($(this).children().children('input').val());
         }
       });
@@ -765,7 +821,7 @@ $(function() {
         modalHideEvent: "$('input[name=\"custom-database-tables[operate_action]\"]').val('export');", 
         modalExtras: {
           'export_filetype': $('#export-table-download_filetype').selectlist('selectedItem').value, 
-          'add_index_line': $('#export-table-add_index_line').checkbox('isChecked') ? $('#export-table-add_index_line input').val() : '', 
+          'add_index_line': $('#export-table-add_index_line').find('.checkbox-custom').checkbox('isChecked') ? $('#export-table-add_index_line input').val() : '', 
           'output_encoding': $('#export-table-output_encoding').selectlist('selectedItem').value, 
           'export_columns': export_columns, 
           'export_table': $('[name="custom-database-tables[export_table]"]').val(), 
@@ -1031,10 +1087,12 @@ $(function() {
         }
         if ($(this).hasClass(target_class)) {
           $(this).css({ position: 'static', display: 'block' });
-          $(this).find('input').removeAttr('disabled');
+          //$(this).find('input').removeAttr('disabled');
+          $(this).find('input').prop('disabled', false);
         } else {
           $(this).css({ position: 'absolute', display: 'none' });
-          $(this).find('input').attr('disabled', 'disabled');
+          //$(this).find('input').attr('disabled', 'disabled');
+          $(this).find('input').prop('disabled', true);
         }
       });
       
@@ -1056,7 +1114,8 @@ $(function() {
         return false;
       }
       items.each(function(){
-        if ('disabled' !== $(this).attr('disabled')) {
+        //if ('disabled' !== $(this).attr('disabled')) {
+        if (!$(this).prop('disabled')) {
           var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)\])$/i, item_name;
           if (_.contains([ 'text' ], $(this).attr('type')) && '' !== $(this).val()) {
             item_name = $(this).attr('name').replace(reg, "$1");
@@ -1072,7 +1131,7 @@ $(function() {
             var _tmp = $(this).attr('name').replace(reg, "$1,$3");
             _tmp = _tmp.split(',');
             item_name = _tmp[1].length > 0 ? _tmp[1] : _tmp[0];
-            if ($(this).checkbox('isChecked')) {
+            if ($(this).is(':checked')) {
               attributes += ' '+item_name+'="true"';
             }
           }
@@ -1172,10 +1231,12 @@ $(function() {
         }
         if ($(this).hasClass(matches[0])) {
           $(this).css({ position: 'static', display: 'block' });
-          $(this).find('input').removeAttr('disabled');
+          //$(this).find('input').removeAttr('disabled');
+          $(this).find('input').prop('disabled', false);
         } else {
           $(this).css({ position: 'absolute', display: 'none' });
-          $(this).find('input').attr('disabled', 'disabled');
+          //$(this).find('input').attr('disabled', 'disabled');
+          $(this).find('input').prop('disabled', true);
         }
       });
       
@@ -1198,7 +1259,8 @@ $(function() {
         
         var queries = [];
         items.each(function(){
-          if ('disabled' !== $(this).attr('disabled')) {
+          //if ('disabled' !== $(this).attr('disabled')) {
+          if (!$(this).prop('disabled')) {
             var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)\])$/i, item_name;
             if (_.contains([ 'text' ], $(this).attr('type')) && '' !== $(this).val()) {
               item_name = $(this).attr('name').replace(reg, "$1");
@@ -1232,9 +1294,11 @@ $(function() {
         });
         
         preview.val(base_uri + queries.join('&'));
-        $('#webapi-preview').removeAttr('disabled');
+        //$('#webapi-preview').removeAttr('disabled');
+        $('#webapi-preview').prop('disabled', false);
       } else {
-        $('#webapi-preview').attr('disabled', 'disabled');
+        //$('#webapi-preview').attr('disabled', 'disabled');
+        $('#webapi-preview').attr('disabled', true);
       }
     };
     
@@ -1289,41 +1353,59 @@ $(function() {
   
 });
 /**
- * Common processing that does not depend on jQuery
+ * jQuery-independent common processing
+ * ---------------------------------------------------------------------------
  */
-function setCookie(ck_name, ck_value, expiredays) {
-  // SetCookie
-  var path = '/';
-  var extime = new Date().getTime();
-  var cltime = new Date(extime + (60*60*24*1000*expiredays));
-  var exdate = cltime.toUTCString();
-  var tmp_data = new Array(ck_value);
-  var fix_data = tmp_data.filter(function (x, i, self) { return self.indexOf(x) === i; });
-  var s = '';
-  s += ck_name + '=' + escape(fix_data.join(','));
-  s += '; path=' + path;
-  s += expiredays ? '; expires=' + exdate + '; ' : '; ';
-  document.cookie = s;
-}
-function getCookie(ck_name) {
-  // GetCookie
-  var st = '', ed = '', res = '';
-  if (document.cookie.length > 0) {
-    st = document.cookie.indexOf(ck_name + '=');
-    if (st !== -1) {
-      st = st + ck_name.length + 1;
-      ed = document.cookie.indexOf(';', st);
-      if (ed === -1) {
-        ed = document.cookie.length;
+/*
+ * :: cookies.js ::
+ *
+ * A complete cookies reader/writer framework with full unicode support.
+ *
+ * source:  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+ * localize: https://developer.mozilla.org/ja/docs/Web/API/Document/cookie
+ *
+ * Syntaxes:
+ *
+ * - docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+ * - docCookies.getItem(name)
+ * - docCookies.removeItem(name[, path])
+ * - docCookies.hasItem(name)
+ * - docCookies.keys()
+ *
+ */
+var docCookies = {
+  getItem: function (sKey) {
+    if (!sKey || !this.hasItem(sKey)) { return null; }
+    return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Tue, 19 Jan 2038 03:14:07 GMT" : "; max-age=" + vEnd;
+          break;
+        case String:
+          sExpires = "; expires=" + vEnd;
+          break;
+        case Date:
+          sExpires = "; expires=" + vEnd.toGMTString();
+          break;
       }
-      res = unescape(document.cookie.substring(st, ed));
     }
+    document.cookie = escape(sKey) + "=" + escape(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+  },
+  removeItem: function (sKey, sPath) {
+    if (!sKey || !this.hasItem(sKey)) { return; }
+    document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sPath ? "; path=" + sPath : "");
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = unescape(aKeys[nIdx]); }
+    return aKeys;
   }
-  return res;
-}
-function removeCookie(ck_name) {
-  // removeCookie
-  var path = '/';
-  if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
-  document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
-}
+};
