@@ -509,30 +509,45 @@ doTableCreator = function(){
     
     $('#instance_create_table_sql').val( generateSQL(cacheData) );
     
-    $('#cdbtTableCreator').modal('hide');
+    $('#cdbtTableCreator').modal('hide').on('hidden.bs.modal', function(e){
+      $('#create-sql-support').trigger('click');
+    });
     
   });
   
   
   function generateSQL( cacheData ) {
-    var column_definition = [], sizing;
+    var column_definition = [];
     
     _.each(cacheData, function(column){
-      if ('' !== column.length) {
-        sizing = column.length;
+      var sizing = '';
+      var column_type = cdbt_admin_vars.column_types[isAllowedType(column.type_format)];
+      if ('maxlength' === column_type.arg_type) {
+        sizing = '' !== column.length ? column.length : column_type.default;
       } else
-      if ('' !== column.precision) {
-        sizing = column.precision;
+      if ('precision' === column_type.arg_type) {
+        sizing = '' !== column.precision ? column.precision : column_type.default;
       } else
-      if ('' !== column.precision_scale_d) {
-        sizing = column.precision_scale_d;
-        if ('' !== column.precision_scale_m) {
-          sizing += ',' + column.precision_scale_m;
-        }
-      } else
-      if ('' !== column.define_values_cache) {
-        var values = column.define_values_cache.split(',');
+      if ('array' === column_type.arg_type) {
+        var values = '' !== column.define_values_cache ? column.define_values_cache.split(',') : [];
         sizing = "'" + values.join("','") + "'";
+      } else
+      if (_.isArray(column_type.arg_type)) {
+        if ('scale' === column_type.arg_type[1]) {
+          sizing = '' !== column.precision_scale_m ? column.precision_scale_m : column_type.default[0];
+          if ('' !== column.precision_scale_d) {
+            sizing += ',' + column.precision_scale_d;
+          } else
+          if ('' !== column_type.default[1]) {
+            sizing += ',' + column_type.default[1];
+          }
+        } else {
+         if ('' !== column.precision) {
+           if (_.contains(column_type.arg_type, Number(column.precision))) {
+             sizing = column.precision;
+           }
+         }
+        }
       }
       column.sizing = '' !== sizing ? '(' + sizing + ')' : '';
       column.attributes = '' !== column.attributes ? ' ' + column.attributes.toUpperCase() : '';

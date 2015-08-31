@@ -667,7 +667,7 @@ class CdbtDB extends CdbtConfig {
 			$limit_clause = "LIMIT ";
 			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
 		}
-		$search_key = preg_replace('/[\s@]+/u', ' ', trim($search_key), -1);
+		$search_key = preg_replace('/[\sã€€]+/u', ' ', trim($search_key), -1);
 		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
 		if (!empty($keywords)) {
 			$primary_key_name = null;
@@ -1582,35 +1582,35 @@ class CdbtDB extends CdbtConfig {
   public function get_column_types( $narrow_key=null ) {
     
     $column_types = [
-      'tinyint' => [ 'arg_type' => 'precision', 'default' => 4, 'min' => 1, 'max' => 4, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ¸“xB”š‘S‘Ì‚Ì—LŒøŒ…”
-      'smallint' => [ 'arg_type' => 'precision', 'default' => 6, 'min' => 1, 'max' => 6, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ¸“xB”š‘S‘Ì‚Ì—LŒøŒ…”
-      'mediumint' => [ 'arg_type' => 'precision', 'default' => 9, 'min' => 1, 'max' => 9, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ¸“xB”š‘S‘Ì‚Ì—LŒøŒ…”
-      'int' => [ 'arg_type' => 'precision', 'default' => 11, 'min' => 1, 'max' => 11, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'integer' ] ], // precision: ¸“xB”š‘S‘Ì‚Ì—LŒøŒ…”
-      'bigint' => [ 'arg_type' => 'precision', 'default' => 20, 'min' => 1, 'max' => 20, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ¸“xB”š‘S‘Ì‚Ì—LŒøŒ…”
-      'float' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => '', 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // ¬”•”‚ğŠÜ‚ñ‚Å6Œ…‚Ü‚Å“ü—Í‚³‚ê‚½’Ê‚è‚É•Û‘¶‚·‚é—p“r‚Å‚ ‚ê‚ÎAfloatŒ^‚ğg‚¤
-      'double' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => '', 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'double precision', 'real' ] ], // precision‚ª25ˆÈã‚Ìfloat(*)‚Ídouble‚Æ“¯“™
-      'decimal' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => [ 10, 0 ], 'min' => [ 1, 0 ], 'max' => [ 65, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'dec', 'numeric', 'fixed' ] ], // ¬”“_ˆÈ‰º‚ğw’è‚µ‚ÄŒ^‚ğ‘µ‚¦‚Ä³Šm‚Éˆµ‚¤‚È‚ç‚ÎAdecimalŒ^‚ğg‚¤ i—á:ˆÜ“xŒo“xî•ñj
-      'bool' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [ 'boolean' ] ], // tinyint(1)‚ÌƒGƒCƒŠƒAƒX
-      'bit' => [ 'arg_type' => 'precision', 'default' => 1, 'min' => 1, 'max' => 64, 'atts' => [], 'alias' => [] ], // precision‚Íbit‚ÌByte”
-      'varchar' => [ 'arg_type' => 'maxlength', 'default' => 1, 'min' => 0, 'max' => 255, 'atts' => [ 'binary' ], 'alias' => [ 'national varchar' ] ], // maxlength‚ª255‚æ‚è‘å‚«‚¢ê‡‚ÍtextŒ^‚É•ÏŠ·‚³‚ê‚é
-      'char' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => [ 'binary', 'ascii', 'unicode' ], 'alias' => [ 'national char', 'nchar', 'character' ] ], // maxlengthÈ—ª‚Íchar(1)‚Æ‚È‚é
-      'tinytext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 255•¶š
-      'text' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 65535•¶š
-      'mediumtext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 16777215•¶š
-      'longtext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 4294967295•¶š
-      'tinyblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 255Byte
-      'blob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 64KB
-      'mediumblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 16MB
-      'longblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // Å‘å’· 4GB
-      'binary' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => [], 'alias' => [ 'char byte' ] ], // Å‘å’· 255ByteAw’èƒoƒCƒg”‚æ‚èŠi”[’l‚ª­‚È‚¢ê‡‚É––”ö‚ğ0x00‚Å–„‚ß‚é
-      'varbinary' => [ 'arg_type' => 'maxlength', 'default' => 65535, 'min' => 0, 'max' => 65535, 'atts' => [], 'alias' => [] ], // Å‘å’· 64KBA––”ö‚Ì0x00–„‚ß‚ğs‚í‚È‚¢
-      'enum' => [ 'arg_type' => 'array', 'default' => '', 'min' => 1, 'max' => 65535, 'atts' => [], 'alias' => [] ], // ƒ†ƒj[ƒNƒŠƒXƒg 65535ŒÂ‚Ü‚Å
-      'set' => [ 'arg_type' => 'array', 'default' => '', 'min' => 0, 'max' => 64, 'atts' => [], 'alias' => [] ], // ƒ†ƒj[ƒNƒŠƒXƒg 64ŒÂ‚Ü‚Å
-      'date' => [ 'arg_type' => '', 'default' => '', 'min' => '1000-01-01', 'max' => '9999-12-31', 'atts' => [], 'alias' => [] ], // 'YYYY-MM-DD'Œ`®•¶š—ñ‚©”’l‚ğg—p‚Å‚«‚é
-      'datetime' => [ 'arg_type' => '', 'default' => '', 'min' => '1000-01-01 00:00:00', 'max' => '9999-12-31 23:59:59', 'atts' => [], 'alias' => [] ], // 'YYYY-MM-DD HH:MM:SS'Œ`®•¶š—ñ‚©”’l‚ğg—p‚Å‚«‚é
-      'time' => [ 'arg_type' => '', 'default' => null, 'min' => '-838:59:59', 'max' => '838:59:59', 'atts' => [], 'alias' => [] ], // 'HH:MM:SS'Œ`®•¶š—ñ‚©”’l‚ğg—p‚Å‚«‚é
-      'timestamp' => [ 'arg_type' => [ 6, 8, 12, 14 ], 'default' => '', 'min' => 6, 'max' => 14, 'atts' => [],  'alias' => [] ], // ˆø”‚Í•\¦Œ`®‚ÌŒ…”i'YYMMDD','YYYYMMDD','YYMMDDHHMMSS', 'YYYYMMDDHHMMSS'j‚ğ•\‚·
-      'year' => [ 'arg_type' => [ 2, 4 ], 'default' => 4, 'min' => 2, 'max' => 4, 'atts' => [], 'alias' => [] ], // 'YYYY'‚©'YY'Œ`®‚Ì•¶š—ñ‚©”’l‚ğg—p‚Å‚«‚é
+      'tinyint' => [ 'arg_type' => 'precision', 'default' => 4, 'min' => 1, 'max' => 4, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ç²¾åº¦ã€‚æ•°å­—å…¨ä½“ã®æœ‰åŠ¹æ¡æ•°
+      'smallint' => [ 'arg_type' => 'precision', 'default' => 6, 'min' => 1, 'max' => 6, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ç²¾åº¦ã€‚æ•°å­—å…¨ä½“ã®æœ‰åŠ¹æ¡æ•°
+      'mediumint' => [ 'arg_type' => 'precision', 'default' => 9, 'min' => 1, 'max' => 9, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ç²¾åº¦ã€‚æ•°å­—å…¨ä½“ã®æœ‰åŠ¹æ¡æ•°
+      'int' => [ 'arg_type' => 'precision', 'default' => 11, 'min' => 1, 'max' => 11, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'integer' ] ], // precision: ç²¾åº¦ã€‚æ•°å­—å…¨ä½“ã®æœ‰åŠ¹æ¡æ•°
+      'bigint' => [ 'arg_type' => 'precision', 'default' => 20, 'min' => 1, 'max' => 20, 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // precision: ç²¾åº¦ã€‚æ•°å­—å…¨ä½“ã®æœ‰åŠ¹æ¡æ•°
+      'float' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => '', 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [] ], // å°æ•°éƒ¨ã‚’å«ã‚“ã§6æ¡ã¾ã§å…¥åŠ›ã•ã‚ŒãŸé€šã‚Šã«ä¿å­˜ã™ã‚‹ç”¨é€”ã§ã‚ã‚Œã°ã€floatå‹ã‚’ä½¿ã†
+      'double' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => '', 'min' => [ 1, 0 ], 'max' => [ 53, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'double precision', 'real' ] ], // precisionãŒ25ä»¥ä¸Šã®float(*)ã¯doubleã¨åŒç­‰
+      'decimal' => [ 'arg_type' => [ 'precision', 'scale' ], 'default' => [ 10, 0 ], 'min' => [ 1, 0 ], 'max' => [ 65, 30 ], 'atts' => [ 'unsigned', 'zerofill' ], 'alias' => [ 'dec', 'numeric', 'fixed' ] ], // å°æ•°ç‚¹ä»¥ä¸‹ã‚’æŒ‡å®šã—ã¦å‹ã‚’æƒãˆã¦æ­£ç¢ºã«æ‰±ã†ãªã‚‰ã°ã€decimalå‹ã‚’ä½¿ã† ï¼ˆä¾‹:ç·¯åº¦çµŒåº¦æƒ…å ±ï¼‰
+      'bool' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [ 'boolean' ] ], // tinyint(1)ã®ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+      'bit' => [ 'arg_type' => 'precision', 'default' => 1, 'min' => 1, 'max' => 64, 'atts' => [], 'alias' => [] ], // precisionã¯bitã®Byteæ•°
+      'varchar' => [ 'arg_type' => 'maxlength', 'default' => 1, 'min' => 0, 'max' => 255, 'atts' => [ 'binary' ], 'alias' => [ 'national varchar' ] ], // maxlengthãŒ255ã‚ˆã‚Šå¤§ãã„å ´åˆã¯textå‹ã«å¤‰æ›ã•ã‚Œã‚‹
+      'char' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => [ 'binary', 'ascii', 'unicode' ], 'alias' => [ 'national char', 'nchar', 'character' ] ], // maxlengthçœç•¥æ™‚ã¯char(1)ã¨ãªã‚‹
+      'tinytext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 255æ–‡å­—
+      'text' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 65535æ–‡å­—
+      'mediumtext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 16777215æ–‡å­—
+      'longtext' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 4294967295æ–‡å­—
+      'tinyblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 255Byte
+      'blob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 64KB
+      'mediumblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 16MB
+      'longblob' => [ 'arg_type' => '', 'default' => '', 'min' => '', 'max' => '', 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 4GB
+      'binary' => [ 'arg_type' => 'maxlength', 'default' => 255, 'min' => 0, 'max' => 255, 'atts' => [], 'alias' => [ 'char byte' ] ], // æœ€å¤§é•· 255Byteã€æŒ‡å®šãƒã‚¤ãƒˆæ•°ã‚ˆã‚Šæ ¼ç´å€¤ãŒå°‘ãªã„å ´åˆã«æœ«å°¾ã‚’0x00ã§åŸ‹ã‚ã‚‹
+      'varbinary' => [ 'arg_type' => 'maxlength', 'default' => 65535, 'min' => 0, 'max' => 65535, 'atts' => [], 'alias' => [] ], // æœ€å¤§é•· 64KBã€æœ«å°¾ã®0x00åŸ‹ã‚ã‚’è¡Œã‚ãªã„
+      'enum' => [ 'arg_type' => 'array', 'default' => '', 'min' => 1, 'max' => 65535, 'atts' => [], 'alias' => [] ], // ãƒ¦ãƒ‹ãƒ¼ã‚¯ãƒªã‚¹ãƒˆ 65535å€‹ã¾ã§
+      'set' => [ 'arg_type' => 'array', 'default' => '', 'min' => 0, 'max' => 64, 'atts' => [], 'alias' => [] ], // ãƒ¦ãƒ‹ãƒ¼ã‚¯ãƒªã‚¹ãƒˆ 64å€‹ã¾ã§
+      'date' => [ 'arg_type' => '', 'default' => '', 'min' => '1000-01-01', 'max' => '9999-12-31', 'atts' => [], 'alias' => [] ], // 'YYYY-MM-DD'å½¢å¼æ–‡å­—åˆ—ã‹æ•°å€¤ã‚’ä½¿ç”¨ã§ãã‚‹
+      'datetime' => [ 'arg_type' => '', 'default' => '', 'min' => '1000-01-01 00:00:00', 'max' => '9999-12-31 23:59:59', 'atts' => [], 'alias' => [] ], // 'YYYY-MM-DD HH:MM:SS'å½¢å¼æ–‡å­—åˆ—ã‹æ•°å€¤ã‚’ä½¿ç”¨ã§ãã‚‹
+      'time' => [ 'arg_type' => '', 'default' => null, 'min' => '-838:59:59', 'max' => '838:59:59', 'atts' => [], 'alias' => [] ], // 'HH:MM:SS'å½¢å¼æ–‡å­—åˆ—ã‹æ•°å€¤ã‚’ä½¿ç”¨ã§ãã‚‹
+      'timestamp' => [ 'arg_type' => [ 6, 8, 12, 14 ], 'default' => '', 'min' => 6, 'max' => 14, 'atts' => [],  'alias' => [] ], // å¼•æ•°ã¯è¡¨ç¤ºå½¢å¼ã®æ¡æ•°ï¼ˆ'YYMMDD','YYYYMMDD','YYMMDDHHMMSS', 'YYYYMMDDHHMMSS'ï¼‰ã‚’è¡¨ã™
+      'year' => [ 'arg_type' => [ 2, 4 ], 'default' => 4, 'min' => 2, 'max' => 4, 'atts' => [], 'alias' => [] ], // 'YYYY'ã‹'YY'å½¢å¼ã®æ–‡å­—åˆ—ã‹æ•°å€¤ã‚’ä½¿ç”¨ã§ãã‚‹
     ];
     
     if (empty($narrow_key) || in_array(strtolower($narrow_key), [ 'allowed_types' ]) || array_key_exists(strtolower($narrow_key), $column_types)) 
