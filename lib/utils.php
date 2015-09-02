@@ -579,24 +579,34 @@ class CdbtUtility {
     
     return $return_array ? (array) $data : (object) $data;
   }
-
+  
   /**
-   * Reference sequence is whether the associative array
+   * Whether the associative array or not
    *
    * @since 2.0.0
    *
-   * @param array $data This variable should be expected array
+   * @param array $data This argument should be expected an array
+   * @param boolean $multidimensional True if a multidimensional array is inclusion into associative array, the default value is false
    * @return boolean
    */
-  public function is_assoc( &$data ) {
-    if (!is_array($data)) 
+  public function is_assoc( $data, $multidimensional=false ) {
+    if (!is_array($data) || empty($data)) 
       return false;
     
-    reset($data);
-    list($k) = each($data);
-    return $k !== 0;
+    $has_array = false;
+    foreach ($data as $key => $value) {
+      if (is_array($value)) 
+        $has_array = true;
+      
+      if (!is_int($key)) 
+        return true;
+    }
+    
+    return $multidimensional && $has_array ? true : false;
+   
   }
-
+  
+  
 }
 
 endif; // end of class_exists()
