@@ -194,11 +194,11 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
     <div class="repeater-header">
       <div class="repeater-header-left">
         <span class="repeater-title"></span>
-      <?php if ($enable_editor) : ?>
+      <?php /* if ($enable_editor) : ?>
         <div class="repeater-check-switch">
           <button type="button" class="btn btn-default" id="repeater-check-switch" title="<?php _e('Switch Checking', CDBT); ?>"><i class="fa fa-check-square-o"></i><span class="sr-only"><?php _e('Switch Checking', CDBT); ?></span></button>
         </div>
-      <?php endif; ?>
+      <?php endif; */ ?>
       <?php if ($enable_search) : ?>
         <div class="repeater-search">
           <div class="search input-group">

@@ -150,19 +150,14 @@ $(function() {
     // repeater();
     _.each(repeater, function(k,v){ return repeater[v](); });
     
-    var adjustCellSize = function() {
-      $('.repeater table.table thead th').each(function(){
-        var label_elm = $(this).find('.repeater-list-heading');
-        $(this).removeAttr('style');
-        label_elm.removeAttr('style');
-        //console.info([$(this).attr('class'), $(this).width(), $(this).height(), parseInt(label_elm.css('width')), parseInt(label_elm.css('height')), label_elm.width(), label_elm.height()]);
-        //var fixed_width = _.max([ $(this).width(), parseInt(label_elm.css('width')), label_elm.width() ]);
-        var fixed_width = parseInt(label_elm.css('width'));
-        //var fixed_height = _.max([ $(this).height(), parseInt(label_elm.css('height')), label_elm.height() ]);
-        var fixed_height = parseInt(label_elm.css('height'));
-        //console.info([ fixed_width, fixed_height ]);
-        $(this).removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
-        label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
+    var adjustCellSize = function(is_init) {
+      $('.repeater table tr').each(function(){
+        $(this).children('th').removeAttr('style');
+        $(this).children('td').removeAttr('style');
+        $(this).find('.repeater-list-heading').removeAttr('style');
+        $('.repeater-list-heading').each(function(){
+          $(this).css('width', $(this).parent('th').width() + 16 + 'px');
+        });
       });
     };
     
@@ -189,6 +184,11 @@ $(function() {
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
       });
       
+      $(document).on('click', 'th.sortable', function(){
+        adjustCellSize();
+      });
+      
+      adjustCellSize();
     }
     if (_.contains([ 'cdbtShortcodes' ], $('.repeater').attr('id'))) {
       $(document).on('click', '.cdbt-repeater-left-main>a, .scl-operation-buttons button', function(){
@@ -285,6 +285,16 @@ $(function() {
       });
       
     }
+    
+    if ($('.repeater').attr('id').indexOf('cdbt-repeater-view-') !== -1 ) {
+      
+      
+      $(document).on('click', 'th.sortable', function(){
+        adjustCellSize();
+      });
+      
+    }
+    
     adjustCellSize();
   }
   

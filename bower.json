@@ -11,7 +11,7 @@
     "modernizr": "~2.8.3",
     "jquery": "~2.1.4",
     "bootstrap-sass": "~3.3.5",
-    "font-awesome-sass": "~4.3.1",
+    "font-awesome-sass": "~4.4",
     "underscore": "~1.8.3",
     "fuelux": "~3.11.0"
   },
