@@ -481,6 +481,9 @@ class CdbtUtility {
     if (empty($string)) 
       return false;
     
+    if (is_array($string)) 
+      return $string;
+    
     $_ary = explode(',', trim($string));
     $fixed_ary = [];
     foreach ($_ary as $_val) {

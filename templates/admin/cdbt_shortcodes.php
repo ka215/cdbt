@@ -411,7 +411,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
   } else {
     $_wall_message = sprintf(__('Please select a custom shortcode that you want to edit %sat the shortcode list%s.', CDBT), '<a href="'. add_query_arg('tab', 'shortcode_list') .'">', '</a>');
   }
-  if (!isset($_wall_message) && !in_array(get_current_user_id(), [ 0, $this_tab_vars['author'] ])) {
+  if (!isset($_wall_message) && !in_array(get_current_user_id(), [ 1, $this_tab_vars['author'] ])) {
     $_wall_message = __('Custom shortcode can not edit other than the registrant or privilege administrator.', CDBT);
   }
 //var_dump($this_tab_vars);
