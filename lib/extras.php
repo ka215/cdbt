@@ -269,7 +269,7 @@ trait CdbtExtras {
             'sortable' => true, 
             'sortDirection' => 'asc', 
             'className' => 'col-scl-name', 
-            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'\">'+rowData.shortcode_name+'</a></div>'"
+            'customColumnRenderer' => "'<div class=\"cdbt-repeater-left-main\"><a href=\"#\" data-target-sc=\"'+rowData.shortcode_name+'\" data-target-scid=\"'+rowData.shortcode_id+'\" data-operate-action=\"\" data-base-url=\"'+rowData.operate_shortcode_url+'register\">'+rowData.shortcode_name+'</a></div>'"
           ], 
           [ 'label' => __('Description', CDBT), 
             'property' => 'description', 

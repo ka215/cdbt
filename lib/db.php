@@ -631,117 +631,155 @@ class CdbtDB extends CdbtConfig {
    * Locate the appropriate data by extracting the best column from the schema information of the table for the search keyword. 
    * Same behavior as get_data() If there is no schema of the table argument is.
    *
-   * @param string $table_name (must containing prefix of table)
-   * @param array $table_schema default null
-   * @param string $search_key
-   * @param array $columns (optional) default wildcard '*' (eq. select clause)
-   * @param array $order (optional) default 'order by `created` desc' (eq. orderby and order clause)
-   * @param int $limit (optional) (eq. limit clause)
-   * @param int $offset (optional) (eq. offset clause)
+   * @param string $table_name [require]
+//   * @param array $table_schema default null
+   * @param string $search_key [require]
+   * @param array $columns [optional] Use as select clause, for default is wildcard of '*'.
+   * @param array $order [optional] Use as orderby and order clause, for default is "order by `created` desc".
+   * @param int $limit [optional] Use as limit clause.
+   * @param int $offset [optional] Use as offset clause.
+   * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
    * @return array
    */
-  public function find_data( $table_name, $table_schema=null, $search_key, $columns, $order=array('created'=>'desc'), $limit=null, $offset=null ) {
-/*
-		global $wpdb;
-		if (empty($table_schema)) 
-			list(, , $table_schema) = $this->get_table_schema($table_name);
-		$select_clause = is_array($columns) ? implode(',', $columns) : (!empty($columns) ? $columns : '*');
-		$where_clause = $order_clause = $limit_clause = null;
-		if (!empty($order)) {
-			$i = 0;
-			foreach ($order as $key => $val) {
-				if (array_key_exists($key, $table_schema)) {
-					$val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
-					if ($i == 0) {
-						$order_clause = "ORDER BY `$key` $val ";
-					} else {
-						$order_clause .= ", `$key` $val ";
-					}
-					$i++;
-				} else {
-					continue;
-				}
-			}
-		}
-		if (!empty($limit)) {
-			$limit_clause = "LIMIT ";
-			$limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
-		}
-		$search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
-		$keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
-		if (!empty($keywords)) {
-			$primary_key_name = null;
-			foreach ($table_schema as $col_name => $col_scm) {
-				if (empty($primary_key_name) && $col_scm['primary_key']) {
-					$primary_key_name = $col_name;
-					break;
-				}
-			}
-			$union_clauses = array();
-			foreach ($keywords as $value) {
-				if (!empty($table_schema)) {
-					unset($table_schema[$primary_key_name], $table_schema['created'], $table_schema['updated']);
-					$target_columns = array();
-					foreach ($table_schema as $column_name => $column_info) {
-						if (is_float($value)) {
-							if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
-								$target_columns[] = $column_name;
-						} else if (is_int($value)) {
-							if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'])) 
-								$target_columns[] = $column_name;
-						}
-						if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
-							$target_columns[] = $column_name;
-					}
-				}
-			}
-			if (!empty($target_columns)) {
-				foreach ($target_columns as $target_column_name) {
-					$i = 0;
-					foreach ($keywords as $value) {
-						if ($i == 0) {
-							$where_clause = "WHERE `$target_column_name` LIKE '%%$value%%' ";
-						} else {
-							$where_clause .= "AND `$target_column_name` LIKE '%%$value%%' ";
-						}
-						$i++;
-					}
-					$union_clauses[] = sprintf('SELECT %s FROM %s %s', $select_clause, $table_name, $where_clause);
-				}
-			} else {
-				// $table_schema is none
-				
-			}
-			if (!empty($union_clauses)) {
-				if (count($union_clauses) == 1) {
-					$union_clause = array_shift($union_clauses) . ' %s';
-					$sql = sprintf($union_clause, $limit_clause);
-				} else {
-					$i = 0;
-					foreach ($union_clauses as $union_clause) {
-						if ($i == 0) {
-							$sql = '(' . $union_clause . ')';
-						} else {
-							$sql .= ' UNION (' . $union_clause . ')';
-						}
-						$i++;
-					}
-					$sql .= " $order_clause $limit_clause";
-				}
-			}
-		}
-		if (!isset($sql) || empty($sql)) {
-			$sql = sprintf(
-				"SELECT %s FROM `%s` %s %s %s", 
-				$select_clause, 
-				$table_name, 
-				$where_clause, 
-				$order_clause, 
-				$limit_clause 
-			);
-		}
-		return $wpdb->get_results($sql);
-*/
+  public function find_data( $table_name, $search_key, $columns='*', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
+    // Initialize by dynamically allocating an argument
+    $arguments = func_get_args();
+    if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ])) {
+      $output_type = array_pop($arguments);
+    } else {
+      $output_type = 'OBJECT';
+    }
+    $arg_default_vars = [
+      'table_name' => null, 
+      'search_key' => null, 
+      'columns' => '*', 
+      'order' => ['created'=>'desc'], 
+      'limit' => null, 
+      'offset' => null, 
+    ];
+    $i = 0;
+    foreach ($arg_default_vars as $variable_name => $default_value) {
+      if (isset($arguments[$i])) {
+        ${$variable_name} = $arguments[$i];
+      } else {
+        ${$variable_name} = $default_value;
+      }
+      $i++;
+    }
+    
+    // Check Table
+    if (false === ($table_schema = $this->get_table_schema($table_name))) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $this->logger( $message );
+      return false;
+    }
+    
+    // Main Process
+    $select_clause = is_array($columns) ? implode(',', $columns) : $columns;
+    $where_clause = $order_clause = $limit_clause = null;
+    if (!empty($order)) {
+      $i = 0;
+      foreach ($order as $key => $val) {
+        if (array_key_exists($key, $table_schema)) {
+          $val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
+          if ($i == 0) {
+            $order_clause = "ORDER BY `$key` $val ";
+          } else {
+            $order_clause .= ", `$key` $val ";
+          }
+          $i++;
+        } else {
+          continue;
+        }
+      }
+    }
+    
+    if (!empty($limit)) {
+      $limit_clause = "LIMIT ";
+      $limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
+    }
+    
+    $search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
+    $keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
+    if (!empty($keywords)) {
+      $primary_key_name = null;
+      foreach ($table_schema as $col_name => $col_scm) {
+        if (empty($primary_key_name) && $col_scm['primary_key']) {
+          $primary_key_name = $col_name;
+          break;
+        }
+      }
+      $union_clauses = [];
+      foreach ($keywords as $value) {
+        if (!empty($table_schema)) {
+          unset($table_schema[$primary_key_name], $table_schema['created'], $table_schema['updated']);
+          $target_columns = [];
+          foreach ($table_schema as $column_name => $column_info) {
+            if (is_float($value)) {
+              if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
+                $target_columns[] = $column_name;
+            } else 
+            if (is_int($value)) {
+              if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'])) 
+                $target_columns[] = $column_name;
+            }
+            if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
+              $target_columns[] = $column_name;
+          }
+        }
+      }
+      if (!empty($target_columns)) {
+        foreach ($target_columns as $target_column_name) {
+          $i = 0;
+          foreach ($keywords as $value) {
+            if ($i === 0) {
+              $where_clause = "WHERE `$target_column_name` LIKE '%%$value%%' ";
+            } else {
+              $where_clause .= "AND `$target_column_name` LIKE '%%$value%%' ";
+            }
+            $i++;
+          }
+          $union_clauses[] = sprintf('SELECT %s FROM %s %s', $select_clause, $table_name, $where_clause);
+        }
+      } else {
+        // $table_schema is none
+        
+      }
+      if (!empty($union_clauses)) {
+        if (count($union_clauses) === 1) {
+          $union_clause = array_shift($union_clauses) . ' %s';
+          $sql = sprintf($union_clause, $limit_clause);
+        } else {
+          $i = 0;
+          foreach ($union_clauses as $union_clause) {
+            if ($i === 0) {
+              $sql = '(' . $union_clause . ')';
+            } else {
+              $sql .= ' UNION (' . $union_clause . ')';
+            }
+            $i++;
+          }
+          $sql .= " $order_clause $limit_clause";
+        }
+      }
+    }
+    
+    if (!isset($sql) || empty($sql)) {
+      $sql = sprintf(
+        "SELECT %s FROM `%s` %s %s %s", 
+        $select_clause, 
+        $table_name, 
+        $where_clause, 
+        $order_clause, 
+        $limit_clause 
+      );
+    }
+    // Filter of sql statement created by method `find_data`.
+    //
+    // @since 2.0.0
+    $sql = apply_filters( 'cdbt_crud_find_data_sql', $sql, $table_name, [ $select_clause, $where_clause, $order_clause, $limit_clause ] );
+    
+    return $this->wpdb->get_results($sql, $output_type);
   }
   
   

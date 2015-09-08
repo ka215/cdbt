@@ -116,6 +116,24 @@
 .repeater[id^=cdbt-repeater-view-], 
 .repeater[id^=cdbt-repeater-edit-] {
   
+  &.hidden-index-row {
+    thead {
+      display: none;
+    }
+  }
+  
+  th.disable-sort {
+    cursor: default!important;
+    
+    .repeater-list-heading.disable-sort {
+      cursor: default!important;
+      
+      span {
+        display: none!important;
+      }
+    }
+  }
+  
   th {
     display: table-cell;
     vertical-align: middle;

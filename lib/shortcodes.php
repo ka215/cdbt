@@ -193,6 +193,7 @@ trait CdbtShortcodes {
       'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
       /* Added new attribute from 2.0.0 is follows: */
       'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'filter_column' => '', // Target column name to filter.
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
       'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
       'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
@@ -290,13 +291,13 @@ trait CdbtShortcodes {
     foreach ($hash_atts as $attribute_name) {
       ${$attribute_name} = $this->strtohash(${$attribute_name});
     }
+    $add_classes = [];
     if (!empty($add_class)) {
-      $add_classes = [];
       foreach (explode(' ', $add_class) as $_class) {
         $add_classes[] = esc_attr(trim($_class));
       }
-      $add_class = implode(' ', $add_classes);
     }
+    
     if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
       $image_render = 'responsive';
     } else {
@@ -321,7 +322,95 @@ trait CdbtShortcodes {
       $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
-    $datasource = $this->get_data($table, 'ARRAY_A');
+    $all_columns = array_keys($table_schema);
+    if ($exclude_cols = $this->strtoarray($exclude_cols)) {
+      $output_columns = [];
+      foreach ($all_columns as $_col) {
+        if (!in_array($_col, $exclude_cols)) 
+          $output_columns[] = $_col;
+      }
+    }
+    if ($display_cols = $this->strtoarray($display_cols)) {
+      $output_columns = [];
+      foreach ($all_columns as $_col) {
+        if (in_array($_col, $display_cols)) 
+          $output_columns[] = $_col;
+      }
+    }
+    if ($order_cols = $this->strtoarray($order_cols)) {
+      $output_columns = [];
+      foreach ($order_cols as $_col) {
+        if (in_array($_col, $all_columns)) 
+          $output_columns[] = $_col;
+      }
+    }
+    if (!isset($output_columns)) 
+      $output_columns = $all_columns;
+    
+//var_dump(array_keys($table_schema));
+//var_dump($this->strtoarray($exclude_cols));
+//var_dump($this->strtoarray($display_cols));
+//var_dump($this->strtoarray($order_cols));
+//var_dump($output_columns);
+    $narrow_keyword = $this->strtohash($narrow_keyword);
+    $query_type = $this->is_assoc($narrow_keyword) ? 'get' : 'find';
+    $conditions = [];
+    if ('get' === $query_type) {
+      foreach ($narrow_keyword as $_col => $_keywd) {
+        if (in_array($_col, $all_columns)) 
+          $conditions[$_col] = $_keywd;
+      }
+    } else {
+      $conditions = $narrow_keyword;
+    }
+    if (!isset($conditions)) 
+      $conditions = null;
+//var_dump($this->strtohash($narrow_keyword));
+    if ($sort_order = $this->strtohash($sort_order)) {
+      $orders = [];
+      foreach ($sort_order as $_col => $_order) {
+        if (in_array($_col, $all_columns)) 
+          $orders[$_col] = in_array(strtolower($_order), [ 'asc', 'desc' ]) ? $_order : 'asc';
+      }
+    }
+    if (!isset($orders)) 
+      $orders = null;
+//var_dump($this->strtohash($sort_order));
+    
+    if (!in_array($filter_column, $all_columns)) {
+      $filter_column = '';
+    }
+    $filters = $this->strtohash($filters);
+    
+    if (!$display_index_row) {
+      $add_classes[] = 'hidden-index-row';
+    }
+    $add_class = implode(' ', $add_classes);
+    
+    //$datasource = $this->get_data($table, 'ARRAY_A');
+    if ('get' === $query_type) {
+      $datasource = $this->get_data($table, $output_columns, $conditions, $orders, 'ARRAY_A');
+    } else {
+      $datasource = [];
+      if (is_array($conditions) && !empty($conditions)) {
+        foreach ($conditions as $_i => $_keyword) {
+          if (0 === $_i) {
+            $datasource = $this->find_data($table, $_keyword, $output_columns, $orders, 'ARRAY_A');
+          } else {
+            // Currently, the plurality of keywords are not supported
+            /*
+            $diff_datasource = $this->find_data($table, $_keyword, $output_columns, $orders, 'ARRAY_A');
+            if (is_array($diff_datasource) && is_array($datasource)) 
+              $datasource = array_intersect($diff_datasource, $datasource);
+              //$datasource = array_merge($datasource, $diff_datasource);
+            */
+            break;
+          }
+        }
+      } else {
+        $datasource = $this->find_data($table, $conditions, $output_columns, $orders, 'ARRAY_A');
+      }
+    }
     if (empty($datasource))
       return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
     
@@ -359,11 +448,13 @@ trait CdbtShortcodes {
     if (!empty($has_list)) {
       $_filter_items = [];
       foreach ($has_list as $column) {
-        foreach ($this->parse_list_elements($table_schema[$column]['type_format']) as $list_item) {
-          $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
-        }
-        if ('set' === $table_schema[$column]['type']) {
-          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
+        if (array_key_exists($column, $datasource[0])) {
+          foreach ($this->parse_list_elements($table_schema[$column]['type_format']) as $list_item) {
+            $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
+          }
+          if ('set' === $table_schema[$column]['type']) {
+            $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
+          }
         }
       }
       if ($display_filter && empty($filters)) {
@@ -376,16 +467,18 @@ trait CdbtShortcodes {
     // If contain bit binary data in the datasource
     if (!empty($has_bit)) {
       foreach ($has_bit as $column) {
-        
-        // Filter whether to use the icon display in the case of outputting the data registered in boolean form
-        //
-        // @since 2.0.0
-        $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
-        
-        if ($bool_data_with_icon) {
-          $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
-        } else {
-        	$custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+        if (array_key_exists($column, $datasource[0])) {
+          
+          // Filter whether to use the icon display in the case of outputting the data registered in boolean form
+          //
+          // @since 2.0.0
+          $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+          
+          if ($bool_data_with_icon) {
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+          } else {
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+          }
         }
       }
     }
@@ -393,12 +486,14 @@ trait CdbtShortcodes {
     // If contain datetime data in the datasource
     if (!empty($has_datetime)) {
       foreach ($has_datetime as $column) {
-        if (empty($this->options['display_datetime_format'])) {
-          $_datetime_format = '[\''. get_option( 'date_format' ) .'\', \''. get_option( 'time_format' ) .'\']';
-        } else {
-        	$_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
+        if (array_key_exists($column, $datasource[0])) {
+          if (empty($this->options['display_datetime_format'])) {
+            $_datetime_format = '[\''. get_option( 'date_format' ) .'\', \''. get_option( 'time_format' ) .'\']';
+          } else {
+            $_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
+          }
+          $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
         }
-        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
       }
       unset($_datetime_format);
     }
@@ -407,15 +502,17 @@ trait CdbtShortcodes {
     if ($bootstrap_style) {
       // Generate repeater
       $columns = [];
-      foreach ($table_schema as $column => $scheme) {
-        $columns[] = [
-          'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
-          'property' => $column, 
-          'sortable' => true, 
-          'sortDirection' => 'asc', 
-          'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
-          'className' => '', 
-        ];
+      foreach ($output_columns as $column) {
+        if (array_key_exists($column, $datasource[0])) {
+          $columns[] = [
+            'label' => empty($table_schema[$column]['logical_name']) ? $column : $table_schema[$column]['logical_name'], 
+            'property' => $column, 
+            'sortable' => $enable_sort, 
+            'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
+            'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
+            'className' => $enable_sort ? '' : 'disable-sort', 
+          ];
+        }
       }
       
       if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
@@ -431,7 +528,7 @@ trait CdbtShortcodes {
         foreach ($datasource as $i => $datum) {
           $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
         }
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
         array_unshift($columns, $add_column);
       }
       
@@ -444,6 +541,7 @@ trait CdbtShortcodes {
         'id' => 'cdbt-repeater-view-' . $table, 
         'enableSearch' => $display_search, 
         'enableFilter' => $display_filter, 
+        'filter_column' => $filter_column, 
         'filters' => $filters, 
         'enableView' => $display_view, 
         'defaultView' => 'list', 

@@ -555,12 +555,12 @@ foreach ($this->allow_file_types as $file_type) {
             <ul class="nav nav-tabs" role="tablist">
               <li role="presentation" class="active"><a href="#direct_sql" aria-controls="direct_sql" role="tab" data-toggle="tab"><?php _e('Direct Edit SQL', CDBT); ?></a></li>
               <li role="presentation"><a href="#create_table_sql" aria-controls="create_table_sql" role="tab" data-toggle="tab"><?php _e('Show Create Table SQL', CDBT); ?></a></li>
-              <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab"><?php _e('Table Creator', CDBT); ?></a></li>
+              <?php /* <li role="presentation"><a href="#table_creator" aria-controls="table_creator" role="tab" data-toggle="tab"><?php _e('Table Creator', CDBT); ?></a></li> */ ?>
             </ul>
             <div class="tab-content">
               <div role="tabpanel" class="tab-pane active" id="direct_sql"><textarea id="modify-table-alter_table_sql" name="<?php echo $this->domain_name; ?>[alter_table_sql]" class="form-control" rows="10" placeholder="Alter Table SQL"><?php if (isset($session_vars) && isset($session_vars['alter_table_sql'])) echo esc_textarea(stripslashes_deep($session_vars['alter_table_sql'])); ?></textarea></div>
               <div role="tabpanel" class="tab-pane" id="create_table_sql"><textarea id="view_create_table_sql" class="form-control" rows="10" readonly="readonly"><?php echo esc_textarea($table_options['sql']); ?></textarea></div>
-              <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_alter_table_sql" class="form-control" rows="10" disabled="disabled"></textarea></div>
+              <?php /* <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_alter_table_sql" class="form-control" rows="10" disabled="disabled"></textarea></div> */ ?>
             </div>
             <div class="sql-support-button pull-right" style="top: 3px;">
               <button type="button" id="btn-undo-modify-table-alter_table_sql" class="btn btn-default" data-prev-value=""><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>

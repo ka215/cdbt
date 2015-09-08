@@ -5,6 +5,7 @@
  * 'id' => @string is element id [require]
  * 'enableSearch' => @boolean Switching search form is hidden if `false`; default `true` [optional]
  * 'enableFilter' => @boolean Switching filter dropdown is hidden if `false`; default `true` [optional]
+ * 'filter_column' => @string Target column name to filter [optional]
  * 'filters' => @array(assoc) is listing data [optional] array key is data-value, array value is display label
  * 'enableView' => @boolean Switching view button is hidden if `false`; default `true` [optional]
  * 'defaultView' => @mixed is view type of default [optional] (-1 (default), 'list', 'thumbnail')
@@ -40,12 +41,13 @@ $enable_search = isset($this->component_options['enableSearch']) && false === $t
 // `filter` section
 $enable_filter = isset($this->component_options['enableFilter']) && false === $this->component_options['enableFilter'] ? false : true;
 
-if (empty($this->component_options['filters'])) {
+if (empty($this->component_options['filter_column']) || empty($this->component_options['filters'])) {
   $enable_filter = false;
 } else {
+  $filter_column = $this->component_options['filter_column'];
   $filters_list = [];
   foreach ($this->component_options['filters'] as $value => $label) {
-    $filters_list = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $value, $label );
+    $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $value, $label );
   }
 }
 
@@ -189,7 +191,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
  * ---------------------------------------------------------------------------
  */
 ?>
-  <div class="repeater<?php echo $add_class; ?>" id="<?php echo $repeater_id; ?>">
+  <div class="repeater<?php echo ' ' . $add_class; ?>" id="<?php echo $repeater_id; ?>">
   <?php if ($enable_search || $enable_filter || $enable_view || $enable_editor) : ?>
     <div class="repeater-header">
       <div class="repeater-header-left">
@@ -498,7 +500,7 @@ endif; ?>
     // filter
     if (options.filter && options.filter.value !== 'all') {
       data = _.filter(data, function(item) {
-        return item.status === options.filter.value;
+        return item.<?php echo $filter_column; ?> === options.filter.value;
       });
     }
 <?php endif; ?>
@@ -549,6 +551,7 @@ endif; ?>
 
   }
   
+  /*
   function customAfterRender(helpers, callback) {
 //      var renderRepeater = function(){
         $('.cdbt-repeater-row').each(function(){
@@ -571,6 +574,7 @@ endif; ?>
         });
 //      };
   }
+  */
   
   // 初期化処理 - initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
@@ -587,7 +591,7 @@ endif; ?>
     list_rowRendered: customRowRenderer,
     
     <?php /* if (!empty($after_render)) printf('render: %s,', $after_render); */ ?>
-    after: $(this).bind('afterRender', function(e){ console.info(e); }), 
+    //after: $(this).bind('afterRender', function(e){ console.info(e); }), 
     
     // データ検索処理のためのデータソースをセットアップする - setup your custom datasource to handle data retrieval;
     // 任意のページング、ソート、フィルタリング、検索ロジックを担当する - responsible for any paging, sorting, filtering, searching logic
@@ -604,7 +608,7 @@ endif; ?>
     
   });
   
-  repeater.on('afterRender', function(e){ console.info(e); });
+  //repeater.on('afterRender', function(e){ console.info(e); });
   
   $('#repeater-check-switch').on('click', function(){
     if (repeater.repeater('list_getSelectedItems').length > 0) {
@@ -638,12 +642,15 @@ convert_list = function() {
   
 };
 
+/*
 if (typeof convert_datetime !== 'undefined') {
   var convert_datetime = null;
 }
+*/
 /**
  * Convert datetime format as common utility function for repeater
  */
+/*
 convert_datetime = function() {
   if (arguments.length < 2) {
     return arguments.length === 1 ? arguments[0] : false;
@@ -687,5 +694,5 @@ convert_datetime = function() {
   
   return format;
 };
-
+*/
 </script>

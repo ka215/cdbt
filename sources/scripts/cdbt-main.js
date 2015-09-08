@@ -155,6 +155,7 @@ $(function() {
     _.each(repeater, function(k,v){ return repeater[v](); });
     
     var adjustCellSize = function() {
+/*
       $('.repeater table.table thead th').each(function(){
         var label_elm = $(this).find('.repeater-list-heading');
         $(this).removeAttr('style');
@@ -168,6 +169,15 @@ $(function() {
         $(this).removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
         label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
       });
+*/
+      $('.repeater table tr').each(function(){
+        $(this).children('th').removeAttr('style');
+        $(this).children('td').removeAttr('style');
+        $(this).find('.repeater-list-heading').removeAttr('style');
+        $('.repeater-list-heading').each(function(){
+          $(this).css('width', $(this).parent('th').width() + 16 + 'px');
+        });
+      });
     };
     
     
@@ -176,8 +186,14 @@ $(function() {
     
     if (is_view_via_shortcode || is_edit_via_shortcode) {
       
+      $('.selectlist').selectlist();
       $('.dropdown-toggle').dropdown();
+      
       $(document).on('click', '.repeater-views', function(){
+        adjustCellSize();
+      });
+      
+      $(document).on('click', 'th.sortable', function(){
         adjustCellSize();
       });
       
@@ -204,12 +220,14 @@ $(function() {
       $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(){
         effect_buttons();
       });
-      $('#repeater-check-switch').on('click', function(){
+      //$('#repeater-check-switch').on('click', function(){
+      $(document).on('click', '#repeater-check-switch', function(){
         effect_buttons();
       });
       
       // Event handler
-      $('button[id^="repeater-editor-"]').on('click', function(){
+      //$('button[id^="repeater-editor-"]').on('click', function(){
+      $(document).on('click', 'button[id^="repeater-editor-"]', function(){
         var dataAction = _.last($(this).attr('id').split('-'));
         var targetTable = _.last($('.repeater').attr('id').split('-'));
         var selectedItem = $('.repeater[id^="cdbt-repeater-edit-'+targetTable+'"]').repeater('list_getSelectedItems');
@@ -464,3 +482,50 @@ function removeCookie(ck_name) {
   if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
   document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
 }
+
+/**
+ * Convert datetime format as common utility function for repeater
+ */
+var convert_datetime = function() {
+  if (arguments.length < 2) {
+    return arguments.length === 1 ? arguments[0] : false;
+  }
+  var datetime_string = arguments[0].replace(/\-/g, '/');
+  var datetime = new Date(datetime_string);
+  var format = arguments[1].join(' ');
+  // year
+  format = format.replace(/Y/g, datetime.getFullYear());
+  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
+  // month
+  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
+  format = format.replace(/n/g, (datetime.getMonth() + 1));
+  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
+  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
+  // day
+  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
+  format = format.replace(/j/g, datetime.getDate());
+  var suffix = [ 'st', 'nd', 'rd', 'th' ];
+  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
+  format = format.replace(/S/g, suffix[suffix_index()]);
+  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
+  format = format.replace(/l/g, _.find(day, datetime.getDay()));
+  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
+  // time
+  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
+  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
+  format = format.replace(/a/g, ampm());
+  format = format.replace(/A/g, ampm().toUpperCase());
+  format = format.replace(/g/g, half_hours());
+  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
+  format = format.replace(/G/g, datetime.getHours());
+  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
+  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
+  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
+  format = format.replace(/T/g, '');
+  // other
+  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
+  format = format.replace(/r/g, datetime);
+  
+  return format;
+};

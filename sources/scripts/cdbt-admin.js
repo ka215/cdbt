@@ -143,6 +143,9 @@ $(function() {
     $('#welcome-wizard').wizard();
   }
   
+  
+  
+  
   /**
    * Repeater components of Fuel UX renderer
    */
@@ -150,7 +153,7 @@ $(function() {
     // repeater();
     _.each(repeater, function(k,v){ return repeater[v](); });
     
-    var adjustCellSize = function(is_init) {
+    var adjustCellSize = function() {
       $('.repeater table tr').each(function(){
         $(this).children('th').removeAttr('style');
         $(this).children('td').removeAttr('style');
@@ -314,6 +317,8 @@ $(function() {
     });
     setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
   }
+  
+  
   
   
   /**
@@ -1418,4 +1423,51 @@ var docCookies = {
     for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = unescape(aKeys[nIdx]); }
     return aKeys;
   }
+};
+
+/**
+ * Convert datetime format as common utility function for repeater
+ */
+var convert_datetime = function() {
+  if (arguments.length < 2) {
+    return arguments.length === 1 ? arguments[0] : false;
+  }
+  var datetime_string = arguments[0].replace(/\-/g, '/');
+  var datetime = new Date(datetime_string);
+  var format = arguments[1].join(' ');
+  // year
+  format = format.replace(/Y/g, datetime.getFullYear());
+  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
+  // month
+  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
+  format = format.replace(/n/g, (datetime.getMonth() + 1));
+  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
+  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
+  // day
+  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
+  format = format.replace(/j/g, datetime.getDate());
+  var suffix = [ 'st', 'nd', 'rd', 'th' ];
+  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
+  format = format.replace(/S/g, suffix[suffix_index()]);
+  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
+  format = format.replace(/l/g, _.find(day, datetime.getDay()));
+  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
+  // time
+  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
+  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
+  format = format.replace(/a/g, ampm());
+  format = format.replace(/A/g, ampm().toUpperCase());
+  format = format.replace(/g/g, half_hours());
+  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
+  format = format.replace(/G/g, datetime.getHours());
+  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
+  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
+  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
+  format = format.replace(/T/g, '');
+  // other
+  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
+  format = format.replace(/r/g, datetime);
+  
+  return format;
 };
