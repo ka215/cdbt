@@ -432,39 +432,40 @@ class CdbtUtility {
     if (!is_array($compare_caproles)) 
       $compare_caproles = (array)$compare_caproles;
     
+    if (in_array('guest', $compare_caproles)) 
+      return true;
+    
+    if (!is_user_logged_in()) 
+      return false;
+    
     $current_user = wp_get_current_user();
     $current_user_capabilities = array_keys($current_user->caps);
-    $current_user_capabilities = empty($current_user_capabilities) ? 'level_0' : $current_user_capabilities;
+    if (empty($current_user_capabilities)) 
+      return false;
+    
     $has_caproles = [];
     foreach ($current_user_capabilities as $role_name) {
       $_temp = get_role($role_name);
       if (is_object($_temp)) {
-        $has_caproles[] = $_temp->name;
         foreach ($_temp->capabilities as $cap => $v) {
           if ($v) $has_caproles[] = $cap;
         }
       }
     }
+    if (in_array('cdbt_operate_plugin', $has_caproles)) 
+      return true;
     
-    $check_caproles = [];
+    $must_caproles = [];
     foreach ($compare_caproles as $role_name) {
-      if ('guest' === $role_name) 
-        $role_name = 'subscriber';
-      
       $_temp = get_role($role_name);
       if (is_object($_temp)) {
-        $check_caproles[] = $_temp->name;
         foreach ($_temp->capabilities as $cap => $v) {
-          if ($v) $check_caproles[] = $cap;
+          if ($v) $must_caproles[] = $cap;
         }
       }
     }
     
-    foreach ($check_caproles as $caprole) {
-      if (in_array($caprole, $has_caproles)) 
-        return true;
-    }
-    return false;
+    return empty(array_diff($must_caproles, $has_caproles));
     
   }
   

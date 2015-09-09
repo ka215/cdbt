@@ -170,6 +170,7 @@ $(function() {
         label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
       });
 */
+/*
       $('.repeater table tr').each(function(){
         $(this).children('th').removeAttr('style');
         $(this).children('td').removeAttr('style');
@@ -178,6 +179,7 @@ $(function() {
           $(this).css('width', $(this).parent('th').width() + 16 + 'px');
         });
       });
+*/
     };
     
     

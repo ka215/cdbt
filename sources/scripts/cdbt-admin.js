@@ -293,12 +293,12 @@ $(function() {
       
       
       $(document).on('click', 'th.sortable', function(){
-        adjustCellSize();
+        //adjustCellSize();
       });
       
     }
     
-    adjustCellSize();
+    //adjustCellSize();
   }
   
   /**

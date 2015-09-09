@@ -632,8 +632,8 @@ if (typeof convert_list !== 'undefined') {
  * Convert list type data as common utility function for repeater
  */
 convert_list = function() {
-  if (arguments.length === 0) {
-    return;
+  if (typeof arguments.length === 'undefined' || null === arguments[0]) {
+    return '';
   }
   
   var list_data = arguments[0].split(',');

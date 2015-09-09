@@ -897,7 +897,7 @@ final class CdbtAdmin extends CdbtDB {
         $notice_class = CDBT . '-error';
       }
       
-      $this->register_admin_notices( $notice_class, $message, 1, true );
+      $this->register_admin_notices( $notice_class, $message, 3, true );
       $this->logger( $message );
       $this->destroy_session();
       return;
@@ -1107,7 +1107,7 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     if (!empty($message)) {
-      $this->register_admin_notices( $notice_class, $message, 1, true );
+      $this->register_admin_notices( $notice_class, $message, 3, true );
     }
     return;
     

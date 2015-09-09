@@ -277,7 +277,6 @@ trait CdbtShortcodes {
     if (!$result_permit) 
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
-    
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'ajax_load' ];
     foreach ($boolean_atts as $attribute_name) {
@@ -298,11 +297,6 @@ trait CdbtShortcodes {
       }
     }
     
-    if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
-      $image_render = 'responsive';
-    } else {
-      $image_render = strtolower($image_render);
-    }
     if ($csid > 0 && $this->validate->checkInt($csid)) {
       // csidに対応したショートコードが存在するかのチェックを行う
       $loaded_settings = $this->get_shortcode_option($csid);
@@ -315,6 +309,12 @@ trait CdbtShortcodes {
       }
     } else {
       $csid = 0;
+    }
+    
+    if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
+      $image_render = 'responsive';
+    } else {
+      $image_render = strtolower($image_render);
     }
     if ($display_title) {
       $disp_title = $this->get_table_comment($table);
@@ -353,28 +353,36 @@ trait CdbtShortcodes {
 //var_dump($this->strtoarray($order_cols));
 //var_dump($output_columns);
     $narrow_keyword = $this->strtohash($narrow_keyword);
-    $query_type = $this->is_assoc($narrow_keyword) ? 'get' : 'find';
-    $conditions = [];
-    if ('get' === $query_type) {
-      foreach ($narrow_keyword as $_col => $_keywd) {
-        if (in_array($_col, $all_columns)) 
-          $conditions[$_col] = $_keywd;
-      }
+    if (!$narrow_keyword) {
+      $query_type = 'get';
     } else {
-      $conditions = $narrow_keyword;
+      $query_type = $this->is_assoc($narrow_keyword) ? 'get' : 'find';
+      $conditions = [];
+      if ('get' === $query_type) {
+        foreach ($narrow_keyword as $_col => $_keywd) {
+          if (in_array($_col, $all_columns)) 
+            $conditions[$_col] = $_keywd;
+        }
+      } else {
+        $conditions = $narrow_keyword;
+      }
     }
     if (!isset($conditions)) 
       $conditions = null;
 //var_dump($this->strtohash($narrow_keyword));
+//var_dump([$sort_order, $all_columns]);
     if ($sort_order = $this->strtohash($sort_order)) {
       $orders = [];
       foreach ($sort_order as $_col => $_order) {
-        if (in_array($_col, $all_columns)) 
+//var_dump([is_int($_col), $all_columns, in_array($_col, $all_columns)]);
+        if (!is_int($_col) && in_array($_col, $all_columns)) 
           $orders[$_col] = in_array(strtolower($_order), [ 'asc', 'desc' ]) ? $_order : 'asc';
       }
     }
-    if (!isset($orders)) 
+//var_dump($orders);
+    if (!isset($orders) || empty($orders)) 
       $orders = null;
+//var_dump($orders);
 //var_dump($this->strtohash($sort_order));
     
     if (!in_array($filter_column, $all_columns)) {
@@ -387,9 +395,9 @@ trait CdbtShortcodes {
     }
     $add_class = implode(' ', $add_classes);
     
-    //$datasource = $this->get_data($table, 'ARRAY_A');
     if ('get' === $query_type) {
-      $datasource = $this->get_data($table, $output_columns, $conditions, $orders, 'ARRAY_A');
+      // $datasource = $this->get_data($table, 'ARRAY_A');
+      $datasource = $this->get_data($table, '`'.implode('`,`', $output_columns).'`', $conditions, $orders, 'ARRAY_A');
     } else {
       $datasource = [];
       if (is_array($conditions) && !empty($conditions)) {
@@ -699,7 +707,7 @@ trait CdbtShortcodes {
         continue;
       
       $detect_column_type = $this->validate->check_column_type($scheme['type']);
-      if( array_key_exists('datetime', $detect_column_type) && 'updated' === $column ) 
+      if( array_key_exists('datetime', $detect_column_type) && 'CURRENT_TIMESTAMP' === strtoupper($scheme['default']) ) 
         continue;
       
       unset($input_type, $rows, $max_file_size, $max_length, $element_size, $pattern, $selectable_list);

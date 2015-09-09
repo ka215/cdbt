@@ -361,6 +361,25 @@ doTableCreator = function(){
   }
   
   
+  // Toggle "Default Value" cell
+  function switchingDefaultCell( selectedItem, targetRowId ) {
+    
+    var targetRow = 'preset' === targetRowId ? $('tr.preset>td.default') : $('tr[data-id='+ targetRowId +']>td.default');
+    if ('set' !== selectedItem) {
+      $('.default').show();
+      targetRow.find('.cdbt_tc_default').css({ display: 'table' });
+      targetRow.parent('tr').attr('data-default-cell', 'on');
+    } else {
+      targetRow.find('.cdbt_tc_default').css({ display: 'none' });
+      targetRow.parent('tr').removeAttr('data-default-cell');
+      if ($('[data-default-cell=on]').size() === 0) {
+        $('.default').hide();
+      }
+    }
+    
+  }
+  
+  
   // Toggle "Attributes" cell
   function switchingAttributesCell( selectedItem, targetRowId ) {
     
@@ -436,6 +455,7 @@ doTableCreator = function(){
     var selectedItem = fixedType;
     var targetRowId = $(this).parent().parent('tr').hasClass('addnew') ? $(this).parent().parent('tr').data('id') : 'preset';
     switchingSizingCell( selectedItem, targetRowId );
+    switchingDefaultCell( selectedItem, targetRowId );
     switchingAttributesCell( selectedItem, targetRowId );
     switchingAutoincrCell( selectedItem, targetRowId );
     switchingExtraCell( selectedItem, targetRowId );
@@ -552,7 +572,25 @@ doTableCreator = function(){
       column.sizing = '' !== sizing ? '(' + sizing + ')' : '';
       column.attributes = '' !== column.attributes ? ' ' + column.attributes.toUpperCase() : '';
       column.not_null = column.not_null ? ' NOT NULL' : '';
-      column.default = '' !== column.default ? " DEFAULT '" + column.default + "'" : '';
+      if ('' !== column.default) {
+        var default_prefix = ' DEFAULT ';
+        if ('timestamp' === column.col_name && 'CURRENT_TIMESTAMP' === column.default.toUpperCase()) {
+          column.default = default_prefix + column.default.toUpperCase();
+        } else
+        if ('bit' === column.col_name) {
+          var reg = /^(|b\')([0-1]+)(|\')$/;
+          if (column.default.match(reg)) {
+            column.default = default_prefix + column.default.replace(reg, "b'$2'");
+          } else {
+            column.default = '';
+          }
+        } else
+        if (_.contains(['timestamp', 'year', 'bool', 'boolean'], column.col_name) || column.col_name.indexOf('int') !== -1) {
+          column.default = default_prefix + Number(column.default);
+        } else {
+          column.default = default_prefix + "'" + column.default + "'";
+        }
+      }
       column.auto_increment = column.auto_increment ? ' AUTO_INCREMENT' : '';
       column.extra = '' !== column.extra ? ' ' + column.extra.toUpperCase() : '';
       column.comment = '' !== column.comment ? " COMMENT '" + column.comment + "'" : '';
@@ -606,6 +644,7 @@ doTableCreator = function(){
       var fixedType = isAllowedType(currentType);
       if (currentType.length >= 3 && fixedType) {
         switchingSizingCell( fixedType, currentRowId );
+        switchingDefaultCell( fixedType, currentRowId );
         switchingAttributesCell( fixedType, currentRowId );
         switchingAutoincrCell( fixedType, currentRowId );
         switchingExtraCell( fixedType, currentRowId );
