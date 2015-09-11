@@ -465,7 +465,8 @@ class CdbtUtility {
       }
     }
     
-    return empty(array_diff($must_caproles, $has_caproles));
+    $result_array = array_diff($must_caproles, $has_caproles);
+    return empty($result_array);
     
   }
   
