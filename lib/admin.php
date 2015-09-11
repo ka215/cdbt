@@ -501,33 +501,38 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_notices() {
-    if (false !== get_transient( CDBT . '-error' )) {
-      $messages = get_transient( CDBT . '-error' );
+    $messages = [];
+    $notice_class = '';
+    if (false !== ( $messages = get_transient( CDBT . '-error' ) )) {
+      delete_transient( CDBT . '-error' );
       // Added filter hook for using `add_filter('cdbt_admin_error')`
       //
       // @since 1.0.0
       $messages = apply_filters( 'cdbt_admin_error', $messages);
-      $classes = 'error';
-    } elseif (false !== get_transient( CDBT . '-notice' )) {
-      $messages = get_transient( CDBT . '-notice' );
+      $notice_class = 'error';
+    } else
+    if (false !== ( $messages = get_transient( CDBT . '-notice' ) )) {
+      delete_transient( CDBT . '-notice' );
       // Added filter hook for using `add_filter('cdbt_admin_notice')`
       //
       // @since 1.0.0
       $messages = apply_filters( 'cdbt_admin_notice', $messages);
-      $classes = 'updated';
+      $notice_class = 'updated';
     }
     
-    if (isset($messages) && !empty($messages)) :
-?>
-    <div id="message" class="<?php echo $classes; ?>">
-      <ul>
-      <?php foreach( $messages as $message ): ?>
-        <li><?php echo $message; ?></li>
-      <?php endforeach; ?>
-      </ul>
-    </div>
-<?php
-    endif;
+    if (is_array($messages) && !empty($messages)) {
+      $notification_html = '<div id="message" class="%s"><ul>%s</ul></div>';
+      $message_list = [];
+      foreach ($messages as $message) {
+        if (!empty($message) && !is_null($message)) 
+          $message_list[] = '<li>' . $message . '</li>';
+      }
+      if (!empty($message_list)) {
+        echo sprintf($notification_html, $notice_class, implode('', $message_list));
+      } else {
+        return false;
+      }
+    }
   }
 
 
@@ -536,7 +541,7 @@ final class CdbtAdmin extends CdbtDB {
    *
    * @since 2.0.0
    */
-  private function register_admin_notices( $code=null, $message, $expire_seconds=1, $is_init=false ) {
+  private function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
     $code = empty($code) ? CDBT . '-error' : $code;
     // Filter of expiry time at displaying the notice message on the admin screen
     //
@@ -548,6 +553,7 @@ final class CdbtAdmin extends CdbtDB {
     if (is_object($this->errors)) {
       $this->errors->add( $code, $message );
       set_transient( $code, $this->errors->get_error_messages(), $expire_seconds );
+      $this->errors->remove($code);
     }
     
   }
