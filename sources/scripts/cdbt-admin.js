@@ -3,7 +3,7 @@
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
-$(function() {
+$(document).ready(function() {
   
   /**
    * Utility functions
@@ -59,8 +59,8 @@ $(function() {
      */
     this.render_modal = function(){
       
-      if ($('div.modal').size() > 0) {
-        $('div.modal').remove();
+      if ($('div.cdbt-modal').size() > 0) {
+        $('div.cdbt-modal').remove();
       }
       
       $('body').append( $.ajaxResponse.responseText );
@@ -72,8 +72,9 @@ $(function() {
      */
     this.load_into_modal = function(){
       
-      if ($('div.modal').size() > 0) {
+      if ($('div.cdbt-modal').size() > 0) {
         $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
+        $.ajaxResponse.responseText = '';
         // Initialize the form components of fuel ux
         $('.checkbox').checkbox();
         $('.conbobox').combobox();
@@ -88,12 +89,12 @@ $(function() {
         $('.pillbox').pillbox();
         $('.placard').placard();
         $('.radio').radio();
-        $('.repeater').repeater();
         $('.search').search();
         $('.selectlist').selectlist();
         $('.spinbox').spinbox();
         $('.tree').tree();
         $('.wizard').wizard();
+        $('.repeater').repeater();
       }
       
     };
@@ -128,8 +129,8 @@ $(function() {
       post_data = arguments[0];
     }
     
-    if ($('div.modal').size() > 0) {
-      $('div.modal').remove();
+    if ($('div.cdbt-modal').size() > 0) {
+      $('div.cdbt-modal').remove();
     }
     
     cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );

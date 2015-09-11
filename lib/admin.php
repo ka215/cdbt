@@ -1738,7 +1738,7 @@ final class CdbtAdmin extends CdbtDB {
         case 'delete_shortcode': 
           $_current_shortcode = $this->get_shortcode_option($args['modalExtras']['target_scid']);
           $args['modalTitle'] = __('Remove the shortcode', CDBT);
-          $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf('<div style="margin: 1em;"><pre><code>%s</code></pre></div>', stripslashes_deep($_current_shortcode['generate_shortcode']));
+          $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf('<div style="margin: 1em;"><pre><code>&#91;%s&#93;</code></pre></div>', stripslashes_deep(substr($_current_shortcode['generate_shortcode'], 1, -1)));
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_shortcode').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
@@ -1751,6 +1751,8 @@ final class CdbtAdmin extends CdbtDB {
         case 'preview_shortcode': 
           $args['modalTitle'] = __('Preview shortcode', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalExtras']['shortcode']);
+          //$args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { $('.datepicker').datepicker({ date: new Date($('input[name=\"custom-database-tables[created][prev_date]\"]').val()), allowPastDates: true, restrictDateSelection: true, momentConfig: { culture: $('.cdbt-datepicker').attr('data-moment-locale'), format: $('.cdbt-datepicker').attr('data-moment-format') } }); } else { for (var k in repeater) { repeater[k](); }; };";
+          $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { for (var k in repeater) { repeater[k](); }; }; $(document).on('click', '.modal-body button', function(e){ e.preventDefault(); return false; });";
           break;
         case 'preview_request_api': 
 //var_dump($args['modalExtras']['request_uri']);
@@ -1769,7 +1771,7 @@ final class CdbtAdmin extends CdbtDB {
         	$_component = ob_get_contents();
         	ob_end_clean();
         	$args['modalTitle'] = __('Table Creator', CDBT);
-          $args['modalBody'] = __('<p class="text-info">テーブルクリエーターでは直感的にテーブルのカラム構成を作成できます。なお、「SQLを適用する」を実行した設定内容はキャッシュされ、このウィンドウを閉じても失われません。</p>', CDBT) . $_component;
+          $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings when you click of "Apply SQL". Then it is never lost if you close this modal window.', CDBT) . '</p>' . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
         	break;
         default:

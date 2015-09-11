@@ -26,7 +26,7 @@ trait CdbtShortcodes {
         'description' => __('Retrieve a table data that match the specified conditions, then it outputs as list.', CDBT), /* This shortcode is able to output the data of the specified table as a list format. */
         'type' => 'built-in', 
         'author' => 0, 
-        'permission' => 0, 
+        'permission' => implode(', ', $this->convert_cap_level(0)), 
         'alias_id' => null, 
       ],
       'cdbt-entry' => [
@@ -34,7 +34,7 @@ trait CdbtShortcodes {
         'description' => __('Render the data registration form for the specified table.', CDBT), 
         'type' => 'built-in', 
         'author' => 0, 
-        'permission' => 4, 
+        'permission' => implode(', ', $this->convert_cap_level(1)), 
         'alias_id' => null, 
       ],
       'cdbt-edit' => [
@@ -42,7 +42,7 @@ trait CdbtShortcodes {
         'description' => __('Render the editable data list for the specified table.', CDBT), 
         'type' => 'built-in', 
         'author' => 0, 
-        'permission' => 7, 
+        'permission' => implode(', ', $this->convert_cap_level(7)), 
         'alias_id' => null, 
       ],
       'cdbt-extract' => [
@@ -50,7 +50,7 @@ trait CdbtShortcodes {
         'description' => __('Deprecated since version 2; This shortcode has been merged into "cdbt-view".', CDBT), 
         'type' => 'deprecated', 
         'author' => 0, 
-        'permission' => 0, 
+        'permission' => implode(', ', $this->convert_cap_level(0)), 
         'alias_id' => null, 
       ],
       'cdbt-submit' => [
@@ -58,7 +58,7 @@ trait CdbtShortcodes {
         'description' => __('Deprecated since version 2.', CDBT), /* バージョン2で非推奨になりました。 */
         'type' => 'deprecated', 
         'author' => 0, 
-        'permission' => 9, 
+        'permission' => implode(', ', $this->convert_cap_level(9)), 
         'alias_id' => null, 
       ],
     ];
@@ -87,11 +87,15 @@ trait CdbtShortcodes {
     if (!empty($custom_shortcodes)) {
       $_add_shortcodes = [];
       foreach ($custom_shortcodes as $_i => $_shortcode_options) {
+        $_permissions = $this->get_table_permission( $_shortcode_options['target_table'], str_replace('cdbt-', '', $_shortcode_options['base_name']) );
+        if (!$_permissions) 
+          $_permissions = $this->shortcodes[$_shortcode_options['base_name']]['permission'];
+        
         $_add_shortcodes[stripslashes_deep($_shortcode_options['alias_code'])] = [
           'description' => isset($_shortcode_options['description']) && !empty($_shortcode_options['description']) ? esc_html($_shortcode_options['description']) : '-', 
           'type' => 'custom', 
           'author' => isset($_shortcode_options['author']) ? intval($_shortcode_options['author']) : 0, 
-          'permission' => $this->shortcodes[$_shortcode_options['base_name']]['permission'], 
+          'permission' => implode(', ', $_permissions), 
           'alias_id' => $_shortcode_options['csid'], 
         ];
       }

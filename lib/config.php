@@ -482,6 +482,77 @@ class CdbtConfig extends CdbtCore {
   }
   
   
+  /**
+   * Retrieve allowed user permission of specified table.
+   *
+   * @since 2.0.0
+   *
+   * @param string $table_name [require] 
+   * @param string $search_key [optional] 
+   * @return mixed $tabel_permission
+   */
+  public function get_table_permission( $table_name=null, $search_key=null ) {
+    if (empty($table_name)) 
+      return false;
+    
+    $table_options = $this->get_table_option($table_name);
+    $table_permission = [];
+    if (array_key_exists('permission', $table_options) && !empty($table_options['permission'])) {
+      if (!empty($search_key)) {
+        foreach ($table_options['permission'] as $_key => $_values) {
+          if ($search_key === strstr($_key, '_global', true)) 
+            $table_permission += $_values; //array_merge($table_permission);
+        }
+      } else {
+        $table_permission = $table_options['permission'];
+      }
+    } else
+    if (array_key_exists('roles', $table_options) && !empty($table_options['roles'])) {
+      // For legacy plugin version
+      if (!empty($search_key)) {
+        foreach ($table_options['roles'] as $_key => $_level) {
+          if ($search_key === strstr($_key, '_role', true)) 
+            $table_permission = $this->convert_cap_level($_level);
+        }
+      } else {
+        foreach ($table_options['roles'] as $_key => $_level) {
+          $table_permission[str_replace('_role', '_global', $_key)] = $this->convert_cap_level($_level);
+        }
+      }
+    } else {
+      $table_permission = false;
+    }
+    
+    return $table_permission;
+  }
+  
+  
+  /**
+   * Convert to the role name from capability level of user.
+   *
+   * @since 2.0.0
+   *
+   * @param int $level [require] 
+   * @return array $user_role_names
+   */
+  public function convert_cap_level( $level=0 ) {
+    if (empty($level) || !is_int($level)) 
+      $level = 0;
+    
+    if ($level > 10) 
+      $level = 10;
+    
+    $user_level_roles = [ 'subscriber', 'contributor', 'author', 'editor', 'editor', 'editor', 'editor', 'editor', 'administrator', 'administrator', 'administrator' ];
+    $user_role_names = [];
+    if ($level === 0) {
+      $user_role_names[] = 'guest';
+    }
+    $user_role_names[] = $user_level_roles[$level];
+    
+    return $user_role_names;
+  }
+  
+  
 }
 
 endif; // end of class_exists()

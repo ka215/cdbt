@@ -156,39 +156,46 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <label for="register-shortcode-look_feel" class="col-sm-2 control-label"><?php _e('Toggle of look and feel', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php if (isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span>
+            <label class="checkbox-custom checked disabled" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?> checked="checked" disabled="disabled">
+              <!-- <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span> -->
+              <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; This can not changed since v2.0.0.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-e" id="register-shortcode-look_feel2"><!-- display_list_num [v,e] -->
+          <div class="checkbox switching-item on-v" id="register-shortcode-look_feel2"><!-- enable_repeater [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_list_num]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_list_num']) && $this_tab_vars['display_list_num']) : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying list number; The default value has changed to disabled from v2.0.0', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_repeater]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['enable_repeater']) && $this_tab_vars['enable_repeater'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether rendering by repeater component at Fuel UX; It is output by the static table tag layout, also does not have any pagination if disabled.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v" id="register-shortcode-look_feel3"><!-- display_search [v] -->
+          <div class="checkbox switching-item on-v on-e" id="register-shortcode-look_feel3"><!-- display_list_num [v,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_search']) && $this_tab_vars['display_search']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying search box; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_list_num]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_list_num']) && $this_tab_vars['display_list_num'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether displaying list number; The default value has changed to disable since v2.0.0', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel4"><!-- display_title [v,i,e] -->
+          <div class="checkbox switching-item on-v" id="register-shortcode-look_feel4"><!-- display_search [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_title']) && $this_tab_vars['display_title']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying title.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_search']) && $this_tab_vars['display_search'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether displaying search box.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-e" id="register-shortcode-look_feel5"><!-- enable_sort [v,e] -->
+          <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel5"><!-- display_title [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_sort]" type="checkbox" value="1"<?php if (isset($this_tab_vars['enable_sort']) && $this_tab_vars['enable_sort']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of enabling sort; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_title']) && $this_tab_vars['display_title'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether displaying title.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v" id="register-shortcode-look_feel6"><!-- display_index_row [v] -->
+          <div class="checkbox switching-item on-v on-e" id="register-shortcode-look_feel6"><!-- enable_sort [v,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_index_row]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_index_row']) && $this_tab_vars['display_index_row']) : ?> checked="checked"<?php else : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying the index row; In the index row, it is rendered the column name of table.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_sort]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['enable_sort']) && $this_tab_vars['enable_sort'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether enabling the sorting of each columns.', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox switching-item on-v" id="register-shortcode-look_feel7"><!-- display_index_row [v] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_index_row]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_index_row']) && $this_tab_vars['display_index_row'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether displaying the index row; In the index row, it is rendered the column name of table.', CDBT); ?></span>
             </label>
           </div>
         </div>
@@ -272,7 +279,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
               </ul>
             </div>
           </div>
-          <p class="help-block"><?php _e('Please choose class name for rendering image tag. This is enabled only if "bootstrap style" is checked.', CDBT); ?></p>
+          <p class="help-block"><?php _e('Please choose class name for rendering image tag.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-image_render [v] -->
 
@@ -281,12 +288,19 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <div class="col-sm-10">
           <div class="checkbox" id="register-shortcode-display_filter">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_filter]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_filter'])) : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying the filter box; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_filter]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_filter']) && $this_tab_vars['display_filter'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether displaying the filter box; Is enabled only if rendering by repeater component.', CDBT); ?></span>
             </label>
           </div>
         </div>
       </div><!-- register-shortcode-display_filter [v,e] -->
+      <div class="form-group switching-item on-v on-e">
+        <label for="register-shortcode-filter_column" class="col-sm-2 control-label"><?php _e('Target Filter Column', CDBT); ?></label>
+        <div class="col-sm-6">
+          <input id="register-shortcode-filter_column" name="<?php echo $this->domain_name; ?>[filter_column]" type="text" value="<?php if (isset($this_tab_vars['filter_column'])) echo $this_tab_vars['filter_column']; ?>" class="form-control" placeholder="column name">
+          <p class="help-block"><?php _e('Please enter the column name to filter.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-shortcode-filters_column [v,e] -->
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-filters" class="col-sm-2 control-label"><?php _e('Filters Definition', CDBT); ?></label>
         <div class="col-sm-9">
@@ -299,8 +313,8 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <div class="col-sm-10">
           <div class="checkbox" id="register-shortcode-display_view">
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_view]" type="checkbox" value="1"<?php if (isset($this_tab_vars['display_view'])) : ?> checked="checked"<?php endif; ?>>
-              <span class="checkbox-label"><?php _e('You are able to switch list view and thumbnail view if checked; This is enabled only if "bootstrap style" checked.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_view]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_view']) && $this_tab_vars['display_view'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('You are able to switch list view and thumbnail view if checked; This is enabled only if rendering by repeater component.', CDBT); ?></span>
             </label>
           </div>
         </div>
@@ -336,8 +350,8 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <label for="register-shortcode-ajax_load" class="col-sm-2 control-label"><?php _e('Loading Via Ajax', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="register-shortcode-ajax_load">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[ajax_load]" type="checkbox" value="1"<?php if (isset($this_tab_vars['ajax_load']) && $this_tab_vars['ajax_load']) : ?> checked="checked"<?php endif; ?> disabled="disabled">
+            <label class="checkbox-custom disabled" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[ajax_load]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['ajax_load']) && $this_tab_vars['ajax_load'], true, true); ?> disabled="disabled">
               <span class="checkbox-label"><?php _e('It will be on loading data via Ajax if checked this; Sorry, this feature is currently disabled yet.', CDBT); ?></span>
             </label>
           </div>
@@ -479,38 +493,45 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <div class="col-sm-10">
           <div class="checkbox switching-item on-v on-i on-e" id="edit-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?> checked="checked" disabled="disabled">
+              <!-- <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span> -->
+              <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; This can not changed since v2.0.0.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel2"><!-- display_list_num [v,e] -->
+          <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel2"><!-- enable_repeater [v] -->
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_repeater]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['enable_repeater']) && $this_tab_vars['enable_repeater'], true, true); ?>>
+              <span class="checkbox-label"><?php _e('Whether rendering by repeater component at Fuel UX; It is output by the static table tag layout, also does not have any pagination if disabled.', CDBT); ?></span>
+            </label>
+          </div>
+          <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel3"><!-- display_list_num [v,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_list_num]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_list_num']) && $this_tab_vars['display_list_num'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying list number; The default value has changed to disabled from v2.0.0', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether displaying list number; The default value has changed to disable since v2.0.0', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel3"><!-- display_search [v] -->
+          <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel4"><!-- display_search [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_search']) && $this_tab_vars['display_search'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying search box; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether displaying search box.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-i on-e" id="edit-shortcode-look_feel4"><!-- display_title [v,i,e] -->
+          <div class="checkbox switching-item on-v on-i on-e" id="edit-shortcode-look_feel5"><!-- display_title [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_title']) && $this_tab_vars['display_title'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying title.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether displaying title.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel5"><!-- enable_sort [v,e] -->
+          <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel6"><!-- enable_sort [v,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][enable_sort]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['enable_sort']) && $this_tab_vars['enable_sort'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of enabling sort; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether enabling the sorting of each columns.', CDBT); ?></span>
             </label>
           </div>
-          <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel6"><!-- display_index_row [v] -->
+          <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel7"><!-- display_index_row [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_index_row]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_index_row']) && $this_tab_vars['display_index_row'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying the index row; In the index row, it is rendered the column name of table.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether displaying the index row; In the index row, it is rendered the column name of table.', CDBT); ?></span>
             </label>
           </div>
         </div>
@@ -594,7 +615,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
               </ul>
             </div>
           </div>
-          <p class="help-block"><?php _e('Please choose class name for rendering image tag. This is enabled only if "bootstrap style" is checked.', CDBT); ?></p>
+          <p class="help-block"><?php _e('Please choose class name for rendering image tag.', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-image_render [v] -->
 
@@ -604,7 +625,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <div class="checkbox" id="edit-shortcode-display_filter">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_filter]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_filter']) && $this_tab_vars['display_filter'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether of displaying the filter box; Is enabled only if "bootstrap style" is checked.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether displaying the filter box; Is enabled only if rendering by repeater component.', CDBT); ?></span>
             </label>
           </div>
         </div>
@@ -615,7 +636,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <input id="edit-shortcode-filter_column" name="<?php echo $this->domain_name; ?>[filter_column]" type="text" value="<?php if (isset($this_tab_vars['filter_column'])) echo $this_tab_vars['filter_column']; ?>" class="form-control" placeholder="column name">
           <p class="help-block"><?php _e('Please enter the column name to filter.', CDBT); ?></p>
         </div>
-      </div><!-- /edit-shortcode-filters [v,e] -->
+      </div><!-- /edit-shortcode-filters_column [v,e] -->
       <div class="form-group switching-item on-v on-e">
         <label for="edit-shortcode-filters" class="col-sm-2 control-label"><?php _e('Filters Definition', CDBT); ?></label>
         <div class="col-sm-9">
@@ -629,7 +650,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <div class="checkbox" id="edit-shortcode-display_view">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_view]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_view']) && $this_tab_vars['display_view'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('You are able to switch list view and thumbnail view if checked; This is enabled only if "bootstrap style" checked.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('You are able to switch list view and thumbnail view if checked; This is enabled only if rendering by repeater component.', CDBT); ?></span>
             </label>
           </div>
         </div>
@@ -665,8 +686,8 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <label for="edit-shortcode-ajax_load" class="col-sm-2 control-label"><?php _e('Loading Via Ajax', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="edit-shortcode-ajax_load">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[ajax_load]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['ajax_load']) && $this_tab_vars['ajax_load'], true, true); ?>>
+            <label class="checkbox-custom disabled" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[ajax_load]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['ajax_load']) && $this_tab_vars['ajax_load'], true, true); ?> disabled="disabled">
               <span class="checkbox-label"><?php _e('It will be on loading data via Ajax if checked this; Sorry, this feature is currently disabled yet.', CDBT); ?></span>
             </label>
           </div>

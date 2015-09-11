@@ -101,7 +101,7 @@ if (isset($this->component_options['modalShowEvent']) && !empty($this->component
  * ---------------------------------------------------------------------------
  */
 ?>
-<div class="modal fade" id="<?php echo $modal_id; ?>" tabindex="-1" role="dialog" aria-labelledby="cdbtModalLabel" aria-hidden="true">
+<div class="modal fade cdbt-modal" id="<?php echo $modal_id; ?>" tabindex="-1" role="dialog" aria-labelledby="cdbtModalLabel" aria-hidden="true">
   <div class="modal-dialog<?php if (!empty($modal_size)) : ?> <?php echo $modal_size; ?><?php endif; ?>">
     <div class="modal-content">
       <div class="modal-header">
