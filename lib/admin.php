@@ -1718,6 +1718,7 @@ final class CdbtAdmin extends CdbtDB {
         case 'no_selected_item': 
           $args['modalTitle'] = __('Data is not selected', CDBT);
           $args['modalBody'] = __('Please retry to operate that after the data selection.', CDBT);
+          $args['modalShowEvent'] = "return false;";
           break;
         case 'too_many_selected_item': 
           $args['modalTitle'] = __('Selected data is too many', CDBT);

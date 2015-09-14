@@ -443,6 +443,9 @@ class CdbtUtility {
     if (empty($current_user_capabilities)) 
       return false;
     
+    if (in_array('cdbt_operate_plugin', $current_user_capabilities)) 
+      return true;
+    
     $has_caproles = [];
     foreach ($current_user_capabilities as $role_name) {
       $_temp = get_role($role_name);
@@ -452,8 +455,6 @@ class CdbtUtility {
         }
       }
     }
-    if (in_array('cdbt_operate_plugin', $has_caproles)) 
-      return true;
     
     $must_caproles = [];
     foreach ($compare_caproles as $role_name) {

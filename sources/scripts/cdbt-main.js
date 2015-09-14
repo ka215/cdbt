@@ -3,7 +3,7 @@
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
-$(function() {
+$(document).ready(function() {
   
   /**
    * Utility functions
@@ -61,8 +61,8 @@ $(function() {
      */
     this.render_modal = function(){
       
-      if ($('div.modal').size() > 0) {
-        $('div.modal').remove();
+      if ($('div.cdbt-modal').size() > 0) {
+        $('div.cdbt-modal').remove();
       }
       
       $('body').append( $.ajaxResponse.responseText );
@@ -74,28 +74,40 @@ $(function() {
      */
     this.load_into_modal = function(){
       
-      if ($('div.modal').size() > 0) {
+      if ($('div.cdbt-modal').size() > 0) {
         $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
+        $.ajaxResponse.responseText = '';
         // Initialize the form components of fuel ux
-        $('.checkbox').checkbox();
-        $('.combobox').combobox();
-        $('.datepicker').datepicker({ 
-          date: new Date($('input[name="custom-database-tables[created][prev_date]"]').val()), 
-          allowPastDates: true, 
-          restrictDateSelection: true, 
-          momentConfig: { culture: $('.cdbt-datepicker').attr('data-moment-locale'), format: $('.cdbt-datepicker').attr('data-moment-format') }, 
-        });
-        $('.infinitescroll').infinitescroll();
-        $('.loader').loader();
+        $('.dropdown-toggle').dropdown();
+        $('.checkbox-custom').checkbox('enable');
+        $('.combobox').combobox('enable');
+        $('.infinitescroll').infinitescroll('enable');
+        $('.loader').loader('reset');
         $('.pillbox').pillbox();
-        $('.placard').placard();
-        $('.radio').radio();
-        $('.repeater').repeater();
-        $('.search').search();
-        $('.selectlist').selectlist();
+        $('.placard').placard('enable');
+        $('.radio').radio('enable');
+        $('.search').search('enable');
+        $('.selectlist').selectlist('enable');
+        /*$('.selectlist').each(function(){
+          console.info($(this).attr('id'));
+          $('#'+$(this).attr('id')).selectlist('enable');
+        });*/
         $('.spinbox').spinbox();
-        $('.tree').tree();
+        $('.tree').tree('render');
         $('.wizard').wizard();
+        $('.repeater').repeater('render');
+        $('.datepicker').each(function(){
+          var parse_id = $(this).attr('id').replace('entry-data-', '').split('-');
+          var id = parse_id[0];
+          var prev_date = $('input[name="custom-database-tables['+id+'][prev_date]"]').val();
+          $(this).datepicker({ 
+            date: new Date(prev_date), 
+            allowPastDates: true, 
+            restrictDateSelection: true, 
+            momentConfig: { culture: $(this).data('momentLocale'), format: $(this).data('momentFormat') }, 
+          });
+        });
+        
       }
       
     };
@@ -133,8 +145,8 @@ $(function() {
       post_data = arguments[0];
     }
     
-    if ($('div.modal').size() > 0) {
-      $('div.modal').remove();
+    if ($('div.cdbt-modal').size() > 0) {
+      $('div.cdbt-modal').remove();
     }
     
     cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
@@ -155,22 +167,7 @@ $(function() {
     _.each(repeater, function(k,v){ return repeater[v](); });
     
     var adjustCellSize = function() {
-/*
-      $('.repeater table.table thead th').each(function(){
-        var label_elm = $(this).find('.repeater-list-heading');
-        $(this).removeAttr('style');
-        label_elm.removeAttr('style');
-        // if ($.isDebug) { console.info([$(this).attr('class'), $(this).width(), $(this).height(), parseInt(label_elm.css('width')), parseInt(label_elm.css('height')), label_elm.width(), label_elm.height()]); }
-        //var fixed_width = _.max([ $(this).width(), parseInt(label_elm.css('width')), label_elm.width() ]);
-        var fixed_width = parseInt(label_elm.css('width'));
-        //var fixed_height = _.max([ $(this).height(), parseInt(label_elm.css('height')), label_elm.height() ]);
-        var fixed_height = parseInt(label_elm.css('height'));
-        // if ($.isDebug) { console.info([ fixed_width, fixed_height ]); }
-        $(this).removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
-        label_elm.removeAttr('style').css({ width: fixed_width+'px', height: fixed_height+'px' });
-      });
-*/
-/*
+      $('.table-frozen tr').removeAttr('style');
       $('.repeater table tr').each(function(){
         $(this).children('th').removeAttr('style');
         $(this).children('td').removeAttr('style');
@@ -179,7 +176,13 @@ $(function() {
           $(this).css('width', $(this).parent('th').width() + 16 + 'px');
         });
       });
-*/
+      var tr_i = 0;
+      $('.repeater-list-wrapper>table tr').each(function(){
+        var base_height = $(this).height() + 1;
+        $(this).css('height', base_height+'px');
+        $('.table-frozen tr').eq(tr_i).css('height', base_height+'px');
+        tr_i++;
+      });
     };
     
     
@@ -188,15 +191,14 @@ $(function() {
     
     if (is_view_via_shortcode || is_edit_via_shortcode) {
       
-      $('.selectlist').selectlist();
       $('.dropdown-toggle').dropdown();
       
       $(document).on('click', '.repeater-views', function(){
-        adjustCellSize();
+        //adjustCellSize();
       });
       
       $(document).on('click', 'th.sortable', function(){
-        adjustCellSize();
+        //adjustCellSize();
       });
       
       /**
@@ -256,8 +258,10 @@ $(function() {
               modalBody: '', 
             };
             if (selectedItem.length === 0) {
+              post_data.id = 'cdbtEditWarning';
               post_data.modalTitle = 'no_selected_item';
             } else if (selectedItem.length > 1) {
+              post_data.id = 'cdbtEditWarning';
               post_data.modalTitle = 'too_many_selected_item';
             } else {
               post_data.modalSize = 'large';

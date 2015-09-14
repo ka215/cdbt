@@ -180,11 +180,11 @@ trait CdbtShortcodes {
     list($attributes, $content) = func_get_args();
     extract( shortcode_atts([
       'table' => '', // Required attribute
-      'bootstrap_style' => true, // If false is output by the static table tag layout in non the Repeater format. Also does not have any pagination when false.
+      'bootstrap_style' => true, // Change from v2.0.0 disabled.
       'display_list_num' => false, // The default value has changed to false from v2.0.0
-      'display_search' => true, // Is enabled only if "bootstrap_style" is true.
+      'display_search' => true, // 
       'display_title' => true, 
-      'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
+      'enable_sort' => true, // 
       'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
       /* As legacy of `cdbt-extract` is follows: */
@@ -196,14 +196,15 @@ trait CdbtShortcodes {
       'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
       'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
       /* Added new attribute from 2.0.0 is follows: */
-      'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'enable_repeater' => true, // Rendering by using repeater component at Fuel UX.
+      'display_filter' => false, // Is enabled only if "enable_repeater" is true.
       'filter_column' => '', // Target column name to filter.
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
-      'display_view' => false, //  Is enabled only if "bootstrap_style" is true.
+      'display_view' => false, //  Is enabled only if "enable_repeater" is true.
       'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
       'thumbnail_title_column' => '', // Column name to be used as a thumbnail title
       'thumbnail_width' => 100, // Integer of thumbnail block size
-      'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
+      'ajax_load' => false, //
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
@@ -282,7 +283,7 @@ trait CdbtShortcodes {
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'ajax_load' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool(${$attribute_name});
     }
@@ -351,11 +352,6 @@ trait CdbtShortcodes {
     if (!isset($output_columns)) 
       $output_columns = $all_columns;
     
-//var_dump(array_keys($table_schema));
-//var_dump($this->strtoarray($exclude_cols));
-//var_dump($this->strtoarray($display_cols));
-//var_dump($this->strtoarray($order_cols));
-//var_dump($output_columns);
     $narrow_keyword = $this->strtohash($narrow_keyword);
     if (!$narrow_keyword) {
       $query_type = 'get';
@@ -373,21 +369,16 @@ trait CdbtShortcodes {
     }
     if (!isset($conditions)) 
       $conditions = null;
-//var_dump($this->strtohash($narrow_keyword));
-//var_dump([$sort_order, $all_columns]);
+    
     if ($sort_order = $this->strtohash($sort_order)) {
       $orders = [];
       foreach ($sort_order as $_col => $_order) {
-//var_dump([is_int($_col), $all_columns, in_array($_col, $all_columns)]);
         if (!is_int($_col) && in_array($_col, $all_columns)) 
           $orders[$_col] = in_array(strtolower($_order), [ 'asc', 'desc' ]) ? $_order : 'asc';
       }
     }
-//var_dump($orders);
     if (!isset($orders) || empty($orders)) 
       $orders = null;
-//var_dump($orders);
-//var_dump($this->strtohash($sort_order));
     
     if (!in_array($filter_column, $all_columns)) {
       $filter_column = '';
@@ -511,7 +502,7 @@ trait CdbtShortcodes {
     }
     
     
-    if ($bootstrap_style) {
+    if ($bootstrap_style && $enable_repeater) {
       // Generate repeater
       $columns = [];
       foreach ($output_columns as $column) {
@@ -586,6 +577,76 @@ trait CdbtShortcodes {
       
     } else {
       // Generate table layout
+      $columns = [];
+      foreach ($output_columns as $column) {
+        if (array_key_exists($column, $datasource[0])) {
+          $columns[] = [
+            'label' => empty($table_schema[$column]['logical_name']) ? $column : $table_schema[$column]['logical_name'], 
+            'property' => $column, 
+            'sortable' => $enable_sort, 
+            'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
+            'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
+            'className' => $enable_sort ? '' : 'disable-sort', 
+          ];
+        }
+      }
+      
+      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
+        foreach ($columns as $i => $column_definition) {
+          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
+            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
+          }
+        }
+        unset($i);
+      }
+      
+      if ('regular' === $table_type && $display_list_num) {
+        foreach ($datasource as $i => $datum) {
+          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
+        }
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        array_unshift($columns, $add_column);
+      }
+      
+      // Filter the column definition of the list content that is output by this shortcode
+      //
+      // @since 2.0.0
+      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
+      
+      $conponent_options = [
+        'id' => 'cdbt-repeater-view-' . $table, 
+        'enableSearch' => $display_search, 
+        'enableFilter' => $display_filter, 
+        'filter_column' => $filter_column, 
+        'filters' => $filters, 
+        'enableView' => $display_view, 
+        'defaultView' => 'list', 
+        'listSelectable' => 'false', 
+        'staticHeight' => -1, 
+        'pageIndex' => 1, 
+        'pageSize' => $limit_items, 
+        'columns' => $columns, 
+        'data' => $datasource, 
+        'addClass' => $add_class, 
+      ];
+      
+      if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
+        $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
+        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
+        $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
+        if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
+          $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
+      }
+      
+      // Filter the conponent definition of the list content that is output by this shortcode
+      //
+      // @since 2.0.0
+      $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
+      
+      if (isset($title)) 
+        echo $title;
+      
+      return $this->component_render('table', $conponent_options);
       
       return $content;
     }
@@ -783,7 +844,7 @@ trait CdbtShortcodes {
         'addClass' => '', 
         'selectableList' => isset($selectable_list) && !empty($selectable_list) ? implode(',', $selectable_list) : '', 
         'horizontalList' => false, 
-        'elementSize' => isset($element_size) && !empty($element_size) ? $element_size : '', 
+        'elementSize' => isset($element_size) && !empty($element_size) ? intval($element_size) : 0, 
         'helperText' => '', 
         'elementExtras' => [], // 'maxlength' => '', 'pattern' => '', 
       ];
@@ -797,15 +858,22 @@ trait CdbtShortcodes {
         $_temp_elements_options['elementExtras']['data-moment-locale'] = 'ja';
         $_temp_elements_options['elementExtras']['data-moment-format'] = 'L';
       }
-      // Override of initial value to for editing
-      if (!empty($where_clause) && is_array($where_clause)) {
-        $_current_data = $this->array_flatten($this->get_data( $table, $column, $where_clause, 'ARRAY_A' ));
-        $_temp_elements_options['defaultValue'] = $this->validate->esc_column_value( $_current_data[$column], $detect_column_type );
-      }
-      
       
       $elements_options[] = $_temp_elements_options;
     }
+    
+    // Override of initial value to for editing
+    if (!empty($where_clause) && is_array($where_clause)) {
+      $_current_data = $this->get_data( $table, '*', $where_clause, 'ARRAY_A' );
+      if (!empty($_current_data) && array_key_exists(0, $_current_data)) {
+        foreach ($elements_options as $_i => $_element) {
+          if (array_key_exists($_element['elementName'], $_current_data[0])) {
+            $elements_options[$_i]['defaultValue'] = $_current_data[0][$_element['elementName']];
+          }
+        }
+      }
+    }
+    
     
     // Filter the form content definition that is output by this shortcode
     //
@@ -854,7 +922,7 @@ trait CdbtShortcodes {
     extract( shortcode_atts([
       'table' => '', // Required attribute
       'entry_page' => '', // Deprecated attributes from v2.0.0 (actually not work)
-      'bootstrap_style' => true, // If false is output by the static table tag layout in non the Repeater format. Also does not have any pagination when false.
+      'bootstrap_style' => true, // Change from v2.0.0 disabled.
       'display_list_num' => false, // Deprecated attributes, and the default value has changed to false  from v2.0.0 (actually not work)
       'display_title' => true, 
       'enable_sort' => true, //  Is enabled only if "bootstrap_style" is true.
@@ -862,6 +930,7 @@ trait CdbtShortcodes {
       'add_class' => '', // Separator is a single-byte space character
       /* Added new attribute from 2.0.0 is follows: */
       'display_filter' => false, // Is enabled only if "bootstrap_style" is true.
+      'filter_column' => '', // Target column name to filter.
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
       'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
@@ -912,7 +981,7 @@ trait CdbtShortcodes {
     
     // Check user permission
     $result_permit = false;
-    if (isset($table_option['permission']) && isset($table_option['permission']['eidt_global']) && !empty($table_option['permission']['edit_global'])) {
+    if (isset($table_option['permission']) && isset($table_option['permission']['edit_global']) && !empty($table_option['permission']['edit_global'])) {
       // Standard from v2.0.0
       $result_permit = $this->is_permit_user($table_option['permission']['edit_global']);
     } else
@@ -981,6 +1050,24 @@ trait CdbtShortcodes {
       $disp_title = !empty($disp_title) ? $disp_title : $table;
       $title = '<h4 class="sub-description-title">' . sprintf( __('Edit Data of "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
+    
+    $all_columns = array_keys($table_schema);
+    if ($exclude_cols = $this->strtoarray($exclude_cols)) {
+      $output_columns = [];
+      foreach ($all_columns as $_col) {
+        if (!in_array($_col, $exclude_cols)) 
+          $output_columns[] = $_col;
+      }
+    }
+    if (!isset($output_columns)) 
+      $output_columns = $all_columns;
+    
+    if (!in_array($filter_column, $all_columns)) {
+      $filter_column = '';
+    }
+    $filters = $this->strtohash($filters);
+    
+    
     
     $datasource = $this->get_data($table, 'ARRAY_A');
     if (empty($datasource))
@@ -1065,10 +1152,10 @@ trait CdbtShortcodes {
         $columns[] = [
           'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
           'property' => $column, 
-          'sortable' => true, 
+          'sortable' => $enable_sort, 
           'sortDirection' => 'asc', 
           'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
-          'className' => '', 
+          'className' => $enable_sort ? '' : 'disable-sort', 
         ];
       }
       
@@ -1173,10 +1260,6 @@ trait CdbtShortcodes {
       
       return $this->component_render('repeater', $conponent_options);
       
-    } else {
-      // Generate table layout
-      
-      return $content;
     }
     
   }

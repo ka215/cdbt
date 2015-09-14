@@ -80,7 +80,18 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
   
   $session_vars = isset($this->cdbt_sessions[$current_tab]) ? $this->cdbt_sessions[$current_tab] : [];
   $this_tab_vars = array_key_exists($this->domain_name, $session_vars) ? $session_vars[$this->domain_name] : [];
-//var_dump($this_tab_vars);
+  if (!isset($this_tab_vars) || empty($this_tab_vars)) {
+    // Set default values
+    $this_tab_vars = [
+      'bootstrap_style' => true, 
+      'display_list_num' => false, 
+      'display_search' => true, 
+      'display_title' => true, 
+      'enable_sort' => true, 
+      'display_index_row' => true, 
+      'enable_repeater' => true, 
+    ];
+  }
   
   $base_shortcode = '';
   if (isset($session_vars) && !empty($session_vars)) {
@@ -157,7 +168,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <div class="col-sm-10">
           <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
             <label class="checkbox-custom checked disabled" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?> checked="checked" disabled="disabled">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1" checked="checked" disabled="disabled"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?>>
               <!-- <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span> -->
               <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; This can not changed since v2.0.0.', CDBT); ?></span>
             </label>
@@ -493,7 +504,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <div class="col-sm-10">
           <div class="checkbox switching-item on-v on-i on-e" id="edit-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?> checked="checked" disabled="disabled">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1" checked="checked" disabled="disabled"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?>>
               <!-- <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span> -->
               <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; This can not changed since v2.0.0.', CDBT); ?></span>
             </label>

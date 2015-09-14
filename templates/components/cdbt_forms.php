@@ -142,7 +142,13 @@ if (isset($this->component_options['displaySubmit'])) {
 // `whereClause` section
 if (isset($this->component_options['whereClause']) && !empty($this->component_options['whereClause']) && is_array($this->component_options['whereClause'])) {
   $hidden_fields[] = sprintf( '<input type="hidden" name="where_clause" value="%s">', esc_attr(serialize($this->component_options['whereClause'])) );
+  $is_wc_exists = true;
+} else {
+  $is_wc_exists = false;
 }
+
+// is editable form
+$is_editable = !$display_submit_button && $is_wc_exists ? true : false;
 
 // `formElements` section
 if (!isset($this->component_options['formElements']) || empty($this->component_options['formElements'])) {
@@ -174,6 +180,8 @@ if ($use_bootstrap) {
     // Parse element options
     $is_required = $this->strtobool($element['isRequired']);
     $selectable_list = $this->strtohash($element['selectableList']);
+    if (is_int($element['elementSize']) && $element['elementSize'] > 0) 
+      $element['elementSize'] = sprintf( 'col-sm-%d', ($is_editable ? $element['elementSize'] + 1 : $element['elementSize']) );
     $element_size = empty($element['elementSize']) || !preg_match('/^col-.*/iU', $element['elementSize']) ? 'col-sm-9' : esc_attr($element['elementSize']);
     $placeholder = empty($element['placeholder']) ? sprintf( __('Please enter the %s', CDBT), $element['elementLabel'] ) : esc_attr($element['placeholder']);
     $input_attributes = [];
@@ -195,6 +203,8 @@ search, datetime, date, month, week, time, color
       case 'tel': 
       case 'email': 
       case 'password': 
+      case 'number': 
+      case 'range': 
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
@@ -207,8 +217,7 @@ search, datetime, date, month, week, time, color
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
         break;
-      case 'number': 
-      case 'range': 
+      case 'spinbox': 
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
@@ -395,11 +404,15 @@ search, datetime, date, month, week, time, color
           if ('0000-00-00' !== $_date) {
             list($_year, $_month, $_day) = explode('-', $_date);
             $default_date = sprintf('%s/%s/%s', $_month, $_day, $_year);
+          } else {
+            $default_date = date('m/d/Y');
           }
         }
         
         if (isset($_time) && !empty($_time)) {
           list($_hour, $_minute, $_second) = explode(':', $_time);
+        } else {
+          $_hour = $_minute = $_second = 0;
         }
 ?>
     <div class="form-group">
@@ -509,7 +522,7 @@ search, datetime, date, month, week, time, color
       <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][prev_date]" value="<?php esc_attr_e($element['defaultValue']); ?>">
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
 <?php
-        unset($default_date, $_time, $_hour, $_minite, $_second);
+        unset($default_date, $_time, $_hour, $_minute, $_second);
         break;
       default: 
         break;
