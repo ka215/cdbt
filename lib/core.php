@@ -12,6 +12,8 @@ if ( !class_exists( 'CdbtCore' ) ) :
  */
 class CdbtCore extends CdbtUtility {
   
+  var $plugin_enabled;
+  
   /**
    * @var mixed False when not logged in; WP_User object when logged in
    */
@@ -78,9 +80,6 @@ class CdbtCore extends CdbtUtility {
     load_plugin_textdomain( $this->domain_name )
     or load_plugin_textdomain( $this->domain_name, false, $this->plugin_lang_dir );
     
-    // State
-    $this->plugin_enabled = false;
-    
     // Ajax Action name
     $this->plugin_ajax_action = apply_filters( 'cdbt_plugin_ajax_action', 'cdbt_ajax_handler' );
     
@@ -94,11 +93,11 @@ class CdbtCore extends CdbtUtility {
    */
   protected function core_actions() {
     
+    register_deactivation_hook( $this->plugin_main_file, array( &$this, 'plugin_deactivation' ) );
+    register_activation_hook( $this->plugin_main_file, array( &$this, 'plugin_activate' ) );
+    
     add_action( 'plugins_loaded', array($this, 'plugin_loaded') );
     add_action( 'init', array($this, 'init_cdbt_sessions') );
-    
-    register_activation_hook		( $this->plugin_main_file, array(&$this, 'plugin_activate' ) );
-    register_deactivation_hook	( $this->plugin_main_file, array(&$this, 'plugin_deactivation' ) );
     
   }
   
@@ -109,6 +108,7 @@ class CdbtCore extends CdbtUtility {
    * @since 2.0.0
    */
   protected function plugin_loaded() {
+    $this->plugin_enabled = true;
     
     if ( (isset($_POST['page']) && 'cdbt_tables' === $_POST['page']) 
       && (isset($_POST['action']) && !empty($_POST['action'])) 
@@ -168,6 +168,7 @@ class CdbtCore extends CdbtUtility {
     
     printf( '<div class="error"><p>%s</p><p>%s</p></div>', $message, sprintf(__('The %s has been deactivated.', $this->domain_name), __('Custom DataBase Tables', $this->domain_name)) );
     
+    $this->plugin_enabled = false;
     deactivate_plugins( $this->plugin_main_file );
   }
   
@@ -178,13 +179,20 @@ class CdbtCore extends CdbtUtility {
    * since 2.0.0
    */
   public function plugin_activate() {
-    if ($this->plugin_enabled) 
+    if (!current_user_can('activate_plugins') || $this->plugin_enabled) 
       return;
+    
+    $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+    check_admin_referer( "activate-plugin_{$plugin}" );
     
     $this->plugin_enabled = true;
     
     //$role = get_role( 'administrator' );
     //$role->add_cap( 'cdbt_operate_plugin', false ); 
+    
+    // Add rewrite rules
+    $this->prepend_rewrite_rules();
+    flush_rewrite_rules();
     
     $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has activated.', CDBT));
     $this->logger( $message );
@@ -198,19 +206,35 @@ class CdbtCore extends CdbtUtility {
    * since 2.0.0
    */
   public function plugin_deactivation() {
-    if (!$this->plugin_enabled) 
+    if (!current_user_can('activate_plugins') || !$this->plugin_enabled) 
       return;
     
     $this->plugin_enabled = false;
     
     //$role = get_role( 'administrator' );
-    //$role->remove_cap( 'cdbt_operate_plugin' ); 
+    //$role->remove_cap( 'cdbt_operate_plugin' );
     
     $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has been deactivation.', CDBT));
     $this->logger( $message );
     
-    // as you fun
+    // Delete rewrite rules
+    flush_rewrite_rules();
   }
+  
+  
+  /**
+   * Add the extended rule for requesting api.
+   *
+   * @since 2.0.0
+   *
+   */
+  protected function prepend_rewrite_rules() {
+    
+    add_rewrite_rule( '^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$', 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]', 'top' );
+    
+  }
+  
+  
   
   
 }

@@ -42,9 +42,11 @@ trait CdbtApis {
     $this->allowed_hosts = $_api_hosts;
     
     if (isset($this->options['api_hosts'])) {
-      add_filter( 'rewrite_rules_array', array($this, 'insert_rewrite_rules') );
+      add_action( 'init', array($this, 'flush_rules') );
+      //add_filter( 'rewrite_rules_array', array($this, 'insert_rewrite_rules') );
+      add_action( 'generate_rewrite_rules', array($this, 'insert_rewrite_rules') );
       add_filter( 'query_vars', array($this, 'insert_query_vars'), 10, 1 );
-      add_action( 'wp_loaded', array($this, 'flush_rules') );
+      
       if (!empty($this->options['api_hosts'])) {
         add_action( 'send_headers', array($this, 'allow_host') );
       }
@@ -58,13 +60,18 @@ trait CdbtApis {
    * Add the extended rule for requesting api.
    *
    * @since 1.1.6
+   * @since 2.0.0 Have refactored logic.
    *
-   * @param array $rules Array of the currently rewrite rules
+   * @param array $wp_rewrite Array including object of the currently rewrite rules
    */
-  protected function insert_rewrite_rules( $rules ) {
-    $newrules = [];
-    $newrules['^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$'] = 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]';
-    return $newrules + $rules;
+  protected function insert_rewrite_rules( $wp_rewrite ) {
+    if (!$this->plugin_enabled) 
+      return;
+    
+    $new_rules = [
+      '^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$' => 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]', 
+    ];
+    $wp_rewrite[0]->rules = $new_rules + $wp_rewrite[0]->rules;
   }
   
   
@@ -90,10 +97,12 @@ trait CdbtApis {
    * Flush the rewrite rules if extended rules are not yet included.
    *
    * @since 1.1.6
+   * @since 2.0.0 Have refactored logic.
    */
   public function flush_rules() {
+    $_pattern = '^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$';
     $rules = get_option('rewrite_rules');
-    if (!isset($rules['^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$'])) {
+    if (is_array($rules) && !array_key_exists($_pattern, $rules)) {
       global $wp_rewrite;
       $wp_rewrite->flush_rules();
     }
@@ -110,6 +119,8 @@ trait CdbtApis {
     header("Access-Control-Allow-Methods: POST, GET");
     header("Access-Control-Max-Age: 86400");
   }
+  
+  
   
   
   /**
