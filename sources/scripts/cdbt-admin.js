@@ -100,7 +100,7 @@ $(document).ready(function() {
             momentConfig: { culture: $(this).data('momentLocale'), format: $(this).data('momentFormat') }, 
           });
         });
-        
+        dynamicTableRender();
       }
       
     };
@@ -326,6 +326,15 @@ $(document).ready(function() {
   }
   
   
+  /**
+   * Dynamic table components renderer
+   */
+  function dynamicTableRender() {
+    _.each(dynamicTable, function(k,v){ return dynamicTable[v](); });
+  }
+  if (typeof dynamicTable !== 'undefined') {
+    dynamicTableRender();
+  }
   
   
   /**

@@ -359,6 +359,14 @@ $(document).ready(function() {
   
   
   /**
+   * Dynamic table components renderer
+   */
+  if (typeof dynamicTable !== 'undefined') {
+    _.each(dynamicTable, function(k,v){ return dynamicTable[v](); });
+  }
+  
+  
+  /**
    * Common ajax closure
    */
   var cdbtCallAjax = function(){

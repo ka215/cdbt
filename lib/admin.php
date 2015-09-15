@@ -1557,7 +1557,7 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
     foreach ($checkbox_options as $option_name) {
       $post_data[$option_name] = array_key_exists($option_name, $post_data) ? $this->strtobool($post_data[$option_name]) : false;
     }
@@ -1753,7 +1753,7 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Preview shortcode', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalExtras']['shortcode']);
           //$args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { $('.datepicker').datepicker({ date: new Date($('input[name=\"custom-database-tables[created][prev_date]\"]').val()), allowPastDates: true, restrictDateSelection: true, momentConfig: { culture: $('.cdbt-datepicker').attr('data-moment-locale'), format: $('.cdbt-datepicker').attr('data-moment-format') } }); } else { for (var k in repeater) { repeater[k](); }; };";
-          $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { for (var k in repeater) { repeater[k](); }; }; $(document).on('click', '.modal-body button', function(e){ e.preventDefault(); return false; });";
+          $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { if (typeof repeater !== 'undefined') { for (var k in repeater) { repeater[k](); }; }; if (typeof dynamicTable !== 'undefined') { for (var k in dynamicTable) { dynamicTable[k](); }; }; }; $(document).on('click', '.modal-body button', function(e){ e.preventDefault(); return false; });";
           break;
         case 'preview_request_api': 
 //var_dump($args['modalExtras']['request_uri']);

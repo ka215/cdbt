@@ -316,6 +316,24 @@ trait CdbtShortcodes {
       $csid = 0;
     }
     
+/* debug codes
+    $all_vars = [
+      'table', 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'exclude_cols', 'add_class', 
+      'display_index_row', 'narrow_keyword', 'display_cols', 'order_cols', 'sort_order', 'limit_items', 'image_render', 
+      'enable_repeater', 'display_filter', 'filter_column', 'filters', 'display_view', 'thumbnail_column', 'thumbnail_title_column', 'thumbnail_width', 'ajax_load', 
+      'csid', 
+    ];
+    foreach ($all_vars as $_var) {
+      print_r($_var . '="' . ${$_var} . '"'. "\n");
+    }
+*/
+    
+    if ($bootstrap_style && $enable_repeater) {
+      $component_name = 'repeater';
+    } else {
+      $component_name = 'table';
+    }
+    
     if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
       $image_render = 'responsive';
     } else {
@@ -502,154 +520,90 @@ trait CdbtShortcodes {
     }
     
     
-    if ($bootstrap_style && $enable_repeater) {
-      // Generate repeater
-      $columns = [];
-      foreach ($output_columns as $column) {
-        if (array_key_exists($column, $datasource[0])) {
-          $columns[] = [
-            'label' => empty($table_schema[$column]['logical_name']) ? $column : $table_schema[$column]['logical_name'], 
-            'property' => $column, 
-            'sortable' => $enable_sort, 
-            'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
-            'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
-            'className' => $enable_sort ? '' : 'disable-sort', 
-          ];
-        }
+    $columns = [];
+    foreach ($output_columns as $column) {
+      if (array_key_exists($column, $datasource[0])) {
+        $columns[] = [
+          'label' => empty($table_schema[$column]['logical_name']) ? $column : $table_schema[$column]['logical_name'], 
+          'property' => $column, 
+          'sortable' => $enable_sort, 
+          'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
+          'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
+          'className' => $enable_sort ? '' : 'disable-sort', 
+        ];
       }
-      
-      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
-        foreach ($columns as $i => $column_definition) {
-          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
-            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
-          }
-        }
-        unset($i);
-      }
-      
-      if ('regular' === $table_type && $display_list_num) {
-        foreach ($datasource as $i => $datum) {
-          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
-        }
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
-        array_unshift($columns, $add_column);
-      }
-      
-      // Filter the column definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
-      
-      $conponent_options = [
-        'id' => 'cdbt-repeater-view-' . $table, 
-        'enableSearch' => $display_search, 
-        'enableFilter' => $display_filter, 
-        'filter_column' => $filter_column, 
-        'filters' => $filters, 
-        'enableView' => $display_view, 
-        'defaultView' => 'list', 
-        'listSelectable' => 'false', 
-        'staticHeight' => -1, 
-        'pageIndex' => 1, 
-        'pageSize' => $limit_items, 
-        'columns' => $columns, 
-        'data' => $datasource, 
-        'addClass' => $add_class, 
-      ];
-      
-      if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
-        $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
-        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
-        $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
-        if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
-          $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
-      }
-      
-      // Filter the conponent definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
-      
-      if (isset($title)) 
-        echo $title;
-      
-      return $this->component_render('repeater', $conponent_options);
-      
-    } else {
-      // Generate table layout
-      $columns = [];
-      foreach ($output_columns as $column) {
-        if (array_key_exists($column, $datasource[0])) {
-          $columns[] = [
-            'label' => empty($table_schema[$column]['logical_name']) ? $column : $table_schema[$column]['logical_name'], 
-            'property' => $column, 
-            'sortable' => $enable_sort, 
-            'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
-            'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
-            'className' => $enable_sort ? '' : 'disable-sort', 
-          ];
-        }
-      }
-      
-      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
-        foreach ($columns as $i => $column_definition) {
-          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
-            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
-          }
-        }
-        unset($i);
-      }
-      
-      if ('regular' === $table_type && $display_list_num) {
-        foreach ($datasource as $i => $datum) {
-          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
-        }
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
-        array_unshift($columns, $add_column);
-      }
-      
-      // Filter the column definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
-      
-      $conponent_options = [
-        'id' => 'cdbt-repeater-view-' . $table, 
-        'enableSearch' => $display_search, 
-        'enableFilter' => $display_filter, 
-        'filter_column' => $filter_column, 
-        'filters' => $filters, 
-        'enableView' => $display_view, 
-        'defaultView' => 'list', 
-        'listSelectable' => 'false', 
-        'staticHeight' => -1, 
-        'pageIndex' => 1, 
-        'pageSize' => $limit_items, 
-        'columns' => $columns, 
-        'data' => $datasource, 
-        'addClass' => $add_class, 
-      ];
-      
-      if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
-        $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
-        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
-        $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
-        if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
-          $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
-      }
-      
-      // Filter the conponent definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
-      
-      if (isset($title)) 
-        echo $title;
-      
-      return $this->component_render('table', $conponent_options);
-      
-      return $content;
     }
+    
+    if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
+      foreach ($columns as $i => $column_definition) {
+        if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
+          $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
+        }
+      }
+      unset($i);
+    }
+    
+    if ('regular' === $table_type && $display_list_num) {
+      foreach ($datasource as $i => $datum) {
+        $datasource[$i] = array_merge([ 'data_index_number' => $i + 1 ], $datum);
+      }
+      $add_column = [ 'label' => '#', 'property' => 'data_index_number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+      array_unshift($columns, $add_column);
+    }
+    
+    // Filter the column definition of the list content that is output by this shortcode
+    //
+    // @since 2.0.0
+    $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
+    
+    $conponent_options = [
+      'id' => 'cdbt-repeater-view-' . $table, 
+      'enableSearch' => $display_search, 
+      'enableFilter' => $display_filter, 
+      'filter_column' => $filter_column, 
+      'filters' => $filters, 
+      'enableView' => $display_view, 
+      'defaultView' => 'list', 
+      'listSelectable' => 'false', 
+      'staticHeight' => -1, 
+      'pageIndex' => 1, 
+      'pageSize' => $limit_items, 
+      'columns' => $columns, 
+      'data' => $datasource, 
+    ];
+    
+    if ('repeater' === $component_name) {
+      $add_options = [ 
+        'addClass' => $add_class, 
+      ];
+    } else {
+      $add_options = [
+        'tableClass' => $add_class, 
+        'theadClass' => '', 
+        'tbodyClass' => '', 
+        'tfootClass' => '', 
+      ];
+    }
+    $conponent_options = array_merge($conponent_options, $add_options);
+    
+    if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
+      $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
+      $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
+      $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
+      if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
+        $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
+    }
+    
+    // Filter the conponent definition of the list content that is output by this shortcode
+    //
+    // @since 2.0.0
+    $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
+    
+    if (isset($title)) 
+      echo $title;
+    
+    return $this->component_render( $component_name, $conponent_options );
+    
   }
   
   

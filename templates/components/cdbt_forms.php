@@ -99,18 +99,20 @@ if (is_admin()) {
     $_current_tab = $this->query['tab'];
   
   if (empty($_current_page) || empty($_current_tab)) {
-    list(, $_queries) = explode('?', $action_url);
-    $_queries = explode('&#038;', $_queries);
-    if (!empty($_queries) && is_array($_queries)) {
-      foreach ($_queries as $_query) {
-        list($_p, $_v) = explode('=', $_query);
-        if ('page' === $_p) 
-          $_current_page = trim($_v);
-        if ('tab' === $_p) 
-          $_current_tab = trim($_v);
+    if (strpos($action_url, '?') !== false) {
+      list(, $_queries) = explode('?', $action_url);
+      $_queries = explode('&#038;', $_queries);
+      if (!empty($_queries) && is_array($_queries)) {
+        foreach ($_queries as $_query) {
+          list($_p, $_v) = explode('=', $_query);
+          if ('page' === $_p) 
+            $_current_page = trim($_v);
+          if ('tab' === $_p) 
+            $_current_tab = trim($_v);
+        }
       }
+      unset($_queries, $_query, $_p, $_v);
     }
-    unset($_queries, $_query, $_p, $_v);
   }
   $hidden_fields[] = sprintf( '<input type="hidden" name="page" value="%s">', $_current_page );
   $hidden_fields[] = sprintf( '<input type="hidden" name="active_tab" value="%s">', $_current_tab );
