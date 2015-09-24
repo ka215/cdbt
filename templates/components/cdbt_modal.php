@@ -118,7 +118,7 @@ if (isset($this->component_options['modalShowEvent']) && !empty($this->component
     </div>
   </div>
 </div>
-<script>
+<script id="append-dynamic-modal">
 var dynamic_modal = function(){
   $('#<?php echo $modal_id; ?>').modal({
     backdrop: <?php echo $modal_backdrop; ?>, 

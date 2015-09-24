@@ -404,13 +404,24 @@ endif; ?>
     // let's get the id and add it to the "tr" DOM element
     var item = helpers.item;
 <?php
-//  if (isset($this->component_options['customRowScripts']) && !empty($this->component_options['customRowScripts'])) :
   if (isset($custom_rows) && !empty($custom_rows)) :
-//    echo implode("\n", $this->component_options['customRowScripts']);
     echo implode("\n", $custom_rows);
   endif;
 ?>
-    //if ('' !== helpers.rowData.hobby) { var list = helpers.rowData.hobby.split(','); helpers.rowData.hobby = '<ul><li>' + list.join('</li><li>') + '</li></ul>'; };
+    <?php /* //if ('' !== helpers.rowData.hobby) { var list = helpers.rowData.hobby.split(','); helpers.rowData.hobby = '<ul><li>' + list.join('</li><li>') + '</li></ul>'; }; */ ?>
+    
+    item.find('.binary-data input[type=hidden]').each(function(){
+      if ('data:image' === $(this).attr('data').substr(0, 10)) {
+        $(this).replaceWith('<img src="'+ $(this).attr('data') +'" class="'+ $(this).attr('data-class') +'">');
+      } else {
+        if ('' !== $(this).attr('data')) {
+          var where_conditions = [];
+          _.each($(this).parent().attr('data-where-conditions').split(','), function(v){ where_conditions.push(v + ':' + helpers.rowData[v]); });
+          $(this).parent().attr('data-where-conditions', where_conditions.join(','));
+          $(this).replaceWith('<i class="fa fa-file-o"></i> ' + decodeURIComponent($(this).attr('data')));
+        }
+      }
+    });
     
     
     callback();
@@ -422,57 +433,9 @@ endif; ?>
     // set options
     var pageIndex = options.pageIndex;
     var pageSize = options.pageSize;
-
-    var data = items;
-<?php /*
-    var new_options = {
-      pageIndex: pageIndex,
-      pageSize: pageSize,
-      sortDirection: options.sortDirection,
-      sortBy: options.sortProperty,
-      filterBy: options.filter.value || '',
-      searchBy: options.search || ''
-    };
     
-    // call API, posting options
-    $.ajax({
-      type: 'post',
-      url: '/repeater/data',
-      data: new_options
-    })
-    .done(function(data) {
-      
-      var items = data.items;
-      var totalItems = data.total;
-      var totalPages = Math.ceil(totalItems / pageSize);
-      var startIndex = (pageIndex * pageSize) + 1;
-      var endIndex = (startIndex + pageSize) - 1;
-      
-      if(endIndex > items.length) {
-        endIndex = items.length;
-      }
-      
-      // configure datasource
-      var dataSource = {
-        page: pageIndex,
-        pages: totalPages,
-        count: totalItems,
-        start: startIndex,
-        end: endIndex,
-        columns: columns,
-//        items: items
-        items: {
-          id : 1,
-          name : 'wp_users', 
-          description : 'TEXT TEXT ...'
-        }
-      };
-      
-      // invoke callback to render repeater
-      callback(dataSource);
-    });
-*/ ?>
-
+    var data = items;
+    
     // sort by
     data = _.sortBy(data, function(item) {
 <?php if (!empty($numric_properties)) : 
@@ -551,53 +514,26 @@ endif; ?>
 
   }
   
-  /*
-  function customAfterRender(helpers, callback) {
-//      var renderRepeater = function(){
-        $('.cdbt-repeater-row').each(function(){
-          var first_col = $(this).children('.col-scl-name').children('.cdbt-repeater-left-main').children('a');
-          var sc_type = $(this).children('.col-scl-type').text();
-          var last_col = $(this).children('.col-scl-operation').children('.scl-operation-buttons');
-          if ('built-in' === sc_type) {
-            first_col.attr('data-operate-action', 'register');
-            last_col.children('.operate-shortcode-edit-btn-group').remove();
-            
-          } else
-          if ('deprecated' === sc_type) {
-            first_col.replaceWith( first_col.text() );
-            last_col.remove();
-          } else {
-            first_col.attr('data-operate-action', 'edit');
-            last_col.children('.operate-shortcode-register-btn-group').remove();
-            
-          }
-        });
-//      };
-  }
-  */
   
-  // 初期化処理 - initialize the repeater
+  // <?php /* 初期化処理 - */ ?> initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
     list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
     list_noItemsHTML: "<?php esc_html_e( 'nothing to see here... move along', CDBT); ?>",
     
-    // カスタムレンダラを介して列出力をオーバーライドする - override the column output via a custom renderer.
-    // これにより各列の出力のカスタムマークアップが可能になる - this will allow you to output custom markup for each column.
+    // <?php /* カスタムレンダラを介して列出力をオーバーライドする - */ ?> override the column output via a custom renderer.
+    // <?php /* これにより各列の出力のカスタムマークアップが可能になる - */ ?> this will allow you to output custom markup for each column.
     list_columnRendered: customColumnRenderer,
     
-    // カスタムレンダラを介して行出力をオーバーライドする - override the row output via a custom renderer.
-    // この例では、各行に「id」属性を追加するために使用している - this example will use this to add an "id" attribute to each row.
+    // <?php /* カスタムレンダラを介して行出力をオーバーライドする - */ ?> override the row output via a custom renderer.
+    // <?php /* この例では、各行に「id」属性を追加するために使用している - */ ?> this example will use this to add an "id" attribute to each row.
     list_rowRendered: customRowRenderer,
     
-    <?php /* if (!empty($after_render)) printf('render: %s,', $after_render); */ ?>
-    //after: $(this).bind('afterRender', function(e){ console.info(e); }), 
-    
-    // データ検索処理のためのデータソースをセットアップする - setup your custom datasource to handle data retrieval;
-    // 任意のページング、ソート、フィルタリング、検索ロジックを担当する - responsible for any paging, sorting, filtering, searching logic
+    // <?php /* データ検索処理のためのデータソースをセットアップする - */ ?> setup your custom datasource to handle data retrieval;
+    // <?php /* 任意のページング、ソート、フィルタリング、検索ロジックを担当する - */ ?> responsible for any paging, sorting, filtering, searching logic
     dataSource: customDataSource,
     
-    // 初期ビューの設定。デフォルトは -1。「.repeater-views」要素の値を設定する。
+    // <?php /* 初期ビューの設定。デフォルトは -1。「.repeater-views」要素の値を設定する。 */ ?>
     defaultView: '<?php echo $default_view; ?>', // 'list' or 'thumbnail'
     
     //dropPagingCap: 3, 
@@ -607,8 +543,6 @@ endif; ?>
     thumbnail_template: <?php echo $thumbnail_template; ?>,
     
   });
-  
-  //repeater.on('afterRender', function(e){ console.info(e); });
   
   $('#repeater-check-switch').on('click', function(){
     if (repeater.repeater('list_getSelectedItems').length > 0) {
@@ -642,57 +576,4 @@ convert_list = function() {
   
 };
 
-/*
-if (typeof convert_datetime !== 'undefined') {
-  var convert_datetime = null;
-}
-*/
-/**
- * Convert datetime format as common utility function for repeater
- */
-/*
-convert_datetime = function() {
-  if (arguments.length < 2) {
-    return arguments.length === 1 ? arguments[0] : false;
-  }
-  
-  var datetime = new Date(arguments[0]);
-  var format = arguments[1].join(' ');
-  // year
-  format = format.replace(/Y/g, datetime.getFullYear());
-  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
-  // month
-  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
-  format = format.replace(/n/g, (datetime.getMonth() + 1));
-  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
-  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
-  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
-  // day
-  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
-  format = format.replace(/j/g, datetime.getDate());
-  var suffix = [ 'st', 'nd', 'rd', 'th' ];
-  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
-  format = format.replace(/S/g, suffix[suffix_index()]);
-  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
-  format = format.replace(/l/g, _.find(day, datetime.getDay()));
-  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
-  // time
-  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
-  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am' };
-  format = format.replace(/a/g, ampm());
-  format = format.replace(/A/g, ampm().toUpperCase());
-  format = format.replace(/g/g, half_hours());
-  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
-  format = format.replace(/G/g, datetime.getHours());
-  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
-  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
-  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
-  format = format.replace(/T/g, '');
-  // other
-  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
-  format = format.replace(/r/g, datetime);
-  
-  return format;
-};
-*/
 </script>

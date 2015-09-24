@@ -63,6 +63,7 @@ $(document).ready(function() {
       
       if ($('div.cdbt-modal').size() > 0) {
         $('div.cdbt-modal').remove();
+        $('#append-dynamic-modal').remove();
       }
       
       $('body').append( $.ajaxResponse.responseText );
@@ -107,7 +108,13 @@ $(document).ready(function() {
             momentConfig: { culture: $(this).data('momentLocale'), format: $(this).data('momentFormat') }, 
           });
         });
-        
+        // Initialize other
+        //dynamicTableRender();
+        $('div.modal-body').find('input,textarea,select').each(function(){
+          if (typeof $(this).attr('required') !== 'undefined') {
+            $(this).prop('required', true);
+          }
+        });
       }
       
     };
@@ -147,6 +154,7 @@ $(document).ready(function() {
     
     if ($('div.cdbt-modal').size() > 0) {
       $('div.cdbt-modal').remove();
+      $('#append-dynamic-modal').remove();
     }
     
     cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
@@ -201,6 +209,41 @@ $(document).ready(function() {
         //adjustCellSize();
       });
       
+      $(document).on('click', '.modal-preview', function(){
+        var bin_data = $(this).children('img').attr('src');
+        var raw_data = '';
+        var post_data = {
+          id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: '', 
+          modalBody: '', 
+        };
+        if (typeof bin_data !== 'undefined') {
+          if (bin_data.indexOf('data:') === 0) {
+          /*
+            bin_data = bin_data.split(',');
+            raw_data = bin_data.length > 1 ? bin_data[1] : '';
+          } else {
+          */
+            raw_data = bin_data;
+          }
+          post_data.modalTitle = 'image_preview';
+          post_data.modalSize = 'large';
+          post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block"></div>';
+        } else {
+          var repeater_id = $(this).parents('.repeater').attr('id');
+        	raw_data = $(this).text();
+          post_data.modalTitle = 'binary_downloader';
+          post_data.modalExtras = { 
+            'table_name': repeater_id.substr(repeater_id.lastIndexOf('-') + 1), 
+            'target_column': $(this).attr('data-column-name'), 
+            'where_clause': $(this).attr('data-where-conditions'), 
+          };
+        }
+        init_modal( post_data );
+        
+      });
+      
       /**
        * When edit via shortcode
        */
@@ -246,6 +289,7 @@ $(document).ready(function() {
               'session_key': $.sessionKey, 
               'default_action': 'edit', 
               'target_table': targetTable, 
+              'event': 'reload_page', 
               'callback_url': window.location.href, 
             };
             return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
@@ -309,10 +353,76 @@ $(document).ready(function() {
       });
       
       
-      $(document).on('click', '#run_update_data', function(){
+      $(document).on('shown.bs.modal', '#cdbtEditData', function(){
+        var form = $('#cdbtEditData div.cdbt-entry-data-form form');
+        $('#run_update_data').prop('disabled', true);
+        $(form).on('input change click', function(){ 
+          $('#run_update_data').prop('disabled', !this.checkValidity());
+        });
+      });
+      
+      
+      $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
+        if ($(this).parent().hasClass('multiple')) {
+          var counter_elm = $('input[name="' + $(this).attr('name').replace('[]', '') + '[checked]"]');
+          var checked_count = Number(counter_elm.val());
+          if ( $(this).prop('checked') ) {
+            checked_count += 1;
+          } else {
+            checked_count -= 1;
+          }
+          checked_count = checked_count < 0 ? 0 : checked_count;
+          counter_elm.val(checked_count);
+        }
+      });
+      
+      
+      var countMultipleChecked = function(){
+        var $this = $('#cdbtEditData .checkbox');
+        $this.parent().each(function(){
+        	if ($(this).children().children('.checkbox-custom.multiple')) {
+            var counter_elm = $('input[name="' + $(this).children().children('.checkbox-custom').children('input').attr('name').replace('[]', '') + '[checked]"]');
+            var checked_count = 0; //Number(counter_elm.val());
+            $(this).find('.checkbox-custom input').each(function(){
+              if ( $(this).prop('checked') ) {
+                checked_count++;
+              }
+            });
+            counter_elm.val(checked_count);
+          }
+        });
+      };
+      
+      
+      $(document).on('click', '#run_update_data', function(e){
+        e.preventDefault();
         var form = $('#cdbtEditData div.cdbt-entry-data-form form');
         form.children('input[name="_wp_http_referer"]').val(location.href);
-        form.submit();
+        var check_result = true;
+        form.find('.checkbox-custom').each(function(){
+          if ($(this).hasClass('multiple')) {
+            countMultipleChecked();
+            var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
+            var checked_count = Number(counter_elm.val());
+            if ($(this).hasClass('required')) {
+              if (checked_count === 0) {
+                check_result = false;
+              }
+            }
+          } else {
+            if (!$(this).checkbox('isChecked')) {
+              //console.info([ $(this).html(), $(this).children('input').attr('name') ]);
+              $(this).children('input').val('0').prop('checked', true);
+            } else {
+              $(this).children('input').val('1').prop('checked', true);
+            }
+          }
+        });
+        if (check_result) {
+          form.submit();
+        } else {
+          return false;
+        }
       });
       
       
@@ -354,6 +464,51 @@ $(document).ready(function() {
   if ($('.cdbt-entry-data-form').size() > 0) {
     
     $('.dropdown-toggle').dropdown();
+    
+    $('.cdbt-entry-data-form form .checkbox-custom').on('checked.fu.checkbox unchecked.fu.checkbox', function () {
+      if ($(this).hasClass('multiple')) {
+        var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
+        var checked_count = Number(counter_elm.val());
+        if ( $(this).checkbox('isChecked') ) {
+          checked_count += 1;
+        } else {
+          checked_count -= 1;
+        }
+        counter_elm.val(checked_count);
+      }
+    });
+    
+    $(document).on('click', '.cdbt-entry-data-form form button[type=submit]', function(e){
+      //e.preventDefault();
+      var entry_form = $('.cdbt-entry-data-form form');
+      var check_result = true;
+      entry_form.find('.checkbox-custom').each(function(){
+        if ($(this).hasClass('multiple')) {
+          if ($(this).hasClass('required')) {
+            var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
+            var checked_count = Number(counter_elm.val());
+            if (checked_count === 0) {
+              //$(this).children('input').prop('required', true);
+              check_result = false;
+            }
+          }
+        } else {
+          /*
+          if (!$(this).checkbox('isChecked')) {
+            $(this).children('input').val('0').prop('checked', true);
+          } else {
+            $(this).children('input').val('1').prop('checked', true);
+          }
+          */
+        }
+      });
+      if (check_result) {
+        //entry_form.submit();
+        return true;
+      } else {
+        return false;
+      }
+    });
     
   }
   
@@ -447,6 +602,7 @@ $(document).ready(function() {
       insertContent: true, 
       modalTitle: modal_title, 
       modalBody: $.emitMessage, 
+      modalHideEvent: "$('#cdbtModal .modal-body').html(''); $('#cdbtModal').remove(); $.emitMessage = cdbt_main_vars.emit_message = ''; $.emitType = 'error';"
     };
     init_modal( post_data );
     $.emitMessage = cdbt_main_vars.emit_message = '';
@@ -504,6 +660,9 @@ var convert_datetime = function() {
   if (arguments.length < 2) {
     return arguments.length === 1 ? arguments[0] : false;
   }
+  if (typeof arguments[0] === 'undefined' || !arguments[0]) {
+    return '-';
+  }
   var datetime_string = arguments[0].replace(/\-/g, '/');
   var datetime = new Date(datetime_string);
   var format = arguments[1].join(' ');
@@ -541,5 +700,5 @@ var convert_datetime = function() {
   format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
   format = format.replace(/r/g, datetime);
   
-  return format;
+  return format.indexOf('Na') !== -1 ? arguments[0] : format;
 };

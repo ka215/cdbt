@@ -468,6 +468,8 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_header() {
+    ob_start();
+    
     // Added action hook for using `add_action('cdbt_admin_header')`
     // 
     // @since 2.0.0
@@ -492,6 +494,7 @@ final class CdbtAdmin extends CdbtDB {
     // @since 1.0.0
     do_action( 'cdbt_admin_footer' );
     
+    ob_flush();
   }
 
 
@@ -719,7 +722,7 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix' ];
+    $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix', 'allow_rendering_shortcodes' ];
     foreach ($checkbox_options as $option_name) {
       if (!array_key_exists($option_name, $submit_options)) 
         $submit_options[$option_name] = false;
@@ -1365,7 +1368,7 @@ final class CdbtAdmin extends CdbtDB {
     $notice_class = CDBT . '-error';
     
     // Access authentication process to the page
-    $message = $this->access_page_authentication( [ 'change_table', 'view_data', 'entry_data', 'edit_data' ] );
+    $message = $this->access_page_authentication( [ 'change_table', 'view_data', 'entry_data', 'edit_data', 'download_binary' ] );
     if (!empty($message)) {
       $this->register_admin_notices( $notice_class, $message, 3, true );
       return;
@@ -1399,6 +1402,10 @@ final class CdbtAdmin extends CdbtDB {
         
         $table_name = $_POST['table'];
         $post_data = $_POST[$this->domain_name];
+        foreach($post_data as $_k => $_v) {
+          if ('' === $_v || is_null($_v)) 
+            unset($post_data[$_k]);
+        }
         unset($this->cdbt_sessions[__FUNCTION__]);
         $this->cdbt_sessions[$_POST['active_tab']] = [
           'target_table' => $table_name, 
@@ -1437,6 +1444,14 @@ final class CdbtAdmin extends CdbtDB {
         }
         
         break;
+      case 'download_binary': 
+      	$post_data = $_REQUEST[$this->domain_name];
+      	$table_name = trim($post_data['table_name']);
+      	$target_column = trim($post_data['target_column']);
+      	$where_clause = $this->strtohash($post_data['where_clause']);
+      	$this->download_binary( $table_name, $target_column, $where_clause );
+      	
+      	break;
       default:
         $message = __('Illegal operation was called.', CDBT);
         break;
@@ -1728,13 +1743,40 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Edit Data Form', CDBT);
           $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
-//          $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          // $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'delete_data': 
           $args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
           $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
+        case 'image_preview': 
+          $args['modalTitle'] = __('Preview Image', CDBT);
+          $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          break;
+        case 'binary_downloader': 
+          $args['modalTitle'] = __('Describe File Information', CDBT);
+          $_table_name = trim($args['modalExtras']['table_name']);
+          $_target_column = trim($args['modalExtras']['target_column']);
+          $_where_clause = $this->strtohash($args['modalExtras']['where_clause']);
+          $ret = $this->array_flatten($this->get_data($_table_name, $_target_column, $_where_clause, null, 1, ARRAY_A));
+          if (array_key_exists($_target_column, $ret)) {
+            $_bin_array = unserialize($ret[$_target_column]);
+            unset($_bin_array['bin_data']);
+          }
+          $info_html = '<table class="table table-bordered describe-file-info"><tbody>%s</tbody></table>';
+          $inner_line_tmpl = '<tr><th>%s</th><td>%s</td></tr>';
+          $inner_lines = [];
+          $inner_lines[] = sprintf($inner_line_tmpl, __('File Name', CDBT), rawurldecode($_bin_array['origin_file']));
+          $inner_lines[] = sprintf($inner_line_tmpl, __('MIME Type', CDBT), $_bin_array['mime_type']);
+          $inner_lines[] = sprintf($inner_line_tmpl, __('File Size', CDBT), $this->convert_filesize($_bin_array['file_size']));
+          $inner_lines[] = sprintf($inner_line_tmpl, __('File Hash', CDBT), esc_attr($_bin_array['hash']));
+          $download_url = '/index.php?cdbt_api_key=%s&cdbt_table=%s&cdbt_api_request=binary_download&column=%s&conditions={%s}&hash=%s';
+          $download_url = sprintf($download_url, wp_create_nonce( 'cdbt_api_ownhost-' . $_table_name ), $_table_name, $_target_column, $args['modalExtras']['where_clause'], esc_attr($_bin_array['hash']));
+          $args['modalBody'] = sprintf($info_html, implode("\n", $inner_lines));
+          $args['modalFooter'] = [ sprintf('<a href="%s" id="run_download_file" class="btn btn-primary">%s</a>', $download_url, __('Download', CDBT)), ];
+          //$args['modalShowEvent'] = "$('#run_download_file').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'delete_shortcode': 
           $_current_shortcode = $this->get_shortcode_option($args['modalExtras']['target_scid']);
@@ -1763,18 +1805,18 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = '<iframe src="'. $args['modalExtras']['request_uri'] .'" style="width: 100%; height: 100%; overflow: hidden;"></iframe>';
           break;
         case 'table_creator': 
-        	$conponent_options = [
-        	  'targetTable' => isset($args['modalExtras']['target_table']) ? $args['modalExtras']['target_table'] : '', 
+          $conponent_options = [
+            'targetTable' => isset($args['modalExtras']['target_table']) ? $args['modalExtras']['target_table'] : '', 
             'columnDefinitions' => isset($args['modalExtras']['column_definitions']) ? $args['modalExtras']['column_definitions'] : '', 
           ];
-        	ob_start();
-        	$this->component_render('table_creator', $conponent_options); // by trait `DynamicTemplate`
-        	$_component = ob_get_contents();
-        	ob_end_clean();
-        	$args['modalTitle'] = __('Table Creator', CDBT);
+          ob_start();
+          $this->component_render('table_creator', $conponent_options); // by trait `DynamicTemplate`
+          $_component = ob_get_contents();
+          ob_end_clean();
+          $args['modalTitle'] = __('Table Creator', CDBT);
           $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings when you click of "Apply SQL". Then it is never lost if you close this modal window.', CDBT) . '</p>' . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
-        	break;
+          break;
         default:
           break;
       }

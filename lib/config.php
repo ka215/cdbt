@@ -90,6 +90,7 @@ class CdbtConfig extends CdbtCore {
       'timezone' => $default_timezone, 
       'default_db_engine' => '', // add new from ver.2
       'default_per_records' => 10, // add new from ver.2
+      'allow_rendering_shortcodes' => true, // add new from ver.2
       'tables' => [
         [
           'table_name' => '', // table name

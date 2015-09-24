@@ -37,6 +37,7 @@
  *     'pattern' => () Enable if element type is text, search, url, tel, email, password
  *     'size' => () Enable if element type is text, search, url, tel, email, password
  *     'rows' => (integer) Enable only if element type is textarea
+ *     'datetime' => (bool) Enable if element type is datetime, date
  *     'data-moment-locale' => (string) l18n location name; cf. `en`, `fr`,... For default is `en`
  *     'data-moment-format' => (string) Date format for `moment.js`, for default is `L`
  *     ]
@@ -291,18 +292,21 @@ search, datetime, date, month, week, time, color
         $index_num = 0;
         $is_horizontal = $element['horizontalList'];
         $default_values = $this->strtoarray($element['defaultValue']);
+        $is_multiple = count($selectable_list) > 1 ? true : false;
+        $add_classes = $is_required ? $element['addClass'] . ' required' : $element['addClass'];
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
       <div class="col-sm-10">
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
-        <?php if (!$is_horizontal) : ?><div class="checkbox <?php esc_attr_e($element['addClass']); ?>"><?php endif; ?>
-          <label class="checkbox-custom<?php if ($is_horizontal) : ?> checkbox-inline<?php esc_attr_e($element['addClass']); endif; ?>" data-initialize="checkbox" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
+        <?php if (!$is_horizontal) : ?><div class="checkbox<?php /* echo esc_attr($add_classes); */ ?>"><?php endif; ?>
+          <label class="checkbox-custom<?php if ($is_horizontal) : ?> checkbox-inline<?php endif; ?><?php if ($is_multiple) : ?> multiple<?php endif; ?><?php echo esc_attr($add_classes); ?>" data-initialize="checkbox" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="checkbox" value="<?php esc_attr_e($list_value); ?>"<?php if (is_array($default_values) && in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
             <span class="checkbox-label"><?php esc_html_e($list_label); ?></span>
           </label>
         <?php if (!$is_horizontal) : ?></div><?php endif; ?>
       <?php endforeach; ?>
+      <?php if ($is_multiple) : ?><input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][checked]" value="0"><?php endif; ?>
       <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
       </div>
     </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
@@ -349,16 +353,18 @@ search, datetime, date, month, week, time, color
         unset($checked);
         break;
       case 'file': 
+        $is_fileupsize = isset($element['elementExtras']['maxlength']) && !empty($element['elementExtras']['maxlength']) ? true : false;
         if (!empty($element['defaultValue'])) {
-        	$_file_type = $this->check_binary_data($element['defaultValue']);
+          $_file_type = $this->check_binary_data($element['defaultValue']);
           $_binary_array = $this->esc_binary_data($element['defaultValue']);
           if ('image' === $_file_type) {
             $_image_src = sprintf( 'data:%s;base64, %s', $_binary_array['mime_type'], $_binary_array['bin_data'] );
             $add_field = sprintf( '<input class="hidden hidden-field" type="hidden" name="%s[%s-cache]" value="%s">', $this->domain_name, esc_attr($element['elementName']), $_binary_array['bin_data'] );
-            $add_field .= sprintf( '<div class="current-image-thumbnail" style="display: inline-block;"><img src="%s" class="img-thumbnail" style="height: 64px;"> <small>%s (%s)</small></div>', $_image_src, $_binary_array['origin_file'], $this->convert_filesize($_binary_array['file_size']) );
+            $add_field .= sprintf( '<div class="current-image-thumbnail" style="display: inline-block;"><img src="%s" class="img-thumbnail" style="height: 64px;"> <small>%s (%s)</small></div>', $_image_src, rawurldecode($_binary_array['origin_file']), $this->convert_filesize($_binary_array['file_size']) );
           } else {
             $add_field = sprintf( '<input class="hidden hidden-field" type="hidden" name="%s[%s-cache]" value="%s">', $this->domain_name, esc_attr($element['elementName']), $_binary_array['bin_data'] );
-            $add_field .= sprintf( '<div class="current-binary-filename pull-left" style="display: inline-block;"><small>%s (%s)</small></div>', $_binary_array['origin_file'], $this->convert_filesize($_binary_array['file_size']) );
+            $icon_type = in_array($_file_type, ['audio', 'excel', 'movie', 'pdf', 'powerpoint', 'sound', 'text', 'video', 'word', 'zip' ]) ? $_file_type . '-o' : 'o';
+            $add_field .= sprintf( '<div class="current-binary-filename pull-left" style="display: inline-block;"><i class="fa fa-file-%s"></i> <small>%s (%s)</small></div>', $icon_type, rawurldecode($_binary_array['origin_file']), $this->convert_filesize($_binary_array['file_size']) );
           }
         } else {
           $add_field = sprintf( '<input class="hidden hidden-field" type="hidden" name="%s[%s-cache]" value="%s">', $this->domain_name, esc_attr($element['elementName']), $element['defaultValue'] );
@@ -366,10 +372,11 @@ search, datetime, date, month, week, time, color
 ?>
     <div class="form-group">
       <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
-      <div class="col-sm-5">
-        <input class="<?php esc_attr_e($element['addClass']); ?>" type="file" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]">
+      <div class="col-sm-9">
+        <input class="<?php esc_attr_e($element['addClass']); ?>" type="file" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]"<?php if ($is_required) : ?> required<?php endif; ?>>
+        <?php if ($is_fileupsize) : ?><p class="help-block"><?php printf(__('Notice: Maximum upload file size is %s.', CDBT), '<strong>'. $element['elementExtras']['maxlength'] .'</strong>'); ?></p><?php endif; ?>
       </div>
-      <div class="col-sm-5">
+      <div class="col-sm-offset-2 col-sm-9">
       <?php echo $add_field; ?>
       </div>
     <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
@@ -402,7 +409,11 @@ search, datetime, date, month, week, time, color
           [ 'fullname' => __('Saturday', CDBT), 'aliase' => __('Sa', CDBT) ], 
         ];
         if (!empty($element['defaultValue'])) {
-          list($_date, $_time) = explode(' ', $element['defaultValue']);
+          $_parse_vars = explode(' ', $element['defaultValue']);
+          if (array_key_exists(1, $_parse_vars)) {
+            $_time = $_parse_vars[1];
+          }
+          $_date = $_parse_vars[0];
           if ('0000-00-00' !== $_date) {
             list($_year, $_month, $_day) = explode('-', $_date);
             $default_date = sprintf('%s/%s/%s', $_month, $_day, $_year);
@@ -415,6 +426,11 @@ search, datetime, date, month, week, time, color
           list($_hour, $_minute, $_second) = explode(':', $_time);
         } else {
           $_hour = $_minute = $_second = 0;
+        }
+        if (isset($element['elementExtras']['datetime']) && $this->strtobool($element['elementExtras']['datetime'])) {
+          $toggle_datetime = '';
+        } else {
+          $toggle_datetime = ' style="visibility: hidden;"';
         }
 ?>
     <div class="form-group">
@@ -478,8 +494,8 @@ search, datetime, date, month, week, time, color
             </div>
           </div><!-- /date-picker -->
         </div>
-        <div class="clock-mark pull-left"><span class="glyphicon glyphicon-time text-muted"></span></div>
-        <div class="col-sm-2 pull-left datepicker-combobox-hour">
+        <div class="clock-mark pull-left"<?php echo $toggle_datetime; ?>><span class="glyphicon glyphicon-time text-muted"></span></div>
+        <div class="col-sm-2 pull-left datepicker-combobox-hour"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][hour]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
@@ -492,8 +508,8 @@ search, datetime, date, month, week, time, color
             </div>
           </div><!-- /hour-combobox -->
         </div>
-        <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
-        <div class="col-sm-2 pull-left datepicker-combobox-minute">
+        <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
+        <div class="col-sm-2 pull-left datepicker-combobox-minute"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][minute]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
@@ -506,8 +522,8 @@ search, datetime, date, month, week, time, color
             </div>
           </div><!-- /minute-combobox -->
         </div>
-        <p class="help-block pull-left"><b class="time-separater text-muted">:</b></p>
-        <div class="col-sm-2 pull-left datepicker-combobox-second">
+        <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
+        <div class="col-sm-2 pull-left datepicker-combobox-second"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][second]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">

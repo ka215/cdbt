@@ -365,7 +365,7 @@ doTableCreator = function(){
   function switchingDefaultCell( selectedItem, targetRowId ) {
     
     var targetRow = 'preset' === targetRowId ? $('tr.preset>td.default') : $('tr[data-id='+ targetRowId +']>td.default');
-    if ('set' !== selectedItem) {
+    if (!_.contains([ 'tinytext', 'text', 'mediumtext', 'longtext', 'tinyblob', 'blob', 'mediumblob', 'longblob', 'set' ], selectedItem)) {
       $('.default').show();
       targetRow.find('.cdbt_tc_default').css({ display: 'table' });
       targetRow.parent('tr').attr('data-default-cell', 'on');
@@ -553,13 +553,24 @@ doTableCreator = function(){
         sizing = "'" + values.join("','") + "'";
       } else
       if (_.isArray(column_type.arg_type)) {
+// console.info([ column.precision_scale_m, column.precision_scale_d, column_type.default ]);
         if ('scale' === column_type.arg_type[1]) {
-          sizing = '' !== column.precision_scale_m ? column.precision_scale_m : column_type.default[0];
-          if ('' !== column.precision_scale_d) {
-            sizing += ',' + column.precision_scale_d;
-          } else
-          if ('' !== column_type.default[1]) {
-            sizing += ',' + column_type.default[1];
+        	var precision_scale_m_default = '';
+        	if (_.isArray(column_type.default) && column_type.default.length > 0) {
+        	  precision_scale_m_default = column_type.default[0];
+        	}
+          sizing = '' !== column.precision_scale_m ? column.precision_scale_m : precision_scale_m_default;
+          if ('' !== sizing) {
+            var precision_scale_d_default = '';
+            if (_.isArray(column_type.default) && column_type.default.length > 1) {
+              precision_scale_d_default = column_type.default[1];
+            }
+            if ('' !== column.precision_scale_d) {
+              sizing += ',' + column.precision_scale_d;
+            } else
+            if ('' !== precision_scale_d_default) {
+              sizing += ',' + precision_scale_d_default;
+            }
           }
         } else {
          if ('' !== column.precision) {
@@ -572,23 +583,27 @@ doTableCreator = function(){
       column.sizing = '' !== sizing ? '(' + sizing + ')' : '';
       column.attributes = '' !== column.attributes ? ' ' + column.attributes.toUpperCase() : '';
       column.not_null = column.not_null ? ' NOT NULL' : '';
+//console.info(column.type_format);
       if ('' !== column.default) {
         var default_prefix = ' DEFAULT ';
-        if ('timestamp' === column.col_name && 'CURRENT_TIMESTAMP' === column.default.toUpperCase()) {
+        if ('timestamp' === column.type_format && 'CURRENT_TIMESTAMP' === column.default.toUpperCase()) {
           column.default = default_prefix + column.default.toUpperCase();
         } else
-        if ('bit' === column.col_name) {
+        if (_.contains(['tinyint', 'smallint', 'mediumint', 'int', 'bigint'], column.type_format)) { // column.type_format.indexOf('int') !== -1
+        	column.default = 'NULL' === column.default.toUpperCase() ? default_prefix + 'NULL' : default_prefix + Number(column.default);
+        } else
+        if ('bit' === column.type_format) {
           var reg = /^(|b\')([0-1]+)(|\')$/;
           if (column.default.match(reg)) {
             column.default = default_prefix + column.default.replace(reg, "b'$2'");
           } else {
-            column.default = '';
+            column.default = default_prefix + 'NULL';
           }
         } else
-        if (_.contains(['timestamp', 'year', 'bool', 'boolean'], column.col_name) || column.col_name.indexOf('int') !== -1) {
+        if (_.contains(['timestamp', 'year', 'bool', 'boolean'], column.type_format)) {
           column.default = default_prefix + Number(column.default);
         } else {
-          column.default = default_prefix + "'" + column.default + "'";
+          column.default = 'NULL' === column.default.toUpperCase() ? default_prefix + 'NULL' : default_prefix + "'" + column.default + "'";
         }
       }
       column.auto_increment = column.auto_increment ? ' AUTO_INCREMENT' : '';

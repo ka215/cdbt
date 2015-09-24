@@ -845,7 +845,21 @@ class CdbtDB extends CdbtConfig {
       if (in_array('update', $is_auto_add_column) && 'update' === $column) 
         continue;
       
-      $insert_data[$column] = $value;
+      if ('' === $value || is_null($value)) {
+        if ($table_schema[$column]['not_null']) {
+          if ('' === $table_schema[$column]['default'] || is_null($table_schema[$column]['default'])) {
+            $insert_data = [];
+            break;
+          } else {
+            $insert_data[$column] = $table_schema[$column]['default'];
+          }
+        } else {
+          continue;
+        }
+      } else {
+        $insert_data[$column] = $value;
+      }
+      
       if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
         $field_format[$column] = '%d';
       } else
@@ -917,6 +931,7 @@ class CdbtDB extends CdbtConfig {
     $foreign_keys = [];
     $unique_keys = [];
     $surrogate_key = '';
+    $is_update_to_null = false;
     $is_exists_updated = false;
     foreach ($table_schema as $column => $scheme) {
       if ($scheme['primary_key']) 
@@ -979,30 +994,41 @@ class CdbtDB extends CdbtConfig {
       if ($is_exists_updated && 'update' === $column) 
         continue;
       
-      $data[$column] = $value;
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
-        $data_field_format[$column] = '%d';
-      } else
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
-        $data_field_format[$column] = '%f';
+      if ('' === $value || 'null' === $value || is_null($value)) {
+        if (is_null($table_schema[$column]['default']) || 'NULL' === strtoupper($table_schema[$column]['default'])) {
+          $data[$column] = 'NULL';
+          $is_update_to_null = true;
+        } else {
+          $data[$column] = $table_schema[$column]['default'];
+        }
       } else {
-        $data_field_format[$column] = '%s';
+        $data[$column] = $value;
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+          $data_field_format[$column] = '%d';
+        } else
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+          $data_field_format[$column] = '%f';
+        } else {
+          $data_field_format[$column] = '%s';
+        }
       }
     }
+    
     $where_data = [];
     $where_field_format = [];
     foreach ($_update_where as $column => $value) {
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
-        $where_field_format[$column] = '%d';
-        $where_data[$column] = intval($value);
-      } else
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
-        $where_field_format[$column] = '%f';
-        $where_data[$column] = floatval($value);
-      } else {
-        $where_field_format[$column] = '%s';
-        $where_data[$column] = esc_sql(strval(rawurldecode($value)));
-      }
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+          $where_field_format[$column] = '%d';
+          $where_data[$column] = intval($value);
+        } else
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+          $where_field_format[$column] = '%f';
+          $where_data[$column] = floatval($value);
+        } else {
+          $where_field_format[$column] = '%s';
+          $where_data[$column] = esc_sql(strval(rawurldecode($value)));
+        }
+        
     }
     
     // Check of any duplicate records if table has no primary key
@@ -1017,6 +1043,9 @@ class CdbtDB extends CdbtConfig {
     
     // Main processing of data update
     $_diff_result = array_diff_key($data, $data_field_format);
+    if ($is_update_to_null) {
+      add_filter('query', array($this, 'update_at_null_data'));
+    }
     if (empty($_diff_result)) {
       $_diff_result = array_diff_key($where_data, $where_field_format);
       if (empty($_diff_result)) {
@@ -1026,6 +1055,9 @@ class CdbtDB extends CdbtConfig {
       }
     } else {
       $result = $this->wpdb->update( $table_name, $data, $where_data );
+    }
+    if ($is_update_to_null) {
+      remove_filter('query', array($this, 'update_at_null_data'));
     }
     $retvar = $this->strtobool($result);
     if (!$retvar) {
@@ -1040,6 +1072,17 @@ class CdbtDB extends CdbtConfig {
     do_action( 'cdbt_after_updated_data', $retvar, $table_name, $data, $where_data );
     
     return $retvar;
+    
+  }
+  
+  /**
+   * Filter the update query if it contains a null in modify data values.
+   *
+   * @since 2.0.0
+   */
+  public function update_at_null_data( $query ) {
+    
+    return str_ireplace( "'NULL'", 'NULL', $query );
     
   }
   
@@ -1165,16 +1208,20 @@ class CdbtDB extends CdbtConfig {
     $delete_where = [];
     $field_format = [];
     foreach ($_deletion_where as $column => $value) {
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
-        $field_format[$column] = '%d';
-        $delete_where[$column] = intval($value);
-      } else
-      if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
-        $field_format[$column] = '%f';
-        $delete_where[$column] = floatval($value);
+      if ('null' === $value || is_null($value)) {
+        continue;
       } else {
-        $field_format[$column] = '%s';
-        $delete_where[$column] = esc_sql(strval(rawurldecode($value)));
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'integer' )) {
+          $field_format[$column] = '%d';
+          $delete_where[$column] = intval($value);
+        } else
+        if ($this->validate->check_column_type( $table_schema[$column]['type'], 'float' )) {
+          $field_format[$column] = '%f';
+          $delete_where[$column] = floatval($value);
+        } else {
+          $field_format[$column] = '%s';
+          $delete_where[$column] = esc_sql(strval(rawurldecode($value)));
+        }
       }
     }
     
@@ -1436,7 +1483,13 @@ class CdbtDB extends CdbtConfig {
     $register_data = [];
     foreach ($post_data as $post_key => $post_value) {
       if (array_key_exists($post_key, $table_schema)) {
+        if ('' === $post_value || is_null($post_value)) {
+          $register_data[$post_key] = null;
+          continue;
+        }
+      	
         $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
+//var_dump([ $detect_column_type, $table_schema[$post_key]['type'] ]);
         
         if (array_key_exists('char', $detect_column_type)) {
           if (array_key_exists('text', $detect_column_type)) {
@@ -1468,7 +1521,11 @@ class CdbtDB extends CdbtConfig {
           } else
           if (array_key_exists('binary', $detect_column_type)) {
             // Sanitization data of bainary bit
-            $register_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+            if (in_array($post_value, [0, 1, '0', '1', true, false, 'true', 'false'])) {
+              $register_data[$post_key] = $this->strtobool($post_value);
+            } else {
+              $register_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+            }
           } else {
             $register_data[$post_key] = intval($post_value);
           }
@@ -1499,64 +1556,97 @@ class CdbtDB extends CdbtConfig {
         
         if (array_key_exists('datetime', $detect_column_type)) {
           if (is_array($post_value)) {
-            // Validation data of date
-            if (array_key_exists('date', $post_value)) {
-              if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
-                $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
-              } else {
-                $_date = $post_value['date'];
-              }
-            } else {
-              $_date = '';
-            }
-            // Validation data of time
-            $_hour = $_minute = $_second = '00';
-            foreach (['hour', 'minute', 'second'] as $key) {
-              if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
-                if ('hour' === $key) {
-                  $_hour = $this->validate->checkRange(intval($post_value[$key]), 0, 23) ? $post_value[$key] : '00';
+            if (in_array($detect_column_type['datetime'], [ 'date', 'datetime' ])) {
+              // Validation data of date
+              if (array_key_exists('date', $post_value)) {
+                if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $post_value['date'], $matches) && is_array($matches) && array_key_exists(3, $matches)) {
+                  $_date = sprintf('%04d-%02d-%02d', $matches[3], $matches[1], $matches[2]);
                 } else {
-                  if ('minute' === $key) {
-                    $_minute = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                  $_date = $post_value['date'];
+                }
+              } else {
+                $_date = '';
+              }
+              // Validation data of time
+              $_hour = $_minute = $_second = '00';
+              foreach (['hour', 'minute', 'second'] as $key) {
+                if (array_key_exists($key, $post_value) && $this->validate->checkDigit($post_value[$key]) && $this->validate->checkLength($post_value[$key], 2, 2)) {
+                  if ('hour' === $key) {
+                    $_hour = $this->validate->checkRange(intval($post_value[$key]), 0, 23) ? $post_value[$key] : '00';
                   } else {
-                    $_second = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                    if ('minute' === $key) {
+                      $_minute = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                    } else {
+                      $_second = $this->validate->checkRange(intval($post_value[$key]), 0, 59) ? $post_value[$key] : '00';
+                    }
                   }
                 }
               }
-            }
-            // Rasterization data of datetime
-            if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
-              $register_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
+              // Rasterization data of datetime
+              if (isset($_date) && isset($_hour) && isset($_minute) && isset($_second)) {
+                $register_data[$post_key] = sprintf('%s %s:%s:%s', $_date, $_hour, $_minute, $_second);
+              } else {
+                $_datetime = $_date . $_hour . $_minute . $_second;
+                $register_data[$post_key] = !empty($_datetime) ? $_datetime : $table_schema[$post_key]['default'];
+              }
             } else {
-              $_datetime = $_date . $_hour . $_minute . $_second;
-              $register_data[$post_key] = !empty($_datetime) ? $_datetime : $table_schema[$post_key]['default'];
+              $register_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
+            }
+//var_dump([ $post_key, $post_value, $register_data ]);
+            // Validation data of datetime
+            if (!$this->validate->checkDateTime($register_data[$post_key], 'Y-m-d H:i:s')) {
+              $register_data[$post_key] = '0000-00-00 00:00:00';
+            }
+            
+            $_prev_timezone = date_default_timezone_get();
+            // Filter for localize the datetime at the timezone specified by options
+            //
+            // @since 2.0.0
+            $_localize_timezone = apply_filters( 'cdbt_local_timezone_datetime', $this->options['timezone'] );
+            date_default_timezone_set( $_localize_timezone );
+            
+            $_timestamp = '0000-00-00 00:00:00' === $register_data[$post_key] ? date_i18n('U') : strtotime($register_data[$post_key]);
+            $register_data[$post_key] = date_i18n( 'Y-m-d H:i:s', $_timestamp );
+            
+            date_default_timezone_set( $_prev_timezone );
+            unset($_date, $_hour, $_minute, $_second, $_prev_timezone, $_localize_timezone, $_timestamp);
+          } else
+          if (in_array($detect_column_type['datetime'], [ 'year', 'timestamp' ])) {
+            if ('year' === $detect_column_type['datetime']) {
+              if (strlen($post_value) === 4 && preg_match('/^[0-9]{4}$/', $post_value)) {
+                $register_data[$post_key] = $post_value;
+              } else
+              if (strlen($post_value) === 2 && preg_match('/^[0-9]{2}$/', $post_value)) {
+                $register_data[$post_key] = $post_value;
+              } else {
+                $register_data[$post_key] = '00';
+              }
+            }
+            if ('timestamp' === $detect_column_type['datetime']) {
+              // Sanitization data of integer
+              if (preg_match('/^[0-9]{1,10}$/', $post_value)) {
+                $_timestamp = '0000-00-00 00:00:00' === $post_value ? date_i18n('U') : strtotime($post_value);
+                $register_data[$post_key] = $_timestamp;
+              } else {
+                $register_data[$post_key] = time();
+              }
             }
           } else {
-            $register_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
+            if (preg_match('/^[0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}$/', $post_value)) {
+              $register_data[$post_key] = $post_value;
+            } else {
+          	  $register_data[$post_key] = '00:00:00';
+          	}
           }
-          // Validation data of datetime
-          if (!$this->validate->checkDateTime($register_data[$post_key], 'Y-m-d H:i:s')) {
-            $register_data[$post_key] = '0000-00-00 00:00:00';
-          }
-          
-          $_prev_timezone = date_default_timezone_get();
-          // Filter for localize the datetime at the timezone specified by options
-          //
-          // @since 2.0.0
-          $_localize_timezone = apply_filters( 'cdbt_local_timezone_datetime', $this->options['timezone'] );
-          date_default_timezone_set( $_localize_timezone );
-          
-          $_timestamp = '0000-00-00 00:00:00' === $register_data[$post_key] ? date_i18n('U') : strtotime($register_data[$post_key]);
-          $register_data[$post_key] = date_i18n( 'Y-m-d H:i:s', $_timestamp );
-          
-          date_default_timezone_set( $_prev_timezone );
-          unset($_date, $_hour, $_minute, $_second, $_prev_timezone, $_localize_timezone, $_timestamp);
         }
         
         if (array_key_exists('file', $detect_column_type)) {
           // Check the `$_FILES`
-          var_dump($detect_column_type['file']); // debug code
+          //var_dump($detect_column_type['file']); // debug code
         }
+        
+      } else {
+        
         
       }
     }

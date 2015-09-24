@@ -66,6 +66,7 @@ trait CdbtExtras {
       'hosts_list', 
       'apikey_generator', 
       'apikey_requests', 
+      'allow_rendering_shortcodes', 
       'include_assets', 
     ];
     if (in_array($feature_name, $new_features)) {

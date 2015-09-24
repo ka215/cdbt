@@ -167,6 +167,25 @@ trait CdbtShortcodes {
   
   
   /**
+   * Check the allowed rendering range of shortcode
+   *
+   * @since 2.0.0
+   *
+   * @return boolean $is_allowed
+   **/
+  public function check_allowed_rendering_shortcode() {
+    $is_allowed = true;
+    
+    if (!is_admin()) {
+      if (isset($this->options['allow_rendering_shortcodes']) && $this->strtobool($this->options['allow_rendering_shortcodes']) && !is_singular()) 
+        $is_allowed = false;
+    }
+    
+    return $is_allowed;
+  }
+  
+  
+  /**
    * Retrieve a table data that match the specified conditions, then it outputs as list
    *
    * @since 1.0.0
@@ -210,14 +229,18 @@ trait CdbtShortcodes {
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
     
+    if (!$this->check_allowed_rendering_shortcode()) 
+      return;
+    
     // Initialization process for the shortcode
     $shortcode_name = 'cdbt-view';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $has_bin = [];
+    $pk_columns = $has_bin = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
+      $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
       foreach ($table_schema as $column => $scheme) {
         if ($this->validate->check_column_type($scheme['type'], 'blob')) 
@@ -229,8 +252,10 @@ trait CdbtShortcodes {
         if ($this->validate->check_column_type($scheme['type'], 'binary')) 
           $has_bit[] = $column;
         
-        if ($this->validate->check_column_type($scheme['type'], 'datetime')) 
-        	$has_datetime[] = $column;
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+          if (in_array($scheme['type'], [ 'date', 'datetime', 'timestamp' ])) 
+            $has_datetime[] = $column;
+        }
         
       }
     } else {
@@ -241,6 +266,7 @@ trait CdbtShortcodes {
       foreach ($table_schema as $column => $scheme) {
         if ($scheme['primary_key']) {
           $has_pk = true;
+          $pk_columns[] = $column;
           break;
         }
         if ($this->validate->check_column_type($scheme['type'], 'blob')) {
@@ -440,23 +466,28 @@ trait CdbtShortcodes {
     // If contain binary data in the datasource
     if (!empty($has_bin)) {
       $custom_row_scripts = [];
+      if ($has_pk) {
+        
+      }
       foreach ($datasource as $i => $row_data) {
         foreach ($has_bin as $col_name) {
           if (array_key_exists($col_name, $row_data)) {
             if ('image' === $this->check_binary_data($row_data[$col_name])) {
               $row_data[$col_name] = sprintf('data:%s;base64,%s', $this->esc_binary_data($row_data[$col_name], 'mime_type'), $this->esc_binary_data($row_data[$col_name], 'bin_data') );
-              $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<a href="#" class="modal-preview"><img src="\' + rowData.'. $col_name .' + \'" class="img-'. $image_render .'"></a>\' : \'\'';
-              // $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
-              // $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<div class="lazy-loading-image"><input type="hidden"value="\' + rowData.'. $col_name .' + \'"></div>\' : \'\'';
               if (is_admin() && empty($thumbnail_column)) {
                 $display_view = true;
                 $thumbnail_column = $col_name;
-                $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name);
               }
+              $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name);
             } else {
               $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
-              // $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<a href="#" class="modal-download">rowData.'. $col_name .'</a>\' : \'<img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">\'';
             }
+            $_where_conditions = [];
+            if ($has_pk) {
+              $_where_conditions = $pk_columns;
+            }
+            $_render_script_base = 'rowData.%s !== false ? \'<a href="javascript:;" class="binary-data modal-preview" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData.%s + \'" data-class="img-%s"></a>\' : \'\'';
+            $custom_column_renderer[$col_name] = sprintf($_render_script_base, $col_name, $col_name, implode(',', $_where_conditions), $col_name, $image_render);
             $datasource[$i] = $row_data;
           } else {
             $custom_column_renderer[$col_name] = '';
@@ -635,6 +666,9 @@ trait CdbtShortcodes {
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
     
+    if (!$this->check_allowed_rendering_shortcode()) 
+      return;
+    
     // Initialization process for the shortcode
     $shortcode_name = 'cdbt-entry';
     $table_schema = $this->get_table_schema($table);
@@ -760,7 +794,7 @@ trait CdbtShortcodes {
           $input_type = 'number';
           if ($scheme['unsigned']) 
             $min = 0;
-          $element_size = ceil($scheme['max_length'] / 10);
+          $element_size = ceil($scheme['max_length'] / 10) + 1;
           $pattern = $scheme['unsigned'] ? '^[0-9]+$' : '^(\-|)[0-9]+$';
         } else
         if (array_key_exists('binary', $detect_column_type)) {
@@ -783,7 +817,19 @@ trait CdbtShortcodes {
         unset($list_value);
       } else
       if (array_key_exists('datetime', $detect_column_type)) {
-        $input_type = 'timestamp' === $detect_column_type['datetime'] ? 'number' : 'datetime';
+        if (in_array($detect_column_type['datetime'], [ 'timestamp', 'year' ])) {
+          $input_type = 'number';
+          $element_size = ceil($scheme['max_length'] / 10) + 1;
+          $pattern = '^[0-9]+$';
+        } else
+        if ('time' === $detect_column_type['datetime']) {
+          $input_type = 'text';
+          $element_size = 3;
+          $pattern = '^[0-9]{1,2}\:[0-9]{1,2}\:[0-9]{1,2}$';
+        } else {
+          $input_type = 'datetime';
+          $is_datetime = 'datetime' === $detect_column_type['datetime'] ? true : false;
+        }
       } else {
         $input_type = 'text';
       }
@@ -808,7 +854,11 @@ trait CdbtShortcodes {
         $_temp_elements_options['elementExtras']['pattern'] = $pattern;
       if (isset($rows) && !empty($rows)) 
         $_temp_elements_options['elementExtras']['rows'] = $rows;
+      if (isset($max_file_size) && !empty($max_file_size)) 
+        $_temp_elements_options['elementExtras']['maxlength'] = $this->convert_filesize($max_file_size);
       if ('datetime' === $input_type) {
+        if (isset($is_datetime) && !empty($is_datetime)) 
+          $_temp_elements_options['elementExtras']['datetime'] = $is_datetime ? 'true' : 'false';
         $_temp_elements_options['elementExtras']['data-moment-locale'] = 'ja';
         $_temp_elements_options['elementExtras']['data-moment-format'] = 'L';
       }
@@ -892,14 +942,18 @@ trait CdbtShortcodes {
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
     
+    if (!$this->check_allowed_rendering_shortcode()) 
+      return;
+    
     // Initialization process for the shortcode
     $shortcode_name = 'cdbt-edit';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $has_bin = $has_list = $has_bit = $has_datetime = [];
+    $pk_columns = $has_bin = $has_list = $has_bit = $has_datetime = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
+      $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = intval($table_option['show_max_records']);
       foreach ($table_schema as $column => $scheme) {
         if ($this->validate->check_column_type($scheme['type'], 'blob')) 
@@ -911,8 +965,10 @@ trait CdbtShortcodes {
         if ($this->validate->check_column_type($scheme['type'], 'binary')) 
           $has_bit[] = $column;
         
-        if ($this->validate->check_column_type($scheme['type'], 'datetime')) 
-        	$has_datetime[] = $column;
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+          if (in_array($scheme['type'], [ 'date', 'datetime', 'timestamp' ])) 
+            $has_datetime[] = $column;
+        }
         
       }
     } else {
@@ -923,6 +979,7 @@ trait CdbtShortcodes {
       foreach ($table_schema as $column => $scheme) {
         if ($scheme['primary_key']) {
           $has_pk = true;
+          $pk_columns[] = $column;
           break;
         }
         if ($this->validate->check_column_type($scheme['type'], 'blob')) {
@@ -1035,13 +1092,17 @@ trait CdbtShortcodes {
           if (array_key_exists($col_name, $row_data)) {
             if ('image' === $this->check_binary_data($row_data[$col_name])) {
               $row_data[$col_name] = sprintf('data:%s;base64,%s', $this->esc_binary_data($row_data[$col_name], 'mime_type'), $this->esc_binary_data($row_data[$col_name], 'bin_data') );
-              $custom_column_renderer[$col_name] = '\'<a href="#" class="modal-preview"><img src="\' + rowData.'. $col_name .' + \'" class="img-'. $image_render .'"></a>\'';
-              // $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
-              // $custom_column_renderer[$col_name] = 'rowData.'. $col_name .' !== false ? \'<div class="lazy-loading-image"><input type="hidden"value="\' + rowData.'. $col_name .' + \'"></div>\' : \'\'';
+              // $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name);
             } else {
               $_temp = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
               $row_data[$col_name] = !$_temp ? '' : $_temp;
             }
+            $_where_conditions = [];
+            if ($has_pk) {
+              $_where_conditions = $pk_columns;
+            }
+            $_render_script_base = 'rowData.%s !== false ? \'<div class="binary-data" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData.%s + \'" data-class="img-%s"></div>\' : \'\'';
+            $custom_column_renderer[$col_name] = sprintf($_render_script_base, $col_name, $col_name, implode(',', $_where_conditions), $col_name, $image_render);
             $datasource[$i] = $row_data;
           } else {
             $custom_column_renderer[$col_name] = '';

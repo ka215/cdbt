@@ -21,6 +21,9 @@ trait CdbtApis {
    * @since 2.0.0
    */
   protected function init_allowed_hosts() {
+    if (!empty($this->array_flatten($_POST))) 
+      return;
+    
     $_api_hosts = ( isset($this->options['api_hosts']) && is_array($this->options['api_hosts']) ) ? $this->options['api_hosts'] : [];
     
     if (isset($this->options['api_key']) && is_array($this->options['api_key']) && !empty($this->options['api_key'])) {
@@ -51,6 +54,7 @@ trait CdbtApis {
         add_action( 'send_headers', array($this, 'allow_host') );
       }
       add_action( 'pre_get_posts', array($this, 'receive_api_request') );
+      
     }
     
   }
@@ -70,8 +74,11 @@ trait CdbtApis {
     
     $new_rules = [
       '^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$' => 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]', 
+      //'^cdbt_api/([^/]*)/([^/]*)/([^/]*)/([^/]*)?$' => 'index.php?cdbt_api_key=$matches[1]&cdbt_table=$matches[2]&cdbt_api_request=$matches[3]&params=$matches[4]', 
     ];
     $wp_rewrite[0]->rules = $new_rules + $wp_rewrite[0]->rules;
+    
+    //add_rewrite_endpoint( 'binary_download', EP_ALL );
   }
   
   
@@ -169,6 +176,10 @@ trait CdbtApis {
                 $allow_args = [ 'primary_key_value' => 'int' ];
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
                 break;
+              case 'binary_download': 
+                $allow_args = [ 'column' => 'string', 'conditions' => 'hash', 'hash' => 'string' ];
+                $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
+              	break;
               default: 
                 $response = [ 'error' => [ 'code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
                 break;
@@ -288,6 +299,9 @@ trait CdbtApis {
         break;
       case 'delete_data': 
         $result = $this->delete_data($target_table, $primary_key_value);
+        break;
+      case 'binary_download': 
+        $result = $this->download_binary($target_table, $column, $conditions);
         break;
       /*
       case 'run_query': 
@@ -449,6 +463,14 @@ trait CdbtApis {
         $result = $client_host === $allowed_host['host_name'];
       if (!$result || !empty($client_addr)) 
         $result = $client_addr === $allowed_host['host_name'];
+    } else {
+      // Allow as myself host when api key is same of nonce.
+      global $wp_query;
+      if (wp_verify_nonce( $api_key, 'cdbt_api_ownhost-' . $wp_query->query['cdbt_table'] )) {
+        $result = true;
+      } else {
+      	$result = false;
+      }
     }
     
     return (isset($result) && $result) ? true : false;

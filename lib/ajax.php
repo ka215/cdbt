@@ -66,13 +66,19 @@ trait CdbtAjax {
       }
     }
     
-    if (!isset($GLOBALS['_REQUEST']['event'])) 
-      $this->ajax_error( __('Ajax event is not specified.', CDBT) );
+    if (!isset($GLOBALS['_REQUEST']['event'])) {
+      if (is_admin()) {
+        $this->ajax_error( __('Ajax event is not specified.', CDBT) );
+      } else {
+        wp_die();
+      }
+    }
     
     $event_method = 'ajax_event_' . rtrim($GLOBALS['_REQUEST']['event']);
     
-    if (!method_exists($this, $event_method)) 
+    if (!method_exists($this, $event_method)) {
       $this->ajax_error( __('Method handling of an Ajax event does not exist.', CDBT) );
+    }
     
     $this->$event_method( $GLOBALS['_REQUEST'] );
     
@@ -118,10 +124,10 @@ trait CdbtAjax {
         $this->destroy_session( $session_key );
         
         foreach ($args as $key => $value) {
-        	if (in_array($key, [ 'action', 'event', '_wpnonce' ])) {
-        	  continue;
-        	}
-        	
+          if (in_array($key, [ 'action', 'event', '_wpnonce' ])) {
+            continue;
+          }
+          
           if ('callback_url' === $key) {
             $callback = sprintf( "location.href = '%s';", $value );
             $this->register_admin_notices( CDBT . '-notice', '', 0, true );
@@ -483,5 +489,23 @@ trait CdbtAjax {
     wp_die($api_key);
   }
   
-
+  
+  /**
+   * Refresh for frontend page via shortcode
+   *
+   * @since 2.0.0
+   *
+   * @param array $args [require] Array of data for setting to session
+   * @return string $callback Like a javascript function
+   */
+  public function ajax_event_reload_page( $args ) {
+    
+    $this->register_admin_notices( CDBT . '-notice', '', 1, true );
+    wp_die('location.href="";');
+    
+  }
+  
+  
+  
+  
 }
