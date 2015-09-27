@@ -385,6 +385,7 @@ final class CdbtAdmin extends CdbtDB {
       'scripts' => [
         // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, false ], 
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, false ], 
+        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', array(), null, false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array(), null, true ], 
         // 'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
         'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
@@ -468,8 +469,6 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_header() {
-    ob_start();
-    
     // Added action hook for using `add_action('cdbt_admin_header')`
     // 
     // @since 2.0.0
@@ -493,8 +492,6 @@ final class CdbtAdmin extends CdbtDB {
     // 
     // @since 1.0.0
     do_action( 'cdbt_admin_footer' );
-    
-    ob_flush();
   }
 
 

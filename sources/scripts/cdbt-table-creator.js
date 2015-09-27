@@ -35,6 +35,13 @@ doTableCreator = function(){
       placeholder: 'ui-state-highlight', 
     }).css({ position: 'relative' });
     $('#sortable').disableSelection();
+    // for Firefox
+    $(document).on('click.sortable mousedown.sortable selectstart.sortable input.sortable', '#sortable input', function(e){
+      e.target.focus();
+    });
+    $('#sortable input').on('mousedown.ui-disableSelection selectstart.ui-disableSelection', function(e){
+      e.stopImmediatePropagation();
+    });
     
     var restoredCache = JSON.parse(localStorage.getItem('cdbt-tc-cache'));
     if (restoredCache !== null && _.isArray(restoredCache) && restoredCache.length > 0) {

@@ -346,3 +346,44 @@ nav#operation-navbar {
   position: absolute;
   display: none;
 }
+
+.cdbt-wizard-content {
+  
+  div.pull-left {
+    margin: 0.5em 1.5em 1.5em 0;
+    text-align: left;
+  }
+  
+  div.pull-right {
+    margin: 0.5em 0 1.5em 1.5em;
+    text-align: right;
+  }
+  
+  .cdbt-short-trip-img {
+    width: auto;
+    height: auto;
+    max-width: 480px;
+    max-height: 240px;
+    border: solid 1px #ddd;
+  }
+  
+  .paragraph-ja {
+    text-indent: 1em;
+  }
+  
+}
+
+.donate-links {
+  
+  li {
+    display: table-cell;
+    width: 257px;
+    vertical-align: middle;
+    text-align: center;
+    
+    &.donate-coinbase {
+      padding-top: 10px;
+    }
+  }
+  
+}

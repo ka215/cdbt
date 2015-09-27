@@ -107,8 +107,10 @@
 
 .repeater-list-heading {
   display: table-cell;
+  /*
   height: 50px;
   min-height: 50px;
+  */
   vertical-align: middle;
   border-bottom: 0!important;
 }
@@ -176,6 +178,12 @@
       float: right!important;
     }
     
+  }
+  
+  .binary-data {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
   }
   
 }
