@@ -21,7 +21,8 @@ trait CdbtApis {
    * @since 2.0.0
    */
   protected function init_allowed_hosts() {
-    if (!empty($this->array_flatten($_POST))) 
+    $chk_post_data = $this->array_flatten($_POST);
+    if (!empty($chk_post_data)) 
       return;
     
     $_api_hosts = ( isset($this->options['api_hosts']) && is_array($this->options['api_hosts']) ) ? $this->options['api_hosts'] : [];
