@@ -63,6 +63,14 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 == Changelog ==
 
+= 2.0.0 =
+* Added a new feature that is able to manage the wordpress core tables.
+* Added a new feature that is able to duplicate specific table.
+* Added a new feature that is able to import and export of using more file types than csv.
+* Changed of outputting list to the repeater component via fuel ux.
+* It was implemented debug mode.
+* Others, have strengthen a variety of features.
+
 = 1.1.15 =
 * Hotfixed a bug that was some leakage to rename the function of "cdbt_sanitize_for_php()".
 
