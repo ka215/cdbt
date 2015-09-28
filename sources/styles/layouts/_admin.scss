@@ -1,0 +1,389 @@
+
+body {
+  background-color: transparent!important;
+}
+
+h3, .h3 {
+  font-size: 22px!important;
+}
+
+h4.title {
+  font-size: 20px!important;
+  padding-bottom: 2px;
+  border-bottom: 1px dotted #ccc;
+}
+
+ol, ul {
+  margin-bottom: 0;
+}
+
+/*
+dd:last-child, li:last-child {
+  margin-bottom: 2px;
+}
+*/
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+  background-color: #f0f0f0;
+}
+
+.navbar-inner-tab {
+  margin-top: 1em;
+  margin-bottom: 0px;
+}
+
+code, kbd, pre, samp {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+#message {
+  display: none;
+  
+  ul {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: $code-string;
+  background-color: $code-back;
+  border-radius: 4px;
+}
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: $code-string;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: $code-back;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+fieldset>label {
+  font-weight: 400!important;
+}
+
+.inline-help {
+  margin-top: 7px;
+  margin-bottom: 8px;
+  text-indent: 1.5em;
+}
+
+.label-default {
+  background-color: $default;
+}
+.label-primary {
+  background-color: $primary;
+}
+.label-success {
+  background-color: $success;
+}
+.label-info {
+  background-color: $info;
+}
+.label-warning {
+  background-color: $warning;
+}
+.label-danger {
+  background-color: $danger;
+}
+
+.nt {
+  color: $nt;
+}
+
+.input-mini {
+  width: 100px;
+}
+
+a.note-link {
+  font-size: 9px;
+  text-decoration: none;
+  color: $default;
+  
+  span {
+    font-size: 16px;
+    margin-top: 2px;
+  }
+}
+
+.foot-note {
+  margin-top: 10px;
+  margin-left: -1em;
+  font-size: 85%;
+  
+  li {
+    color: $default;
+    margin: 0 0 10px;
+  }
+  
+  li span {
+    font-size: 15px;
+  }
+}
+
+div.plugin-meta {
+  position: absolute;
+  top: 23px;
+  right: 28px;
+  font-size: 14px;
+}
+
+.sql-support-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.operate-table-btn-group {
+  margin-right: 10px;
+}
+
+.operate-data-btn-group {
+  margin-left: 10px;
+}
+
+.cdbt-repeater-row {
+  th {
+    position: relative;
+  }
+  
+  td:first-child {
+    position: relative;
+    
+    .cdbt-repeater-left-main, .cdbt-repeater-left-sub {
+      position: absolute;
+      display: table-cell;
+      top: 2px;
+      left: 28px;
+    }
+    
+    .cdbt-repeater-left-sub {
+      display: table-cell;
+      top: 26px;
+      overflow: hidden;
+    }
+  }
+  
+  &:hover {
+    border: solid 2px #e75353;
+    border-width: 2px 2px 2px 1px;
+    
+    &:first-child {
+      border-top-width: 2px;
+    }
+  }
+}
+
+#cdbtAdminTables, 
+#cdbtWpCoreTables, 
+#cdbtShortcodes, 
+#cdbtAllowedHosts {
+  
+  .repeater-list-heading {
+    display: table-cell;
+    background: none!important;
+    background-color: transparent!important;
+    
+    &:hover {
+      background: none!important;
+      background-color: transparent!important;
+    }
+    
+    &.sorted {
+      background-color: $info!important;
+      color: #fff!important;
+      
+      &:hover {
+        background-color: $info!important;
+        color: #fff;
+      }
+    }
+    
+    span.glyphicon {
+      display: block;
+      position: absolute;
+      top: 8px;
+      right: 4px;
+      float: right!important;
+    }
+    
+  }
+}
+
+#cdbtAdminTables, 
+#cdbtWpCoreTables {
+  th {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  td {
+    display: table-cell;
+    vertical-align: middle;
+    
+    &:first-child {
+      display: table;
+    }
+  }
+  
+  .col-tl-tablename { width: 240px; }
+  .col-tl-records { width: 80px; }
+  .col-tl-pk { width: 160px; }
+  .col-tl-charset { width: 100px; }
+  .col-tl-collation { width: 160px; }
+  .col-tl-engine { width: 100px; }
+  .col-tl-ppr { width: 100px; }
+  .col-tl-operation { min-width: 200px; max-width: 100%; }
+  
+  td.col-tl-records, td.col-tl-ppr { text-align: right; }
+  td.col-tl-operation { text-align: center; }
+  
+  .tl-operation-buttons {
+    margin: 0;
+    width: 180px;
+  }
+  
+}
+
+#cdbtShortcodes {
+  
+  th {
+    display: table-cell;
+    vertical-align: middle;
+    height: 50px;
+  }
+  
+  td {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .col-scl-id { width: 80px; text-align: center; }
+  .col-scl-name { width: 300px; }
+  .col-scl-desc { min-width: 200px; }
+  .col-scl-type { width: 100px; }
+  .col-scl-author { width: 120px; }
+  .col-scl-permission { width: 120px; }
+  .col-scl-operation { width: 104px; }
+  
+  td.col-scl-type, td.col-scl-operation { text-align: center; }
+  
+}
+
+#cdbtAllowedHosts {
+  display: table;
+  
+  th {
+    display: table-cell;
+    height: 50px;
+    
+    div.repeater-list-heading {
+      display: block;
+      width: inherit;
+      height: inherit;
+      border: 0;
+      border-left: solid 1px #ddd;
+      background-color: transparent!important;
+      
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+  
+  td {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .col-ahl-id { width: 80px; }
+  .col-ahl-name { width: 200px; }
+  .col-ahl-apikey { min-width: 240px; }
+  .col-ahl-permission { width: 160px; }
+  .col-ahl-generated { min-width: 180px; }
+  .col-ahl-operation { width: 54px; }
+  
+  td.col-ahl-id, td.col-ahl-operation { text-align: center; }
+  
+}
+
+nav#operation-navbar {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.table-responsive>strong {
+  display: block;
+  padding: 5px;
+}
+
+.sub-description-title {
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 8px;
+  margin-bottom: 1em;
+}
+
+.checkbox.highlight, .checkbox-custom.highlight {
+  background-color: transparent;
+}
+
+.debug-section {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.switching-item {
+  position: absolute;
+  display: none;
+}
+
+.cdbt-wizard-content {
+  
+  div.pull-left {
+    margin: 0.5em 1.5em 1.5em 0;
+    text-align: left;
+  }
+  
+  div.pull-right {
+    margin: 0.5em 0 1.5em 1.5em;
+    text-align: right;
+  }
+  
+  .cdbt-short-trip-img {
+    width: auto;
+    height: auto;
+    max-width: 480px;
+    max-height: 240px;
+    border: solid 1px #ddd;
+  }
+  
+  .paragraph-ja {
+    text-indent: 1em;
+  }
+  
+}
+
+.donate-links {
+  
+  li {
+    display: table-cell;
+    width: 257px;
+    vertical-align: middle;
+    text-align: center;
+    
+    &.donate-coinbase {
+      padding-top: 10px;
+    }
+  }
+  
+}

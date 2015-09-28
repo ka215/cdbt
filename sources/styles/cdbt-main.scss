@@ -1,0 +1,18 @@
+@import "common/_variables";
+
+// Automatically injected Bower dependencies via wiredep (never manually edit this block)
+// bower:scss
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "../../bower_components/font-awesome-sass/assets/stylesheets/font-awesome.scss";
+// endbower
+
+@import "common/_global";
+@import "components/_icons";
+@import "components/_forms";
+@import "components/_modals";
+@import "components/_tables";
+@import "components/_repeaters";
+@import "components/_wp-classes";
+@import "layouts/_header";
+@import "layouts/_body";
+@import "layouts/_footer";

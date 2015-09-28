@@ -1,0 +1,79 @@
+.image-icon {
+  position: relative;
+  display: inline-block;
+  margin: 0 1px;
+  text-indent: -9999px;
+  width: 0;
+  height: 0;
+  line-height: 100%;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  &.cdbt-logo {
+    background-image: url(../images/cdbt-logo.svg);
+  }
+  &.cdbt-icon {
+    background-image: url(../images/cdbt-icon.svg);
+  }
+  &.cdbt-icon-db {
+    background-image: url(../images/cdbt-icon-db.svg);
+  }
+  &.cdbt-icon-db-leaf {
+    background-image: url(../images/cdbt-icon-db-leaf.svg);
+  }
+  &.cdbt-icon-v1 {
+    background-image: url(../images/cdbt-icon-v1.svg);
+  }
+  
+  &.square128 {
+    /* xxlarge size */
+    top: 0;
+    width: 128px;
+    height: 128px;
+    line-height: 128px;
+    background-size: 124px 124px;
+  }
+  &.square96 {
+    /* xlarge size */
+    top: 0;
+    width: 96px;
+    height: 96px;
+    line-height: 96px;
+    background-size: 92px 92px;
+  }
+  &.square64 {
+    /* large size */
+    top: 0;
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    background-size: 60px 60px;
+  }
+  &.square32 {
+    /* for inner h2 tag */
+    top: 8px;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    background-size: 28px 28px;
+  }
+  &.square26 {
+    /* for inner h4 tag */
+    top: 5px;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    background-size: 23px 23px;
+  }
+  &.square22 {
+    /* for normal */
+    top: 0;
+    margin: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    background-size: 19px 19px;
+  }
+  
+}

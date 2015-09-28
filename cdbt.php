@@ -1,11 +1,11 @@
 <?php
 /*
-  Plugin Name: Custom Database Tables
-  Plugin URI: http://cdbt.ka2.org/
-  Description: This plug-in allows you to perform data storage and reference by creating a free tables in database of WordPress.
-  Version: 1.1.16
+  Plugin Name: Custom DataBase Tables
+  Plugin URI: http://ka2.org/
+  Description: <strong>C</strong>ustom <strong>D</strong>ata<strong>B</strong>ase <strong>T</strong>ables is unleash the potential force of WordPress as the strongest CMS. It will dominate the MySQL database of WordPress, to create a freely table, and can be turning data thoroughly tinker.
+  Version: 2.0.0
   Author: ka2
-  Author URI: http://cdbt.ka2.org
+  Author URI: http://ka2.org
   Copyright: 2015 monauralsound (email : ka2@ka2.org)
   License: GPL2 - http://www.gnu.org/licenses/gpl.txt
   Text Domain: custom-database-tables
@@ -13,7 +13,7 @@
 */
 ?>
 <?php
-/*  Copyright 2014 ka2 (email : ka2@ka2.org)
+/*  Copyright 2015 ka2 (http://ka2.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -30,24 +30,11 @@
 */
 ?>
 <?php
-define('CDBT_PLUGIN_VERSION', '1.1.16');
-define('CDBT_DB_VERSION', '1.2');
-define('CDBT_PLUGIN_SLUG', 'custom-database-tables');
+define('CDBT_PLUGIN_VERSION', '2.0.0');
+define('CDBT_DB_VERSION', '2.0');
+define('CDBT', 'custom-database-tables'); // This plugin domain name
 
-define('CDBT_DS', DIRECTORY_SEPARATOR);
-define('CDBT_PLUGIN_DIR', dirname(__FILE__));
-define('CDBT_PLUGIN_LIB_DIR', CDBT_PLUGIN_DIR . CDBT_DS . 'lib');
-define('CDBT_PLUGIN_TMPL_DIR', CDBT_PLUGIN_DIR . CDBT_DS . 'templates');
+require_once plugin_dir_path(__FILE__) . 'functions.php';
 
-require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.class.php';
-require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.ajax.php';
-require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.media.php';
-require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.scripts.php';
-require_once CDBT_PLUGIN_LIB_DIR . CDBT_DS . 'cdbt.shortcodes.php';
-require_once CDBT_PLUGIN_DIR . CDBT_DS . 'functions.php';
+CustomDatabaseTables\Lib\factory( 'set_global' );
 
-global $cdbt;
-$cdbt = new CustomDatabaseTables();
-
-register_activation_hook(__FILE__, array($cdbt, 'activate'));
-register_deactivation_hook(__FILE__, array($cdbt, 'deactivation'));

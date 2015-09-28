@@ -1,0 +1,105 @@
+table#table-creator-ui {
+  font-size: 12px;
+  border: 1px solid #ddd;
+  
+  .ui-state-highlight {
+    height: 1.5em;
+    line-height: 1.2em;
+  }
+  
+  th, td {
+    vertical-align: middle;
+  }
+  
+  td {
+    .col_order {
+      text-align: center;
+      font-size: 16px;
+      
+      &.handler {
+        cursor: move;
+      }
+    }
+  }
+  
+  .length, .attributes, .auto_increment, .extra {
+    display: none;
+  }
+  
+  td.length {
+    .cdbt_tc_precision, .cdbt_tc_precision_scale, .cdbt_tc_length, .cdbt_tc_define_values {
+      display: none;
+    }
+    
+    .cdbt_tc_precision, .cdbt_tc_length {
+      min-width: 114px;
+      max-width: 120px;
+    }
+    
+    .cdbt_tc_define_values {
+      min-width: 120px;
+    }
+    
+  }
+  
+  td.not_null, td.auto_increment, td.controll {
+    text-align: center;
+  }
+  
+  input {
+    font-size: 12px;
+    
+    &[name^=precision_], &[name^=length_] {
+      min-width: 54px;
+      max-width: 60px;
+      text-align: right;
+      padding: 6px;
+    }
+    
+    &[name^=precision_scale_m_], &[name^=precision_scale_d_] {
+      min-width: 50px;
+      max-width: 60px;
+      text-align: right;
+      padding: 6px;
+    }
+  }
+  
+  .addon-middle {
+    border-left: 0;
+    border-right: solid 1px #eee;
+  }
+  
+  input[name^=precision_scale_d_] + span.input-group-addon {
+    position: relative;
+    left: -1px;
+  }
+  
+  .cdbt_tc_preset_controll button[name=delete-column] {
+    display: none;
+  }
+  
+  .cdbt_tc_controll button[name=add-column] {
+    display: none;
+  }
+  
+}
+
+#cdbt_tc_preset_define_values_template {
+  position: absolute;
+  display: none;
+}
+
+.popover-title {
+  font-size: 14px!important;
+}
+
+.popover-footer {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 12px;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ebebeb;
+  border-radius: 0 0 5px 5px;
+  
+}
+

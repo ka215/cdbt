@@ -1,0 +1,250 @@
+.repeater-check-switch {
+  display: inline-block;
+  float: left;
+  margin-right: 8px;
+}
+
+.repeater-list-wrapper {
+  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: auto;
+  padding-left: 0;
+  padding-right: 1px;
+  
+  table {
+    
+    thead {
+      
+      tr {
+        position: relative;
+        border-bottom: solid 1px #ddd!important;
+        
+        th {
+          padding: 0 8px;
+          min-height: 50px;
+          background: none!important;
+          background-color: transparent!important;
+          font-size: 12px;
+          border-left: solid 1px #ddd!important;
+          vertical-align: middle;
+          
+          &:first-child {
+            border-left: 0px!important;
+          }
+          
+          &:hover {
+            background: none!important;
+            background-color: transparent!important;
+          }
+          
+          &.sortable {
+            background: none!important;
+            background-color: transparent!important;
+            
+            &:hover {
+              background: none!important;
+              background-color: transparent!important;
+            }
+          }
+          
+          &.sorted {
+            background-color: $info!important;
+            z-index: 1;
+            
+            &:hover {
+              background-color: $info!important;
+            }
+          }
+          
+        }
+        
+      }
+    }
+    
+    tbody {
+      tr {
+        
+        td {
+          position: relative;
+          
+          .repeater-list-check {
+            position: relative;
+            float: left;
+            width: 28px;
+            
+            span {
+              color: $brand-primary;
+            }
+          }
+          .cdbt-repeater-left-main {
+            position: relative;
+            top: auto;
+          }
+          
+          &.sorted {
+            background-color: transparent!important;
+            
+            &:hover {
+              background-color: transparent!important;
+            }
+          }
+          
+        }
+        
+        &:hover {
+          border: solid 2px #e75353;
+          border-right-width: 1px;
+          
+          &:first-child {
+            border-top-width: 2px;
+          }
+        }
+      
+      }
+    }
+  }
+}
+
+.repeater-list-heading {
+  display: table-cell;
+  /*
+  height: 50px;
+  min-height: 50px;
+  */
+  vertical-align: middle;
+  border-bottom: 0!important;
+}
+
+.repeater[id^=cdbt-repeater-view-], 
+.repeater[id^=cdbt-repeater-edit-] {
+  
+  &.hidden-index-row {
+    thead {
+      display: none;
+    }
+  }
+  
+  th.disable-sort {
+    cursor: default!important;
+    
+    .repeater-list-heading.disable-sort {
+      cursor: default!important;
+      
+      span {
+        display: none!important;
+      }
+    }
+  }
+  
+  th {
+    display: table-cell;
+    vertical-align: middle;
+    height: 50px;
+  }
+  
+  td {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .repeater-list-heading {
+    display: block;
+    height: inherit!important;
+    min-height: inherit!important;
+    width: inherit;
+    background: none!important;
+    background-color: transparent!important;
+    
+    &:hover {
+      background: none!important;
+      background-color: transparent!important;
+    }
+    
+    &.sorted {
+      background-color: $info!important;
+      color: #fff!important;
+      
+      &:hover {
+        background-color: $info!important;
+        color: #fff;
+      }
+    }
+    
+    span.glyphicon {
+      display: block!important;
+      position: absolute;
+      top: 26px;
+      right: 6px;
+      float: right!important;
+    }
+    
+  }
+  
+  .binary-data {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+}
+
+.repeater .frozen-enabled {
+  .repeater-list table thead tr th {
+    background-color: #f0f0f0!important;
+  }
+  
+  .table {
+    border-collapse: separate;
+  }
+  
+  .table-frozen {
+    border-collapse: separate!important;
+    background-color: #f0f0f0!important;
+    border: 0;
+    
+    thead, tbody {
+      background-color: transparent!important;
+      border: 0;
+      
+      th, td {
+        position: static;
+        left: 0;
+        top: 0;
+        background-color: transparent!important;
+        border: 0;
+        
+        &:hover {
+          position: static;
+          left: 0;
+          top: 0;
+          border: 0;
+        }
+        
+        .repeater-list-heading {
+          background-color: transparent!important;
+        }
+      }
+    }
+  }
+  
+  th:first-child, td:first-child {
+    width: 37px;
+    max-width: 37px;
+    border-right: 0;
+    border-left: 0;
+    
+    .checkbox-custom {
+      position: relative;
+      left: 0;
+      top: 0;
+      
+      &:hover, &:active {
+        position: relative;
+        left: 0px;
+        top: 0px;
+      }
+      
+    }
+  }
+
+}

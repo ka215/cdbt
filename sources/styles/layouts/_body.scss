@@ -1,0 +1,30 @@
+.fuelux {
+  .dropdown-toggle {
+    top: 0;
+    width: inherit;
+    height: inherit;
+  }
+  .cdbt-datepicker .dropdown-toggle {
+    min-width: 18px;
+  }
+  .datepicker-combobox-hour, 
+  .datepicker-combobox-minute, 
+  .datepicker-combobox-second {
+    input[type=text] {
+      min-width: 40px;
+    }
+    .dropdown-toggle {
+      position: static;
+      min-width: 8px;
+    }
+  }
+  .dropdown-toggle:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+  .entry-content a {
+    border-bottom: 0;
+  }
+
+}

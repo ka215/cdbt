@@ -1,0 +1,42 @@
+# Custom DataBase Tables システム構造
+
+custom-database-tables/
+│
+├cdbt.php 		<-- プラグインメインファイル（エントリポイント）
+├functions.php 	<-- ライブラリローダー
+││
+│└lib/
+│  ├utils.php		<-- 基底クラス「CdbtUtility」。共用ユーティリティ定義
+│  ├core.php		<-- プラグインコアクラス「CdbtCore」。「CdbtUtility」を継承する
+│  ├config.php	<-- プラグイン設定クラス「CdbtConfig」。「CdbtCore」を継承する
+│  ├validate.php	<-- 各種バリデーションクラス「CdbtValidator」。validate.php内部で「CommonValidator」を継承する独立したクラス
+│  ├db.php		<-- プラグイン用データベース制御クラス「CdbtDB」。「CdbtConfig」を継承する
+│  ├─┬ajax.php	<-- AJAX制御用トレイト
+│  │   ├tmpl.php	<-- テンプレート制御用トレイト。動的テンプレート読み込みクロージャあり
+│  │   ├shortcodes.php	<-- ショートコード制御用トレイト。
+│  │   ├webapis.php	<-- WEBAPI制御用トレイト。
+│  │   └extras.php	<-- プラグイン拡張用トレイト
+│  ├admin.php		<-- 管理画面用finalクラス「CdbtAdmin」。「CdbtDB」を継承する
+│  ├main.php		<-- フロントエンド用finalクラス「CdbtFrontend」。「CdbtDB」を継承する
+│  └init.php		<-- インスタンスファクトリ（ディスパッチャ）
+│
+├templates/
+│  │
+│  ├admin/
+│  │  ├cdbt_management_console.php	<-- 管理画面テンプレート： マネージメントコンソールTOP画面用
+│  │  ├cdbt_tables.php			<-- 管理画面テンプレート： テーブル管理画面用
+│  │  ├cdbt_shortcodes.php		<-- 管理画面テンプレート： ショートコード管理画面用
+│  │  ├cdbt_apis.php			<-- 管理画面テンプレート： WEBAPI管理画面用
+│  │  └cdbt_options.php			<-- 管理画面テンプレート： プラグインオプション画面用
+│  ├components/
+│  │  ├cdbt_forms.php			<-- コンポーネントテンプレート： 各種フォーム用（by bootstrap and Fuel UX）
+│  │  ├cdbt_modal.php			<-- コンポーネントテンプレート： モーダルダイアログ用（by bootstrap）
+│  │  ├cdbt_repeater.php			<-- コンポーネントテンプレート： リピーター用（by Fuel UX）
+│  │  └cdbt_wizard.php			<-- コンポーネントテンプレート： ウィザード用（by Fuel UX）
+│  └shortcodes/
+│  　  ├cdbt_view.php			<-- ショートコードテンプレート： なし
+│  　  ├cdbt_entry.php			<-- ショートコードテンプレート： なし
+│  　  └cdbt_edit.php			<-- ショートコードテンプレート： なし
+│
+├langs/
+└sources/

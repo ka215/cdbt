@@ -1,0 +1,50 @@
+{
+  "name": "CustomDataBaseTables",
+  "version": "2.0.0",
+  "homepage": "http://ka2.org/",
+  "authors": [
+    "ka2 <ka2@ka2.org>"
+  ],
+  "license": "GPL-2.0",
+  "private": true,
+  "dependencies": {
+    "modernizr": "~2.8.3",
+    "jquery": "~2.1.4",
+    "bootstrap-sass": "~3.3.5",
+    "font-awesome-sass": "~4.4",
+    "underscore": "~1.8.3",
+    "fuelux": "~3.11.0"
+  },
+  "overrides": {
+    "modernizr": {
+      "main": "./modernizr.js"
+    },
+    "bootstrap-sass": {
+      "main": [
+        "./assets/stylesheets/_bootstrap.scss",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.eot",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.svg",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.ttf",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.woff",
+        "./assets/fonts/bootstrap/glyphicons-halflings-regular.woff2",
+        "./assets/javascripts/bootstrap.js"
+      ]
+    },
+    "font-awesome-sass": {
+      "main": [
+        "./assets/stylesheets/font-awesome.scss",
+        "./assets/fonts/font-awesome/fontawesome-webfont.eot",
+        "./assets/fonts/font-awesome/fontawesome-webfont.svg",
+        "./assets/fonts/font-awesome/fontawesome-webfont.ttf",
+        "./assets/fonts/font-awesome/fontawesome-webfont.woff",
+        "./assets/fonts/font-awesome/fontawesome-webfont.woff2"
+      ]
+    },
+    "requirejs": {
+      "main": ""
+    },
+    "bootstrap": {
+      "main": ""
+    }
+  }
+}
