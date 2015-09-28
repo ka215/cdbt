@@ -6,7 +6,7 @@ Custom DB Tables called "__CDBT__" is plugin of WordPress. This plugin is able t
 * Public SVN Repository: [http://wordpress.org/plugins/custom-database-tables/](https://wordpress.org/support/plugin/custom-database-tables)
 * Home Page: [http://cdbt.ka2.org/](http://cdbt.ka2.org/)
 * Twitter: [@ka2bowy](https://twitter.com/ka2bowy)
-* Forum: [support forum](http://ka2.org/cdbt-forum/forum/support-forum/) or [WordPress.org](https://wordpress.org/support/plugin/custom-database-tables)
+* Forum: [WordPress.org](https://wordpress.org/support/plugin/custom-database-tables)
 * Donate link: [donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=)
 
 ## Requirements
@@ -94,11 +94,15 @@ GPLv2 or later
 ## Thanks to the following:
 
 * [Bootstrap](http://getbootstrap.com/) for the foundation of UI/UX.
+* [Fuel UX](http://getfuelux.com/) for outputting main components as UX.
+* [Underscore.js](http://underscorejs.org/) for operating data source at frontend.
+* [moment.js](http://momentjs.com/) for viewing localization date on the components.
+* [Font Awesome](http://fortawesome.github.io/Font-Awesome/) for building an intuitive UI.
 * [phpMyAdmin](http://www.phpmyadmin.net/) for the inspiration.
 
 ## Support
 
-I've prepared a [support forum](http://ka2.org/cdbt-forum/forum/support-forum/). 
+I've prepared a [support forum](https://wordpress.org/support/plugin/custom-database-tables). 
 Please to slip issuance in here questions about plugin.
 
 Crafted by [ka2](http://ka2.org/) ([@ka2bowy](https://twitter.com/ka2bowy)).
