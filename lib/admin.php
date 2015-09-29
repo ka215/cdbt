@@ -379,16 +379,16 @@ final class CdbtAdmin extends CdbtDB {
     
     $assets = [
       'styles' => [
-        'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', true, $this->version, 'all' ], 
-        'cdbt-fuelux' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', array('cdbt-fuelux-style'), $this->version, 'all' ], 
       ], 
       'scripts' => [
         // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, false ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, false ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array('jquery'), null, false ], 
         'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', array(), null, false ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array(), null, true ], 
-        // 'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
-        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array(), null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array('underscore'), null, true ], 
+        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array('cdbt-underscore'), null, true ], 
       ]
     ];
     //

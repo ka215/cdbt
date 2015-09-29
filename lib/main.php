@@ -329,15 +329,15 @@ final class CdbtFrontend extends CdbtDB {
     
     $assets = [
       'styles' => [
-        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array(), $this->version, 'all' ], 
-        'cdbt-fuelux' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array('cdbt-fuelux-style'), $this->version, 'all' ], 
       ], 
       'scripts' => [
-//        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array(), null, true ], 
-        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array(), null, true ], 
-//        'cdbt-fuelux' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
+        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array('jquery'), null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array('underscore'), null, true ], 
+        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
+        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array('cdbt-underscore'), null, true ], 
       ]
     ];
     //
