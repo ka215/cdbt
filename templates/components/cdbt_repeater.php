@@ -336,7 +336,8 @@ repeater['<?php echo $repeater_id; ?>'] = function() {
     }
   ];
 */ ?>
-  var columns = <?php echo json_encode($columns); ?>
+  <?php $json_code = json_encode($columns); ?>
+  var columns = <?php echo 'new Array(' . substr($json_code, 1, -1) . ');'; ?>
   
 <?php /*
       // define the rows in your datasource
@@ -360,7 +361,8 @@ repeater['<?php echo $repeater_id; ?>'] = function() {
         items.push(item);
       }
 */ ?>
-  var items = <?php echo json_encode($items); ?>
+  <?php $json_code = json_encode($items); ?>
+  var items = <?php echo 'new Array(' . substr($json_code, 1, -1) . ');'; ?>
 
   
   function customColumnRenderer(helpers, callback) {

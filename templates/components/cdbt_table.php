@@ -131,7 +131,8 @@ if (typeof dynamicTable === 'undefined') {
 }
 dynamicTable['<?php echo $table_id; ?>'] = function() {
   
-  var items = <?php echo json_encode($items); ?>;
+  <?php $json_code = json_encode($items); ?>
+  var items = <?php echo 'new Array(' . substr($json_code, 1, -1) . ')'; ?>;
   
   var templateRow = '<?php echo $template_row; ?>';
   var perPageLimit = <?php echo intval($this->component_options['pageSize']); ?>;
