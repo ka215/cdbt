@@ -2,9 +2,9 @@
 Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
-Requires at least: 3.6
-Tested up to: 4.1.1
-Stable tag: 2.0.0
+Requires at least: 4.0
+Tested up to: 4.3.1
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Custom DataBase Tables plugin allows you to perform data storage and reference b
 
 WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, is more better to create a new table. 
 
-This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. This plugin works with WordPress3.6 or more. 
+This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. At the since plugin version 2.x works with PHP5.4 or more. 
 
 If you make by full use the various APIs, methods, and shortcodes that is provided a rich set on this plugin, WordPress might be transformed into a powerful CMS.
 
@@ -29,6 +29,12 @@ If you make by full use the various APIs, methods, and shortcodes that is provid
 That's it. Now you can easily start creating custom table in database of WordPress
 
 == Frequently Asked Questions ==
+
+= Can not activate the latest plugin =
+
+This plugin must be working environment of PHP 5.4 since version 2.
+Please use the version 1 system in previous environment of PHP 5.3.
+You can be downloaded [past versions from here](https://wordpress.org/plugins/custom-database-tables/developers/).
 
 = Does this plugin create table on direct mysql? =
 
@@ -63,7 +69,14 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 == Changelog ==
 
+= 2.0.1 =
+* Added of checking the PHP version when activated of this plugin.
+* Added the operating environment in the change log and description of plugin.
+* Fixed the bug that attribute of "sort_order" and  "exclude_cols" in  the shortcodes was not working.
+* Others, have fixed some minor problems.
+
 = 2.0.0 =
+* Changed the operating environment of the plugin to PHP5.4 or more.
 * Added a new feature that is able to manage the wordpress core tables.
 * Added a new feature that is able to duplicate specific table.
 * Added a new feature that is able to import and export of using more file types than csv.
