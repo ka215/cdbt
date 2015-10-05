@@ -34,7 +34,16 @@ define('CDBT_PLUGIN_VERSION', '2.0.1');
 define('CDBT_DB_VERSION', '2.0');
 define('CDBT', 'custom-database-tables'); // This plugin domain name
 
-require_once plugin_dir_path(__FILE__) . 'functions.php';
-
-CustomDatabaseTables\Lib\factory( 'set_global' );
-
+// Check environment
+$current_php_version = phpversion();
+$required_php_version = '5.4';
+if (version_compare( $required_php_version, $current_php_version, '>=' )) {
+  $message = sprintf( 'Your server is running PHP version %s but this plugin requires at least PHP %s. Please run an upgrade.', $current_php_version, $required_php_version);
+  $notification_html = '<div id="message" class="%s"><p>%s</p></div>';
+  printf( $notification_html, 'error', $message );
+  return false;
+} else {
+  require_once plugin_dir_path(__FILE__) . 'functions.php';
+  
+  CustomDataBaseTables\Lib\factory( 'set_global' );
+}
