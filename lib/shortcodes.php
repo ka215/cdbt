@@ -414,7 +414,8 @@ trait CdbtShortcodes {
     if (!isset($conditions)) 
       $conditions = null;
     
-    if ($sort_order = $this->strtohash($sort_order)) {
+    $sort_order = $this->is_assoc($sort_order) ? $sort_order : $this->strtohash($sort_order);
+    if ($this->is_assoc($sort_order)) {
       $orders = [];
       foreach ($sort_order as $_col => $_order) {
         if (!is_int($_col) && in_array($_col, $all_columns)) 
@@ -1164,13 +1165,18 @@ trait CdbtShortcodes {
       // Generate repeater
       $columns = [];
       foreach ($table_schema as $column => $scheme) {
+        $_classes = [];
+        if (!in_array($column, $output_columns)) 
+          $_classes[] = 'hide';
+        if (!$enable_sort) 
+          $_classes[] = 'disable-sort';
         $columns[] = [
           'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
           'property' => $column, 
           'sortable' => $enable_sort, 
           'sortDirection' => 'asc', 
           'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
-          'className' => $enable_sort ? '' : 'disable-sort', 
+          'className' => implode(' ', $_classes), 
         ];
       }
       
