@@ -252,7 +252,7 @@ $(function(){
   
   // Set to localize scripts
   <?php $json_code = json_encode($preset_col_types); ?>
-  cdbt_admin_vars.column_types = <?php echo 'new Array(' . substr($json_code, 1, -1) . ')'; ?>;
+  cdbt_admin_vars.column_types = <?php /* echo 'new Array(' . substr($json_code, 1, -1) . ')'; */ echo $json_code; ?>;
   cdbt_admin_vars.cdbt_tc_translate = {
     popoverSetValues: "<?php _e('Set Values', CDBT); ?>", 
   };
