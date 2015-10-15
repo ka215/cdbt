@@ -498,7 +498,7 @@ class CdbtConfig extends CdbtCore {
     
     $table_options = $this->get_table_option($table_name);
     $table_permission = [];
-    if (array_key_exists('permission', $table_options) && !empty($table_options['permission'])) {
+    if (is_array($table_options) && array_key_exists('permission', $table_options) && !empty($table_options['permission'])) {
       if (!empty($search_key)) {
         foreach ($table_options['permission'] as $_key => $_values) {
           if ($search_key === strstr($_key, '_global', true)) 
@@ -508,7 +508,7 @@ class CdbtConfig extends CdbtCore {
         $table_permission = $table_options['permission'];
       }
     } else
-    if (array_key_exists('roles', $table_options) && !empty($table_options['roles'])) {
+    if (is_array($table_options) && array_key_exists('roles', $table_options) && !empty($table_options['roles'])) {
       // For legacy plugin version
       if (!empty($search_key)) {
         foreach ($table_options['roles'] as $_key => $_level) {

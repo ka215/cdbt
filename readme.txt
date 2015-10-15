@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.3.1
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,10 @@ There is no particular restriction on the amount of data that is stored in a tab
 13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
 
 == Changelog ==
+
+= 2.0.2 =
+* Fixed a bug that "table creator" does not work from v2.0.1.
+* Fixed a bug that warning occurs when it get a table authority.
 
 = 2.0.1 =
 * Added of checking the PHP version when activated of this plugin.
