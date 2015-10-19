@@ -11,7 +11,7 @@ namespace CustomDataBaseTables\Lib;
  */
 trait CdbtApis {
   
-  private $allowed_hosts;
+  var $allowed_hosts;
   
   var $request_methods = [ 'get_data', 'find_data', 'insert_data', 'update_data', 'update_where', 'delete_data' ];
   
@@ -336,6 +336,8 @@ trait CdbtApis {
     
     if (!empty($host_id)) {
       $host_list = isset($this->allowed_hosts[intval($host_id)]) ? $this->allowed_hosts[intval($host_id)] : [];
+      if (empty($host_list) && !empty($this->options['api_hosts'])) 
+        $host_list = $this->options['api_hosts'][intval($host_id)];
     } else {
       $host_list = $this->allowed_hosts;
     }
