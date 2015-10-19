@@ -3,26 +3,27 @@
  * Template : Plugin Option Settings Page
  * URL: `/wp-admin/admin.php?page=cdbt_options`
  *
- * @since 2.0.0
+ * @since 2.0.2
  *
  */
 
-/*
-// 暫定設定
-$wizard_step = [
-  'default' => 1, 
-  'current' => isset($_REQUEST['wizard_step']) && !empty($_REQUEST['wizard_step']) && intval($_REQUEST['wizard_step']) > 0 ? intval($_REQUEST['wizard_step']) : 1, 
-  'display_max' => 3, 
-  'name' => [
-    __('Step1', CDBT), 
-    __('Step2', CDBT), 
-    __('Step3', CDBT), 
-    __('Step4', CDBT), 
-  ]
-];
-*/
 $this->destroy_session();
 $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
+
+$contribute_extends = [
+  'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.1.4' ], 
+  'modernizr.js' => [ 'url' => 'https://modernizr.com/', 'version' => '3.1.0' ], 
+  'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.5' ], 
+  'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
+  'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.0' ], 
+  'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.10.6' ], 
+  'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.4.0' ], 
+];
+
+$_contribute_list = [];
+foreach ($contribute_extends as $_key => $_val) {
+  $_contribute_list[] = sprintf('<li><a href="%s" target="_blank">%s</a> %s </li>', esc_url($_val['url']), $_key, $_val['version']);
+}
 
 /**
  * Render html
@@ -52,7 +53,7 @@ $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
   //$step1_content .= $_p_begin. '私が目指しているのは、このCDBTプラグインをはじめ、次にリリースを予定しているログイン系の処理をフルカスタマイズできる「Custom Login Suites（仮）」や、管理画面にオリジナルの設定画面を簡単に追加できる「Custom Anything Setup（仮）」、任意の投稿やメディアを強固に保護する「Custom Posts Shield（仮）」などを統合的に組み合わせることで、WordPressを最強のCMSとすることです。' .$_p_fin;
   //$step1_content .= $_p_begin. 'まずは、そのプロジェクトの第一段階であるCDBT V2をご堪能ください！' .$_p_fin;
   $step1_content .= $_p_begin. 'なお、CDBT V2のご利用にはPHP5.4以上の環境が必要になります。また、本プラグインでは下記のJavaScriptライブラリを使用しています。' .$_p_fin;
-  $step1_content .= '<ul class="list-inline" style="text-indent: 1em;"><li><a href="https://jquery.com/" target="_blank">jQuery</a> 2.1.4 /</li><li><a href="https://modernizr.com/" target="_blank">modernizr.js</a> 2.8.3 /</li><li><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a> 3.3.5 /</li><li><a href="http://underscorejs.org/" target="_blank">Underscore.js</a> 1.8.3 /</li><li><a href="http://getfuelux.com/" target="_blank">Fuel UX</a> 3.11.1 /</li><li><a href="http://momentjs.com/" target="_blank">moment.js</a> 2.10.6 /</li><li><a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome</a> 4.4.0</li></ul>';
+  $step1_content .= '<ul class="contribute-extends list-inline">'. implode('', $_contribute_list) .'</ul>';
   $step1_content .= '</section>';
   // Step2 section
   $step2_content = '<section class="cdbt-wizard-content"><div class="pull-right"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_1.png" class="img-rounded cdbt-short-trip-img"></div>';
@@ -113,8 +114,8 @@ $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
   <div class="panel panel-default donate-info">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>
     <div class="panel-body">
-      <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="http://ka2.org/cdbt_v2/documentation/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
-      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="http://ka2.org/cdbt_v2/tutorials/" target="_blank" alt="CDBT Tutorials">', '</a>' ); ?>
+      <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="https://ka2.org/cdbt/documentation/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
+      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/tutorials/" target="_blank" alt="CDBT Tutorials">', '</a>' ); ?>
       <?php printf( __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', CDBT), '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>' ); ?></p>
       <p class="pull-left"><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?>
       <?php esc_html_e( 'Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', CDBT ); ?></p>
@@ -160,7 +161,7 @@ $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
   <div class="panel panel-default other-note">
     <div class="panel-heading"><i class="fa fa-check-circle-o"></i> <?php esc_html_e( 'CustomDataBaseTables License Agreement', CDBT ); ?></div>
     <div class="panel-body">
-      <p>Copyright (c) 2014 - 2015, ka2 ( <a href="http://ka2.org/" target="_blank">http://ka2.org</a> )</p>
+      <p>Copyright (c) 2014 - 2015, ka2 ( <a href="https://ka2.org/" target="_blank">https://ka2.org</a> )</p>
       <p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 2, as published by the Free Software Foundation.</p>
       <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
       <p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</p>

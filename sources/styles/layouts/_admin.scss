@@ -371,6 +371,22 @@ nav#operation-navbar {
     text-indent: 1em;
   }
   
+  .contribute-extends {
+    text-indent: 1em;
+    
+    li {
+      text-indent: 0;
+      
+      &:after {
+        content: '/';
+        color: $default;
+      }
+      
+      &:last-child:after {
+        content: '';
+      }
+    }
+  }
 }
 
 .donate-links {
