@@ -2,14 +2,14 @@
 var argv          = require('minimist')(process.argv.slice(2)); // CLIコマンドの引数をGulp側で受け取れるようになる
 var browserSync  = require('browser-sync').create(); // アセットソースの変更検知時にGulpタスクを自動実行してパブリッシュアセットへの同期を行う
 var changed      = require('gulp-changed'); // srcとdestをチェックして変更されたファイルだけStreamに流す
-var coffee       = require('gulp-coffee'); // CoffeeScriptのコンパイル
-var coffeelint   = require('gulp-coffeelint'); // CoffeeScriptの構文チェック
 var concat       = require('gulp-concat'); // 複数ファイルを結合する
 var exec        = require('gulp-exec'); // コマンドラインのコマンドを実行する
 var flatten      = require('gulp-flatten'); // ファイルのディレクトリ階層を平坦化する
 var gulp         = require('gulp'); // Gulp本体
 var gulpif       = require('gulp-if'); // 分岐処理用。条件に合致した時にタスクを実行する
-var imagemin     = require('gulp-imagemin'); // GIF,JPEG,PNG,SVGをロスレスで軽量化する
+var imagemin  = require('gulp-imagemin'); // GIF,JPEG,PNG,SVGをロスレスで軽量化する
+var pngquant  = require('imagemin-pngquant'); // PNG用高圧縮モジュール
+var mozjpeg     = require('imagemin-mozjpeg'); // Jpeg用圧縮モジュール
 var jshint       = require('gulp-jshint'); // JavaScript構文チェッカー（cf. jshint-stylish で出力を見やすく整形できる）
 var lazypipe     = require('lazypipe'); // 複数のタスクをグループ化して、別々のタスクで利用可能にする（同じタスク記述を増やさずにスッキリ書けるようになる）
 var less         = require('gulp-less'); // LESSのコンパイル 
@@ -204,23 +204,17 @@ gulp.task('fonts', function() {
 gulp.task('images', function() {
   return gulp.src(globs.images)
     .pipe(imagemin({
+      optimizationLevel: 7,
       progressive: true,
       interlaced: true,
-      svgoPlugins: [{removeUnknownsAndDefaults: false}]
+      svgoPlugins: [{removeViewBox: false}, { cleanupIDs: false }],
+      use: [pngquant({
+        quality: '60-80',
+        speed: 1
+      }), mozjpeg()]
     }))
     .pipe(gulp.dest(path.dist + 'images'))
     .pipe(browserSync.stream());
-});
-
-// ### CoffeeScriptコンパイル
-// coffeelint による構文チェック後にコンパイルする
-gulp.task('coffee', function() {
-  return gulp.src(path.source + 'scripts/*.coffee')
-    .pipe(coffeelint())
-    .pipe(coffeelint.reporter())
-    .pipe(coffeelint.reporter('fail'))
-    .pipe(coffee())
-    .pipe(gulp.dest(path.source + 'scripts'));
 });
 
 // ### JavaScript構文チェック（JSHint）
