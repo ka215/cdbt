@@ -146,9 +146,12 @@ trait CdbtApis {
     $_cdbt_api_key = isset($wp_query->query['cdbt_api_key']) ? trim($wp_query->query['cdbt_api_key']) : '';
     $_cdbt_table = isset($wp_query->query['cdbt_table']) ? trim($wp_query->query['cdbt_table']) : '';
     $_cdbt_request_method = isset($wp_query->query['cdbt_api_request']) ? trim($wp_query->query['cdbt_api_request']) : '';
+//var_dump([ $_cdbt_api_key, $_cdbt_table, $_cdbt_request_method ]);
     if (isset($_cdbt_api_key) && !empty($_cdbt_api_key)) {
       $request_uri = stripslashes_deep($_SERVER['REQUEST_URI']);
       $request_date = date('c', $_SERVER['REQUEST_TIME']);
+//var_dump([ $request_uri, $request_date ]);
+//var_dump([ $this->verify_api_key($_cdbt_api_key) ]);
       if ($this->verify_api_key($_cdbt_api_key)) {
         $target_table = (isset($_cdbt_table) && !empty($_cdbt_table)) ? $_cdbt_table : '';
         $request = (isset($_cdbt_request_method) && !empty($_cdbt_request_method)) ? $_cdbt_request_method : '';
@@ -180,7 +183,7 @@ trait CdbtApis {
               case 'binary_download': 
                 $allow_args = [ 'column' => 'string', 'conditions' => 'hash', 'hash' => 'string' ];
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
-              	break;
+                break;
               default: 
                 $response = [ 'error' => [ 'code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
                 break;
@@ -204,7 +207,7 @@ trait CdbtApis {
         $response = json_encode($response);
       }
       // Currently, logging of API request is not implemented yet.
-      wp_die($response);
+      die($response);
     } else {
       // 403: Invalid access
       // $response = [ 'error' => [ 'code' => 403, 'desc' => 'Invalid Access' ] ];
@@ -461,17 +464,28 @@ trait CdbtApis {
       } else {
         $client_addr = $_SERVER['SERVER_ADDR'];
       }
-      if (!empty($client_host)) 
+      $connection_origin = '';
+      if (!empty($client_host)) {
         $result = $client_host === $allowed_host['host_name'];
-      if (!$result || !empty($client_addr)) 
+        $connection_origin = $client_host;
+      }
+      if (!$result && !empty($client_addr)) {
         $result = $client_addr === $allowed_host['host_name'];
+        $connection_origin = $client_addr;
+      }
+      // Logging
+      $message = sprintf(__('Requested from "%s" via Web API. This connection was %s.', CDBT), $connection_origin, $result ? __('successful', CDBT) : __('failur', CDBT));
+      $this->logger( $message );
     } else {
       // Allow as myself host when api key is same of nonce.
       global $wp_query;
-      if (wp_verify_nonce( $api_key, 'cdbt_api_ownhost-' . $wp_query->query['cdbt_table'] )) {
-        $result = true;
-      } else {
-      	$result = false;
+      $result = false;
+      if (wp_verify_nonce( $api_key, 'cdbt_api_ownhost' )) {
+        if (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
+        	$client_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+        	list($client_addr, ) = gethostbynamel($client_host);
+          $result = true;
+        }
       }
     }
     

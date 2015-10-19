@@ -231,6 +231,9 @@ $_allowed_hosts = $this->get_allowed_hosts();
         </div>
       </div><!-- /edit-webapi-request-method -->
       <input type="hidden" id="current_host_apikey" value="" disabled="disabled">
+      <input type="hidden" id="self_host_root" value="<?php echo site_url(); ?>" disabled="disabled">
+      <input type="hidden" id="preview_nonce" value="<?php echo wp_create_nonce('cdbt_api_ownhost'); ?>" disabled="disabled">
+      <input type="hidden" id="preview_uri" value="" disabled="disabled">
       
       <div class="clearfix"><br></div>
       <h4 class="title" id="api-request-queries"><i class="fa fa-cogs text-muted"></i> <?php _e('Request Queries Definition', CDBT); ?></h4>

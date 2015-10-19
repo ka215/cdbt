@@ -1483,11 +1483,14 @@ $(document).ready(function() {
     var generateRequestUri = function(){
       var items = $('input[name^="custom-database-tables["]');
       var preview = $('#edit-webapi-request-generate_uri');
-      var base_uri = 'http://' + $('#edit-webapi-request-allowed_host').selectlist('selectedItem').text.replace(/\d+\:\s(.*)$/, '$1') + '/?';
+      var allowed_host = 'http://' + $('#edit-webapi-request-allowed_host').selectlist('selectedItem').text.replace(/\d+\:\s(.*)$/, '$1');
+      var self_host = $('#self_host_root').val();
+      var base_uri = self_host + '/?';
       var api_key = '' !== $('#current_host_apikey').val() ? $('#current_host_apikey').val() : '';
       var target_table = '' !== $('#edit-webapi-request-target_table').selectlist('selectedItem').value ? $('#edit-webapi-request-target_table').selectlist('selectedItem').text : '';
       var api_request = '' !== $('#edit-webapi-request-method').selectlist('selectedItem').value ? $('#edit-webapi-request-method').selectlist('selectedItem').text : '';
       if (api_key !== '' && target_table !== '' && api_request !== '') {
+        var preview_uri = base_uri + 'cdbt_api_key=' + $('#preview_nonce').val() + '&cdbt_table=' + target_table + '&cdbt_api_request=' + api_request + '&';
         base_uri += 'cdbt_api_key=' + api_key + '&cdbt_table=' + target_table + '&cdbt_api_request=' + api_request + '&';
         
         var queries = [];
@@ -1527,7 +1530,7 @@ $(document).ready(function() {
         });
         
         preview.val(base_uri + queries.join('&'));
-        //$('#webapi-preview').removeAttr('disabled');
+        $('#preview_uri').val(preview_uri + queries.join('&'));
         $('#webapi-preview').prop('disabled', false);
       } else {
         //$('#webapi-preview').attr('disabled', 'disabled');
@@ -1555,18 +1558,18 @@ $(document).ready(function() {
     generateRequestUri();
     
     $('#webapi-preview').on('click', function(){
-      cdbtCallAjax($('#edit-webapi-request-generate_uri').val(), 'get', '', 'json');
-/*
+      // cdbtCallAjax($('#preview_uri').val(), 'get', {}, 'json');
       var post_data = {
         id: 'cdbtModal', 
         insertContent: true, 
         modalSize: 'large', 
         modalTitle: 'preview_request_api', 
         modalBody: '', 
-        modalExtras: { request_uri: $('#edit-webapi-request-generate_uri').val() }
+        modalExtras: {
+          'request_uri': $('#preview_uri').val(),
+        },
       };
       init_modal( post_data );
-*/
     });
     
   }

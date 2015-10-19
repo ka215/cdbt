@@ -1034,7 +1034,7 @@ foreach ($this->allow_file_types as $file_type) {
   <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3" data-current-table="<?php echo $session_var['operate_current_table']; ?>">
     <h4><?php _e('Checking the import result', CDBT); ?></h4>
     <div class="step-body">
-  <?php if ($wizard_step === 3) : /* var_dump($session_var); */ ?>
+  <?php if ($wizard_step === 3) : ?>
       <p><?php echo $session_var['result_message']; ?></p>
     <?php if ($session_var['import_result']) : ?>
       <button type="button" class="btn btn-default" id="to-view-data"><?php _e('See Table Data', CDBT); ?></button>

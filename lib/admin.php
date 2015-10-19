@@ -1797,11 +1797,9 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { if (typeof repeater !== 'undefined') { for (var k in repeater) { repeater[k](); }; }; if (typeof dynamicTable !== 'undefined') { for (var k in dynamicTable) { dynamicTable[k](); }; }; }; $(document).on('click', '.modal-body button', function(e){ e.preventDefault(); return false; });";
           break;
         case 'preview_request_api': 
-//var_dump($args['modalExtras']['request_uri']);
-//       	$response = @file_get_contents($args['modalExtras']['request_uri']);
-//var_dump($response);
+          $request_uri = $args['modalExtras']['request_uri'];
           $args['modalTitle'] = __('Preview Request Web API', CDBT);
-          $args['modalBody'] = '<iframe src="'. $args['modalExtras']['request_uri'] .'" style="width: 100%; height: 100%; overflow: hidden;"></iframe>';
+          $args['modalBody'] = '<iframe src="'. $request_uri .'" style="width: 100%; height: 480px; font-size: 13px; line-height: 1.2;"></iframe>';
           break;
         case 'table_creator': 
           $conponent_options = [
