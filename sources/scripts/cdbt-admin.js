@@ -1267,7 +1267,7 @@ $(document).ready(function() {
   /**
    * Helper UI scripts for shortcode list section
    */
-  if ('cdbt_shortcodes' === $.QueryString.page && 'shortcode_list' === $.QueryString.tab) {
+  if ('cdbt_shortcodes' === $.QueryString.page) {
     
     // Run of delete shortcode after confirmation
     $(document).on('click', '#run_delete_shortcode', function(){
@@ -1410,7 +1410,7 @@ $(document).ready(function() {
   /**
    * Helper UI scripts for webapi hosts list section
    */
-  if ('cdbt_web_apis' === $.QueryString.page && 'hosts_list' === $.QueryString.tab) {
+  if ('cdbt_web_apis' === $.QueryString.page) {
     
     // Run of delete host after confirmation
     $(document).on('click', '#run_delete_host', function(){

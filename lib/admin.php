@@ -1659,7 +1659,7 @@ final class CdbtAdmin extends CdbtDB {
       'generated' => date('Y-m-d H:i:s'),
     ];
     
-    $_current_hosts = $this->allowed_hosts;
+    $_current_hosts = $this->get_allowed_hosts();
     $_ids = array_keys($_current_hosts);
     $_max_host_id = count($_ids) > 0 ? max(array_keys($_current_hosts)) : 0;
     if (!isset($_current_hosts[$_max_host_id + 1])) {

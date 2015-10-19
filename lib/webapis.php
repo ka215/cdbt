@@ -45,13 +45,13 @@ trait CdbtApis {
     
     $this->allowed_hosts = $_api_hosts;
     
-    if (isset($this->options['api_hosts'])) {
+    if (isset($this->allowed_hosts)) {
       add_action( 'init', array($this, 'flush_rules') );
       //add_filter( 'rewrite_rules_array', array($this, 'insert_rewrite_rules') );
       add_action( 'generate_rewrite_rules', array($this, 'insert_rewrite_rules') );
       add_filter( 'query_vars', array($this, 'insert_query_vars'), 10, 1 );
       
-      if (!empty($this->options['api_hosts'])) {
+      if (!empty($this->allowed_hosts)) {
         add_action( 'send_headers', array($this, 'allow_host') );
       }
       add_action( 'pre_get_posts', array($this, 'receive_api_request') );
@@ -335,11 +335,10 @@ trait CdbtApis {
     $host_list = [];
     
     if (!empty($host_id)) {
-      $host_list = isset($this->allowed_hosts[intval($host_id)]) ? $this->allowed_hosts[intval($host_id)] : [];
-      if (empty($host_list) && !empty($this->options['api_hosts'])) 
-        $host_list = $this->options['api_hosts'][intval($host_id)];
+      // $host_list = isset($this->allowed_hosts[intval($host_id)]) ? $this->allowed_hosts[intval($host_id)] : [];
+      $host_list = isset($this->options['api_hosts'][intval($host_id)]) ? $this->options['api_hosts'][intval($host_id)] : [];
     } else {
-      $host_list = $this->allowed_hosts;
+      $host_list = $this->options['api_hosts'];
     }
     
     return $host_list;
