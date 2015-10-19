@@ -71,6 +71,7 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 = 2.0.3 =
 * Fixed a bug that WebAPI request URI generation was not working.
+* Changed some WebAPIs management processes.
 * Removed of the not allowed processing of "base64_encode()" and "base64_decode()", then replaced by other processing.
 * Corrected that some buttons is not working after import to table.
 
