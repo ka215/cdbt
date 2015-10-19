@@ -829,6 +829,22 @@ $(document).ready(function() {
       $('#confirm_sql').val('');
     });
     
+    // Buttons action in import step 3
+    $('#to-view-data').on('click', function(e){
+      var post_data = {
+        'session_key': 'operate_data', 
+        'default_action': 'view', 
+        'target_table': $('input[name=\"custom-database-tables[operate_current_table]\"]').val(), 
+        'callback_url': '/wp-admin/admin.php?page=cdbt_tables&tab=operate_data', 
+      };
+      return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    $('#retry-import').on('click', function(e){
+      $('input[name=\"custom-database-tables[operate_action]\"]').val('import');
+      $('form.navbar-form').trigger('submit');
+    });
+    
+    
     // Switch of all checking of checkbox
     $('button[id^="switch-checkbox-"]').on('click', function(){
       var target_checkbox_container_id = 'export_columns' === $(this).attr('id').replace('switch-checkbox-', '') ? 'export-table-target_columns' : 'import-table-target_columns';

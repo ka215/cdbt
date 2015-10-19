@@ -1211,7 +1211,7 @@ final class CdbtAdmin extends CdbtDB {
 //var_dump( array_merge( $add_first_row, $_raw_array ) );
                         $importation_sql = $this->create_import_sql( $_POST['import_to'], array_merge( [$add_first_row], $_raw_array ) );
                         if ($importation_sql !== false) 
-                          $escaped_sql = base64_encode($importation_sql);
+                          $escaped_sql = addslashes_gpc($importation_sql);
                       }
                     }
                     break;
@@ -1233,7 +1233,7 @@ final class CdbtAdmin extends CdbtDB {
                     }
                     $importation_sql = $this->create_import_sql( $_POST['import_to'], array_merge( [$_columns], $_importation_base ) );
                     if ($importation_sql !== false) 
-                      $escaped_sql = base64_encode($importation_sql);
+                      $escaped_sql = addslashes_gpc($importation_sql);
                     break;
                   case 'sql': 
                     $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
@@ -1258,8 +1258,10 @@ final class CdbtAdmin extends CdbtDB {
         } else
         if (intval($post_data['import_current_step']) === 2) {
           // Run the data import
-//var_dump($post_data['import_sql']);
-          $result = $this->run_query(base64_decode($post_data['import_sql']));
+          $import_sql = stripslashes_deep($post_data['import_sql']);
+          $is_valid_sql = preg_match('/^INSERT INTO `'. $this->cdbt_sessions[$_POST['active_tab']]['operate_target_table'] .'` \(.*$/', $import_sql);
+          $result = $this->strtobool($is_valid_sql) ? $this->run_query($import_sql) : false;
+          //$result = false;
           if ($result) {
             // Row number of execution results if successful insertion
             $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = true;

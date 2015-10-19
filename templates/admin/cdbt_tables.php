@@ -1013,7 +1013,7 @@ foreach ($this->allow_file_types as $file_type) {
       <?php if (in_array($session_var[$this->domain_name]['import_filetype'], ['csv', 'tsv', 'json', 'sql'])) : ?>
         <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
         <div class="col-sm-9">
-          <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo base64_decode($session_var[$this->domain_name]['upfile']); ?></textarea>
+          <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo stripslashes_deep($session_var[$this->domain_name]['upfile']); ?></textarea>
           <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); ?></p>
         </div>
         <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr($session_var[$this->domain_name]['upfile']); ?>">
@@ -1031,13 +1031,13 @@ foreach ($this->allow_file_types as $file_type) {
   <?php endif; ?>
   </div>
   
-  <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3">
+  <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3" data-current-table="<?php echo $session_var['operate_current_table']; ?>">
     <h4><?php _e('Checking the import result', CDBT); ?></h4>
     <div class="step-body">
-  <?php if ($wizard_step === 3) : ?>
+  <?php if ($wizard_step === 3) : /* var_dump($session_var); */ ?>
       <p><?php echo $session_var['result_message']; ?></p>
     <?php if ($session_var['import_result']) : ?>
-      <button type="button" class="btn btn-default"id="to-view-data"><?php _e('See Table Data', CDBT); ?></button>
+      <button type="button" class="btn btn-default" id="to-view-data"><?php _e('See Table Data', CDBT); ?></button>
     <?php else : ?>
       <p><?php _e('If you have enabled debug mode, it will be outputted error of the importation details to debug log.', CDBT); ?></p>
       <button type="button" class="btn btn-default" id="retry-import"><?php _e('Retry Import', CDBT); ?></button>
