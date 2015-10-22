@@ -699,8 +699,12 @@ class CdbtDB extends CdbtConfig {
       $limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
     }
     
-    $search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
-    $keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
+    if (is_array($search_key)) {
+      $keywords = $search_key;
+    } else {
+      $search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
+      $keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
+    }
     if (!empty($keywords)) {
       $primary_key_name = null;
       foreach ($table_schema as $col_name => $col_scm) {
@@ -741,9 +745,6 @@ class CdbtDB extends CdbtConfig {
           }
           $union_clauses[] = sprintf('SELECT %s FROM %s %s', $select_clause, $table_name, $where_clause);
         }
-      } else {
-        // $table_schema is none
-        
       }
       if (!empty($union_clauses)) {
         if (count($union_clauses) === 1) {

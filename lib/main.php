@@ -333,8 +333,8 @@ final class CdbtFrontend extends CdbtDB {
         'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array('cdbt-fuelux-style'), $this->version, 'all' ], 
       ], 
       'scripts' => [
-        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array('jquery'), null, true ], 
+        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array('underscore'), null, true ], 
         // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
         'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array('cdbt-underscore'), null, true ], 

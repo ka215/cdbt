@@ -165,7 +165,7 @@ trait CdbtApis {
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
                 break;
               case 'find_data': 
-                $allow_args = [ 'search_key' => 'string', 'columns' => 'mixed', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int' ];
+                $allow_args = [ 'search_key' => 'array', 'columns' => 'mixed', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int' ];
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
                 break;
               case 'insert_data': 
@@ -200,11 +200,12 @@ trait CdbtApis {
         $response = [ 'error' => [ 'code' => 401, 'desc' => 'Authentication Failure', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
       }
       $is_crossdomain = (isset($_REQUEST['callback']) && !empty($_REQUEST['callback'])) ? trim($_REQUEST['callback']) : false;
-      header( 'Content-Type: text/javascript; charset=utf-8' );
+      $_charset = isset($wp_query->query['charset']) ? trim($wp_query->query['charset']) : 'utf-8';
+      header( 'Content-Type: text/javascript; charset=' . $_charset );
       if ($is_crossdomain) {
-        $response = $is_crossdomain . '(' . json_encode($response) . ')';
+        $response = $_charset !== 'utf-8' ? $is_crossdomain . '(' . json_encode($response, JSON_UNESCAPED_UNICODE) . ')' : $is_crossdomain . '(' . json_encode($response) . ')';
       } else {
-        $response = json_encode($response);
+        $response = $_charset !== 'utf-8' ? json_encode($response, JSON_UNESCAPED_UNICODE) : json_encode($response);
       }
       // Currently, logging of API request is not implemented yet.
       die($response);
@@ -232,7 +233,7 @@ trait CdbtApis {
       if (!empty(${$var_name})) {
         if ('mixed' === $val_type) {
           if (preg_match('/^\{(.*)\}$/U', ${$var_name}, $matches)) {
-            $tmp = explode(',', $matches[1]);
+            $tmp = explode(',', rawurldecode($matches[1]));
             $tmp_ary = [];
             foreach ($tmp as $line_str) {
               list($column_name, $column_value) = explode(':', trim($line_str));
@@ -244,7 +245,7 @@ trait CdbtApis {
             ${$var_name} = $tmp_ary;
           } else
           if (preg_match('/^\[(.*)\]$/U', ${$var_name}, $matches)) {
-            $tmp = explode(',', $matches[1]);
+            $tmp = explode(',', rawurldecode($matches[1]));
             $tmp_ary = [];
             foreach ($tmp as $line_str) {
               $tmp_ary[] = trim(trim(stripcslashes($line_str)), "\"' ");
@@ -254,7 +255,7 @@ trait CdbtApis {
         } else
         if ('array' === $val_type) {
           if (preg_match('/^\[(.*)\]$/U', ${$var_name}, $matches)) {
-            $tmp = explode(',', $matches[1]);
+            $tmp = explode(',', rawurldecode($matches[1]));
             $tmp_ary = [];
             foreach ($tmp as $line_str) {
               $tmp_ary[] = trim(trim(stripcslashes($line_str)), "\"' ");
@@ -266,7 +267,7 @@ trait CdbtApis {
         } else
         if ('hash' === $val_type) {
           if (preg_match('/^\{(.*)\}$/U', ${$var_name}, $matches)) {
-            $tmp = explode(',', $matches[1]);
+            $tmp = explode(',', rawurldecode($matches[1]));
             $tmp_ary = [];
             foreach ($tmp as $line_str) {
               list($column_name, $column_value) = explode(':', trim($line_str));
@@ -290,7 +291,7 @@ trait CdbtApis {
         $result = $this->get_data($target_table, $columns, $conditions, $order, $limit, $offset);
         break;
       case 'find_data': 
-        $result = $this->find_data($target_table, null, $search_key, $columns, $order, $limit, $offset);
+        $result = $this->find_data($target_table, $search_key, $columns, $order, $limit, $offset);
         break;
       case 'insert_data': 
         $result = $this->insert_data($target_table, $data, null);

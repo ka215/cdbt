@@ -1080,13 +1080,13 @@ $(document).ready(function() {
       var edit_button = $('button#repeater-editor-edit');
       var delete_button = $('button#repeater-editor-delete');
       if (selectedItem.length === 1) {
-        edit_button.attr('class', 'btn btn-primary').removeAttr('disabled');
+        edit_button.attr('class', 'btn btn-primary').prop('disabled', false);
         delete_button.attr('class', 'btn btn-default');
       } else if (selectedItem.length > 1) {
-        edit_button.attr('class', 'btn btn-default').attr('disabled', 'disabled');
+        edit_button.attr('class', 'btn btn-default').prop('disabled', true);
         delete_button.attr('class', 'btn btn-primary');
       } else {
-        edit_button.attr('class', 'btn btn-default').removeAttr('disabled');
+        edit_button.attr('class', 'btn btn-default').prop('disabled', false);
         delete_button.attr('class', 'btn btn-default');
       }
     });
@@ -1172,11 +1172,13 @@ $(document).ready(function() {
     });
     
     $(document).on('shown.bs.modal', '#cdbtEditData', function(){
+      /*
       var form = $('#cdbtEditData div.cdbt-entry-data-form form');
       $('#run_update_data').prop('disabled', true);
       $(form).on('input change click', function(){ 
         $('#run_update_data').prop('disabled', !this.checkValidity());
       });
+      */
     });
     
     $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
