@@ -221,7 +221,7 @@ gulp.task('images', function() {
 // `gulp jshint` - Lints設定（JSON）とプロジェクト用のJSをチェックする
 gulp.task('jshint', function() {
   return gulp.src([
-    'bower.json', 'gulpfile.js'
+    'bower.json', 'gulpfile.js', '!sources/scripts/jquery-ui.js'
   ].concat(project.js))
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))

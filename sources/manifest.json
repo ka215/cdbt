@@ -22,6 +22,7 @@
     },
     "cdbt-table-creator.js": {
       "files": [
+        "scripts/jquery-ui.js",
         "scripts/cdbt-table-creator.js"
       ]
     },

@@ -12,10 +12,11 @@ $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
 
 $contribute_extends = [
   'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.1.4' ], 
+  'jQuery UI' => [ 'url' => 'http://jqueryui.com/', 'version' => '1.11.4' ], 
   'modernizr.js' => [ 'url' => 'https://modernizr.com/', 'version' => '3.1.0' ], 
-  'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.5' ], 
+  'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.6' ], 
   'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
-  'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.0' ], 
+  'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.5' ], 
   'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.10.6' ], 
   'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.4.0' ], 
 ];
@@ -52,7 +53,7 @@ foreach ($contribute_extends as $_key => $_val) {
   $step1_content .= $_p_begin. 'そして、CDBT V2ではついにWordPressのコアテーブルを管理できる機能が追加されました。これによって、WordPressをよりCMS的に使い倒すことができるようになるはずです。' .$_p_fin;
   //$step1_content .= $_p_begin. '私が目指しているのは、このCDBTプラグインをはじめ、次にリリースを予定しているログイン系の処理をフルカスタマイズできる「Custom Login Suites（仮）」や、管理画面にオリジナルの設定画面を簡単に追加できる「Custom Anything Setup（仮）」、任意の投稿やメディアを強固に保護する「Custom Posts Shield（仮）」などを統合的に組み合わせることで、WordPressを最強のCMSとすることです。' .$_p_fin;
   //$step1_content .= $_p_begin. 'まずは、そのプロジェクトの第一段階であるCDBT V2をご堪能ください！' .$_p_fin;
-  $step1_content .= $_p_begin. 'なお、CDBT V2のご利用にはPHP5.4以上の環境が必要になります。また、本プラグインでは下記のJavaScriptライブラリを使用しています。' .$_p_fin;
+  $step1_content .= $_p_begin. 'なお、CDBT V2のご利用には<strong>PHP5.4以上の環境</strong>が必要になります。また、本プラグインでは下記の外部ライブラリを使用します。' .$_p_fin;
   $step1_content .= '<ul class="contribute-extends list-inline">'. implode('', $_contribute_list) .'</ul>';
   $step1_content .= '</section>';
   // Step2 section

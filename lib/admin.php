@@ -388,11 +388,11 @@ final class CdbtAdmin extends CdbtDB {
       ], 
       'scripts' => [
         // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, false ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, true ], 
-        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, true ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
+        'jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, false ], 
+        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'jquery' ], null, true ], 
+        'underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'jquery' ], null, true ], 
         // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
-        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], null, true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'underscore' ], null, true ], 
       ]
     ];
     //
@@ -431,13 +431,7 @@ final class CdbtAdmin extends CdbtDB {
       ];
       $assets['styles'] = array_merge($assets['styles'], $add_styles);
       $add_scripts = [
-        'jquery-ui-core' => null, 
-        'jquery-ui-widget' => null, 
-        'jquery-ui-mouse' => null, 
-        'jquery-ui-position' => null, 
-        'jquery-ui-sortable' => null, 
-        'jquery-ui-autocomplete' => null, 
-        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', array('jquery-ui-core'), null, true ],
+        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', [ 'jquery' ], null, true ],
       ];
       $assets['scripts'] = array_merge($assets['scripts'], $add_scripts);
     }
@@ -490,7 +484,7 @@ final class CdbtAdmin extends CdbtDB {
     if (array_key_exists('page', $this->query) && preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
       printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->version );
     
-    printf( "<script>jQuery(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
+    printf( "<script>$(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
     
     // Added action hook for using `add_action('cdbt_admin_footer')`
     // 

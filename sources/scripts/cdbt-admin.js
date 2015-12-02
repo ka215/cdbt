@@ -163,9 +163,6 @@ $(document).ready(function() {
     $('#welcome-wizard').wizard();
   }
   
-  
-  
-  
   /**
    * Repeater components of Fuel UX renderer
    */
