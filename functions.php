@@ -1,11 +1,11 @@
 <?php
 /**
- * Including libralies for this plugin
+ * Including libraries for this plugin
  */
 defined('CDBT') OR die();
 
-$libraly_dir_name = 'lib';
-$libraly_dir = plugin_dir_path(__FILE__) . $libraly_dir_name;
+$library_dir_name = 'lib';
+$library_dir = plugin_dir_path(__FILE__) . $library_dir_name;
 
 $lib_includes = [];
 
@@ -25,9 +25,9 @@ $files = [
   'init.php'          // Instance factory & plugin activater
 ];
 foreach ($files as $file) {
-  $lib_includes[] = $libraly_dir . '/' . $file;
+  $lib_includes[] = $library_dir . '/' . $file;
 }
-unset($libraly_dir_name, $libraly_dir, $files, $file);
+unset($library_dir_name, $library_dir, $files, $file);
 
 foreach ($lib_includes as $file) {
   if (!file_exists($file)) {

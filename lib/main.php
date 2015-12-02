@@ -312,7 +312,7 @@ final class CdbtFrontend extends CdbtDB {
     add_action( 'cdbt_frontend_localize_script', array($this, 'cdbt_localize_script') );
     
     // Filters
-    add_filter( 'body_class', array($this, 'add_body_classes') );
+    add_filter( 'body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
     
     $this->action_controller();
@@ -327,17 +327,20 @@ final class CdbtFrontend extends CdbtDB {
   public function cdbt_assets() {
     // Fire this hook when register CSS and JavaScript at using shortcode page
     
+    // For conflict scripts avoidance
+    wp_deregister_script( 'jquery' );
+    wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
-        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', array('cdbt-fuelux-style'), $this->version, 'all' ], 
+        'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', [ 'cdbt-fuelux-style' ], $this->version, 'all' ], 
       ], 
       'scripts' => [
-        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, true ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array(), null, true ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array('underscore'), null, true ], 
-        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
-        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', array('cdbt-underscore'), null, true ], 
+        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
+        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
+        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', [ 'cdbt-underscore' ], null, true ], 
       ]
     ];
     //

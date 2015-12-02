@@ -181,7 +181,7 @@ final class CdbtAdmin extends CdbtDB {
     
     // Filters
     add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
-    add_filter( 'admin_body_class', array($this, 'add_body_classes') );
+    add_filter( 'admin_body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
     
   }
@@ -377,18 +377,21 @@ final class CdbtAdmin extends CdbtDB {
     if (!array_key_exists('page', $this->query) || !preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
       return;
     
+    // For conflict scripts avoidance
+    wp_deregister_script( 'jquery' );
+    wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
-        'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', array('cdbt-fuelux-style'), $this->version, 'all' ], 
+        'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', [ 'cdbt-fuelux-style' ], $this->version, 'all' ], 
       ], 
       'scripts' => [
-        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', array(), null, false ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', array('jquery'), null, false ], 
-        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', array(), null, false ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', array('underscore'), null, true ], 
-        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', array(), null, true ], 
-        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', array('cdbt-underscore'), null, true ], 
+        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, false ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, true ], 
+        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
+        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], null, true ], 
       ]
     ];
     //

@@ -22,12 +22,12 @@ trait CdbtExtras {
   public function add_body_classes( $classes ) {
     if (is_array($classes)) {
       $classes[] = 'fuelux';
-      return $classes;
     } else {
       $classes_array = explode(' ', $classes);
       $classes_array[] = 'fuelux';
-      return implode(' ', $classes_array);
+      $classes = implode(' ', $classes_array);
     }
+    return $classes;
   }
   // CdbtFrontend : add_filter( 'body_class', array($this, 'add_body_classes') );
 

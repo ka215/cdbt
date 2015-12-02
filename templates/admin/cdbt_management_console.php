@@ -151,9 +151,11 @@ foreach ($contribute_extends as $_key => $_val) {
             <font color="red">[[error]]</font>
           </div>
         </div></li>
+<?php /*
         <li class="donate-coinbase hide">
           <a class="coinbase-button" data-code="219e4dae601d44bd7c2766178aff9471" data-button-style="custom_small" data-custom="CDBTV2" href="https://www.coinbase.com/checkouts/219e4dae601d44bd7c2766178aff9471">Donate Bitcoins</a><script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
         </li>
+*/ ?>
       </ul>
     </div><!-- /.panel-body -->
   </div><!-- /.panel -->
