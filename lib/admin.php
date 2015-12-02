@@ -388,11 +388,11 @@ final class CdbtAdmin extends CdbtDB {
       ], 
       'scripts' => [
         // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, false ], 
-        'jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, false ], 
-        'blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'jquery' ], null, true ], 
-        'underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'jquery' ], null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, false ], 
+        'cdbt-blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
         // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
-        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'underscore' ], null, true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], null, true ], 
       ]
     ];
     //
@@ -431,7 +431,7 @@ final class CdbtAdmin extends CdbtDB {
       ];
       $assets['styles'] = array_merge($assets['styles'], $add_styles);
       $add_scripts = [
-        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', [ 'jquery' ], null, true ],
+        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', [ 'cdbt-jquery' ], null, true ],
       ];
       $assets['scripts'] = array_merge($assets['scripts'], $add_scripts);
     }
