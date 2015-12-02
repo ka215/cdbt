@@ -371,6 +371,7 @@ final class CdbtAdmin extends CdbtDB {
    * Define used assets at admin panel and register
    *
    * @since 2.0.0
+   * @updated 2.0.4
    */
   public function admin_assets() {
     // Fire this hook when register CSS and JavaScript to admin panel (on the all admin page)

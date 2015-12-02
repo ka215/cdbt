@@ -323,6 +323,7 @@ final class CdbtFrontend extends CdbtDB {
    * Define used assets for using shortcodes
    *
    * @since 2.0.0
+   * @updated 2.0.4
    */
   public function cdbt_assets() {
     // Fire this hook when register CSS and JavaScript at using shortcode page

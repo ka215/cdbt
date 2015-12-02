@@ -15,6 +15,7 @@ trait CdbtExtras {
    * Filter to attribute of class in the body tag of rendered page
    *
    * @since 2.0.0
+   * @updated 2.0.4
    *
    * @param mixed $classes It is `String` when "is_admin()" is true; otherwise is `Array`
    * @return mixed $classes
