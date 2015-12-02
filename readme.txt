@@ -72,6 +72,7 @@ There is no particular restriction on the amount of data that is stored in a tab
 = 2.0.4 =
 * Fixed the conflict of some javascripts (Ex, Deregister an bundled jquery in wordpress).
 * Resolved the problem of case in which fuelux class is missing from the body.
+* Changed to use customized jQueryUI from jQueryUI that is bundled with WordPress.
 * 
 
 = 2.0.3 =
