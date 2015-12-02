@@ -1235,7 +1235,10 @@ final class CdbtAdmin extends CdbtDB {
                     break;
                   case 'sql': 
                     $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
-                    $escaped_sql = $this->esc_binary_data($bin_context, 'bin_data');
+                    $_context = unserialize($bin_context);
+                    // Still remains is a bug in this process
+                    $escaped_sql = addslashes_gpc($_context['bin_data']);
+                    // $escaped_sql = $this->esc_binary_data($bin_context, 'bin_data');
                     break;
                 }
                 if (isset($escaped_sql) && !empty($escaped_sql)) {
