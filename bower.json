@@ -1,7 +1,7 @@
 {
   "name": "CustomDataBaseTables",
-  "version": "2.0.3",
-  "homepage": "http://ka2.org/",
+  "version": "2.0.4",
+  "homepage": "https://ka2.org/",
   "authors": [
     "ka2 <ka2@ka2.org>"
   ],
@@ -10,10 +10,10 @@
   "dependencies": {
     "modernizr": "~3.1.0",
     "jquery": "~2.1.4",
-    "bootstrap-sass": "~3.3.5",
+    "bootstrap-sass": "~3.3.6",
     "font-awesome-sass": "~4.4.0",
     "underscore": "~1.8.3",
-    "fuelux": "~3.11.0"
+    "fuelux": "~3.11.5"
   },
   "overrides": {
     "modernizr": {

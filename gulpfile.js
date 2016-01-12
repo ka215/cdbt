@@ -200,6 +200,10 @@ gulp.task('fonts', function() {
 });
 
 // ### イメージ系タスク
+// use: [pngquant({
+//   quality: '60-80',
+//   speed: 1
+// }), mozjpeg()]
 // `gulp images` - すべての画像のロスレス圧縮を実行する
 gulp.task('images', function() {
   return gulp.src(globs.images)
@@ -208,10 +212,7 @@ gulp.task('images', function() {
       progressive: true,
       interlaced: true,
       svgoPlugins: [{removeViewBox: false}, { cleanupIDs: false }],
-      use: [pngquant({
-        quality: '60-80',
-        speed: 1
-      }), mozjpeg()]
+      use: [mozjpeg()]
     }))
     .pipe(gulp.dest(path.dist + 'images'))
     .pipe(browserSync.stream());
