@@ -4,7 +4,7 @@ Custom DB Tables called "__CDBT__" is plugin of WordPress. This plugin is able t
 
 * Source: [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt)
 * Public SVN Repository: [http://wordpress.org/plugins/custom-database-tables/](https://wordpress.org/support/plugin/custom-database-tables)
-* Home Page: [http://cdbt.ka2.org/](http://cdbt.ka2.org/)
+* Home Page: [https://ka2.org/cdbt/](https://ka2.org/cdbt/)
 * Twitter: [@ka2bowy](https://twitter.com/ka2bowy)
 * Forum: [WordPress.org](https://wordpress.org/support/plugin/custom-database-tables)
 * Donate link: [donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=)
@@ -14,9 +14,9 @@ Custom DB Tables called "__CDBT__" is plugin of WordPress. This plugin is able t
 | Prerequisite    | How to check | How to install
 | --------------- | ------------ | ------------- |
 | PHP >= 5.4.x    | `php -v`     | php.net([English](http://php.net/manual/en/install.php)/[Japanese](http://php.net/manual/ja/install.php)) |
-| Node.js 0.12.x  | `node -v`    | [nodejs.org](http://nodejs.org/) |
-| gulp >= 3.8.10  | `gulp -v`    | `npm install -g gulp` |
-| Bower >= 1.3.12 | `bower -v`   | `npm install -g bower` |
+| Node.js >=5.4.x  | `node -v`    | [nodejs.org](http://nodejs.org/) |
+| gulp >= 3.9.x  | `gulp -v`    | `npm install -g gulp` |
+| Bower >= 1.7.2 | `bower -v`   | `npm install -g bower` |
 
 For more installation notes, refer to the [Install gulp and Bower](#install-gulp-and-bower) section in this document.
 
@@ -50,16 +50,16 @@ Navigate to the Custom DB Tables submenu in setting menu of WordPress admin pane
 
 First of all, please try to create the database required for the first.
 
-[Please see the tutorial for more use of the plugin](http://ka2.org/cdbt/tutorials/) (Sorry, Japanese only)
+[Please see the tutorial for more use of the plugin](https://ka2.org/cdbt/v1/tutorial/) (Sorry, Japanese only)
 
 ## Documentation
 
-### [Plugin Documentation](http://ka2.org/cdbt/documentation/) (Sorry, Japanese only)
+### [Plugin Documentation](https://ka2.org/cdbt/toc/) (Sorry, Japanese only)
 
-* [Plugin configuration files](http://ka2.org/cdbt/documentation/plugin-files/)
-* [Plugin methods](http://ka2.org/cdbt/documentation/methods/)
-* [Plugin APIs](http://ka2.org/cdbt/documentation/apis/)
-* [Plugin shortcodes](http://ka2.org/cdbt/documentation/shortcodes/)
+* [Plugin configuration files](https://ka2.org/cdbt/toc/)
+* [Plugin methods](https://ka2.org/cdbt/toc/)
+* [Plugin APIs](https://ka2.org/cdbt/toc/)
+* [Plugin shortcodes](https://ka2.org/cdbt/toc/)
 
 ## Features
 
@@ -105,4 +105,4 @@ GPLv2 or later
 I've prepared a [support forum](https://wordpress.org/support/plugin/custom-database-tables). 
 Please to slip issuance in here questions about plugin.
 
-Crafted by [ka2](http://ka2.org/) ([@ka2bowy](https://twitter.com/ka2bowy)).
+Crafted by [ka2](https://ka2.org/) ([@ka2bowy](https://twitter.com/ka2bowy)).
