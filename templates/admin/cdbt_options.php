@@ -199,87 +199,7 @@ $default_action = 'update';
           <p class="help-block"><?php _e('This initial value is the number of displayed records per one page of the table created by the plugin.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
         </div>
       </div><!-- /option-item-25 -->
-
-<!--
-input.reguler-text { width: 25em; }
-input.code { padding-top: 6px; } # for URL safe alnum
-input[type=email], input[type=url], input.ltr { direction: ltr; } # for email, password
-input.small-text { width: 50px; padding: 1px 6px }
-input[type=number].small-text { width: 65px } # maxlength 4
-textarea.code { line-height: 1.4; padding: 4px 6px 1px; }
-input.large-text, textarea.large-text { width: 99%; }
--->
-<!--
-# for text field
-<input id="option-item-1" type="text" name="" value="" aria-describedby="***-description" class="regular-text">
--->
-<!--
-# for numlic
-<input name="posts_per_page" type="number" step="1" min="1" id="***" value="10" class="small-text">
--->
-<!--
-# for textarea
-<fieldset>
-  <legend class="screen-reader-text"><span>コメントブラックリスト</span></legend>
-  <p>
-    <label for="blacklist_keys">コメントの内容、名前、URL、メールアドレス、IP に以下の単語のうちいずれかでも含んでいる場合、そのコメントはスパムとしてマークされます。各単語や IP は改行で区切ってください。単語内に含まれる語句にもマッチします。例: “press” は “WordPress” にマッチします。</label>
-  </p>
-  <p>
-    <textarea name="blacklist_keys" rows="10" cols="50" id="blacklist_keys" class="large-text code"></textarea>
-  </p>
-</fieldset>
--->
-<!--
-# for single checkbox
-<fieldset>
-  <legend class="screen-reader-text"><span>{label name}</span></legend>
-  <label for="option-item-n">
-    <input name="" type="checkbox" id="option-item-n" value="1">
-    ********
-  </label>
-</fieldset>
--->
-<!--
-# for multi checkbox
-<fieldset>
-  <legend class="screen-reader-text"><span>整形</span></legend>
-  <label for="use_smilies">
-    <input name="use_smilies" type="checkbox" id="use_smilies" value="1" checked="checked">
-    <code>:-)</code> や <code>:-P</code> のような顔文字を画像に変換して表示する
-  </label>
-  <br>
-  <label for="use_balanceTags">
-    <input name="use_balanceTags" type="checkbox" id="use_balanceTags" value="1">
-     不正にネスト化した XHTML を自動的に修正する
-  </label>
-</fieldset>
--->
-<!--
-# .inline-description { padding-left: 25px; } # must add to style
-
-# for selectbox
-<select name="default_role" id="default_role">
-  <option selected="selected" value="subscriber">購読者</option>
-  <option value="contributor">寄稿者</option>
-  <option value="author">投稿者</option>
-  <option value="editor">編集者</option>
-  <option value="administrator">管理者</option>
-</select><span id="inline-description">*****</span>
--->
-<!--
-# for radio button
-<fieldset>
-  <legend class="screen-reader-text"><span>日付のフォーマット</span></legend>
-  <label title="Y年n月j日"><input type="radio" name="date_format" value="Y年n月j日" checked="checked"> 2015年5月11日</label><br>
-  <label title="Y-m-d"><input type="radio" name="date_format" value="Y-m-d"> 2015-05-11</label><br>
-  <label title="m/d/Y"><input type="radio" name="date_format" value="m/d/Y"> 05/11/2015</label><br>
-  <label title="d/m/Y"><input type="radio" name="date_format" value="d/m/Y"> 11/05/2015</label><br>
-  <label><input type="radio" name="date_format" id="date_format_custom_radio" value="\c\u\s\t\o\m"> カスタム:<span class="screen-reader-text"> 以下の欄にカスタマイズした日付の書式を入力してください</span></label>
-  <label for="date_format_custom" class="screen-reader-text">カスタム日付書式:</label>
-  <input type="text" name="date_format_custom" id="date_format_custom" value="Y年n月j日" class="small-text"> <span class="screen-reader-text">例: </span><span class="example"> 2015年5月11日</span> <span class="spinner"></span>
-</fieldset>
--->
-
+      
       <div class="col-sm-offset-2 col-sm-10">
         <ul id="foot-note-1" class="foot-note">
           <li><span class="dashicons dashicons-info"></span> <?php _e('Already it is not reflected in the previously created table. Please change the table settings individually if you want to change it.', $this->domain_name); ?></li>
@@ -295,7 +215,7 @@ input.large-text, textarea.large-text { width: 99%; }
           <div class="checkbox" id="option-item-31">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[allow_rendering_shortcodes]" type="checkbox" value="1" <?php checked('1', $options['allow_rendering_shortcodes']); ?>>
-              <span class="checkbox-label"><?php _e('The Rendering shortcodes will be allow into singular post only.', $this->domain_name); /*ショートコードの出力を単投稿にのみ許可する。*/?></span> <?php $this->during_trial( 'allow_rendering_shortcodes' ); ?>
+              <span class="checkbox-label"><?php _e('The Rendering shortcodes will be allow into singular post only.', $this->domain_name); ?></span> <?php $this->during_trial( 'allow_rendering_shortcodes' ); ?>
             </label>
           </div>
         </div>
@@ -306,7 +226,7 @@ input.large-text, textarea.large-text { width: 99%; }
           <div class="checkbox disabled" id="option-item-33">
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets]" type="checkbox" value="1" <?php /*checked('1', $options['include_assets']);*/ ?> disabled="disabled">
-              <span class="checkbox-label"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); /*各種アセットの読み込みを制御します。テーマや他のプラグインとのアセットが競合する場合に設定を変更してください。*/?></span> <?php $this->during_trial( 'include_assets' ); ?>
+              <span class="checkbox-label"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); ?></span> <?php $this->during_trial( 'include_assets' ); ?>
             </label>
           </div>
         </div>
@@ -323,10 +243,7 @@ input.large-text, textarea.large-text { width: 99%; }
   </div>
 <?php endif; ?>
   
-<?php if ($current_tab == 'debug') : 
-  if (!isset($this->log_distination_path)) 
-    $this->log_distination_path = $this->plugin_dir . 'debug.log';
-?>
+<?php if ( $current_tab === 'debug' ) : ?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -344,7 +261,7 @@ input.large-text, textarea.large-text { width: 99%; }
       
       <div class="form-group">
         <div class="col-sm-11">
-          <textarea name="<?php echo $this->domain_name; ?>[debug-log]" id="debug-log-viewer" rows="20" class="form-control" readonly><?php echo file_get_contents($this->log_distination_path); ?></textarea>
+          <textarea name="<?php echo $this->domain_name; ?>[debug-log]" id="debug-log-viewer" rows="20" class="form-control" readonly><?php echo file_get_contents( $this->log_distination_path ); ?></textarea>
         </div>
       </div>
       
@@ -355,11 +272,11 @@ input.large-text, textarea.large-text { width: 99%; }
         <div class="checkbox highlight col-sm-10" id="debug-log-option">
           <label class="checkbox-custom highlight" data-initialize="checkbox">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_log_option]" type="checkbox" value="1">
-            <span class="checkbox-label"><?php _e('Remove the current log after backup of the log file.', $this->domain_name); /* ログファイルのバックアップ後に現在のログを削除する。 */ ?></span>
+            <span class="checkbox-label"><?php _e('Remove the current log after backup of the log file.', $this->domain_name); ?></span>
           </label>
         </div>
         <p class="help-block col-sm-offset-1 col-sm-10">
-          <?php printf( __('Note: Backup files stores to the directory of %s.', $this->domain_name), '<code>'. $this->plugin_dir .'backup/</code>' ); /* バックアップファイルは %s に保存されます。*/ ?>
+          <?php printf( __('Note: Backup files stores to the directory of %s.', $this->domain_name), '<code>'. $this->plugin_dir .'backup/</code>' ); ?>
         </p>
       </div>
       

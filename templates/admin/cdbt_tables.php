@@ -1031,7 +1031,7 @@ foreach ($this->allow_file_types as $file_type) {
   <?php endif; ?>
   </div>
   
-  <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3" data-current-table="<?php echo $session_var['operate_current_table']; ?>">
+  <div class="step-pane<?php echo isset($session_var['import_result']) && $session_var['import_result'] ? ' bg-info' : ' bg-danger'; ?> alert" data-step="3" data-current-table="<?php if ( array_key_exists( 'operate_current_table', $session_var ) ) echo $session_var['operate_current_table']; ?>">
     <h4><?php _e('Checking the import result', CDBT); ?></h4>
     <div class="step-body">
   <?php if ($wizard_step === 3) : ?>
@@ -1062,7 +1062,7 @@ foreach ($this->allow_file_types as $file_type) {
   
   <div class="well-sm">
     <p class="text-info"><?php
-    if (intval($table_status['Rows']) > 0) {
+    if ( isset( $table_status ) && intval( $table_status['Rows'] ) > 0 ) {
       _e('We will do the export of data stored in the table currently. Please choice of the download file format, and specify the exportation columns that you want.', CDBT);
     } else {
       _e('There is no data to be exported to this table.', CDBT);
@@ -1070,7 +1070,7 @@ foreach ($this->allow_file_types as $file_type) {
     </p>
   </div>
   
-  <?php if (intval($table_status['Rows']) > 0) : ?>
+  <?php if ( isset( $table_status ) && intval( $table_status['Rows'] ) > 0 ) : ?>
   <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal" id="form-export_table">
     <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
     <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">

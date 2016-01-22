@@ -9,7 +9,7 @@ node_modules/
 backup/
 npm-debug.log
 debug.log
-outer_defined_translations.php
+external_tranlated_text.php
 
 # Temporary definition
 v1_functions.php

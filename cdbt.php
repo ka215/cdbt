@@ -1,19 +1,19 @@
 <?php
 /*
   Plugin Name: Custom DataBase Tables
-  Plugin URI: http://ka2.org/
+  Plugin URI: https://ka2.org/
   Description: <strong>C</strong>ustom <strong>D</strong>ata<strong>B</strong>ase <strong>T</strong>ables is unleash the potential force of WordPress as the strongest CMS. It will dominate the MySQL database of WordPress, to create a freely table, and can be turning data thoroughly tinker.
   Version: 2.0.4
   Author: ka2
-  Author URI: http://ka2.org
-  Copyright: 2015 monauralsound (email : ka2@ka2.org)
+  Author URI: https://ka2.org/
+  Copyright: 2016 Monaural Sound (email : ka2@ka2.org)
   License: GPL2 - http://www.gnu.org/licenses/gpl.txt
   Text Domain: custom-database-tables
   Domain Path: /langs
 */
 ?>
 <?php
-/*  Copyright 2015 ka2 (http://ka2.org)
+/*  Copyright 2016 ka2 (https://ka2.org/)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as

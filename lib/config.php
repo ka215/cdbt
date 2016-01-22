@@ -62,7 +62,8 @@ class CdbtConfig extends CdbtCore {
     
     // Switching debug mode
     $this->debug = $this->strtobool($this->options['debug_mode']);
-//var_dump([$this->debug, $this->options['debug_mode'] ]);
+    if ( $this->debug ) 
+      $this->prepare_debug();
     
   }
 
@@ -552,6 +553,30 @@ class CdbtConfig extends CdbtCore {
     
     return $user_role_names;
   }
+  
+  
+  /**
+   * Prepare for debug mode.
+   *
+   * @since 2.0.4
+   *
+   * @return void
+   */
+  public function prepare_debug() {
+    if ( ! isset( $this->log_distination_path ) ) 
+      $this->log_distination_path = $this->plugin_dir . 'debug.log';
+    
+    if ( ! file_exists( $this->log_distination_path ) ) 
+      @file_put_contents( $this->log_distination_path, '', LOCK_EX );
+    
+    if ( ! is_writable( $this->log_distination_path ) ) {
+      if ( ! chmod( $this->log_distination_path, 0666 ) ) {
+        $this->logger( __( 'Debug log file does not have permission of writable.', CDBT ) );
+      }
+    }
+    
+  }
+  
   
   
 }

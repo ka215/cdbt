@@ -98,6 +98,7 @@ class CdbtCore extends CdbtUtility {
     
     add_action( 'plugins_loaded', array($this, 'plugin_loaded') );
     add_action( 'init', array($this, 'init_cdbt_sessions') );
+    add_action( 'shutdown', array( $this, 'cdbt_shutdown' ) );
     
   }
   
@@ -127,9 +128,27 @@ class CdbtCore extends CdbtUtility {
    * @since 2.0.0
    */
   protected function init_cdbt_sessions() {
-    if (!session_id()) 
+    if ( ! session_id() ) 
       session_start();
+    
   }
+  
+  
+  /**
+   * Shutdown all processes
+   *
+   * @since 2.0.4
+   */
+  protected function cdbt_shutdown() {
+    // Finish buffering
+    $buffer = ob_get_contents();
+    ob_get_clean();
+    
+    if ( $buffer ) 
+      echo $buffer;
+    
+  }
+  
   
   /**
    * Operating environment check for this plugin
@@ -177,13 +196,20 @@ class CdbtCore extends CdbtUtility {
    * Fire an action at the time this plugin has activated.
    *
    * since 2.0.0
+   * revised 2.0.4
    */
   public function plugin_activate() {
     if (!current_user_can('activate_plugins') || $this->plugin_enabled) 
       return;
     
+    
     $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+    ob_start();
     check_admin_referer( "activate-plugin_{$plugin}" );
+    $buffer = ob_get_contents();
+    ob_end_clean();
+    if ( ! wp_validate_boolean( $buffer ) ) 
+      $this->logger( $buffer );
     
     $this->plugin_enabled = true;
     

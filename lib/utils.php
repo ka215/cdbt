@@ -81,25 +81,6 @@ class CdbtUtility {
   }
 
 
-  /**
-   * Outputting the hook information to the javascript console at the time of each hook call.
-   *
-   * @since 2.0.0
-   *
-   * @param string $functon callback function name of hook
-   * @param string $type 'Action' or 'Filter'
-   * @param boolean $display Whether echo the javascript
-   * @return void
-   */
-  public function console_hook_name( $function, $type, $display=true ) {
-    $parse_path = explode("\\", $function);
-    $hook_name = array_pop($parse_path);
-    if ($display) {
-      printf('<script>if(window.console&&typeof window.console.log==="function"){console.log("%s : %sHook (%s)");}</script>', str_replace('my_', '', $hook_name), $type, $hook_name);
-    }
-  }
-  
-  
   /** 
    * Converts bytes into human readable file size. 
    *

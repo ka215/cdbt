@@ -762,7 +762,7 @@ final class CdbtAdmin extends CdbtDB {
     
     $_source = $this->plugin_dir . 'debug.log';
     if (!file_exists($_source)) {
-      $this->register_admin_notices( CDBT . '-error', __('Log file does not exist.', CDBT), 3, true ); /* ログファイルがありません。 */
+      $this->register_admin_notices( CDBT . '-error', __('Log file does not exist.', CDBT), 3, true );
       return;
     }
     
@@ -772,14 +772,14 @@ final class CdbtAdmin extends CdbtDB {
       $_dist = $this->plugin_dir . 'backup/debug-' . date('Ymd', time()) . '.log';
       if (!@opendir($this->plugin_dir . 'backup')) {
         if (!wp_mkdir_p($this->plugin_dir . 'backup')) {
-          $this->register_admin_notices( CDBT . '-error', __('Could not make a directory for backup. Then, it was interrupted of log deletion.', CDBT), 3, true ); /* バックアップ用のディレクトリ作成ができませんでした。ログ削除は中断されました。 */
+          $this->register_admin_notices( CDBT . '-error', __('Could not make a directory for backup. Then, it was interrupted of log deletion.', CDBT), 3, true );
           return;
         }
       }
       if (!@copy($_source, $_dist)) {
         system(sprintf('mv %s %s', $_source, $_dist), $result);
         if (1 === $result) {
-          $this->register_admin_notices( CDBT . '-error', __('Could not copy of the log file.', CDBT), 3, true ); /* ログファイルのコピーができませんでした。 */
+          $this->register_admin_notices( CDBT . '-error', __('Could not copy of the log file.', CDBT), 3, true );
           return;
         }
       }
@@ -788,7 +788,7 @@ final class CdbtAdmin extends CdbtDB {
     // Remove log contents
     if ($_fp = @fopen($_source, 'w')) {
       if (false === @fwrite($_fp, '')) {
-        $this->register_admin_notices( CDBT . '-error', __('Could not clear the log.', CDBT), 3, true ); /* ログの削除ができませんでした。 */
+        $this->register_admin_notices( CDBT . '-error', __('Could not clear the log.', CDBT), 3, true );
         return;
       }
     }
@@ -1780,8 +1780,9 @@ final class CdbtAdmin extends CdbtDB {
           break;
         case 'delete_shortcode': 
           $_current_shortcode = $this->get_shortcode_option($args['modalExtras']['target_scid']);
+          $_generated_shortcode = array_key_exists( 'generate_shortcode', $_current_shortcode ) ? stripslashes_deep( substr( $_current_shortcode['generate_shortcode'], 1, -1 ) ) : '';
           $args['modalTitle'] = __('Remove the shortcode', CDBT);
-          $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf('<div style="margin: 1em;"><pre><code>&#91;%s&#93;</code></pre></div>', stripslashes_deep(substr($_current_shortcode['generate_shortcode'], 1, -1)));
+          $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf( '<div style="margin: 1em;"><pre><code>&#91;%s&#93;</code></pre></div>', $_generated_shortcode );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_shortcode').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;

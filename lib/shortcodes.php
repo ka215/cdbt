@@ -631,10 +631,23 @@ trait CdbtShortcodes {
     // @since 2.0.0
     $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
     
-    if (isset($title)) 
-      echo $title;
-    
-    return $this->component_render( $component_name, $conponent_options );
+    if ( is_admin() ) {
+      if (isset($title)) 
+        echo $title;
+      
+      return $this->component_render( $component_name, $conponent_options );
+    } else {
+      ob_start();
+      if (isset($title)) 
+        echo $title;
+      
+      echo $this->component_render( $component_name, $conponent_options );
+      
+      $render_content = ob_get_contents();
+      ob_end_clean();
+      
+      return $render_content;
+    }
     
   }
   
@@ -835,11 +848,19 @@ trait CdbtShortcodes {
         $input_type = 'text';
       }
       
+      // Added version 2.0.4
+      if ( isset( $hidden_cols ) && ! empty( $hidden_cols ) && in_array( $column, $hidden_cols ) ) {
+        $input_type = 'hidden';
+        $_required = false;
+      } else {
+        $_required = $scheme['not_null'];
+      }
+      
       $_temp_elements_options = [
         'elementName' => $column, 
         'elementLabel' => !empty($scheme['logical_name']) ? $scheme['logical_name'] : $column, 
         'elementType' => $input_type, 
-        'isRequired' => $scheme['not_null'], 
+        'isRequired' => $_required, 
         'defaultValue' => !empty($scheme['default']) ? $scheme['default'] : '', 
         'placeholder' => '', 
         'addClass' => '', 
@@ -907,7 +928,19 @@ trait CdbtShortcodes {
     // @since 2.0.0
     $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
     
-    return $this->component_render('forms', $conponent_options);
+    if ( is_admin() ) {
+      return $this->component_render('forms', $conponent_options);
+    } else {
+      ob_start();
+      
+      echo $this->component_render( 'forms', $conponent_options );
+      
+      $render_content = ob_get_contents();
+      
+      ob_end_clean();
+      
+      return $render_content;
+    }
     
   }
   
@@ -1276,10 +1309,23 @@ trait CdbtShortcodes {
       // @since 2.0.0
       $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
       
-      if (isset($title)) 
-        echo $title;
-      
-      return $this->component_render('repeater', $conponent_options);
+      if ( is_admin() ) {
+        if (isset($title)) 
+          echo $title;
+        
+        return $this->component_render('repeater', $conponent_options);
+      } else {
+        ob_start();
+        if (isset($title)) 
+          echo $title;
+        
+        echo $this->component_render('repeater', $conponent_options);
+        
+        $render_content = ob_get_contents();
+        ob_end_clean();
+        
+        return $render_content;
+      }
       
     }
     

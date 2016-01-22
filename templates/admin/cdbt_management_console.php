@@ -46,51 +46,51 @@ foreach ($contribute_extends as $_key => $_val) {
   $_p_fin = '</p>';
   // Step1 section
   $step1_content = '<section class="cdbt-wizard-content"><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>';
-  //$step1_content .= __('We were waiting very long you! Finally CustomDataBaseTable (hereinafter referred to as CDBT) is a plug-in major version up version V2 appeared.<br>In CDBT V2 finally ability to manage the core table of WordPress has been added. This, it should be to be able to defeat use the WordPress more CMS basis.<br>I aim to start this CDBT plug-ins, you can completely customize the login system, scheduled for release next "CustomLoginSuites (provisional)" or, you can easily add the original setting screen on the management screen "AnythingSetup (provisional)" , by using, for example, to protect the posts and media to cooperation "ProtectPostsPower (provisional)", it is to the WordPress and strongest of CMS.<br>First of all, please enjoy the CDBT plug-in is the first stage of the project!<br>', CDBT);
-  //$step1_content .= __('However, it is not yet in the release version.<br>Degree of completion of the current CDBT V2 is about <strong style="font-size: 32px; color: #dc4c3a;">98%</strong>.<br>Please wait for until complete.', CDBT);
-  $step1_content .= $_p_begin. 'お待たせしました！ ようやく「CustomDataBaseTable（以降、通称のCDBTと呼称します）」プラグインのメジャーバージョンアップ版「バージョン2（以降、V2と呼称します）」が登場しました。' .$_p_fin;
-  $step1_content .= $_p_begin. 'CDBTはWordPressサイトが利用しているMySQLデータベースに独自のテーブルを作成して、データを管理し、テーマや外部サイトとのデータ連携を行うためのプラグインです。このプラグインを利用することで、データベースの詳しい知識を持っていなくても直感的にテーブルやデータを取り扱うことができるようになります。このプラグインによってオリジナルのデータ格納領域が追加されたサイトは、あなたが企図するプロジェクトの幅を驚異的に拡張してくれるでしょう。' .$_p_fin;
-  $step1_content .= $_p_begin. 'そして、CDBT V2ではついにWordPressのコアテーブルを管理できる機能が追加されました。これによって、WordPressをよりCMS的に使い倒すことができるようになるはずです。' .$_p_fin;
-  //$step1_content .= $_p_begin. '私が目指しているのは、このCDBTプラグインをはじめ、次にリリースを予定しているログイン系の処理をフルカスタマイズできる「Custom Login Suites（仮）」や、管理画面にオリジナルの設定画面を簡単に追加できる「Custom Anything Setup（仮）」、任意の投稿やメディアを強固に保護する「Custom Posts Shield（仮）」などを統合的に組み合わせることで、WordPressを最強のCMSとすることです。' .$_p_fin;
-  //$step1_content .= $_p_begin. 'まずは、そのプロジェクトの第一段階であるCDBT V2をご堪能ください！' .$_p_fin;
-  $step1_content .= $_p_begin. 'なお、CDBT V2のご利用には<strong>PHP5.4以上の環境</strong>が必要になります。また、本プラグインでは下記の外部ライブラリを使用します。' .$_p_fin;
+  $step1_content .= $_p_begin. __('Sorry I made you wait! Just barely plug-major upgrade version of "CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, referred to as V2)" had released.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('The CDBT is a database management plugin that you can create your own tables in the MySQL database for WordPress, you can directly input and output of data in, and be related data to themes and external sites.', CDBT) .'<br>';
+  $step1_content .= __('For using this plugin, you never need detailed knowledge of the database. Then you  can intuitively handle tables and data in database.', CDBT);
+  $step1_content .= __('Your website that will be able to store own extended data by this plugin, it will give you some phenomenal extension idea to your envisioning project.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('Also at the CDBT V2, finally ability to manage the core table of WordPress has been added. In this feature, you should be able to using the WordPress as likely CMS.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('However, in order to utilize the CDBT V2, please be aware that it is necessary to <strong class="text-danger">PHP5.4 or higher</strong> environment. In addition, in this plugin it is using the external library below.', CDBT) .$_p_fin;
   $step1_content .= '<ul class="contribute-extends list-inline">'. implode('', $_contribute_list) .'</ul>';
   $step1_content .= '</section>';
   // Step2 section
   $step2_content = '<section class="cdbt-wizard-content"><div class="pull-right"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_1.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step2_content .= $_p_begin. 'CDBT V2ではWordPressのコアテーブル管理の他にも新しい機能がたくさん追加されました。そして、従来の機能についても処理の内部を見直して、使いやすいインターフェースへ刷新することで、大幅な機能強化を行いました。' .$_p_fin;
-  $step2_content .= $_p_begin. 'V2で追加された新しい機能は下記の通りです。<br><ol><li>WordPressコアテーブルの管理機能</li><li>テーブルの複製機能</li><li>ショートコードの編集と保存機能</li><li>WebAPIの編集機能</li><li>デバッグモードの実装</li></ol><br>' .$_p_fin;
+  $step2_content .= $_p_begin. __('CDBT V2 In addition to the new features of the WordPress core table management has been added a lot. Then, review the internal processing for the conventional functions, it is possible to reform to easy-to-use interface, we made significant enhancements.', CDBT) .$_p_fin;
+  $step2_content .= $_p_begin. __('Added typical new feature in V2 is as follows.<br><ol><li>Management functions of the WordPress core table</li><li>Table replication function of</li><li>Editing of short codes and save function</li><li>WebAPI editing functions</li><li>Implementation of debug mode</li></ol><br>', CDBT) .$_p_fin;
   $step2_content .= '<div class="clearfix"></div><div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_2.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step2_content .= $_p_begin. 'そして、大幅に強化された機能は下記の通りです。<br><ol style="list-style-position: inside;"><li>テーブルデータのインポート／エクスポートのファイル種類を追加</li><li>テーブルクリエイターの機能強化</li><li>ショートコードの外観をFuelUXのリピーター形式に変更</li><li>テーブルの詳細情報表示の精密化</li><li>管理画面のインターフェースの刷新</li></ol><br>' .$_p_fin;
+  $step2_content .= $_p_begin. __('In addition,  significantly enhancemented benefits is as follows.<br><ol style="list-style-position: inside;"><li>Added a file type of import/export of table data</li><li>Enhancemented the tool of table creator</li><li>Changed the shortcode appearance to using repeater format of FuelUX</li><li>Refinement of the detailed information display of table</li><li>Reform of the management screen interface</li></ol><br>', CDBT) .$_p_fin;
   $step2_content .= '</section>';
   // Step3 section
   $step3_content = '<section class="cdbt-wizard-content">';
   $step3_content .= '<div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_3.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step3_content .= $_p_begin. 'それでは、まずCDBT V2で新しいテーブルを作成してみましょう。' .$_p_fin;
-  $step3_content .= $_p_begin. 'まず、WordPressの管理メニューから「テーブル管理」、「テーブル作成」タブの順にクリックしてください。「データベース用テーブル設定」の画面が表示されたら、作成したいテーブル名を入力しましょう。' .$_p_fin;
-  $step3_content .= $_p_begin. 'その後、テーブルの文字コードやデータベースエンジンを選び、テーブル作成SQL欄の右端にある「設定値からSQL作成」ボタンをクリックしてみてください。SQL欄に作成するテーブルのSQL文が自動で生成されました。基本的なテーブル作成操作はこの流れになります。' .$_p_fin;
-  $step3_content .= $_p_begin. 'このまま「テーブル作成」を実行してもテーブルが作られますが、それではあなたのデータを格納する棚（カラム）がありません。そこで、次はテーブルにカラムを追加してみましょう。' .$_p_fin;
+  $step3_content .= $_p_begin. __('So, let&apos;s create a new table first with CDBT V2.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('First, please choose the "tables" from the CDBT menu of WordPress, then selected of "Create Table" tab. When you see the screen of the "Table setting for a database", let&apos;s enter the name of the table you want to create.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('Then, select a character set and the database engine of the table, please click on the button of "Make Template" on the right-hand side of the "Create Table SQL" column. SQL statement for the table creation has been generated automatically in the textarea of "Create Table SQL". The basic table creation operation is in this flow.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('This left the table when you run the "Create Table" will be created at this time. But, there is no shelf (column) in that table to store your data. So, let&apos;s add a column to the table.', CDBT) .$_p_fin;
   $step3_content .= '<div class="clearfix"></div><div class="pull-right"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_4.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step3_content .= $_p_begin. '「テーブル作成SQL」欄の「テーブルクリエーター」タブをクリックすると、新しいダイアログが開いて、カラムを追加・編集できる専用エディッタが表示されます。' .$_p_fin;
-  $step3_content .= $_p_begin. 'テーブルクリエーターでは、カラム名を入力し、そのカラムに格納するデータ形式を選ぶことで、設定可能な項目欄が切り替わります。また、カラムの並び順を行ごとにドラッグ＆ドロップで変更することもできます。このエディッタを利用することでデータベースの知識がなくても自由自在にテーブルを編集することができるのです。' .$_p_fin;
-  $step3_content .= $_p_begin. 'カラム編集が終わったら、忘れずに「SQLを適用する」をクリックしてください。これによってあなたが編集したカラム設定はブラウザに保存され、ダイアログを閉じて開きなおした時でもカラム編集作業を再開できるようになります。' .$_p_fin;
+  $step3_content .= $_p_begin. __('When you click the "Table Creator" tab of the "Create Table SQL" column, a new dialog opens, it dedicated editor that you can insert and update the columns.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('At the "Table Creator", enter the column name, and it will automatically switch settable item column when you choose the data format to be stored in the column. Also, you can change by drag-and-drop the order of the columns for each row. You will be able to edit the table freely without knowledge about database using this editor tool.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('When you are finished editing the column, Do not forget to click the "Apply SQL" button. At this time, the column settings that you&apos;ve edited will be stored in the browser. So you will be able to resume the column editing work as when you will re-open after close the dialog.', CDBT) .$_p_fin;
   $step3_content .= '<div class="clearfix"></div><div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_5.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step3_content .= $_p_begin. '「プラグイン用テーブル設定」のセクションでは、あなたが作成したテーブルをCDBT V2で利用する時の設定を行います。主にショートコードを使ってテーブルを操作する場合向けの設定になります。なお、この設定はテーブル作成後にいつでも変更が可能です。' .$_p_fin;
-  $step3_content .= $_p_begin. 'さらに、別のプラグインなどであなたが独自に作成したテーブルをCDBT V2プラグインに取り込んで、CDBT V2で管理できるようにすることもできます。その場合は「既存のテーブルを取り込む」のセクションから、取り込みたいテーブルを選んでください。' .$_p_fin;
-  $step3_content .= $_p_begin. '<div style="margin-top: 3em;"><a href="/wp-admin/admin.php?page=cdbt_tables&tab=create_table" class="btn btn-default pull-right">Go To Table Creation</a></div>' .$_p_fin;
+  $step3_content .= $_p_begin. __('The section of "Table setting for the plugin", it sets for when you want to use a table that you have created at CDBT V2 on the web frontend. It is the main set for handling data in the table via shortcodes. Note that this setting can be changed after the table creation at any time.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. __('Finally, there is table importation to CDBT. You can also allow you to manage it at CDBT V2, in the own table that you have created via like another plugins. From the section of "Incorporate an existing table", please select the table you want to capture.', CDBT) .$_p_fin;
+  $step3_content .= $_p_begin. '<div style="margin-top: 3em;"><a href="/wp-admin/admin.php?page=cdbt_tables&tab=create_table" class="btn btn-default pull-right">'. __('Go To Table Creation', CDBT) .'</a></div>' .$_p_fin;
   $step3_content .= '</section>';
   // Step4 section
   $step4_content = '<section class="cdbt-wizard-content">';
   $step4_content .= '<div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_6.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step4_content .= $_p_begin. 'CDBT V2で管理しているテーブルは、ショートコードを使用することで、サイトのフロントエンドにデータ内容を表示したり、フロントエンドからデータを登録できたりできます。このショートコードを利用することで、あなたのサイトに訪れるユーザーにインタラクティブなデータベース利用を提供することができます。' .$_p_fin;
-  $step4_content .= $_p_begin. 'ユーザーと協力してコンテンツやデータを収集・蓄積したり、独自のユーザー管理テーブルとしてCRM的なテーブルを構築することも可能になるのです。' .$_p_fin;
-  $step4_content .= $_p_begin. 'ショートコードによって出力されるコンテンツの外観は利用シーンに合わせて管理画面からフルカスタマイズが可能になっています。さらに、あなたのオリジナル設定のショートコードはプラグインに登録しておくこともでき、登録されたショートコードには複雑な属性設定が省略されたエイリアスコードが発行されます。実際に利用する際は、そのエイリアスコードを投稿や固定ページに貼り付けるだけです。' .$_p_fin;
+  $step4_content .= $_p_begin. __('Table managed by the CDBT V2 is, it is possible to use some shortcodes, you can display the data content to the frontend of the site, or you can be registered the data from the frontend. By the using these shortcodes, you will be able to provide an interactive database available to users who visit your site.', CDBT) .$_p_fin;
+  $step4_content .= $_p_begin. __('For example, it can in cooperation with the user to collect and accumulate content and data. Or you may be able to provide like CRM service that built own user management table.', CDBT) .$_p_fin;
+  $step4_content .= $_p_begin. __('The appearance of the content that is output via the shortcode can be fully customizable from the management screen to fit the available scene. In addition, you can be registered the shortcode of your own settings to the plugin. After registering shortcodes, it will be issued alias code complex attribute setting is omitted in. When you actually use it, you may just paste the alias code in posts and fixed page.', CDBT) .$_p_fin;
+  $step4_content .= $_p_begin. '<div style="margin-top: 3em;"><a href="/wp-admin/admin.php?page=cdbt_shortcodes" class="btn btn-default pull-right">'. __('Go To Shortcodes Management', CDBT) .'</a></div>' .$_p_fin;
   $step4_content .= '</section>';
   // Step5 section
   $step5_content = '<section class="cdbt-wizard-content">';
   $step5_content .= '<div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_7.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step5_content .= $_p_begin. 'CDBT V2で管理しているテーブルのデータにはWeb APIを利用することで、外部のサイトからアクセスすることができます。そのためには「WEB API管理」からアクセスを許可するサイトを登録する必要があります。' .$_p_fin;
+  $step5_content .= $_p_begin. __('The data in the table managed by the CDBT V2 By using the Web API, you can access from the outside of the site. To do this you need to register the site to allow access from the "CDBT Web APIs Management" (in the Web APIs menu).', CDBT) .$_p_fin;
   $step5_content .= $_p_begin. __('Since not yet written content, please wait.', CDBT) .$_p_fin;
+  $step5_content .= $_p_begin. '<div style="margin-top: 3em;"><a href="/wp-admin/admin.php?page=cdbt_web_apis" class="btn btn-default pull-right">'. __('Go To WebAPIs Management', CDBT) .'</a></div>' .$_p_fin;
   $step5_content .= '</section>';
   
   $conponent_options = [
@@ -115,14 +115,13 @@ foreach ($contribute_extends as $_key => $_val) {
   <div class="panel panel-default donate-info">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>
     <div class="panel-body">
-      <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="https://ka2.org/cdbt/documentation/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
-      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/tutorials/" target="_blank" alt="CDBT Tutorials">', '</a>' ); ?>
+      <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="https://ka2.org/cdbt/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
+      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/toc/" target="_blank" alt="CDBT Tutorial">', '</a>' ); ?>
       <?php printf( __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', CDBT), '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>' ); ?></p>
       <p class="pull-left"><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?>
       <?php esc_html_e( 'Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', CDBT ); ?></p>
       <div class="clearfix"></div>
       <ul class="list-inline donate-links">
-      <?php if (in_array($_local_code, [ 'ja',  ])) : ?>
         <li class="donate-paypal"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
           <input type="hidden" name="cmd" value="_donations">
           <input type="hidden" name="business" value="2YZY4HWYSWEWG">
@@ -133,7 +132,6 @@ foreach ($contribute_extends as $_key => $_val) {
           <button type="submit" name="submit" alt="PayPal - <?php esc_html_e( 'The safer, easier way to pay online!', CDBT ); ?>" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate Paypal</button>
           <img alt="" border="0" src="https://www.paypalobjects.com/ja_JP/i/scr/pixel.gif" width="1" height="1">
         </form></li>
-      <?php endif; ?>
         <li class="donate-blockchain"><div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn" data-address="1821oc4XvWrfiwfVcNCAKEC8gppcrab4Re" data-shared="false">
           <div class="blockchain stage-begin">
             <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
@@ -162,12 +160,12 @@ foreach ($contribute_extends as $_key => $_val) {
   </div><!-- /.panel -->
   
   <div class="panel panel-default other-note">
-    <div class="panel-heading"><i class="fa fa-check-circle-o"></i> <?php esc_html_e( 'CustomDataBaseTables License Agreement', CDBT ); ?></div>
+    <div class="panel-heading"><i class="fa fa-check-circle-o" style="color: #999900;"></i> <?php esc_html_e( 'CustomDataBaseTables License Agreement', CDBT ); ?></div>
     <div class="panel-body">
-      <p>Copyright (c) 2014 - 2015, ka2 ( <a href="https://ka2.org/" target="_blank">https://ka2.org</a> )</p>
-      <p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 2, as published by the Free Software Foundation.</p>
-      <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
-      <p>You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</p>
+      <p>Copyright <i class="fa fa-copyright"><span class="sr-only">(c)</span></i> 2014 - <?php echo date('Y'); ?>, ka2 ( <a href="https://ka2.org/" target="_blank">https://ka2.org/</a> )</p>
+      <p><?php _e('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, version 2, as published by the Free Software Foundation.'); ?></p>
+      <p><?php _e('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.'); ?></p>
+      <p><?php _e('You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA'); ?></p>
     </div><!-- /.panel-body -->
   </div><!-- /.panel -->
   
