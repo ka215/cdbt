@@ -3,12 +3,12 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
-Tested up to: 4.3.1
+Tested up to: 4.4.1
 Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
+Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress. Note: at version 2.0.0 or later, on the operating environment required PHP5.4 or more.
 
 == Description ==
 
@@ -27,6 +27,9 @@ If you make by full use the various APIs, methods, and shortcodes that is provid
 3. Navigate to the Custom DB Tables submenu in setting menu
 
 That's it. Now you can easily start creating custom table in database of WordPress
+
+If needed, please install the legacy version any it is from [here](https://wordpress.org/plugins/custom-database-tables/developers/).
+Also, lastest legacy version is [1.1.15](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Frequently Asked Questions ==
 
@@ -73,7 +76,12 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Fixed the conflict of some javascripts (Ex, Deregister an bundled jquery in wordpress).
 * Resolved the problem of case in which fuelux class is missing from the body.
 * Changed to use customized jQueryUI from jQueryUI that is bundled with WordPress.
-* 
+* The untranslation text on the dashboard had been localized. (for ticket: [English version](https://wordpress.org/support/topic/english-version-11?replies=1) )
+* Fixed a bug that occurs error when the debug log file does not exist.
+* Fixed a bug that can not click edit button when the data editing on the modal window. (for ticket: [Can't validate Edit popup](https://wordpress.org/support/topic/cant-validate-edit-popup?replies=1) )
+* Fixed a bug of the rendering order of immediately text before the shortcode was wrong. (for ticket: [Shortcode displays before the text that precedes it.](https://wordpress.org/support/topic/shortcode-displays-before-the-text-that-precedes-it?replies=1) )
+* Fixed a bug that attribute of "hidden_cols" does not work at cdbt-entry. (for ticket: [Custom DataBase Tables cdbt-entry](https://wordpress.org/support/topic/custom-database-tables%E3%80%80-cdbt-entry?replies=1) )
+* Fixed a bug that useless output has been performed when will be activated plugin.
 
 = 2.0.3 =
 * Fixed a bug that WebAPI request URI generation was not working.
