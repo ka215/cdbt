@@ -469,6 +469,12 @@ doTableCreator = function(){
   });
   
   
+  // This event will fire when changed "Key/Index" combobox.
+  $(document).on('changed.fu.combobox', '.key_index .combobox', function (e, item) {
+    // currently nothing
+  });
+  
+  
   // Validating column definition when enabled auto increment
   function validateAutoIncr( targetRowId ) {
     
@@ -522,7 +528,11 @@ doTableCreator = function(){
       oneColumn = {};
       $(this).find('input').each(function(){
         var key = $(this).attr('name').replace($(this).attr('name').substr($(this).attr('name').lastIndexOf('_')), '');
-        oneColumn[key] = _.contains([ 'checkbox', 'radio' ], $(this).attr('type')) ? $(this).prop('checked') : $(this).val();
+        if ('key_index' === key) {
+        	oneColumn[key] = 'None' === $(this).val() ? '' : $(this).val();
+        } else {
+          oneColumn[key] = _.contains([ 'checkbox', 'radio' ], $(this).attr('type')) ? $(this).prop('checked') : $(this).val();
+        }
       });
       if (typeof oneColumn.col_name !== 'undefined' && '' !== oneColumn.col_name) {
         cacheData.push(oneColumn);

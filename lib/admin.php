@@ -210,7 +210,14 @@ final class CdbtAdmin extends CdbtDB {
     
     register_setting( 'cdbt_management_console', $this->domain_name );
     
+    if ( ! session_id() ) 
+      session_start();
+    
+    //$_token = sha1( $this->domain_name ."\t". microtime( true ) );
+    //$_SESSION['cdbt_token'] = $_token;
+    
     $this->cdbt_sessions = $_SESSION;
+//var_dump( __FUNCTION__, $this->cdbt_sessions );
     
   }
 

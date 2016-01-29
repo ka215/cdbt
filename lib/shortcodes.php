@@ -848,7 +848,9 @@ trait CdbtShortcodes {
         $input_type = 'text';
       }
       
-      // Added version 2.0.4
+      // Fixed at version 2.0.5
+      if ( ! is_array( $hidden_cols ) ) 
+        $hidden_cols = $this->strtoarray( $hidden_cols );
       if ( isset( $hidden_cols ) && ! empty( $hidden_cols ) && in_array( $column, $hidden_cols ) ) {
         $input_type = 'hidden';
         $_required = false;
@@ -928,6 +930,13 @@ trait CdbtShortcodes {
     // @since 2.0.0
     $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
     
+    //$_token = sha1( $this->domain_name ."\t". microtime( true ) );
+    //$_token = sha1( session_id() );
+    //$_SESSION['cdbt_token'] = $_token;
+    //session_write_close();
+    //session_start();
+    //$this->update_session();
+//var_dump( __FUNCTION__, $this->cdbt_sessions, $_SESSION, $this->onetime_token );
     if ( is_admin() ) {
       return $this->component_render('forms', $conponent_options);
     } else {

@@ -161,6 +161,11 @@ if (!isset($this->component_options['formElements']) || empty($this->component_o
 }
 
 
+//$_token = ! empty( $this->onetime_token ) && array_key_exists( session_id(), $this->onetime_token ) ? $this->onetime_token[session_id()] : '';
+//$_token = ! empty( $this->onetime_token ) ? $this->onetime_token : '';
+$_token = $_SESSION['cdbt_token'];
+//$_token = session_id();
+var_dump( __FUNCTION__, $this->cdbt_sessions, $_SESSION, $this->onetime_token );
 /**
  * Render the Form common header
  * ---------------------------------------------------------------------------
@@ -171,6 +176,7 @@ if (!isset($this->component_options['formElements']) || empty($this->component_o
     <?php if (!empty($hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="<?php echo $form_action; ?>">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
+    <input type="hidden" name="_token" value="<?php echo $_token; ?>">
     <?php wp_nonce_field( $wp_nonce_action ); ?>
     
     <?php if (!empty($form_title)) { echo $form_title; } ?>
@@ -210,82 +216,82 @@ search, datetime, date, month, week, time, color
       case 'range': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="<?php echo $element_size; ?>">
-        <input id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" type="<?php esc_attr_e($element['elementType']); ?>" value="<?php esc_attr_e($element['defaultValue']); ?>" class="form-control <?php esc_attr_e($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+        <input id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" type="<?php echo esc_attr($element['elementType']); ?>" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
       </div>
       <div class="col-sm-10">
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block col-sm-10"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block col-sm-10"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
       case 'spinbox': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
-        <div class="spinbox disits-3 <?php esc_attr_e($element['addClass']); ?>" data-initialize="spinbox" id="entry-data-<?php esc_attr_e($element['elementName']); ?>">
-          <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" value="<?php esc_attr_e($element['defaultValue']); ?>" class="form-control input-mini spinbox-input" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+        <div class="spinbox disits-3 <?php echo esc_attr($element['addClass']); ?>" data-initialize="spinbox" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
+          <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control input-mini spinbox-input" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
           <div class="spinbox-buttons btn-group btn-group-vertical">
             <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
             <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
           </div>
         </div>
-        <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
+        <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
       case 'textarea': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-9">
-        <textarea id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" class="form-control <?php esc_attr_e($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $element['defaultValue']; ?></textarea>
+        <textarea id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $element['defaultValue']; ?></textarea>
       </div>
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
       case 'combobox': 
 ?>
     <div class="form-group">
       <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-        <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" value="<?php esc_attr_e($element['defaultValue']); ?>" class="form-control text-center" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+        <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" id="entry-data-<?php echo esc_attr($element['elementName']); ?>" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control text-center" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
         <div class="input-group-btn">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
           <ul class="dropdown-menu dropdown-menu-right">
           <?php foreach ($selectable_list as $list_label => $list_value) : ?>
-            <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php esc_html_e($list_label); ?></a></li>
+            <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo esc_html($list_label); ?></a></li>
           <?php endforeach; ?>
           </ul>
         </div>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
       case 'select': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
-        <div class="btn-group selectlist <?php esc_attr_e($element['addClass']); ?>" data-resize="auto" data-initialize="selectlist" id="entry-data-<?php esc_attr_e($element['elementName']); ?>">
+        <div class="btn-group selectlist <?php echo esc_attr($element['addClass']); ?>" data-resize="auto" data-initialize="selectlist" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
             <span class="selected-label"></span>
             <span class="caret"></span>
-            <span class="sr-only"><?php esc_attr_e('Toggle Dropdown'); ?></span>
+            <span class="sr-only"><?php echo esc_attr('Toggle Dropdown'); ?></span>
           </button>
           <ul class="dropdown-menu" role="menu">
           <?php foreach ($selectable_list as $list_label => $list_value) : ?>
-            <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php esc_html_e($list_label); ?></a></li>
+            <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo esc_html($list_label); ?></a></li>
           <?php endforeach; ?>
           </ul>
-          <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" readonly="readonly" aria-hidden="true" type="text"/>
+          <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" readonly="readonly" aria-hidden="true" type="text"/>
         </div>
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
       case 'checkbox': 
@@ -296,20 +302,20 @@ search, datetime, date, month, week, time, color
         $add_classes = $is_required ? $element['addClass'] . ' required' : $element['addClass'];
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
         <?php if (!$is_horizontal) : ?><div class="checkbox<?php /* echo esc_attr($add_classes); */ ?>"><?php endif; ?>
-          <label class="checkbox-custom<?php if ($is_horizontal) : ?> checkbox-inline<?php endif; ?><?php if ($is_multiple) : ?> multiple<?php endif; ?><?php echo esc_attr($add_classes); ?>" data-initialize="checkbox" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="checkbox" value="<?php esc_attr_e($list_value); ?>"<?php if (is_array($default_values) && in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
-            <span class="checkbox-label"><?php esc_html_e($list_label); ?></span>
+          <label class="checkbox-custom<?php if ($is_horizontal) : ?> checkbox-inline<?php endif; ?><?php if ($is_multiple) : ?> multiple<?php endif; ?><?php echo esc_attr($add_classes); ?>" data-initialize="checkbox" id="entry-data-<?php echo esc_attr($element['elementName']); ?><?php echo $index_num; ?>">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>][]" type="checkbox" value="<?php echo esc_attr($list_value); ?>"<?php if (is_array($default_values) && in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
+            <span class="checkbox-label"><?php echo esc_html($list_label); ?></span>
           </label>
         <?php if (!$is_horizontal) : ?></div><?php endif; ?>
       <?php endforeach; ?>
-      <?php if ($is_multiple) : ?><input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][checked]" value="0"><?php endif; ?>
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
+      <?php if ($is_multiple) : ?><input type="hidden" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>][checked]" value="0"><?php endif; ?>
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         unset($index_num, $is_horizontal, $default_values);
         break;
@@ -319,19 +325,19 @@ search, datetime, date, month, week, time, color
         $default_values= $this->strtoarray($element['defaultValue']);
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
-        <?php if (!$is_horizontal) : ?><div class="radio <?php esc_attr_e($element['addClass']); ?>"><?php endif; ?>
-          <label class="radio-custom<?php if ($is_horizontal) : ?> radio-inline<?php esc_attr_e($element['addClass']); endif; ?>" data-initialize="radio" id="entry-data-<?php esc_attr_e($element['elementName']); ?><?php echo $index_num; ?>">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][]" type="radio" value="<?php esc_attr_e($list_value); ?>"<?php if (in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
-            <span class="radio-label"><?php esc_html_e($list_label); ?></span>
+        <?php if (!$is_horizontal) : ?><div class="radio <?php echo esc_attr($element['addClass']); ?>"><?php endif; ?>
+          <label class="radio-custom<?php if ($is_horizontal) : ?> radio-inline<?php echo esc_attr($element['addClass']); endif; ?>" data-initialize="radio" id="entry-data-<?php echo esc_attr($element['elementName']); ?><?php echo $index_num; ?>">
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>][]" type="radio" value="<?php echo esc_attr($list_value); ?>"<?php if (in_array($list_value, $default_values)) : ?> checked="checked"<?php endif; ?>>
+            <span class="radio-label"><?php echo esc_html($list_label); ?></span>
           </label>
         <?php if (!$is_horizontal) : ?></div><?php endif; ?>
       <?php endforeach; ?>
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         unset($index_num, $is_horizontal, $default_values);
         break;
@@ -339,16 +345,16 @@ search, datetime, date, month, week, time, color
         $checked = ($this->strtobool($element['defaultValue'])) ? ' checked="checked"' : '';
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
-        <div class="checkbox <?php esc_attr_e($element['addClass']); ?>" id="entry-data-<?php esc_attr_e($element['elementName']); ?>">
+        <div class="checkbox <?php echo esc_attr($element['addClass']); ?>" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
           <label class="checkbox-custom" data-initialize="checkbox">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]" type="checkbox" value="1"<?php echo $checked; ?> <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
-            <span class="checkbox-label"><?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><?php esc_html_e($element['helperText']); ?><?php else : ?><?php echo $element['elementLabel']; ?><?php endif; ?></span>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" type="checkbox" value="1"<?php echo $checked; ?> <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+            <span class="checkbox-label"><?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><?php echo esc_html($element['helperText']); ?><?php else : ?><?php echo $element['elementLabel']; ?><?php endif; ?></span>
           </label>
         </div>
       </div>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         unset($checked);
         break;
@@ -371,18 +377,18 @@ search, datetime, date, month, week, time, color
         }
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-9">
-        <input class="<?php esc_attr_e($element['addClass']); ?>" type="file" id="entry-data-<?php esc_attr_e($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>]"<?php if ($is_required) : ?> required<?php endif; ?>>
+        <input class="<?php echo esc_attr($element['addClass']); ?>" type="file" id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]"<?php if ($is_required) : ?> required<?php endif; ?>>
         <?php if ($is_fileupsize) : ?><p class="help-block"><?php printf(__('Notice: Maximum upload file size is %s.', CDBT), '<strong>'. $element['elementExtras']['maxlength'] .'</strong>'); ?></p><?php endif; ?>
       </div>
       <div class="col-sm-offset-2 col-sm-9">
       <?php echo $add_field; ?>
       </div>
-    <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php esc_html_e($element['helperText']); ?></p><?php endif; ?>
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+    <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
-	   unset($_file_type, $_binary_array, $add_field);
+        unset($_file_type, $_binary_array, $add_field);
         break;
       case 'datetime': 
         $month_list = [
@@ -408,37 +414,39 @@ search, datetime, date, month, week, time, color
           [ 'fullname' => __('Friday', CDBT), 'aliase' => __('Fr', CDBT) ], 
           [ 'fullname' => __('Saturday', CDBT), 'aliase' => __('Sa', CDBT) ], 
         ];
-        if (!empty($element['defaultValue'])) {
-          $_parse_vars = explode(' ', $element['defaultValue']);
-          if (array_key_exists(1, $_parse_vars)) {
+        if ( ! empty( $element['defaultValue'] ) ) {
+          $_parse_vars = explode( ' ', $element['defaultValue'] );
+          if ( array_key_exists( 1, $_parse_vars ) ) {
             $_time = $_parse_vars[1];
           }
           $_date = $_parse_vars[0];
-          if ('0000-00-00' !== $_date) {
-            list($_year, $_month, $_day) = explode('-', $_date);
-            $default_date = sprintf('%s/%s/%s', $_month, $_day, $_year);
+          if ( '0000-00-00' !== $_date ) {
+            list( $_year, $_month, $_day ) = explode( '-', $_date );
+            $default_date = sprintf( '%s/%s/%s', $_month, $_day, $_year );
           } else {
-            $default_date = date('m/d/Y');
+            $default_date = date_i18n( 'm/d/Y' );
           }
+        } else {
+          $default_date = date_i18n( 'm/d/Y' );
         }
         
-        if (isset($_time) && !empty($_time)) {
-          list($_hour, $_minute, $_second) = explode(':', $_time);
+        if ( isset( $_time ) && ! empty( $_time ) ) {
+          list( $_hour, $_minute, $_second ) = explode( ':', $_time );
         } else {
           $_hour = $_minute = $_second = 0;
         }
-        if (isset($element['elementExtras']['datetime']) && $this->strtobool($element['elementExtras']['datetime'])) {
+        if ( isset( $element['elementExtras']['datetime'] ) && $this->strtobool( $element['elementExtras']['datetime'] ) ) {
           $toggle_datetime = '';
         } else {
           $toggle_datetime = ' style="visibility: hidden;"';
         }
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php esc_attr_e($element['elementName']); ?>-date" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-date" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
       <div class="col-sm-10">
-        <div class="datepicker cdbt-datepicker" data-initialize="datepicker" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-date" <?php if (isset($default_date) && !empty($default_date)) : ?>data-date="<?php echo $default_date; ?>"<?php endif; ?> data-allow-past-dates="allowPastDates" <?php echo $add_attributes; ?>>
+        <div class="datepicker cdbt-datepicker" data-initialize="datepicker" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-date" <?php if (isset($default_date) && !empty($default_date)) : ?>data-date="<?php echo $default_date; ?>"<?php endif; ?> data-allow-past-dates="allowPastDates" <?php echo $add_attributes; ?>>
           <div class="input-group col-sm-3 pull-left">
-            <input class="form-control text-center" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][date]" type="text">
+            <input class="form-control text-center" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][date]" type="text">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-calendar"></span>
@@ -497,7 +505,7 @@ search, datetime, date, month, week, time, color
         <div class="clock-mark pull-left"<?php echo $toggle_datetime; ?>><span class="glyphicon glyphicon-time text-muted"></span></div>
         <div class="col-sm-2 pull-left datepicker-combobox-hour"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][hour]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][hour]" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-hour" value="<?php echo $_hour; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -511,7 +519,7 @@ search, datetime, date, month, week, time, color
         <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left datepicker-combobox-minute"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][minute]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][minute]" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -525,7 +533,7 @@ search, datetime, date, month, week, time, color
         <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left datepicker-combobox-second"<?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-            <input type="text" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][second]" id="entry-data-<?php esc_attr_e($element['elementName']); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
+            <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][second]" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -537,10 +545,26 @@ search, datetime, date, month, week, time, color
           </div><!-- /second-combobox -->
         </div>
       </div>
-      <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php esc_attr_e($element['elementName']); ?>][prev_date]" value="<?php esc_attr_e($element['defaultValue']); ?>">
-    </div><!-- /entry-data-<?php esc_attr_e($element['elementName']); ?> -->
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][prev_date]" value="<?php echo esc_attr( $element['defaultValue'] ); ?>">
+    </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         unset($default_date, $_time, $_hour, $_minute, $_second);
+        break;
+      case 'hidden':
+        /*
+        if ( in_array( strtolower( esc_attr( $element['elementName'] ) ), [ 'created', 'updated' ] ) ) {
+          if ( '0000-00-00 00:00:00' === $element['defaultValue'] ) {
+            
+          }
+        }
+        */
+        if ( ! empty( $element['defaultValue'] ) ) {
+?>
+    <div class="hide">
+      <input id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>]" type="hidden" value="<?php echo esc_attr( $element['defaultValue'] ); ?>">
+    </div><!-- /entry-data-<?php echo esc_attr( $element['elementName'] ); ?> -->
+<?php
+        }
         break;
       default: 
         break;

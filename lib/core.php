@@ -35,6 +35,11 @@ class CdbtCore extends CdbtUtility {
   public $user_options = array();
   
   /**
+   * @var string one-time token for session
+   */
+  public $onetime_token = null;
+  
+  /**
    * @var mixed False when not error or default; WP_Error object when has errors
    */
   public $errors = false;
@@ -97,7 +102,7 @@ class CdbtCore extends CdbtUtility {
     register_activation_hook( $this->plugin_main_file, array( &$this, 'plugin_activate' ) );
     
     add_action( 'plugins_loaded', array($this, 'plugin_loaded') );
-    add_action( 'init', array($this, 'init_cdbt_sessions') );
+    //add_action( 'init', array($this, 'init_cdbt_sessions') );
     add_action( 'shutdown', array( $this, 'cdbt_shutdown' ) );
     
   }

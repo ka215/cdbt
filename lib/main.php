@@ -190,7 +190,20 @@ final class CdbtFrontend extends CdbtDB {
    */
   public function frontend_initialize() {
     
-    $this->cdbt_sessions = $_SESSION;
+    //if ( ! session_id() ) {
+      session_start();
+      
+      // Issue a one-time token
+var_dump( $_SESSION );
+      if ( isset( $_SESSION['cdbt_token'] ) ) {
+        $this->onetime_token = $_SESSION['cdbt_token'];
+      } else {
+        $_SESSION['cdbt_token'] = $this->onetime_token = sha1( session_id() . microtime( true ) );
+      }
+      $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : null;
+      
+var_dump( __FUNCTION__, $this->cdbt_sessions );
+    //}
     
     foreach ($this->shortcodes as $shortcode_name => $definitions) {
       add_action( "pre_shortcode_{$shortcode_name}", array($this, 'cdbt_pre_shortcode_render'), 10, 2 );
@@ -219,7 +232,9 @@ final class CdbtFrontend extends CdbtDB {
           unset($this->cdbt_sessions[$key]);
       }
     }
-    $_SESSION = [];
+    //$_SESSION = [];
+    session_write_close();
+    session_start();
     
   }
 
@@ -236,8 +251,8 @@ final class CdbtFrontend extends CdbtDB {
     if (empty($session_key)) {
       // global sessions
       $this->cdbt_sessions = [];
-      $_SESSION = [];
-      session_write_close();
+      //$_SESSION = [];
+      session_destroy();
     } else {
       // local page (or tab) sessions
       if (array_key_exists($session_key, $this->cdbt_sessions)) 
@@ -246,6 +261,7 @@ final class CdbtFrontend extends CdbtDB {
       if (array_key_exists($session_key, $_SESSION)) 
         unset($_SESSION[$session_key]);
       
+      session_write_close();
     }
     
   }
@@ -554,18 +570,33 @@ final class CdbtFrontend extends CdbtDB {
     }
     
     $table_name = $_POST['table'];
-    $post_data = $_POST[$this->domain_name];
-    $register_data = $this->cleanup_data( $table_name, $post_data );
-    if ($this->insert_data( $table_name, $register_data )) {
-      $message = sprintf(__('Your entry data has been successfully registered to "%s" table.', CDBT), $table_name);
-      $this->emit_type = 'notice';
-      $this->destroy_session();
+    //$session_key = str_replace( '_', '-', __FUNCTION__ .'-'. $table_name );
+    //$_sid = session_id();
+    //$_cdbt_token = $_sid ? sha1( $_sid ) : '';
+    $_cdbt_token = ! empty( $this->onetime_token[session_id()] ) ? $this->onetime_token[session_id()] : '';
+var_dump( $_SESSION );
+//var_dump( $this->onetime_token, $_cdbt_token, $_POST['_token'], $_cdbt_token === $_POST['_token'] );
+exit;
+    if ( ! empty( $_cdbt_token ) && $_cdbt_token === $_POST['_token'] ) {
+      // $this->update_session( $session_key );
+      $post_data = $_POST[$this->domain_name];
+      $register_data = $this->cleanup_data( $table_name, $post_data );
+      if ($this->insert_data( $table_name, $register_data )) {
+        $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
+        $this->emit_type = 'notice';
+        $this->destroy_session();
+      } else {
+        $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
+        $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
+        $_SESSION = $post_data;
+        $this->update_session();
+      }
     } else {
-      $message = sprintf(__('Could not insert data to "%s" table.', CDBT), $table_name);
-      $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
+      $message = sprintf( __( 'Could not multiple registration by the continuous transmission.', CDBT ) );
+      $this->destroy_session();
     }
     
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->emit_message = $message;
     }
     return;

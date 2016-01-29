@@ -858,6 +858,9 @@ class CdbtDB extends CdbtConfig {
           continue;
         }
       } else {
+        if ( in_array( 'created', $is_auto_add_column ) && 'created' === $column ) {
+          $value = date_i18n( 'Y-m-d H:i:s' );
+        }
         $insert_data[$column] = $value;
       }
       
@@ -877,6 +880,11 @@ class CdbtDB extends CdbtConfig {
       $this->logger( $message );
       return false;
     }
+    
+    // Filter the data before any data insertion to a table
+    // 
+    // @since 2.0.5
+    $insert_data = apply_filters( 'cdbt_before_insert_data', $insert_data, $table_name, $field_format );
     
     $_diff_result = array_diff_key($insert_data, $field_format);
     if (empty($_diff_result)) {
