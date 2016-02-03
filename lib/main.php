@@ -196,7 +196,7 @@ final class CdbtFrontend extends CdbtDB {
       session_start();
       
       // Issue a one-time token
-      if ( isset( $_COOKIE ) ) {
+      if ( isset( $_COOKIE[session_name()] ) ) {
         $_sid = $_COOKIE[session_name()];
         session_id( $_sid );
       }

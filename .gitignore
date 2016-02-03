@@ -23,3 +23,4 @@ old.*
 /sources/styles/main.scss
 /sources/styles/cdbt-style.css
 /sources/styles/styles.min.css
+*.bak

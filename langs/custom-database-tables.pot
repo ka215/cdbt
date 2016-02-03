@@ -1,3264 +1,4440 @@
+# WordPress Blank Pot
+# Copyright (C) 2014 ...
+# This file is distributed under the GNU General Public License v2 or later.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Database Tables 2.0.5\n"
-"POT-Creation-Date: 2016-02-03 12:48+0900\n"
+"Project-Id-Version: "
+"Custom DataBase Tables "
+"v2.0.5\n"
+"POT-Creation-Date: "
+"2016-02-03 14:20+0900\n"
 "PO-Revision-Date: \n"
-"Last-Translator: ka2 <ka2@ka2.org>\n"
-"Language-Team: ka2 <ka2@ka2.org>\n"
-"Language: ja_JP\n"
+"Last-Translator: Your "
+"Name <you@example.com>\n"
+"Language-Team: ka2 "
+"<ka2@ka2.org>\n"
+"Report-Msgid-Bugs-To: "
+"Translator Name "
+"<translations@example."
+"com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Poedit-KeywordsList: __;_e;_x;_n;cdbt__;cdbt_e;esc_attr__;esc_attr_e;"
-"esc_html__;esc_html_e\n"
-"X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.8.6\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: ../../custom-database-tables\n"
-"X-Poedit-SearchPathExcluded-0: ../../custom-database-tables/"
+"Content-Type: text/"
+"plain; charset=UTF-8\n"
+"Content-Transfer-"
+"Encoding: 8bit\n"
+"Plural-Forms: "
+"nplurals=2; plural=n != "
+"1;\n"
+"X-Textdomain-Support: "
+"yesX-Generator: Poedit "
+"1.6.4\n"
+"X-Poedit-SourceCharset: "
+"UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;esc_html_e;"
+"esc_html_x:1,2c;"
+"esc_html__;esc_attr_e;"
+"esc_attr_x:1,2c;"
+"esc_attr__;_ex:1,2c;"
+"_nx:4c,1,2;"
+"_nx_noop:4c,1,2;_x:1,2c;"
+"_n:1,2;_n_noop:1,2;"
+"__ngettext:1,2;"
+"__ngettext_noop:1,2;_c,"
+"_nc:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"Language: en_US\n"
+"X-Generator: Poedit "
+"1.8.6\n"
+"X-Poedit-"
+"SearchPath-0: .\n"
+"X-Poedit-"
+"SearchPathExcluded-0: ."
+"git\n"
+"X-Poedit-"
+"SearchPathExcluded-1: "
+"assets\n"
+"X-Poedit-"
+"SearchPathExcluded-2: "
 "bower_components\n"
-"X-Poedit-SearchPathExcluded-1: ../../custom-database-tables/node_modules\n"
-"X-Poedit-SearchPathExcluded-2: ../../custom-database-tables/.git\n"
-"X-Poedit-SearchPathExcluded-3: ../../custom-database-tables/assets\n"
+"X-Poedit-"
+"SearchPathExcluded-3: "
+"langs\n"
+"X-Poedit-"
+"SearchPathExcluded-4: "
+"node_modules\n"
+"X-Poedit-"
+"SearchPathExcluded-5: "
+"sources\n"
+"X-Poedit-"
+"SearchPathExcluded-6: ."
+"*\n"
+"X-Poedit-"
+"SearchPathExcluded-7: *."
+"json\n"
+"X-Poedit-"
+"SearchPathExcluded-8: "
+"debug.log\n"
+"X-Poedit-"
+"SearchPathExcluded-9: "
+"gulpfile.js\n"
+"X-Poedit-"
+"SearchPathExcluded-10: *."
+"md\n"
+"X-Poedit-"
+"SearchPathExcluded-11: *."
+"txt\n"
 
-#: ../../custom-database-tables/external_tranlated_text.php:4
-#: ../../custom-database-tables/lib/core.php:188
-msgid "Custom DataBase Tables"
+#: external_tranlated_text.php:4
+#: lib/core.php:188
+msgid ""
+"Custom DataBase Tables"
 msgstr ""
 
-#: ../../custom-database-tables/external_tranlated_text.php:5
+#: external_tranlated_text.php:5
 msgid "https://ka2.org/"
 msgstr ""
 
-#: ../../custom-database-tables/external_tranlated_text.php:6
+#: external_tranlated_text.php:6
 msgid ""
-"<strong>C</strong>ustom <strong>D</strong>ata<strong>B</strong>ase "
-"<strong>T</strong>ables is unleash the potential force of WordPress as the "
-"strongest CMS. It will dominate the MySQL database of WordPress, to create a "
-"freely table, and can be turning data thoroughly tinker."
+"<strong>C</strong>ustom "
+"<strong>D</"
+"strong>ata<strong>B</"
+"strong>ase <strong>T</"
+"strong>ables is unleash "
+"the potential force of "
+"WordPress as the "
+"strongest CMS. It will "
+"dominate the MySQL "
+"database of WordPress, "
+"to create a freely "
+"table, and can be "
+"turning data thoroughly "
+"tinker."
 msgstr ""
 
-#: ../../custom-database-tables/external_tranlated_text.php:7
+#: external_tranlated_text.php:7
 msgid "ka2"
 msgstr ""
 
-#: ../../custom-database-tables/external_tranlated_text.php:8
-msgid "2016 Monaural Sound (email : ka2@ka2.org)"
+#: external_tranlated_text.php:8
+msgid ""
+"2016 Monaural Sound "
+"(email : ka2@ka2.org)"
 msgstr ""
 
-#: ../../custom-database-tables/functions.php:34
+#: functions.php:34
 #, php-format
-msgid "Error locating %s for inclusion"
+msgid ""
+"Error locating %s for "
+"inclusion"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:63
-#: ../../custom-database-tables/lib/main.php:60
+#: lib/admin.php:63
+#: lib/main.php:60
 #, php-format
-msgid "Method \"%s\" does not exist."
+msgid ""
+"Method \"%s\" does not "
+"exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:73
-#: ../../custom-database-tables/lib/main.php:70
+#: lib/admin.php:73
+#: lib/main.php:70
 #, php-format
-msgid "Property \"%s\" does not exist."
+msgid ""
+"Property \"%s\" does not "
+"exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:284
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:35
-msgid "CDBT Management Console"
+#: lib/admin.php:284
+#: templates/admin/cdbt_management_console.php:35
+msgid ""
+"CDBT Management Console"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:285
+#: lib/admin.php:285
 msgid "CDBT"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:295
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:44
-msgid "CDBT Tables Management"
+#: lib/admin.php:295
+#: templates/admin/cdbt_tables.php:44
+msgid ""
+"CDBT Tables Management"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:296
+#: lib/admin.php:296
 msgid "Tables"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:304
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:32
-msgid "CDBT Shortcodes Management"
+#: lib/admin.php:304
+#: templates/admin/cdbt_shortcodes.php:32
+msgid ""
+"CDBT Shortcodes "
+"Management"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:305
+#: lib/admin.php:305
 msgid "Shortcodes"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:313
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:29
-msgid "CDBT Web APIs Management"
+#: lib/admin.php:313
+#: templates/admin/cdbt_web_apis.php:29
+msgid ""
+"CDBT Web APIs Management"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:314
+#: lib/admin.php:314
 msgid "Web APIs"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:322
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:30
+#: lib/admin.php:322
+#: templates/admin/cdbt_options.php:30
 msgid "CDBT Plugin Options"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:323
+#: lib/admin.php:323
 msgid "Plugin Options"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:490
+#: lib/admin.php:490
 msgid "Custom DB Tables"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:580
+#: lib/admin.php:580
 msgid "Settings"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:588
+#: lib/admin.php:588
 msgid "Edit"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:647
-#: ../../custom-database-tables/lib/admin.php:652
-#: ../../custom-database-tables/lib/main.php:435
-#: ../../custom-database-tables/lib/main.php:440
-msgid "Invalid access this page."
+#: lib/admin.php:647
+#: lib/admin.php:652
+#: lib/main.php:435
+#: lib/main.php:440
+msgid ""
+"Invalid access this page."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:675
-#: ../../custom-database-tables/lib/main.php:465
+#: lib/admin.php:675
+#: lib/main.php:465
 msgid "Illegal access is."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:678
-#: ../../custom-database-tables/lib/admin.php:681
-msgid "You do not have access privileges on this page."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:734
-msgid "Plugin options saved."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:736
-msgid "Could not save options."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:768
-msgid "Log file does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:778
+#: lib/admin.php:678
+#: lib/admin.php:681
 msgid ""
-"Could not make a directory for backup. Then, it was interrupted of log "
-"deletion."
+"You do not have access "
+"privileges on this page."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:785
-msgid "Could not copy of the log file."
+#: lib/admin.php:734
+msgid ""
+"Plugin options saved."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:794
-msgid "Could not clear the log."
+#: lib/admin.php:736
+msgid ""
+"Could not save options."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:800
-msgid "Have cleared the log."
+#: lib/admin.php:768
+msgid ""
+"Log file does not exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:829
-#: ../../custom-database-tables/lib/admin.php:1503
-#: ../../custom-database-tables/lib/admin.php:1570
+#: lib/admin.php:778
+msgid ""
+"Could not make a "
+"directory for backup. "
+"Then, it was interrupted "
+"of log deletion."
+msgstr ""
+
+#: lib/admin.php:785
+msgid ""
+"Could not copy of the "
+"log file."
+msgstr ""
+
+#: lib/admin.php:794
+msgid ""
+"Could not clear the log."
+msgstr ""
+
+#: lib/admin.php:800
+msgid ""
+"Have cleared the log."
+msgstr ""
+
+#: lib/admin.php:829
+#: lib/admin.php:1503
+#: lib/admin.php:1570
 #, php-format
 msgid "%s does not exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:840
+#: lib/admin.php:840
 #, php-format
-msgid "Contains characters which cannot be used in %s."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:882
-msgid "Incorporatable table does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:900
-msgid "Table incorporation has been completed successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:903
-msgid "Failed the table incorporation."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:949
-msgid "Invalid sql statement of `ALTER TABLE`."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:950
-msgid "Failed to run the query of `ALTER TABLE`."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1042
-#: ../../custom-database-tables/lib/admin.php:1099
-msgid "Modification was successful."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1049
-#: ../../custom-database-tables/lib/admin.php:1104
-msgid "Failed to update of the plugin options."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1053
-#: ../../custom-database-tables/lib/admin.php:1107
 msgid ""
-"There was no item to be modify. Please run again after you correct the item "
-"you want to modify."
+"Contains characters "
+"which cannot be used in "
+"%s."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1112
-#: ../../custom-database-tables/lib/admin.php:1352
-#: ../../custom-database-tables/lib/admin.php:1459
-msgid "Illegal operation was called."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1149
-#: ../../custom-database-tables/lib/admin.php:1389
-msgid "Could not change the operate table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1169
-msgid "Invalid step transition."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1196
+#: lib/admin.php:882
 msgid ""
-"The uploaded file could not be parsed. It likely has deficiencies in the "
+"Incorporatable table "
+"does not exist."
+msgstr ""
+
+#: lib/admin.php:900
+msgid ""
+"Table incorporation has "
+"been completed "
+"successfully."
+msgstr ""
+
+#: lib/admin.php:903
+msgid ""
+"Failed the table "
+"incorporation."
+msgstr ""
+
+#: lib/admin.php:949
+msgid ""
+"Invalid sql statement of "
+"`ALTER TABLE`."
+msgstr ""
+
+#: lib/admin.php:950
+msgid ""
+"Failed to run the query "
+"of `ALTER TABLE`."
+msgstr ""
+
+#: lib/admin.php:1042
+#: lib/admin.php:1099
+msgid ""
+"Modification was "
+"successful."
+msgstr ""
+
+#: lib/admin.php:1049
+#: lib/admin.php:1104
+msgid ""
+"Failed to update of the "
+"plugin options."
+msgstr ""
+
+#: lib/admin.php:1053
+#: lib/admin.php:1107
+msgid ""
+"There was no item to be "
+"modify. Please run again "
+"after you correct the "
+"item you want to modify."
+msgstr ""
+
+#: lib/admin.php:1112
+#: lib/admin.php:1352
+#: lib/admin.php:1459
+msgid ""
+"Illegal operation was "
+"called."
+msgstr ""
+
+#: lib/admin.php:1149
+#: lib/admin.php:1389
+msgid ""
+"Could not change the "
+"operate table."
+msgstr ""
+
+#: lib/admin.php:1169
+msgid ""
+"Invalid step transition."
+msgstr ""
+
+#: lib/admin.php:1196
+msgid ""
+"The uploaded file could "
+"not be parsed. It likely "
+"has deficiencies in the "
 "file."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1199
+#: lib/admin.php:1199
 msgid ""
-"The number of data to be imported is not consistent with the number of the "
-"specified column. Please specify the column to match the import data again."
+"The number of data to be "
+"imported is not "
+"consistent with the "
+"number of the specified "
+"column. Please specify "
+"the column to match the "
+"import data again."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1210
-msgid "It does not contain the data to import in your uploaded files."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1251
-msgid "Uploaded file format is different from the specified format."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1254
-msgid "Import file has not been uploaded."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1257
-msgid "Uploaded file format is invalid, or parameter is not enough."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1272
-#, php-format
-msgid "%d of the data has been successfully imported."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1275
-msgid "Failed to import the data."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1306
-msgid "Duplicate table name is not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1309
-msgid "Parameter for duplicating the table is incomplete."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1312
-msgid "Original table for duplicating is not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1315
+#: lib/admin.php:1210
 msgid ""
-"Duplicate table name already exists. Please specify a different table name."
+"It does not contain the "
+"data to import in your "
+"uploaded files."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1323
-msgid "Duplication of the table has been completed successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1325
+#: lib/admin.php:1251
 msgid ""
-"Duplication of table has been completed, but have failed to register as a "
-"manageable table of plugin. Please retry from resuming the table."
+"Uploaded file format is "
+"different from the "
+"specified format."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1328
-msgid "Failed to replication of the table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1421
-#: ../../custom-database-tables/lib/main.php:584
-#, php-format
-msgid "Your entry data has been successfully registered to \"%s\" table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1423
-#: ../../custom-database-tables/lib/main.php:589
-#, php-format
-msgid "Could not insert data to \"%s\" table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1442
-#: ../../custom-database-tables/lib/main.php:494
-msgid "Update of the data has been completed successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1444
-#: ../../custom-database-tables/lib/main.php:497
-#, php-format
-msgid "Could not update data of \"%s\" table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1445
-#: ../../custom-database-tables/lib/main.php:498
+#: lib/admin.php:1254
 msgid ""
-"Not done updating of data if there is no change to the data in updating "
-"before and after."
+"Import file has not been "
+"uploaded."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1446
-#: ../../custom-database-tables/lib/main.php:499
+#: lib/admin.php:1257
 msgid ""
-"Or, it is possible that the record having the same data could not be updated "
-"in order that existed in the other."
+"Uploaded file format is "
+"invalid, or parameter is "
+"not enough."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1521
+#: lib/admin.php:1272
 #, php-format
-msgid "Have been saved successfully as a custom shortcode ID: %d."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1523
-msgid "Could not save the custom shortcode."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1526
-msgid "Could not save because the specific custom shortcode id already exists."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1594
-#, php-format
-msgid "Have been updated successfully as a custom shortcode ID: %d."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1596
-msgid "Could not update the custom shortcode."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1599
-msgid "Could not update because the specified custom shortcode does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1633
-msgid "Request origin host does not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1641
-msgid "Specified request origin host is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1645
 msgid ""
-"Hosts that do not allow all of the request methods can not be registered."
+"%d of the data has been "
+"successfully imported."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1674
+#: lib/admin.php:1275
+msgid ""
+"Failed to import the "
+"data."
+msgstr ""
+
+#: lib/admin.php:1306
+msgid ""
+"Duplicate table name is "
+"not specified."
+msgstr ""
+
+#: lib/admin.php:1309
+msgid ""
+"Parameter for "
+"duplicating the table is "
+"incomplete."
+msgstr ""
+
+#: lib/admin.php:1312
+msgid ""
+"Original table for "
+"duplicating is not "
+"specified."
+msgstr ""
+
+#: lib/admin.php:1315
+msgid ""
+"Duplicate table name "
+"already exists. Please "
+"specify a different "
+"table name."
+msgstr ""
+
+#: lib/admin.php:1323
+msgid ""
+"Duplication of the table "
+"has been completed "
+"successfully."
+msgstr ""
+
+#: lib/admin.php:1325
+msgid ""
+"Duplication of table has "
+"been completed, but have "
+"failed to register as a "
+"manageable table of "
+"plugin. Please retry "
+"from resuming the table."
+msgstr ""
+
+#: lib/admin.php:1328
+msgid ""
+"Failed to replication of "
+"the table."
+msgstr ""
+
+#: lib/admin.php:1421
+#: lib/main.php:584
 #, php-format
-msgid "The \"%s\" was registered as a host to allow the API request."
+msgid ""
+"Your entry data has been "
+"successfully registered "
+"to \"%s\" table."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1677
-msgid "Failed to generate the API key."
+#: lib/admin.php:1423
+#: lib/main.php:589
+#, php-format
+msgid ""
+"Could not insert data to "
+"\"%s\" table."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1702
+#: lib/admin.php:1442
+#: lib/main.php:494
+msgid ""
+"Update of the data has "
+"been completed "
+"successfully."
+msgstr ""
+
+#: lib/admin.php:1444
+#: lib/main.php:497
+#, php-format
+msgid ""
+"Could not update data of "
+"\"%s\" table."
+msgstr ""
+
+#: lib/admin.php:1445
+#: lib/main.php:498
+msgid ""
+"Not done updating of "
+"data if there is no "
+"change to the data in "
+"updating before and "
+"after."
+msgstr ""
+
+#: lib/admin.php:1446
+#: lib/main.php:499
+msgid ""
+"Or, it is possible that "
+"the record having the "
+"same data could not be "
+"updated in order that "
+"existed in the other."
+msgstr ""
+
+#: lib/admin.php:1521
+#, php-format
+msgid ""
+"Have been saved "
+"successfully as a custom "
+"shortcode ID: %d."
+msgstr ""
+
+#: lib/admin.php:1523
+msgid ""
+"Could not save the "
+"custom shortcode."
+msgstr ""
+
+#: lib/admin.php:1526
+msgid ""
+"Could not save because "
+"the specific custom "
+"shortcode id already "
+"exists."
+msgstr ""
+
+#: lib/admin.php:1594
+#, php-format
+msgid ""
+"Have been updated "
+"successfully as a custom "
+"shortcode ID: %d."
+msgstr ""
+
+#: lib/admin.php:1596
+msgid ""
+"Could not update the "
+"custom shortcode."
+msgstr ""
+
+#: lib/admin.php:1599
+msgid ""
+"Could not update because "
+"the specified custom "
+"shortcode does not exist."
+msgstr ""
+
+#: lib/admin.php:1633
+msgid ""
+"Request origin host does "
+"not specified."
+msgstr ""
+
+#: lib/admin.php:1641
+msgid ""
+"Specified request origin "
+"host is invalid."
+msgstr ""
+
+#: lib/admin.php:1645
+msgid ""
+"Hosts that do not allow "
+"all of the request "
+"methods can not be "
+"registered."
+msgstr ""
+
+#: lib/admin.php:1674
+#, php-format
+msgid ""
+"The \"%s\" was "
+"registered as a host to "
+"allow the API request."
+msgstr ""
+
+#: lib/admin.php:1677
+msgid ""
+"Failed to generate the "
+"API key."
+msgstr ""
+
+#: lib/admin.php:1702
 msgid "Reporting Errors"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1702
+#: lib/admin.php:1702
 msgid "Reporting Results"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1706
-msgid "Modification item none"
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1707
-msgid "Please run again after you correct the item you want to modify."
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1713
-#, php-format
-msgid "Export data from \"%s\" table"
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1714
+#: lib/admin.php:1706
 msgid ""
-"If specified table has a lot of data for exporting, it may take long time "
-"until the download is complete.<br>Please start the export if it is good."
+"Modification item none"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1716
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1157
+#: lib/admin.php:1707
+msgid ""
+"Please run again after "
+"you correct the item you "
+"want to modify."
+msgstr ""
+
+#: lib/admin.php:1713
+#, php-format
+msgid ""
+"Export data from \"%s\" "
+"table"
+msgstr ""
+
+#: lib/admin.php:1714
+msgid ""
+"If specified table has a "
+"lot of data for "
+"exporting, it may take "
+"long time until the "
+"download is complete."
+"<br>Please start the "
+"export if it is good."
+msgstr ""
+
+#: lib/admin.php:1716
+#: templates/admin/cdbt_tables.php:1157
 msgid "Export"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1721
+#: lib/admin.php:1721
 #, php-format
-msgid "Truncate data in \"%s\" table"
+msgid ""
+"Truncate data in \"%s\" "
+"table"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1722
+#: lib/admin.php:1722
 msgid ""
-"When you truncate a table, all data that currently stored will be lost. "
-"Then, you can not resume this process.<br>Do you want to truncate this table "
+"When you truncate a "
+"table, all data that "
+"currently stored will be "
+"lost. Then, you can not "
+"resume this process."
+"<br>Do you want to "
+"truncate this table "
 "really?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1723
+#: lib/admin.php:1723
 msgid "Truncate"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1727
+#: lib/admin.php:1727
 #, php-format
-msgid "Remove the \"%s\" table"
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1728
 msgid ""
-"If you have removed a table, at same time all data that currently stored "
-"will be lost. Then, you can not resume this process.<br>Do you want to "
-"remove the table really?"
+"Remove the \"%s\" table"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1729
-#: ../../custom-database-tables/lib/admin.php:1754
-#: ../../custom-database-tables/lib/admin.php:1789
-#: ../../custom-database-tables/lib/admin.php:1795
+#: lib/admin.php:1728
+msgid ""
+"If you have removed a "
+"table, at same time all "
+"data that currently "
+"stored will be lost. "
+"Then, you can not resume "
+"this process.<br>Do you "
+"want to remove the table "
+"really?"
+msgstr ""
+
+#: lib/admin.php:1729
+#: lib/admin.php:1754
+#: lib/admin.php:1789
+#: lib/admin.php:1795
 msgid "Delete"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1733
-msgid "Table is not selected"
+#: lib/admin.php:1733
+msgid ""
+"Table is not selected"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1734
-msgid "Please retry to operate that after the table selection."
+#: lib/admin.php:1734
+msgid ""
+"Please retry to operate "
+"that after the table "
+"selection."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1737
-msgid "Data is not selected"
+#: lib/admin.php:1737
+msgid ""
+"Data is not selected"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1738
-msgid "Please retry to operate that after the data selection."
+#: lib/admin.php:1738
+msgid ""
+"Please retry to operate "
+"that after the data "
+"selection."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1742
-msgid "Selected data is too many"
+#: lib/admin.php:1742
+msgid ""
+"Selected data is too many"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1743
-msgid "Please retry after selecting one data you want to edit."
+#: lib/admin.php:1743
+msgid ""
+"Please retry after "
+"selecting one data you "
+"want to edit."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1746
+#: lib/admin.php:1746
 msgid "Edit Data Form"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1748
+#: lib/admin.php:1748
 msgid "Update"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1752
+#: lib/admin.php:1752
 #, php-format
-msgid "Remove the selected %s of data"
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1753
 msgid ""
-"You can not restore that data after deleted the data. Are you sure to delete "
-"the data?"
+"Remove the selected %s "
+"of data"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1758
+#: lib/admin.php:1753
+msgid ""
+"You can not restore that "
+"data after deleted the "
+"data. Are you sure to "
+"delete the data?"
+msgstr ""
+
+#: lib/admin.php:1758
 msgid "Preview Image"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1762
-msgid "Describe File Information"
+#: lib/admin.php:1762
+msgid ""
+"Describe File Information"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1774
+#: lib/admin.php:1774
 msgid "File Name"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1775
+#: lib/admin.php:1775
 msgid "MIME Type"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1776
+#: lib/admin.php:1776
 msgid "File Size"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1777
+#: lib/admin.php:1777
 msgid "File Hash"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1781
+#: lib/admin.php:1781
 msgid "Download"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1787
-msgid "Remove the shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/lib/admin.php:1788
+#: lib/admin.php:1787
 msgid ""
-"You can not restore the shortcode settings after deleted. Are you sure to "
-"delete this shortcode settings?"
+"Remove the shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1793
-msgid "Remove the allowed host"
+#: lib/admin.php:1788
+msgid ""
+"You can not restore the "
+"shortcode settings after "
+"deleted. Are you sure to "
+"delete this shortcode "
+"settings?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1794
+#: lib/admin.php:1793
+msgid ""
+"Remove the allowed host"
+msgstr ""
+
+#: lib/admin.php:1794
 #, php-format
 msgid ""
-"You can not restore the allowed host %s after deleted. Are you sure to "
-"delete this host settings?"
+"You can not restore the "
+"allowed host %s after "
+"deleted. Are you sure to "
+"delete this host "
+"settings?"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1799
+#: lib/admin.php:1799
 msgid "Preview shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1806
-msgid "Preview Request Web API"
+#: lib/admin.php:1806
+msgid ""
+"Preview Request Web API"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1818
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:219
+#: lib/admin.php:1818
+#: templates/admin/cdbt_tables.php:219
 msgid "Table Creator"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1819
+#: lib/admin.php:1819
 msgid ""
-"In the \"table creator\" you can intuitively create the columns "
-"configuration of table. It will be cached the settings when you click of "
-"\"Apply SQL\". Then it is never lost if you close this modal window."
+"In the \"table creator\" "
+"you can intuitively "
+"create the columns "
+"configuration of table. "
+"It will be cached the "
+"settings when you click "
+"of \"Apply SQL\". Then "
+"it is never lost if you "
+"close this modal window."
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1820
+#: lib/admin.php:1820
 msgid "Reset"
 msgstr ""
 
-#: ../../custom-database-tables/lib/admin.php:1820
+#: lib/admin.php:1820
 msgid "Apply SQL"
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:58
-msgid "Parameters for calling Ajax is not enough."
+#: lib/ajax.php:58
+msgid ""
+"Parameters for calling "
+"Ajax is not enough."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:65
-msgid "Failed authentication. Invalid Ajax call."
+#: lib/ajax.php:65
+msgid ""
+"Failed authentication. "
+"Invalid Ajax call."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:71
-msgid "Ajax event is not specified."
+#: lib/ajax.php:71
+msgid ""
+"Ajax event is not "
+"specified."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:80
-msgid "Method handling of an Ajax event does not exist."
+#: lib/ajax.php:80
+msgid ""
+"Method handling of an "
+"Ajax event does not "
+"exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:98
+#: lib/ajax.php:98
 msgid "Error of Ajax."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:148
-msgid "Failed to update of the session."
+#: lib/ajax.php:148
+msgid ""
+"Failed to update of the "
+"session."
 msgstr ""
 
-#: ../../custom-database-tables/lib/ajax.php:230
-#: ../../custom-database-tables/lib/db.php:415
-#, php-format
-msgid "Table of \"%s\" has been truncated successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:232
-#: ../../custom-database-tables/lib/db.php:417
-#, php-format
-msgid "Failed to truncate the table of \"%s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:237
-msgid "Parameters required for table truncation is missing."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:265
-#: ../../custom-database-tables/lib/db.php:452
-#, php-format
-msgid "Table of \"%s\" has been removed successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:267
-msgid "Removing table was success, but failed to update options."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:270
-#: ../../custom-database-tables/lib/db.php:454
-#, php-format
-msgid "Failed to remove the table of \"%s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:275
-msgid "Parameters required for table deletion is missing."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:318
-#: ../../custom-database-tables/lib/ajax.php:361
-#: ../../custom-database-tables/lib/main.php:549
-msgid "Parameters required for data deletion is missing."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:351
-#: ../../custom-database-tables/lib/main.php:538
-msgid "Specified data have been removed successfully."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:353
-#: ../../custom-database-tables/lib/main.php:541
-msgid "Some of the data could not remove."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:356
-#: ../../custom-database-tables/lib/main.php:544
-msgid "Specified conditions for finding to delete data is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:414
-#, php-format
-msgid "Have deleted a custom shortcode, that ID is follow: %d."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:416
-msgid "Failed to delete the custom shortcode."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:419
-msgid "Specified custom shortcode does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:456
-msgid "Have deleted the specific allowed host."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:458
-msgid "Failed to delete the specified host."
-msgstr ""
-
-#: ../../custom-database-tables/lib/ajax.php:461
-msgid "Specified host does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:149
-#, php-format
-msgid "The missing options is as follow: %s"
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:222
-msgid "Plugin options has upgraded."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:252
-msgid "Table settings in plugin option is empty."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:289
-#, php-format
-msgid "New options is not specified when the method \"%s\" call."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:292
-#, php-format
-msgid "Illegal action is specified to the method \"%s\" call."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:309
-#: ../../custom-database-tables/lib/config.php:381
-msgid "Failed to save the option."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:311
-msgid "Options format is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:315
-msgid "Specified option key does not exist in option settings."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:346
-msgid "Table settings for removing does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:361
-msgid "Api key settings for removing does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:383
-msgid "Update process of setting did not take place."
-msgstr ""
-
-#: ../../custom-database-tables/lib/config.php:574
-msgid "Debug log file does not have permission of writable."
-msgstr ""
-
-#: ../../custom-database-tables/lib/core.php:171
+#: lib/ajax.php:230
+#: lib/db.php:415
 #, php-format
 msgid ""
-"Your server is running PHP version %s but this plugin requires at least PHP "
-"%s. Please run an upgrade."
+"Table of \"%s\" has been "
+"truncated successfully."
 msgstr ""
 
-#: ../../custom-database-tables/lib/core.php:175
+#: lib/ajax.php:232
+#: lib/db.php:417
 #, php-format
-msgid "Please install the extension %s to run this plugin."
-msgstr ""
-
-#: ../../custom-database-tables/lib/core.php:188
-#, php-format
-msgid "The %s has been deactivated."
-msgstr ""
-
-#: ../../custom-database-tables/lib/core.php:223
-#: ../../custom-database-tables/lib/core.php:243
-#, php-format
-msgid "Function called: %s; %s"
-msgstr ""
-
-#: ../../custom-database-tables/lib/core.php:223
-msgid "Custom DataBase Tables plugin has activated."
-msgstr ""
-
-#: ../../custom-database-tables/lib/core.php:243
-msgid "Custom DataBase Tables plugin has been deactivation."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:141
-#: ../../custom-database-tables/lib/db.php:217
-#: ../../custom-database-tables/lib/db.php:303
-#: ../../custom-database-tables/lib/db.php:351
-#: ../../custom-database-tables/lib/db.php:407
-#: ../../custom-database-tables/lib/db.php:444
-#: ../../custom-database-tables/lib/db.php:482
-#: ../../custom-database-tables/lib/db.php:562
-#: ../../custom-database-tables/lib/db.php:672
-#: ../../custom-database-tables/lib/db.php:803
-#: ../../custom-database-tables/lib/db.php:935
-#: ../../custom-database-tables/lib/db.php:1210
-#: ../../custom-database-tables/lib/db.php:1454
-#, php-format
-msgid "Table name is not specified when the method \"%s\" call."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:173
-#, php-format
-msgid "Table name does not exist at the time of \"%s\" call."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:176
-#, php-format
-msgid "SQL to create table does not exist at the time of \"%s\" call."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:180
-msgid "Can not create a table because the table already exists."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:191
-msgid "Failed to create table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:198
-#, php-format
-msgid "Created a new table \"%s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:226
-#, php-format
-msgid "Specified table \"%1$s\" did not exist when called method \"%2$s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:314
-msgid "Getting a SQL statement to create table has failed."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:354
-#: ../../custom-database-tables/lib/db.php:410
-#: ../../custom-database-tables/lib/db.php:447
-msgid "Specified table does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:359
-msgid "Table status does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:387
-msgid "Specified table state name does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:485
-msgid "Replication origin table does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:490
-#, php-format
-msgid "Created a table \"%1$s\" replicated of the table \"%2$s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:496
-#, php-format
-msgid "Then copied the data to replication table \"%s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:498
-msgid "Table replication has been completed, but have failed to copy the data."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:504
-#, php-format
-msgid "Failed to replicated table \"%s\" creation."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:810
-msgid "Insertion data does not exists."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:879
-msgid "Inserted data is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:900
-msgid "Failed to insert data."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:960
-msgid "Update data does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:964
-msgid "Update data is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:976
-msgid "You can not update to a column that will be modified automatically."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:981
-msgid "Condition to find the update data is not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:985
-msgid "Condition for finding the update data is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1047
 msgid ""
-"The record having the same data could not be updated in order that existed "
-"in the other."
+"Failed to truncate the "
+"table of \"%s\"."
 msgstr ""
 
-#: ../../custom-database-tables/lib/db.php:1084
-msgid "Failed to modify your specified data."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1217
-msgid "Condition to find the deletion data is not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1220
-msgid "Condition for finding the deletion data is invalid."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1256
-#, php-format
-msgid "Failed to remove data of the deletion condition of \"%s\"."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1457
-msgid "Original table to export does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1460
-#, php-format
-msgid "Specified \"%s\" format of download file does not correspond."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1464
-msgid "Export target column is not specified."
-msgstr ""
-
-#: ../../custom-database-tables/lib/db.php:1475
-#, php-format
-msgid "Export target column \"%s\" does not exist."
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:74
-msgid "Trialling"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:165
-msgid "Oparate Table"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:167
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:763
-msgid "View Data"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:168
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:764
-msgid "Entry Data"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:169
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:765
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:248
-msgid "Edit Data"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:182
-msgid "TableName"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:189
-msgid "Records"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:196
-msgid "PrimaryKey"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:201
-msgid "Charset"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:206
-msgid "Collation"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:211
-msgid "Engine"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:216
-msgid "PerPageRecords"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:236
-#: ../../custom-database-tables/lib/extras.php:298
-msgid "Operation"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:247
-msgid "Register Shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:249
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:17
-msgid "Edit Shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:250
-#: ../../custom-database-tables/lib/extras.php:310
-msgid "Delete Shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:263
-msgid "CSID"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:269
-msgid "Shortcode Name / Alias Shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:276
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:388
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:732
-msgid "Description"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:281
-msgid "Type"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:287
-msgid "Author"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:293
-#: ../../custom-database-tables/lib/extras.php:344
-msgid "Permission"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:310
-msgid "Delete Host"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:321
-msgid "ID"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:327
-msgid "Host Name"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:333
-msgid "API Key"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:339
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:114
-msgid "Description Host"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:349
-msgid "Generated Date"
-msgstr ""
-
-#: ../../custom-database-tables/lib/extras.php:355
-msgid "Deletion"
-msgstr ""
-
-#: ../../custom-database-tables/lib/main.php:595
-msgid "Could not multiple registration by the continuous transmission."
-msgstr ""
-
-#: ../../custom-database-tables/lib/shortcodes.php:26
+#: lib/ajax.php:237
 msgid ""
-"Retrieve a table data that match the specified conditions, then it outputs "
-"as list."
+"Parameters required for "
+"table truncation is "
+"missing."
 msgstr ""
 
-#: ../../custom-database-tables/lib/shortcodes.php:34
-msgid "Render the data registration form for the specified table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/shortcodes.php:42
-msgid "Render the editable data list for the specified table."
-msgstr ""
-
-#: ../../custom-database-tables/lib/shortcodes.php:50
+#: lib/ajax.php:265
+#: lib/db.php:452
+#, php-format
 msgid ""
-"Deprecated since version 2; This shortcode has been merged into \"cdbt-view"
+"Table of \"%s\" has been "
+"removed successfully."
+msgstr ""
+
+#: lib/ajax.php:267
+msgid ""
+"Removing table was "
+"success, but failed to "
+"update options."
+msgstr ""
+
+#: lib/ajax.php:270
+#: lib/db.php:454
+#, php-format
+msgid ""
+"Failed to remove the "
+"table of \"%s\"."
+msgstr ""
+
+#: lib/ajax.php:275
+msgid ""
+"Parameters required for "
+"table deletion is "
+"missing."
+msgstr ""
+
+#: lib/ajax.php:318
+#: lib/ajax.php:361
+#: lib/main.php:549
+msgid ""
+"Parameters required for "
+"data deletion is missing."
+msgstr ""
+
+#: lib/ajax.php:351
+#: lib/main.php:538
+msgid ""
+"Specified data have been "
+"removed successfully."
+msgstr ""
+
+#: lib/ajax.php:353
+#: lib/main.php:541
+msgid ""
+"Some of the data could "
+"not remove."
+msgstr ""
+
+#: lib/ajax.php:356
+#: lib/main.php:544
+msgid ""
+"Specified conditions for "
+"finding to delete data "
+"is invalid."
+msgstr ""
+
+#: lib/ajax.php:414
+#, php-format
+msgid ""
+"Have deleted a custom "
+"shortcode, that ID is "
+"follow: %d."
+msgstr ""
+
+#: lib/ajax.php:416
+msgid ""
+"Failed to delete the "
+"custom shortcode."
+msgstr ""
+
+#: lib/ajax.php:419
+msgid ""
+"Specified custom "
+"shortcode does not exist."
+msgstr ""
+
+#: lib/ajax.php:456
+msgid ""
+"Have deleted the "
+"specific allowed host."
+msgstr ""
+
+#: lib/ajax.php:458
+msgid ""
+"Failed to delete the "
+"specified host."
+msgstr ""
+
+#: lib/ajax.php:461
+msgid ""
+"Specified host does not "
+"exist."
+msgstr ""
+
+#: lib/config.php:149
+#, php-format
+msgid ""
+"The missing options is "
+"as follow: %s"
+msgstr ""
+
+#: lib/config.php:222
+msgid ""
+"Plugin options has "
+"upgraded."
+msgstr ""
+
+#: lib/config.php:252
+msgid ""
+"Table settings in plugin "
+"option is empty."
+msgstr ""
+
+#: lib/config.php:289
+#, php-format
+msgid ""
+"New options is not "
+"specified when the "
+"method \"%s\" call."
+msgstr ""
+
+#: lib/config.php:292
+#, php-format
+msgid ""
+"Illegal action is "
+"specified to the method "
+"\"%s\" call."
+msgstr ""
+
+#: lib/config.php:309
+#: lib/config.php:381
+msgid ""
+"Failed to save the "
+"option."
+msgstr ""
+
+#: lib/config.php:311
+msgid ""
+"Options format is "
+"invalid."
+msgstr ""
+
+#: lib/config.php:315
+msgid ""
+"Specified option key "
+"does not exist in option "
+"settings."
+msgstr ""
+
+#: lib/config.php:346
+msgid ""
+"Table settings for "
+"removing does not exist."
+msgstr ""
+
+#: lib/config.php:361
+msgid ""
+"Api key settings for "
+"removing does not exist."
+msgstr ""
+
+#: lib/config.php:383
+msgid ""
+"Update process of "
+"setting did not take "
+"place."
+msgstr ""
+
+#: lib/config.php:574
+msgid ""
+"Debug log file does not "
+"have permission of "
+"writable."
+msgstr ""
+
+#: lib/core.php:171
+#, php-format
+msgid ""
+"Your server is running "
+"PHP version %s but this "
+"plugin requires at least "
+"PHP %s. Please run an "
+"upgrade."
+msgstr ""
+
+#: lib/core.php:175
+#, php-format
+msgid ""
+"Please install the "
+"extension %s to run this "
+"plugin."
+msgstr ""
+
+#: lib/core.php:188
+#, php-format
+msgid ""
+"The %s has been "
+"deactivated."
+msgstr ""
+
+#: lib/core.php:223
+#: lib/core.php:243
+#, php-format
+msgid ""
+"Function called: %s; %s"
+msgstr ""
+
+#: lib/core.php:223
+msgid ""
+"Custom DataBase Tables "
+"plugin has activated."
+msgstr ""
+
+#: lib/core.php:243
+msgid ""
+"Custom DataBase Tables "
+"plugin has been "
+"deactivation."
+msgstr ""
+
+#: lib/db.php:141
+#: lib/db.php:217
+#: lib/db.php:303
+#: lib/db.php:351
+#: lib/db.php:407
+#: lib/db.php:444
+#: lib/db.php:482
+#: lib/db.php:562
+#: lib/db.php:672
+#: lib/db.php:803
+#: lib/db.php:935
+#: lib/db.php:1210
+#: lib/db.php:1454
+#, php-format
+msgid ""
+"Table name is not "
+"specified when the "
+"method \"%s\" call."
+msgstr ""
+
+#: lib/db.php:173
+#, php-format
+msgid ""
+"Table name does not "
+"exist at the time of \"%s"
+"\" call."
+msgstr ""
+
+#: lib/db.php:176
+#, php-format
+msgid ""
+"SQL to create table does "
+"not exist at the time of "
+"\"%s\" call."
+msgstr ""
+
+#: lib/db.php:180
+msgid ""
+"Can not create a table "
+"because the table "
+"already exists."
+msgstr ""
+
+#: lib/db.php:191
+msgid ""
+"Failed to create table."
+msgstr ""
+
+#: lib/db.php:198
+#, php-format
+msgid ""
+"Created a new table \"%s"
 "\"."
 msgstr ""
 
-#: ../../custom-database-tables/lib/shortcodes.php:58
-msgid "Deprecated since version 2."
-msgstr ""
-
-#: ../../custom-database-tables/lib/shortcodes.php:309
-#: ../../custom-database-tables/lib/shortcodes.php:729
-#: ../../custom-database-tables/lib/shortcodes.php:1063
-msgid "You do not have viewing permits of this content."
-msgstr ""
-
-#: ../../custom-database-tables/lib/shortcodes.php:371
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1239
+#: lib/db.php:226
 #, php-format
-msgid "View Data in \"%s\" Table"
+msgid ""
+"Specified table \"%1$s\" "
+"did not exist when "
+"called method \"%2$s\"."
 msgstr ""
 
-#: ../../custom-database-tables/lib/shortcodes.php:463
-#: ../../custom-database-tables/lib/shortcodes.php:1126
-msgid "Data in this table does not exist."
+#: lib/db.php:314
+msgid ""
+"Getting a SQL statement "
+"to create table has "
+"failed."
 msgstr ""
 
-#: ../../custom-database-tables/lib/shortcodes.php:768
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1240
+#: lib/db.php:354
+#: lib/db.php:410
+#: lib/db.php:447
+msgid ""
+"Specified table does not "
+"exist."
+msgstr ""
+
+#: lib/db.php:359
+msgid ""
+"Table status does not "
+"exist."
+msgstr ""
+
+#: lib/db.php:387
+msgid ""
+"Specified table state "
+"name does not exist."
+msgstr ""
+
+#: lib/db.php:485
+msgid ""
+"Replication origin table "
+"does not exist."
+msgstr ""
+
+#: lib/db.php:490
 #, php-format
-msgid "Entry Data to \"%s\" Table"
+msgid ""
+"Created a table \"%1$s\" "
+"replicated of the table "
+"\"%2$s\"."
 msgstr ""
 
-#: ../../custom-database-tables/lib/shortcodes.php:1103
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1241
+#: lib/db.php:496
 #, php-format
-msgid "Edit Data of \"%s\" Table"
+msgid ""
+"Then copied the data to "
+"replication table \"%s\"."
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:79
+#: lib/db.php:498
+msgid ""
+"Table replication has "
+"been completed, but have "
+"failed to copy the data."
+msgstr ""
+
+#: lib/db.php:504
+#, php-format
+msgid ""
+"Failed to replicated "
+"table \"%s\" creation."
+msgstr ""
+
+#: lib/db.php:810
+msgid ""
+"Insertion data does not "
+"exists."
+msgstr ""
+
+#: lib/db.php:879
+msgid ""
+"Inserted data is invalid."
+msgstr ""
+
+#: lib/db.php:900
+msgid ""
+"Failed to insert data."
+msgstr ""
+
+#: lib/db.php:960
+msgid ""
+"Update data does not "
+"exist."
+msgstr ""
+
+#: lib/db.php:964
+msgid ""
+"Update data is invalid."
+msgstr ""
+
+#: lib/db.php:976
+msgid ""
+"You can not update to a "
+"column that will be "
+"modified automatically."
+msgstr ""
+
+#: lib/db.php:981
+msgid ""
+"Condition to find the "
+"update data is not "
+"specified."
+msgstr ""
+
+#: lib/db.php:985
+msgid ""
+"Condition for finding "
+"the update data is "
+"invalid."
+msgstr ""
+
+#: lib/db.php:1047
+msgid ""
+"The record having the "
+"same data could not be "
+"updated in order that "
+"existed in the other."
+msgstr ""
+
+#: lib/db.php:1084
+msgid ""
+"Failed to modify your "
+"specified data."
+msgstr ""
+
+#: lib/db.php:1217
+msgid ""
+"Condition to find the "
+"deletion data is not "
+"specified."
+msgstr ""
+
+#: lib/db.php:1220
+msgid ""
+"Condition for finding "
+"the deletion data is "
+"invalid."
+msgstr ""
+
+#: lib/db.php:1256
+#, php-format
+msgid ""
+"Failed to remove data of "
+"the deletion condition "
+"of \"%s\"."
+msgstr ""
+
+#: lib/db.php:1457
+msgid ""
+"Original table to export "
+"does not exist."
+msgstr ""
+
+#: lib/db.php:1460
+#, php-format
+msgid ""
+"Specified \"%s\" format "
+"of download file does "
+"not correspond."
+msgstr ""
+
+#: lib/db.php:1464
+msgid ""
+"Export target column is "
+"not specified."
+msgstr ""
+
+#: lib/db.php:1475
+#, php-format
+msgid ""
+"Export target column \"%s"
+"\" does not exist."
+msgstr ""
+
+#: lib/extras.php:74
+msgid "Trialling"
+msgstr ""
+
+#: lib/extras.php:165
+msgid "Oparate Table"
+msgstr ""
+
+#: lib/extras.php:167
+#: templates/admin/cdbt_tables.php:763
+msgid "View Data"
+msgstr ""
+
+#: lib/extras.php:168
+#: templates/admin/cdbt_tables.php:764
+msgid "Entry Data"
+msgstr ""
+
+#: lib/extras.php:169
+#: templates/admin/cdbt_tables.php:765
+#: templates/components/cdbt_repeater.php:248
+msgid "Edit Data"
+msgstr ""
+
+#: lib/extras.php:182
+msgid "TableName"
+msgstr ""
+
+#: lib/extras.php:189
+msgid "Records"
+msgstr ""
+
+#: lib/extras.php:196
+msgid "PrimaryKey"
+msgstr ""
+
+#: lib/extras.php:201
+msgid "Charset"
+msgstr ""
+
+#: lib/extras.php:206
+msgid "Collation"
+msgstr ""
+
+#: lib/extras.php:211
+msgid "Engine"
+msgstr ""
+
+#: lib/extras.php:216
+msgid "PerPageRecords"
+msgstr ""
+
+#: lib/extras.php:236
+#: lib/extras.php:298
+msgid "Operation"
+msgstr ""
+
+#: lib/extras.php:247
+msgid "Register Shortcode"
+msgstr ""
+
+#: lib/extras.php:249
+#: templates/admin/cdbt_shortcodes.php:17
+msgid "Edit Shortcode"
+msgstr ""
+
+#: lib/extras.php:250
+#: lib/extras.php:310
+msgid "Delete Shortcode"
+msgstr ""
+
+#: lib/extras.php:263
+msgid "CSID"
+msgstr ""
+
+#: lib/extras.php:269
+msgid ""
+"Shortcode Name / Alias "
+"Shortcode"
+msgstr ""
+
+#: lib/extras.php:276
+#: templates/admin/cdbt_shortcodes.php:388
+#: templates/admin/cdbt_shortcodes.php:732
+msgid "Description"
+msgstr ""
+
+#: lib/extras.php:281
+msgid "Type"
+msgstr ""
+
+#: lib/extras.php:287
+msgid "Author"
+msgstr ""
+
+#: lib/extras.php:293
+#: lib/extras.php:344
+msgid "Permission"
+msgstr ""
+
+#: lib/extras.php:310
+msgid "Delete Host"
+msgstr ""
+
+#: lib/extras.php:321
+msgid "ID"
+msgstr ""
+
+#: lib/extras.php:327
+msgid "Host Name"
+msgstr ""
+
+#: lib/extras.php:333
+msgid "API Key"
+msgstr ""
+
+#: lib/extras.php:339
+#: templates/admin/cdbt_web_apis.php:114
+msgid "Description Host"
+msgstr ""
+
+#: lib/extras.php:349
+msgid "Generated Date"
+msgstr ""
+
+#: lib/extras.php:355
+msgid "Deletion"
+msgstr ""
+
+#: lib/main.php:595
+msgid ""
+"Could not multiple "
+"registration by the "
+"continuous transmission."
+msgstr ""
+
+#: lib/shortcodes.php:26
+msgid ""
+"Retrieve a table data "
+"that match the specified "
+"conditions, then it "
+"outputs as list."
+msgstr ""
+
+#: lib/shortcodes.php:34
+msgid ""
+"Render the data "
+"registration form for "
+"the specified table."
+msgstr ""
+
+#: lib/shortcodes.php:42
+msgid ""
+"Render the editable data "
+"list for the specified "
+"table."
+msgstr ""
+
+#: lib/shortcodes.php:50
+msgid ""
+"Deprecated since version "
+"2; This shortcode has "
+"been merged into \"cdbt-"
+"view\"."
+msgstr ""
+
+#: lib/shortcodes.php:58
+msgid ""
+"Deprecated since version "
+"2."
+msgstr ""
+
+#: lib/shortcodes.php:309
+#: lib/shortcodes.php:729
+#: lib/shortcodes.php:1063
+msgid ""
+"You do not have viewing "
+"permits of this content."
+msgstr ""
+
+#: lib/shortcodes.php:371
+#: templates/admin/cdbt_tables.php:1239
+#, php-format
+msgid ""
+"View Data in \"%s\" Table"
+msgstr ""
+
+#: lib/shortcodes.php:463
+#: lib/shortcodes.php:1126
+msgid ""
+"Data in this table does "
+"not exist."
+msgstr ""
+
+#: lib/shortcodes.php:768
+#: templates/admin/cdbt_tables.php:1240
+#, php-format
+msgid ""
+"Entry Data to \"%s\" "
+"Table"
+msgstr ""
+
+#: lib/shortcodes.php:1103
+#: templates/admin/cdbt_tables.php:1241
+#, php-format
+msgid ""
+"Edit Data of \"%s\" Table"
+msgstr ""
+
+#: lib/utils.php:79
 msgid "Failed to logging."
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:327
-msgid "Export of table data has been completed successfully."
+#: lib/utils.php:327
+msgid ""
+"Export of table data has "
+"been completed "
+"successfully."
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:332
-msgid "Failed in the export of table data."
+#: lib/utils.php:332
+msgid ""
+"Failed in the export of "
+"table data."
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:337
-msgid "Failed to export, because could not generate the download file."
+#: lib/utils.php:337
+msgid ""
+"Failed to export, "
+"because could not "
+"generate the download "
+"file."
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:381
+#: lib/utils.php:381
 msgid "Download OK"
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:385
+#: lib/utils.php:385
 msgid "Download Fail"
 msgstr ""
 
-#: ../../custom-database-tables/lib/utils.php:389
+#: lib/utils.php:389
 msgid "Download NG"
 msgstr ""
 
-#: ../../custom-database-tables/lib/validate.php:317
+#: lib/validate.php:317
 msgid ""
-"There is an error in the SQL syntax. Please check the outer syntax like "
-"table name definition in particular."
+"There is an error in the "
+"SQL syntax. Please check "
+"the outer syntax like "
+"table name definition in "
+"particular."
 msgstr ""
 
-#: ../../custom-database-tables/lib/validate.php:323
+#: lib/validate.php:323
 msgid ""
-"There is an error in the SQL syntax. Semicolon at the end does not exist."
+"There is an error in the "
+"SQL syntax. Semicolon at "
+"the end does not exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/validate.php:339
-msgid "Valid column definition does not exist."
+#: lib/validate.php:339
+msgid ""
+"Valid column definition "
+"does not exist."
 msgstr ""
 
-#: ../../custom-database-tables/lib/validate.php:370
+#: lib/validate.php:370
 msgid ""
-"Definition of automatic additional columns does not exist in SQL statement."
-msgstr ""
-
-#: ../../custom-database-tables/lib/validate.php:381
-msgid ""
-"Set value of db engine is different to the value specified in the SQL "
+"Definition of automatic "
+"additional columns does "
+"not exist in SQL "
 "statement."
 msgstr ""
 
-#: ../../custom-database-tables/lib/validate.php:385
+#: lib/validate.php:381
 msgid ""
-"Set value of default charset is different to the value specified in the SQL "
-"statement."
+"Set value of db engine "
+"is different to the "
+"value specified in the "
+"SQL statement."
 msgstr ""
 
-#: ../../custom-database-tables/lib/webapis.php:38
-msgid "Converted from version 1.x"
+#: lib/validate.php:385
+msgid ""
+"Set value of default "
+"charset is different to "
+"the value specified in "
+"the SQL statement."
 msgstr ""
 
-#: ../../custom-database-tables/lib/webapis.php:478
+#: lib/webapis.php:38
+msgid ""
+"Converted from version 1."
+"x"
+msgstr ""
+
+#: lib/webapis.php:478
 #, php-format
-msgid "Requested from \"%s\" via Web API. This connection was %s."
+msgid ""
+"Requested from \"%s\" "
+"via Web API. This "
+"connection was %s."
 msgstr ""
 
-#: ../../custom-database-tables/lib/webapis.php:478
+#: lib/webapis.php:478
 msgid "successful"
 msgstr ""
 
-#: ../../custom-database-tables/lib/webapis.php:478
+#: lib/webapis.php:478
 msgid "failur"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:38
+#: templates/admin/cdbt_management_console.php:38
 msgid ""
-"Welcome to the \"Custom DataBase Tables\" plugin! In this page is "
-"introductions about feature of plugin, and be able to go short trip as the "
-"tutorial."
+"Welcome to the \"Custom "
+"DataBase Tables\" "
+"plugin! In this page is "
+"introductions about "
+"feature of plugin, and "
+"be able to go short trip "
+"as the tutorial."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:49
+#: templates/admin/cdbt_management_console.php:49
 msgid ""
-"Sorry I made you wait! Just barely plug-major upgrade version of "
-"\"CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, "
-"referred to as V2)\" had released."
+"Sorry I made you wait! "
+"Just barely plug-major "
+"upgrade version of "
+"\"CustomDataBaseTables "
+"(commonly called CDBT) "
+"Version 2 (hereinafter, "
+"referred to as V2)\" had "
+"released."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:50
+#: templates/admin/cdbt_management_console.php:50
 msgid ""
-"The CDBT is a database management plugin that you can create your own tables "
-"in the MySQL database for WordPress, you can directly input and output of "
-"data in, and be related data to themes and external sites."
+"The CDBT is a database "
+"management plugin that "
+"you can create your own "
+"tables in the MySQL "
+"database for WordPress, "
+"you can directly input "
+"and output of data in, "
+"and be related data to "
+"themes and external "
+"sites."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:51
+#: templates/admin/cdbt_management_console.php:51
 msgid ""
-"For using this plugin, you never need detailed knowledge of the database. "
-"Then you  can intuitively handle tables and data in database."
+"For using this plugin, "
+"you never need detailed "
+"knowledge of the "
+"database. Then you  can "
+"intuitively handle "
+"tables and data in "
+"database."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:52
+#: templates/admin/cdbt_management_console.php:52
 msgid ""
-"Your website that will be able to store own extended data by this plugin, it "
-"will give you some phenomenal extension idea to your envisioning project."
+"Your website that will "
+"be able to store own "
+"extended data by this "
+"plugin, it will give you "
+"some phenomenal "
+"extension idea to your "
+"envisioning project."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:53
+#: templates/admin/cdbt_management_console.php:53
 msgid ""
-"Also at the CDBT V2, finally ability to manage the core table of WordPress "
-"has been added. In this feature, you should be able to using the WordPress "
-"as likely CMS."
+"Also at the CDBT V2, "
+"finally ability to "
+"manage the core table of "
+"WordPress has been "
+"added. In this feature, "
+"you should be able to "
+"using the WordPress as "
+"likely CMS."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:54
+#: templates/admin/cdbt_management_console.php:54
 msgid ""
-"However, in order to utilize the CDBT V2, please be aware that it is "
-"necessary to <strong class=\"text-danger\">PHP5.4 or higher</strong> "
-"environment. In addition, in this plugin it is using the external library "
-"below."
+"However, in order to "
+"utilize the CDBT V2, "
+"please be aware that it "
+"is necessary to <strong "
+"class=\"text-danger"
+"\">PHP5.4 or higher</"
+"strong> environment. In "
+"addition, in this plugin "
+"it is using the external "
+"library below."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:59
+#: templates/admin/cdbt_management_console.php:59
 msgid ""
-"CDBT V2 In addition to the new features of the WordPress core table "
-"management has been added a lot. Then, review the internal processing for "
-"the conventional functions, it is possible to reform to easy-to-use "
-"interface, we made significant enhancements."
+"CDBT V2 In addition to "
+"the new features of the "
+"WordPress core table "
+"management has been "
+"added a lot. Then, "
+"review the internal "
+"processing for the "
+"conventional functions, "
+"it is possible to reform "
+"to easy-to-use "
+"interface, we made "
+"significant enhancements."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:60
+#: templates/admin/cdbt_management_console.php:60
 msgid ""
-"Added typical new feature in V2 is as follows.<br><ol><li>Management "
-"functions of the WordPress core table</li><li>Table replication function of</"
-"li><li>Editing of short codes and save function</li><li>WebAPI editing "
-"functions</li><li>Implementation of debug mode</li></ol><br>"
+"Added typical new "
+"feature in V2 is as "
+"follows."
+"<br><ol><li>Management "
+"functions of the "
+"WordPress core table</"
+"li><li>Table replication "
+"function of</"
+"li><li>Editing of short "
+"codes and save function</"
+"li><li>WebAPI editing "
+"functions</"
+"li><li>Implementation of "
+"debug mode</li></ol><br>"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:62
+#: templates/admin/cdbt_management_console.php:62
 msgid ""
-"In addition,  significantly enhancemented benefits is as follows.<br><ol "
-"style=\"list-style-position: inside;\"><li>Added a file type of import/"
-"export of table data</li><li>Enhancemented the tool of table creator</"
-"li><li>Changed the shortcode appearance to using repeater format of FuelUX</"
-"li><li>Refinement of the detailed information display of table</"
-"li><li>Reform of the management screen interface</li></ol><br>"
+"In addition,  "
+"significantly "
+"enhancemented benefits "
+"is as follows.<br><ol "
+"style=\"list-style-"
+"position: inside;"
+"\"><li>Added a file type "
+"of import/export of "
+"table data</"
+"li><li>Enhancemented the "
+"tool of table creator</"
+"li><li>Changed the "
+"shortcode appearance to "
+"using repeater format of "
+"FuelUX</"
+"li><li>Refinement of the "
+"detailed information "
+"display of table</"
+"li><li>Reform of the "
+"management screen "
+"interface</li></ol><br>"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:67
-msgid "So, let&apos;s create a new table first with CDBT V2."
+#: templates/admin/cdbt_management_console.php:67
+msgid ""
+"So, let&apos;s create a "
+"new table first with "
+"CDBT V2."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:68
+#: templates/admin/cdbt_management_console.php:68
 msgid ""
-"First, please choose the \"tables\" from the CDBT menu of WordPress, then "
-"selected of \"Create Table\" tab. When you see the screen of the \"Table "
-"setting for a database\", let&apos;s enter the name of the table you want to "
-"create."
+"First, please choose the "
+"\"tables\" from the CDBT "
+"menu of WordPress, then "
+"selected of \"Create "
+"Table\" tab. When you "
+"see the screen of the "
+"\"Table setting for a "
+"database\", let&apos;s "
+"enter the name of the "
+"table you want to create."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:69
+#: templates/admin/cdbt_management_console.php:69
 msgid ""
-"Then, select a character set and the database engine of the table, please "
-"click on the button of \"Make Template\" on the right-hand side of the "
-"\"Create Table SQL\" column. SQL statement for the table creation has been "
-"generated automatically in the textarea of \"Create Table SQL\". The basic "
-"table creation operation is in this flow."
+"Then, select a character "
+"set and the database "
+"engine of the table, "
+"please click on the "
+"button of \"Make Template"
+"\" on the right-hand "
+"side of the \"Create "
+"Table SQL\" column. SQL "
+"statement for the table "
+"creation has been "
+"generated automatically "
+"in the textarea of "
+"\"Create Table SQL\". "
+"The basic table creation "
+"operation is in this "
+"flow."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:70
+#: templates/admin/cdbt_management_console.php:70
 msgid ""
-"This left the table when you run the \"Create Table\" will be created at "
-"this time. But, there is no shelf (column) in that table to store your data. "
-"So, let&apos;s add a column to the table."
+"This left the table when "
+"you run the \"Create "
+"Table\" will be created "
+"at this time. But, there "
+"is no shelf (column) in "
+"that table to store your "
+"data. So, let&apos;s add "
+"a column to the table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:72
+#: templates/admin/cdbt_management_console.php:72
 msgid ""
-"When you click the \"Table Creator\" tab of the \"Create Table SQL\" column, "
-"a new dialog opens, it dedicated editor that you can insert and update the "
+"When you click the "
+"\"Table Creator\" tab of "
+"the \"Create Table SQL\" "
+"column, a new dialog "
+"opens, it dedicated "
+"editor that you can "
+"insert and update the "
 "columns."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:73
+#: templates/admin/cdbt_management_console.php:73
 msgid ""
-"At the \"Table Creator\", enter the column name, and it will automatically "
-"switch settable item column when you choose the data format to be stored in "
-"the column. Also, you can change by drag-and-drop the order of the columns "
-"for each row. You will be able to edit the table freely without knowledge "
-"about database using this editor tool."
+"At the \"Table Creator"
+"\", enter the column "
+"name, and it will "
+"automatically switch "
+"settable item column "
+"when you choose the data "
+"format to be stored in "
+"the column. Also, you "
+"can change by drag-and-"
+"drop the order of the "
+"columns for each row. "
+"You will be able to edit "
+"the table freely without "
+"knowledge about database "
+"using this editor tool."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:74
+#: templates/admin/cdbt_management_console.php:74
 msgid ""
-"When you are finished editing the column, Do not forget to click the \"Apply "
-"SQL\" button. At this time, the column settings that you&apos;ve edited will "
-"be stored in the browser. So you will be able to resume the column editing "
-"work as when you will re-open after close the dialog."
+"When you are finished "
+"editing the column, Do "
+"not forget to click the "
+"\"Apply SQL\" button. At "
+"this time, the column "
+"settings that you&apos;"
+"ve edited will be stored "
+"in the browser. So you "
+"will be able to resume "
+"the column editing work "
+"as when you will re-open "
+"after close the dialog."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:76
+#: templates/admin/cdbt_management_console.php:76
 msgid ""
-"The section of \"Table setting for the plugin\", it sets for when you want "
-"to use a table that you have created at CDBT V2 on the web frontend. It is "
-"the main set for handling data in the table via shortcodes. Note that this "
-"setting can be changed after the table creation at any time."
+"The section of \"Table "
+"setting for the plugin"
+"\", it sets for when you "
+"want to use a table that "
+"you have created at CDBT "
+"V2 on the web frontend. "
+"It is the main set for "
+"handling data in the "
+"table via shortcodes. "
+"Note that this setting "
+"can be changed after the "
+"table creation at any "
+"time."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:77
+#: templates/admin/cdbt_management_console.php:77
 msgid ""
-"Finally, there is table importation to CDBT. You can also allow you to "
-"manage it at CDBT V2, in the own table that you have created via like "
-"another plugins. From the section of \"Incorporate an existing table\", "
-"please select the table you want to capture."
+"Finally, there is table "
+"importation to CDBT. You "
+"can also allow you to "
+"manage it at CDBT V2, in "
+"the own table that you "
+"have created via like "
+"another plugins. From "
+"the section of "
+"\"Incorporate an "
+"existing table\", please "
+"select the table you "
+"want to capture."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:78
-msgid "Go To Table Creation"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:83
+#: templates/admin/cdbt_management_console.php:78
 msgid ""
-"Table managed by the CDBT V2 is, it is possible to use some shortcodes, you "
-"can display the data content to the frontend of the site, or you can be "
-"registered the data from the frontend. By the using these shortcodes, you "
-"will be able to provide an interactive database available to users who visit "
-"your site."
+"Go To Table Creation"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:84
+#: templates/admin/cdbt_management_console.php:83
 msgid ""
-"For example, it can in cooperation with the user to collect and accumulate "
-"content and data. Or you may be able to provide like CRM service that built "
-"own user management table."
+"Table managed by the "
+"CDBT V2 is, it is "
+"possible to use some "
+"shortcodes, you can "
+"display the data content "
+"to the frontend of the "
+"site, or you can be "
+"registered the data from "
+"the frontend. By the "
+"using these shortcodes, "
+"you will be able to "
+"provide an interactive "
+"database available to "
+"users who visit your "
+"site."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:85
+#: templates/admin/cdbt_management_console.php:84
 msgid ""
-"The appearance of the content that is output via the shortcode can be fully "
-"customizable from the management screen to fit the available scene. In "
-"addition, you can be registered the shortcode of your own settings to the "
-"plugin. After registering shortcodes, it will be issued alias code complex "
-"attribute setting is omitted in. When you actually use it, you may just "
-"paste the alias code in posts and fixed page."
+"For example, it can in "
+"cooperation with the "
+"user to collect and "
+"accumulate content and "
+"data. Or you may be able "
+"to provide like CRM "
+"service that built own "
+"user management table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:86
-msgid "Go To Shortcodes Management"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:91
+#: templates/admin/cdbt_management_console.php:85
 msgid ""
-"The data in the table managed by the CDBT V2 By using the Web API, you can "
-"access from the outside of the site. To do this you need to register the "
-"site to allow access from the \"CDBT Web APIs Management\" (in the Web APIs "
-"menu)."
+"The appearance of the "
+"content that is output "
+"via the shortcode can be "
+"fully customizable from "
+"the management screen to "
+"fit the available scene. "
+"In addition, you can be "
+"registered the shortcode "
+"of your own settings to "
+"the plugin. After "
+"registering shortcodes, "
+"it will be issued alias "
+"code complex attribute "
+"setting is omitted in. "
+"When you actually use "
+"it, you may just paste "
+"the alias code in posts "
+"and fixed page."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:92
-msgid "Since not yet written content, please wait."
+#: templates/admin/cdbt_management_console.php:86
+msgid ""
+"Go To Shortcodes "
+"Management"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:93
-msgid "Go To WebAPIs Management"
+#: templates/admin/cdbt_management_console.php:91
+msgid ""
+"The data in the table "
+"managed by the CDBT V2 "
+"By using the Web API, "
+"you can access from the "
+"outside of the site. To "
+"do this you need to "
+"register the site to "
+"allow access from the "
+"\"CDBT Web APIs "
+"Management\" (in the Web "
+"APIs menu)."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:101
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:925
+#: templates/admin/cdbt_management_console.php:92
+msgid ""
+"Since not yet written "
+"content, please wait."
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:93
+msgid ""
+"Go To WebAPIs Management"
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_tables.php:925
 msgid "Step1"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:101
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:925
+#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_tables.php:925
 msgid "Step2"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:101
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:925
+#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_tables.php:925
 msgid "Step3"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:101
 msgid "Step4"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:101
 msgid "Step5"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:103
-msgid "Custom DataBase Tables version 2 arrival now!"
+#: templates/admin/cdbt_management_console.php:103
+msgid ""
+"Custom DataBase Tables "
+"version 2 arrival now!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:104
-msgid "Version 2 has powered up all feature!"
+#: templates/admin/cdbt_management_console.php:104
+msgid ""
+"Version 2 has powered up "
+"all feature!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:105
-msgid "Let&#39;s create a new table!"
+#: templates/admin/cdbt_management_console.php:105
+msgid ""
+"Let&#39;s create a new "
+"table!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:106
-msgid "Let&#39;s use the shortcode!"
+#: templates/admin/cdbt_management_console.php:106
+msgid ""
+"Let&#39;s use the "
+"shortcode!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:107
-msgid "Cooperation with external site by API"
+#: templates/admin/cdbt_management_console.php:107
+msgid ""
+"Cooperation with "
+"external site by API"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:116
-msgid "About Custom DataBase Tables"
+#: templates/admin/cdbt_management_console.php:116
+msgid ""
+"About Custom DataBase "
+"Tables"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:118
+#: templates/admin/cdbt_management_console.php:118
 #, php-format
 msgid ""
-"Custom DataBase Tables is provided an extensive %sdocumentations%s. It "
-"includes Frequently Asked Questions for you to use in plugins and themes, as "
-"well as documentation for further details about how to use for programmers."
+"Custom DataBase Tables "
+"is provided an extensive "
+"%sdocumentations%s. It "
+"includes Frequently "
+"Asked Questions for you "
+"to use in plugins and "
+"themes, as well as "
+"documentation for "
+"further details about "
+"how to use for "
+"programmers."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:119
-#, php-format
-msgid "If you wonder how you can help the project, just %sread this%s."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:120
-#, php-format
-msgid ""
-"Custom DataBase Table is free of charge and is released under the same "
-"license as WordPress, the %sGPL%s."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:121
+#: templates/admin/cdbt_management_console.php:119
 #, php-format
 msgid ""
-"You will also find useful information in the %ssupport forum%s. However "
-"don&apos;t forget to make a search before posting a new topic."
+"If you wonder how you "
+"can help the project, "
+"just %sread this%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:122
+#: templates/admin/cdbt_management_console.php:120
+#, php-format
 msgid ""
-"Finally if you like this plugin or if it helps your business, donations to "
-"the author are greatly appreciated."
+"Custom DataBase Table is "
+"free of charge and is "
+"released under the same "
+"license as WordPress, "
+"the %sGPL%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:131
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:132
-msgid "The safer, easier way to pay online!"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:143
-msgid "Please Donate To Bitcoin Address:"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:163
-msgid "CustomDataBaseTables License Agreement"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:166
+#: templates/admin/cdbt_management_console.php:121
+#, php-format
 msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License, version 2, as published "
-"by the Free Software Foundation."
+"You will also find "
+"useful information in "
+"the %ssupport forum%s. "
+"However don&apos;t "
+"forget to make a search "
+"before posting a new "
+"topic."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:167
+#: templates/admin/cdbt_management_console.php:122
 msgid ""
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
-"more details."
+"Finally if you like this "
+"plugin or if it helps "
+"your business, donations "
+"to the author are "
+"greatly appreciated."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_management_console.php:168
+#: templates/admin/cdbt_management_console.php:131
+#: templates/admin/cdbt_management_console.php:132
 msgid ""
-"You should have received a copy of the GNU General Public License along with "
-"this program; if not, write to the Free Software Foundation, Inc., 51 "
-"Franklin St, Fifth Floor, Boston, MA  02110-1301  USA"
+"The safer, easier way to "
+"pay online!"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:11
+#: templates/admin/cdbt_management_console.php:143
+msgid ""
+"Please Donate To Bitcoin "
+"Address:"
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:163
+msgid ""
+"CustomDataBaseTables "
+"License Agreement"
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:166
+msgid ""
+"This program is free "
+"software; you can "
+"redistribute it and/or "
+"modify it under the "
+"terms of the GNU General "
+"Public License, version "
+"2, as published by the "
+"Free Software Foundation."
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:167
+msgid ""
+"This program is "
+"distributed in the hope "
+"that it will be useful, "
+"but WITHOUT ANY "
+"WARRANTY; without even "
+"the implied warranty of "
+"MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR "
+"PURPOSE. See the GNU "
+"General Public License "
+"for more details."
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:168
+msgid ""
+"You should have received "
+"a copy of the GNU "
+"General Public License "
+"along with this program; "
+"if not, write to the "
+"Free Software "
+"Foundation, Inc., 51 "
+"Franklin St, Fifth "
+"Floor, Boston, MA  "
+"02110-1301  USA"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:11
 msgid "General Setting"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:12
+#: templates/admin/cdbt_options.php:12
 msgid "Debug"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:44
+#: templates/admin/cdbt_options.php:44
 msgid ""
-"In this configuration page, you can edit the common settings that affect the "
-"overall operation of the \"Custom DataBase Tables\" plugin."
+"In this configuration "
+"page, you can edit the "
+"common settings that "
+"affect the overall "
+"operation of the "
+"\"Custom DataBase Tables"
+"\" plugin."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:54
+#: templates/admin/cdbt_options.php:54
 msgid "Plugin Setting"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:56
+#: templates/admin/cdbt_options.php:56
 msgid "Cleaning option"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:61
+#: templates/admin/cdbt_options.php:61
 msgid ""
-"When you save common settings, such as deleting the table settings that do "
-"not exist in the database, to perform the cleaning of the set value."
+"When you save common "
+"settings, such as "
+"deleting the table "
+"settings that do not "
+"exist in the database, "
+"to perform the cleaning "
+"of the set value."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:67
+#: templates/admin/cdbt_options.php:67
 msgid "Uninstall setting"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:72
+#: templates/admin/cdbt_options.php:72
 msgid ""
-"When you will uninstall this plugin, remove all of the configuration "
-"information related to plugin (but your created table is not deleted)."
+"When you will uninstall "
+"this plugin, remove all "
+"of the configuration "
+"information related to "
+"plugin (but your created "
+"table is not deleted)."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:78
-msgid "Manageable table restoration"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:83
+#: templates/admin/cdbt_options.php:78
 msgid ""
-"It will reconfigure tables from the past plugin configuration. However, the "
-"table that does not exist in the database at the time of restoration can not "
-"be recovered."
+"Manageable table "
+"restoration"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:89
-msgid "Manage WordPress core table"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:94
+#: templates/admin/cdbt_options.php:83
 msgid ""
-"You make manageable of the WordPress core tables. Then, you will allow the "
-"table management, data browsing, registration, editing, and the import or "
-"export."
+"It will reconfigure "
+"tables from the past "
+"plugin configuration. "
+"However, the table that "
+"does not exist in the "
+"database at the time of "
+"restoration can not be "
+"recovered."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:100
-msgid "Display format of datetime"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:105
+#: templates/admin/cdbt_options.php:89
 msgid ""
-"You can define the display format of datetime type data that is displayed in "
-"the plugin. By default, it will use the datetime format of the WordPress "
+"Manage WordPress core "
+"table"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:94
+msgid ""
+"You make manageable of "
+"the WordPress core "
+"tables. Then, you will "
+"allow the table "
+"management, data "
+"browsing, registration, "
+"editing, and the import "
+"or export."
+msgstr ""
+
+#: templates/admin/cdbt_options.php:100
+msgid ""
+"Display format of "
+"datetime"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:105
+msgid ""
+"You can define the "
+"display format of "
+"datetime type data that "
+"is displayed in the "
+"plugin. By default, it "
+"will use the datetime "
+"format of the WordPress "
 "general settings."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:109
+#: templates/admin/cdbt_options.php:109
 msgid "Debug mode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:114
+#: templates/admin/cdbt_options.php:114
 msgid ""
-"If you enable the debug mode, an error that occurred in the plugin will be "
-"output as a log. Please use as you want to investigate incidents."
+"If you enable the debug "
+"mode, an error that "
+"occurred in the plugin "
+"will be output as a log. "
+"Please use as you want "
+"to investigate incidents."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:121
-msgid "Initial definition for table creation"
+#: templates/admin/cdbt_options.php:121
+msgid ""
+"Initial definition for "
+"table creation"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:124
+#: templates/admin/cdbt_options.php:124
 msgid "Table prefix"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:129
+#: templates/admin/cdbt_options.php:129
 #, php-format
 msgid ""
-"Automatically prepend table prefix %s defined at the WordPress config (wp-"
-"config.php) when you create a new table."
+"Automatically prepend "
+"table prefix %s defined "
+"at the WordPress config "
+"(wp-config.php) when you "
+"create a new table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:131
-msgid "This setting can be changed individually at the time of table creation."
+#: templates/admin/cdbt_options.php:131
+msgid ""
+"This setting can be "
+"changed individually at "
+"the time of table "
+"creation."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:136
+#: templates/admin/cdbt_options.php:136
 msgid "Table character set"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:149
-msgid "This setting is default character set when created the table."
+#: templates/admin/cdbt_options.php:149
+msgid ""
+"This setting is default "
+"character set when "
+"created the table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:153
+#: templates/admin/cdbt_options.php:153
 msgid "Default timezone"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:166
-msgid "Currently timezone of the MySQL database"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:168
+#: templates/admin/cdbt_options.php:166
 msgid ""
-"When this plugin insert the datetime type data, localized the value "
-"according to the set timezone."
+"Currently timezone of "
+"the MySQL database"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:173
-msgid "Default database engine"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:186
+#: templates/admin/cdbt_options.php:168
 msgid ""
-"This initial value is the database engine of the table created by the plugin."
+"When this plugin insert "
+"the datetime type data, "
+"localized the value "
+"according to the set "
+"timezone."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:190
-msgid "Initial display number of records"
+#: templates/admin/cdbt_options.php:173
+msgid ""
+"Default database engine"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:195
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:271
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:361
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:615
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:705
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:254
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:609
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:289
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:302
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:241
+#: templates/admin/cdbt_options.php:186
+msgid ""
+"This initial value is "
+"the database engine of "
+"the table created by the "
+"plugin."
+msgstr ""
+
+#: templates/admin/cdbt_options.php:190
+msgid ""
+"Initial display number "
+"of records"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:195
+#: templates/admin/cdbt_shortcodes.php:271
+#: templates/admin/cdbt_shortcodes.php:361
+#: templates/admin/cdbt_shortcodes.php:615
+#: templates/admin/cdbt_shortcodes.php:705
+#: templates/admin/cdbt_tables.php:254
+#: templates/admin/cdbt_tables.php:609
+#: templates/admin/cdbt_web_apis.php:289
+#: templates/admin/cdbt_web_apis.php:302
+#: templates/components/cdbt_forms.php:241
 msgid "Increase"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:196
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:272
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:362
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:616
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:706
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:255
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:610
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:290
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:303
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:242
+#: templates/admin/cdbt_options.php:196
+#: templates/admin/cdbt_shortcodes.php:272
+#: templates/admin/cdbt_shortcodes.php:362
+#: templates/admin/cdbt_shortcodes.php:616
+#: templates/admin/cdbt_shortcodes.php:706
+#: templates/admin/cdbt_tables.php:255
+#: templates/admin/cdbt_tables.php:610
+#: templates/admin/cdbt_web_apis.php:290
+#: templates/admin/cdbt_web_apis.php:303
+#: templates/components/cdbt_forms.php:242
 msgid "Decrease"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:199
+#: templates/admin/cdbt_options.php:199
 msgid ""
-"This initial value is the number of displayed records per one page of the "
-"table created by the plugin."
+"This initial value is "
+"the number of displayed "
+"records per one page of "
+"the table created by the "
+"plugin."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:205
+#: templates/admin/cdbt_options.php:205
 msgid ""
-"Already it is not reflected in the previously created table. Please change "
-"the table settings individually if you want to change it."
+"Already it is not "
+"reflected in the "
+"previously created "
+"table. Please change the "
+"table settings "
+"individually if you want "
+"to change it."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:210
-msgid "Advanced Plugin Settings"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:213
-msgid "Allow Rendering Shortcodes"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:218
-msgid "The Rendering shortcodes will be allow into singular post only."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:224
-msgid "Included Assets Definition"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:229
+#: templates/admin/cdbt_options.php:210
 msgid ""
-"It will control the reading of various assets. Please change this settings "
-"if it conflicts the assets of the theme and other plugin."
+"Advanced Plugin Settings"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:239
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:693
+#: templates/admin/cdbt_options.php:213
+msgid ""
+"Allow Rendering "
+"Shortcodes"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:218
+msgid ""
+"The Rendering shortcodes "
+"will be allow into "
+"singular post only."
+msgstr ""
+
+#: templates/admin/cdbt_options.php:224
+msgid ""
+"Included Assets "
+"Definition"
+msgstr ""
+
+#: templates/admin/cdbt_options.php:229
+msgid ""
+"It will control the "
+"reading of various "
+"assets. Please change "
+"this settings if it "
+"conflicts the assets of "
+"the theme and other "
+"plugin."
+msgstr ""
+
+#: templates/admin/cdbt_options.php:239
+#: templates/admin/cdbt_tables.php:693
 msgid "Save Changes"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:250
+#: templates/admin/cdbt_options.php:250
 msgid ""
-"In this section you can check the log of various processes executed at the "
-"\"Custom DataBase Tables\" plugin."
+"In this section you can "
+"check the log of various "
+"processes executed at "
+"the \"Custom DataBase "
+"Tables\" plugin."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:251
+#: templates/admin/cdbt_options.php:251
 msgid ""
-"Available as a debugging log to follow the flow of the processing such as "
-"when trouble occurs."
+"Available as a debugging "
+"log to follow the flow "
+"of the processing such "
+"as when trouble occurs."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:270
+#: templates/admin/cdbt_options.php:270
 msgid "Clear Logs"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:275
-msgid "Remove the current log after backup of the log file."
+#: templates/admin/cdbt_options.php:275
+msgid ""
+"Remove the current log "
+"after backup of the log "
+"file."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_options.php:279
+#: templates/admin/cdbt_options.php:279
 #, php-format
-msgid "Note: Backup files stores to the directory of %s."
+msgid ""
+"Note: Backup files "
+"stores to the directory "
+"of %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:15
+#: templates/admin/cdbt_shortcodes.php:15
 msgid "Shortcode List"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:16
+#: templates/admin/cdbt_shortcodes.php:16
 msgid "Shortcode register"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:45
+#: templates/admin/cdbt_shortcodes.php:45
 msgid ""
-"This shortcode list has been managing in the plugin. Your newly created "
-"shortcodes, you can use very conveniently by registering to this plugin."
+"This shortcode list has "
+"been managing in the "
+"plugin. Your newly "
+"created shortcodes, you "
+"can use very "
+"conveniently by "
+"registering to this "
+"plugin."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:113
-msgid "Here will create a new shortcode. Please enter the following item."
+#: templates/admin/cdbt_shortcodes.php:113
+msgid ""
+"Here will create a new "
+"shortcode. Please enter "
+"the following item."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:125
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:479
+#: templates/admin/cdbt_shortcodes.php:125
+#: templates/admin/cdbt_shortcodes.php:479
 msgid "Base shortcode name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:125
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:142
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:486
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:132
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:214
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:940
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:958
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:995
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1081
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1132
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1182
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1189
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:107
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:174
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:194
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:214
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:223
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:236
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:253
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:281
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:309
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:332
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:352
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:384
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:449
+#: templates/admin/cdbt_shortcodes.php:125
+#: templates/admin/cdbt_shortcodes.php:142
+#: templates/admin/cdbt_shortcodes.php:486
+#: templates/admin/cdbt_tables.php:132
+#: templates/admin/cdbt_tables.php:214
+#: templates/admin/cdbt_tables.php:940
+#: templates/admin/cdbt_tables.php:958
+#: templates/admin/cdbt_tables.php:995
+#: templates/admin/cdbt_tables.php:1081
+#: templates/admin/cdbt_tables.php:1132
+#: templates/admin/cdbt_tables.php:1182
+#: templates/admin/cdbt_tables.php:1189
+#: templates/admin/cdbt_web_apis.php:107
+#: templates/admin/cdbt_web_apis.php:174
+#: templates/admin/cdbt_web_apis.php:194
+#: templates/admin/cdbt_web_apis.php:214
+#: templates/components/cdbt_forms.php:223
+#: templates/components/cdbt_forms.php:236
+#: templates/components/cdbt_forms.php:253
+#: templates/components/cdbt_forms.php:281
+#: templates/components/cdbt_forms.php:309
+#: templates/components/cdbt_forms.php:332
+#: templates/components/cdbt_forms.php:352
+#: templates/components/cdbt_forms.php:384
+#: templates/components/cdbt_forms.php:449
 msgid "require"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:142
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:486
+#: templates/admin/cdbt_shortcodes.php:142
+#: templates/admin/cdbt_shortcodes.php:486
 msgid "Target table name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:160
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:504
-msgid "Advanced setting of shortcode"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:167
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:511
-msgid "Toggle of look and feel"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:172
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:516
+#: templates/admin/cdbt_shortcodes.php:160
+#: templates/admin/cdbt_shortcodes.php:504
 msgid ""
-"Whether of using Bootstrap style; It is output by the static table tag "
-"layout in non the Repeater format, also does not have any pagination if "
+"Advanced setting of "
+"shortcode"
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:167
+#: templates/admin/cdbt_shortcodes.php:511
+msgid ""
+"Toggle of look and feel"
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:172
+#: templates/admin/cdbt_shortcodes.php:516
+msgid ""
+"Whether of using "
+"Bootstrap style; It is "
+"output by the static "
+"table tag layout in non "
+"the Repeater format, "
+"also does not have any "
+"pagination if disabled."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:173
+#: templates/admin/cdbt_shortcodes.php:517
+msgid ""
+"Whether of using "
+"Bootstrap style; This "
+"can not changed since "
+"v2.0.0."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:179
+#: templates/admin/cdbt_shortcodes.php:523
+msgid ""
+"Whether rendering by "
+"repeater component at "
+"Fuel UX; It is output by "
+"the static table tag "
+"layout, also does not "
+"have any pagination if "
 "disabled."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:173
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:517
-msgid "Whether of using Bootstrap style; This can not changed since v2.0.0."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:179
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:523
+#: templates/admin/cdbt_shortcodes.php:185
+#: templates/admin/cdbt_shortcodes.php:529
 msgid ""
-"Whether rendering by repeater component at Fuel UX; It is output by the "
-"static table tag layout, also does not have any pagination if disabled."
+"Whether displaying list "
+"number; The default "
+"value has changed to "
+"disable since v2.0.0"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:185
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:529
+#: templates/admin/cdbt_shortcodes.php:191
+#: templates/admin/cdbt_shortcodes.php:535
 msgid ""
-"Whether displaying list number; The default value has changed to disable "
-"since v2.0.0"
+"Whether displaying "
+"search box."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:191
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:535
-msgid "Whether displaying search box."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:197
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:541
-msgid "Whether displaying title."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:203
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:547
-msgid "Whether enabling the sorting of each columns."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:209
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:553
+#: templates/admin/cdbt_shortcodes.php:197
+#: templates/admin/cdbt_shortcodes.php:541
 msgid ""
-"Whether displaying the index row; In the index row, it is rendered the "
+"Whether displaying title."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:203
+#: templates/admin/cdbt_shortcodes.php:547
+msgid ""
+"Whether enabling the "
+"sorting of each columns."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:209
+#: templates/admin/cdbt_shortcodes.php:553
+msgid ""
+"Whether displaying the "
+"index row; In the index "
+"row, it is rendered the "
 "column name of table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:216
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:560
+#: templates/admin/cdbt_shortcodes.php:216
+#: templates/admin/cdbt_shortcodes.php:560
 msgid "Exclude Columns"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:219
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:240
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:563
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:584
+#: templates/admin/cdbt_shortcodes.php:219
+#: templates/admin/cdbt_shortcodes.php:240
+#: templates/admin/cdbt_shortcodes.php:563
+#: templates/admin/cdbt_shortcodes.php:584
 msgid ""
-"Please enter the column name that does not output at the specific string of "
-"comma-separated. For example, \"col1,col2,...\" so on."
+"Please enter the column "
+"name that does not "
+"output at the specific "
+"string of comma-"
+"separated. For example, "
+"\"col1,col2,...\" so on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:223
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:567
+#: templates/admin/cdbt_shortcodes.php:223
+#: templates/admin/cdbt_shortcodes.php:567
 msgid "Add Classes"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:226
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:570
-msgid "Separator is a single-byte space character"
+#: templates/admin/cdbt_shortcodes.php:226
+#: templates/admin/cdbt_shortcodes.php:570
+msgid ""
+"Separator is a single-"
+"byte space character"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:230
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:574
+#: templates/admin/cdbt_shortcodes.php:230
+#: templates/admin/cdbt_shortcodes.php:574
 msgid "Narrow Keywords"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:233
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:577
+#: templates/admin/cdbt_shortcodes.php:233
+#: templates/admin/cdbt_shortcodes.php:577
 msgid ""
-"Please enter the narrow keywords in a comma-separated. For example, "
-"\"keyword1,keyword2,...\" or \"col1:keyword1,col2:keyword2,...\" so on."
+"Please enter the narrow "
+"keywords in a comma-"
+"separated. For example, "
+"\"keyword1,keyword2,..."
+"\" or \"col1:keyword1,"
+"col2:keyword2,...\" so "
+"on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:237
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:581
+#: templates/admin/cdbt_shortcodes.php:237
+#: templates/admin/cdbt_shortcodes.php:581
 msgid "Hidden Columns"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:244
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:588
+#: templates/admin/cdbt_shortcodes.php:244
+#: templates/admin/cdbt_shortcodes.php:588
 msgid "Display Columns"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:247
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:591
+#: templates/admin/cdbt_shortcodes.php:247
+#: templates/admin/cdbt_shortcodes.php:591
 msgid ""
-"Please enter the displaying column name in comma-delimited. If it overlap "
-"with excluding column, this setting takes precedence.."
+"Please enter the "
+"displaying column name "
+"in comma-delimited. If "
+"it overlap with "
+"excluding column, this "
+"setting takes "
+"precedence.."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:251
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:595
+#: templates/admin/cdbt_shortcodes.php:251
+#: templates/admin/cdbt_shortcodes.php:595
 msgid "Column Order"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:254
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:598
+#: templates/admin/cdbt_shortcodes.php:254
+#: templates/admin/cdbt_shortcodes.php:598
 msgid ""
-"Please enter the displaying column order in comma-delimited. If it overlap "
-"with display columns, this setting takes precedence."
+"Please enter the "
+"displaying column order "
+"in comma-delimited. If "
+"it overlap with display "
+"columns, this setting "
+"takes precedence."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:258
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:602
+#: templates/admin/cdbt_shortcodes.php:258
+#: templates/admin/cdbt_shortcodes.php:602
 msgid "Column Sort Order"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:261
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:605
+#: templates/admin/cdbt_shortcodes.php:261
+#: templates/admin/cdbt_shortcodes.php:605
 msgid ""
-"Please enter the default column sort order at comma-delimited. For example, "
-"\"updated:desc,ID:asc,...\" so on."
+"Please enter the default "
+"column sort order at "
+"comma-delimited. For "
+"example, \"updated:desc,"
+"ID:asc,...\" so on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:266
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:610
-msgid "Limit Records Per Page"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:275
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:619
+#: templates/admin/cdbt_shortcodes.php:266
+#: templates/admin/cdbt_shortcodes.php:610
 msgid ""
-"The default value is overwritten by the value of the max_show_records of the "
-"specified table."
+"Limit Records Per Page"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:280
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:624
-msgid "Rendering Image Type"
+#: templates/admin/cdbt_shortcodes.php:275
+#: templates/admin/cdbt_shortcodes.php:619
+msgid ""
+"The default value is "
+"overwritten by the value "
+"of the max_show_records "
+"of the specified table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:293
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:637
-msgid "Please choose class name for rendering image tag."
+#: templates/admin/cdbt_shortcodes.php:280
+#: templates/admin/cdbt_shortcodes.php:624
+msgid ""
+"Rendering Image Type"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:298
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:642
+#: templates/admin/cdbt_shortcodes.php:293
+#: templates/admin/cdbt_shortcodes.php:637
+msgid ""
+"Please choose class name "
+"for rendering image tag."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:298
+#: templates/admin/cdbt_shortcodes.php:642
 msgid "Redirect URL"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:301
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:645
+#: templates/admin/cdbt_shortcodes.php:301
+#: templates/admin/cdbt_shortcodes.php:645
 msgid ""
-"Please enter URL (absolute URI) that you want to redirect after the "
-"completion of the data registration."
+"Please enter URL "
+"(absolute URI) that you "
+"want to redirect after "
+"the completion of the "
+"data registration."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:306
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:650
+#: templates/admin/cdbt_shortcodes.php:306
+#: templates/admin/cdbt_shortcodes.php:650
 msgid "Display Filter Box"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:311
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:655
+#: templates/admin/cdbt_shortcodes.php:311
+#: templates/admin/cdbt_shortcodes.php:655
 msgid ""
-"Whether displaying the filter box; Is enabled only if rendering by repeater "
-"component."
+"Whether displaying the "
+"filter box; Is enabled "
+"only if rendering by "
+"repeater component."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:317
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:661
-msgid "Target Filter Column"
+#: templates/admin/cdbt_shortcodes.php:317
+#: templates/admin/cdbt_shortcodes.php:661
+msgid ""
+"Target Filter Column"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:320
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:664
-msgid "Please enter the column name to filter."
+#: templates/admin/cdbt_shortcodes.php:320
+#: templates/admin/cdbt_shortcodes.php:664
+msgid ""
+"Please enter the column "
+"name to filter."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:324
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:668
+#: templates/admin/cdbt_shortcodes.php:324
+#: templates/admin/cdbt_shortcodes.php:668
 msgid "Filters Definition"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:327
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:671
+#: templates/admin/cdbt_shortcodes.php:327
+#: templates/admin/cdbt_shortcodes.php:671
 msgid ""
-"Please enter the pair of the filter value and displaying label at comma-"
-"separator. For example, \"filter1:label1,filter2:label2,...\" so on."
+"Please enter the pair of "
+"the filter value and "
+"displaying label at "
+"comma-separator. For "
+"example, \"filter1:"
+"label1,filter2:label2,..."
+"\" so on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:331
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:675
-msgid "Enable Switching View"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:336
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:680
+#: templates/admin/cdbt_shortcodes.php:331
+#: templates/admin/cdbt_shortcodes.php:675
 msgid ""
-"You are able to switch list view and thumbnail view if checked; This is "
-"enabled only if rendering by repeater component."
+"Enable Switching View"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:342
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:686
-msgid "Thumbnail Image Column"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:346
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:690
+#: templates/admin/cdbt_shortcodes.php:336
+#: templates/admin/cdbt_shortcodes.php:680
 msgid ""
-"The data of this column used as a thumbnail image. In this column, it must "
-"be stored the image binary or a image URL."
+"You are able to switch "
+"list view and thumbnail "
+"view if checked; This is "
+"enabled only if "
+"rendering by repeater "
+"component."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:349
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:693
-msgid "Thumbnail Title column"
+#: templates/admin/cdbt_shortcodes.php:342
+#: templates/admin/cdbt_shortcodes.php:686
+msgid ""
+"Thumbnail Image Column"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:353
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:697
-msgid "This column name to use as the title of the thumbnail image."
+#: templates/admin/cdbt_shortcodes.php:346
+#: templates/admin/cdbt_shortcodes.php:690
+msgid ""
+"The data of this column "
+"used as a thumbnail "
+"image. In this column, "
+"it must be stored the "
+"image binary or a image "
+"URL."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:356
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:700
-msgid "Thumbnail Block Size"
+#: templates/admin/cdbt_shortcodes.php:349
+#: templates/admin/cdbt_shortcodes.php:693
+msgid ""
+"Thumbnail Title column"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:365
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:709
-msgid "Please enter the integer for width of thumbnail block."
+#: templates/admin/cdbt_shortcodes.php:353
+#: templates/admin/cdbt_shortcodes.php:697
+msgid ""
+"This column name to use "
+"as the title of the "
+"thumbnail image."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:369
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:713
+#: templates/admin/cdbt_shortcodes.php:356
+#: templates/admin/cdbt_shortcodes.php:700
+msgid ""
+"Thumbnail Block Size"
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:365
+#: templates/admin/cdbt_shortcodes.php:709
+msgid ""
+"Please enter the integer "
+"for width of thumbnail "
+"block."
+msgstr ""
+
+#: templates/admin/cdbt_shortcodes.php:369
+#: templates/admin/cdbt_shortcodes.php:713
 msgid "Loading Via Ajax"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:374
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:718
+#: templates/admin/cdbt_shortcodes.php:374
+#: templates/admin/cdbt_shortcodes.php:718
 msgid ""
-"It will be on loading data via Ajax if checked this; Sorry, this feature is "
-"currently disabled yet."
+"It will be on loading "
+"data via Ajax if checked "
+"this; Sorry, this "
+"feature is currently "
+"disabled yet."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:391
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:735
+#: templates/admin/cdbt_shortcodes.php:391
+#: templates/admin/cdbt_shortcodes.php:735
 msgid ""
-"Please enter as like description of shortcode that will be displayed in the "
-"list screen."
+"Please enter as like "
+"description of shortcode "
+"that will be displayed "
+"in the list screen."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:401
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:745
-msgid "Generated shortcode confirmation"
+#: templates/admin/cdbt_shortcodes.php:401
+#: templates/admin/cdbt_shortcodes.php:745
+msgid ""
+"Generated shortcode "
+"confirmation"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:404
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:748
+#: templates/admin/cdbt_shortcodes.php:404
+#: templates/admin/cdbt_shortcodes.php:748
 msgid "Generated Shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:410
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:754
+#: templates/admin/cdbt_shortcodes.php:410
+#: templates/admin/cdbt_shortcodes.php:754
 msgid "Alias Shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:419
+#: templates/admin/cdbt_shortcodes.php:419
 msgid "Save Shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:420
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:764
+#: templates/admin/cdbt_shortcodes.php:420
+#: templates/admin/cdbt_shortcodes.php:764
 msgid "Preview Shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:445
+#: templates/admin/cdbt_shortcodes.php:445
 #, php-format
 msgid ""
-"Please select a custom shortcode that you want to edit %sat the shortcode "
-"list%s."
+"Please select a custom "
+"shortcode that you want "
+"to edit %sat the "
+"shortcode list%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:448
+#: templates/admin/cdbt_shortcodes.php:448
 msgid ""
-"Custom shortcode can not edit other than the registrant or privilege "
+"Custom shortcode can not "
+"edit other than the "
+"registrant or privilege "
 "administrator."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:467
-msgid "You can edit the settings of custom shortcode at here."
+#: templates/admin/cdbt_shortcodes.php:467
+msgid ""
+"You can edit the "
+"settings of custom "
+"shortcode at here."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_shortcodes.php:763
+#: templates/admin/cdbt_shortcodes.php:763
 msgid "Update Shortcode"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:15
+#: templates/admin/cdbt_tables.php:15
 msgid "Table List"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:16
+#: templates/admin/cdbt_tables.php:16
 msgid "Core Tables"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:17
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:322
+#: templates/admin/cdbt_tables.php:17
+#: templates/admin/cdbt_tables.php:322
 msgid "Create Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:18
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:578
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:756
+#: templates/admin/cdbt_tables.php:18
+#: templates/admin/cdbt_tables.php:578
+#: templates/admin/cdbt_tables.php:756
 msgid "Modify Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:19
+#: templates/admin/cdbt_tables.php:19
 msgid "Operate Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:20
+#: templates/admin/cdbt_tables.php:20
 msgid "Operate Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:56
+#: templates/admin/cdbt_tables.php:56
 msgid "Enabled Table List"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:58
-msgid "Currently, manageable table in the plugin does not exist."
+#: templates/admin/cdbt_tables.php:58
+msgid ""
+"Currently, manageable "
+"table in the plugin does "
+"not exist."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:59
-#, php-format
-msgid "If you want to create a new table, please %sclick here%s."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:60
-msgid "If you import an existing table to the plugin, please click here."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:74
-msgid "WordPress Core Table List"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:112
+#: templates/admin/cdbt_tables.php:59
 #, php-format
 msgid ""
-"You can create a new table or incorporate an existing table. Please %sgo "
-"from here%s if you incorporate an existing table."
+"If you want to create a "
+"new table, please "
+"%sclick here%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:123
-msgid "Table setting for a database"
+#: templates/admin/cdbt_tables.php:60
+msgid ""
+"If you import an "
+"existing table to the "
+"plugin, please click "
+"here."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:127
-msgid "Create a new table in the database. Please enter the required settings."
+#: templates/admin/cdbt_tables.php:74
+msgid ""
+"WordPress Core Table List"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:132
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:493
+#: templates/admin/cdbt_tables.php:112
+#, php-format
+msgid ""
+"You can create a new "
+"table or incorporate an "
+"existing table. Please "
+"%sgo from here%s if you "
+"incorporate an existing "
+"table."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:123
+msgid ""
+"Table setting for a "
+"database"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:127
+msgid ""
+"Create a new table in "
+"the database. Please "
+"enter the required "
+"settings."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:132
+#: templates/admin/cdbt_tables.php:493
 msgid "Table Name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:139
-msgid "Live preview of setting name:"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:144
+#: templates/admin/cdbt_tables.php:139
 msgid ""
-"I use a table prefix that is defined in the WordPress config (wp-config.php)."
+"Live preview of setting "
+"name:"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:150
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:502
+#: templates/admin/cdbt_tables.php:144
+msgid ""
+"I use a table prefix "
+"that is defined in the "
+"WordPress config (wp-"
+"config.php)."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:150
+#: templates/admin/cdbt_tables.php:502
 msgid "Table Comment"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:153
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:505
-msgid "Table Comments are used to display name as a logical name."
+#: templates/admin/cdbt_tables.php:153
+#: templates/admin/cdbt_tables.php:505
+msgid ""
+"Table Comments are used "
+"to display name as a "
+"logical name."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:157
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:512
+#: templates/admin/cdbt_tables.php:157
+#: templates/admin/cdbt_tables.php:512
 msgid "Table Charset"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:170
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:187
+#: templates/admin/cdbt_tables.php:170
+#: templates/admin/cdbt_tables.php:187
 #, php-format
 msgid ""
-"If you do not specify, the initial value of the current database: %s will be "
-"set."
+"If you do not specify, "
+"the initial value of the "
+"current database: %s "
+"will be set."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:174
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:532
+#: templates/admin/cdbt_tables.php:174
+#: templates/admin/cdbt_tables.php:532
 msgid "DB Engine"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:191
-msgid "Automatically Add Columns"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:196
+#: templates/admin/cdbt_tables.php:191
 msgid ""
-"Add the \"ID\" column of the primary key to the beginning (Surrogate key of "
-"autoincrement type)"
+"Automatically Add Columns"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:202
-msgid "Add the \"created\" column for storing the data registration datetime"
+#: templates/admin/cdbt_tables.php:196
+msgid ""
+"Add the \"ID\" column of "
+"the primary key to the "
+"beginning (Surrogate key "
+"of autoincrement type)"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:208
-msgid "Add the \"updated\" column for storing the data update datetime"
+#: templates/admin/cdbt_tables.php:202
+msgid ""
+"Add the \"created\" "
+"column for storing the "
+"data registration "
+"datetime"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:214
+#: templates/admin/cdbt_tables.php:208
+msgid ""
+"Add the \"updated\" "
+"column for storing the "
+"data update datetime"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:214
 msgid "Create Table SQL"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:218
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:556
+#: templates/admin/cdbt_tables.php:218
+#: templates/admin/cdbt_tables.php:556
 msgid "Direct Edit SQL"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:226
+#: templates/admin/cdbt_tables.php:226
 msgid "Make Template"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:230
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:570
-msgid "Example of SQL Statements:"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:240
-msgid "Table setting for the plugin"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:244
+#: templates/admin/cdbt_tables.php:230
+#: templates/admin/cdbt_tables.php:570
 msgid ""
-"Specify the table setting for when became manageable in plugin. This setting "
-"can be changed even after the table creation."
+"Example of SQL "
+"Statements:"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:249
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:604
-msgid "Maximum display data per page"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:258
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:617
+#: templates/admin/cdbt_tables.php:240
 msgid ""
-"This value is the maximum data rows per one page to be displayed the table "
-"is managed with this plugin."
+"Table setting for the "
+"plugin"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:262
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:621
-msgid "Who is allowed to view table data"
+#: templates/admin/cdbt_tables.php:244
+msgid ""
+"Specify the table "
+"setting for when became "
+"manageable in plugin. "
+"This setting can be "
+"changed even after the "
+"table creation."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:275
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:638
+#: templates/admin/cdbt_tables.php:249
+#: templates/admin/cdbt_tables.php:604
+msgid ""
+"Maximum display data per "
+"page"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:258
+#: templates/admin/cdbt_tables.php:617
+msgid ""
+"This value is the "
+"maximum data rows per "
+"one page to be displayed "
+"the table is managed "
+"with this plugin."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:262
+#: templates/admin/cdbt_tables.php:621
+msgid ""
+"Who is allowed to view "
+"table data"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:275
+#: templates/admin/cdbt_tables.php:638
 #, php-format
 msgid ""
-"This setting will be enabled when you see data of the table in a non-"
-"management screen. Also is for the mainly shortcode %s."
+"This setting will be "
+"enabled when you see "
+"data of the table in a "
+"non-management screen. "
+"Also is for the mainly "
+"shortcode %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:279
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:642
-msgid "Who is allowed to register table data"
+#: templates/admin/cdbt_tables.php:279
+#: templates/admin/cdbt_tables.php:642
+msgid ""
+"Who is allowed to "
+"register table data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:292
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:659
+#: templates/admin/cdbt_tables.php:292
+#: templates/admin/cdbt_tables.php:659
 #, php-format
 msgid ""
-"This setting will be enabled when you register data to the table at the non-"
-"management screen. Also is for the mainly shortcode %s."
+"This setting will be "
+"enabled when you "
+"register data to the "
+"table at the non-"
+"management screen. Also "
+"is for the mainly "
+"shortcode %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:296
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:663
-msgid "Who is allowed to edit table data"
+#: templates/admin/cdbt_tables.php:296
+#: templates/admin/cdbt_tables.php:663
+msgid ""
+"Who is allowed to edit "
+"table data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:309
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:680
+#: templates/admin/cdbt_tables.php:309
+#: templates/admin/cdbt_tables.php:680
 #, php-format
 msgid ""
-"This setting will be enabled when you edit data in the table at the non-"
-"management screen. Also is for the mainly shortcode %s."
+"This setting will be "
+"enabled when you edit "
+"data in the table at the "
+"non-management screen. "
+"Also is for the mainly "
+"shortcode %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:315
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:686
+#: templates/admin/cdbt_tables.php:315
+#: templates/admin/cdbt_tables.php:686
 #, php-format
 msgid ""
-"If you want to set any permissions, please set the Capability of WordPress. "
-"Please see %shere more information of Capability%s."
+"If you want to set any "
+"permissions, please set "
+"the Capability of "
+"WordPress. Please see "
+"%shere more information "
+"of Capability%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:338
-msgid "Incorporate an existing table"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:342
+#: templates/admin/cdbt_tables.php:338
 msgid ""
-"You can incorporate a table that already exists, as be able to manage by "
-"this plugin."
+"Incorporate an existing "
+"table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:350
-msgid "Currently, incorporatable table to the plugin is not exist."
+#: templates/admin/cdbt_tables.php:342
+msgid ""
+"You can incorporate a "
+"table that already "
+"exists, as be able to "
+"manage by this plugin."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:355
-msgid "Incorporatable tables"
+#: templates/admin/cdbt_tables.php:350
+msgid ""
+"Currently, "
+"incorporatable table to "
+"the plugin is not exist."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:360
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:449
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:786
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:946
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:984
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1087
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1118
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:180
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:200
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:220
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:269
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:302
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:243
+#: templates/admin/cdbt_tables.php:355
+msgid ""
+"Incorporatable tables"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:360
+#: templates/admin/cdbt_tables.php:449
+#: templates/admin/cdbt_tables.php:786
+#: templates/admin/cdbt_tables.php:946
+#: templates/admin/cdbt_tables.php:984
+#: templates/admin/cdbt_tables.php:1087
+#: templates/admin/cdbt_tables.php:1118
+#: templates/admin/cdbt_web_apis.php:180
+#: templates/admin/cdbt_web_apis.php:200
+#: templates/admin/cdbt_web_apis.php:220
+#: templates/components/cdbt_repeater.php:269
+#: templates/components/cdbt_repeater.php:302
+#: templates/components/cdbt_table_creator.php:243
 msgid "Toggle Dropdown"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:373
+#: templates/admin/cdbt_tables.php:373
 msgid "Incorporate Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:435
+#: templates/admin/cdbt_tables.php:435
 msgid ""
-"Table you want to modify is not specified. Please select the table you want "
-"to modify."
+"Table you want to modify "
+"is not specified. Please "
+"select the table you "
+"want to modify."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:437
+#: templates/admin/cdbt_tables.php:437
 msgid ""
-"The specified table can not be modified in this plugin. Please select the "
-"other table."
+"The specified table can "
+"not be modified in this "
+"plugin. Please select "
+"the other table."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:443
-msgid "Select Modification Table"
+#: templates/admin/cdbt_tables.php:443
+msgid ""
+"Select Modification Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:452
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:789
+#: templates/admin/cdbt_tables.php:452
+#: templates/admin/cdbt_tables.php:789
 msgid "Please select"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:463
+#: templates/admin/cdbt_tables.php:463
 msgid "Change Modify Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:472
+#: templates/admin/cdbt_tables.php:472
 #, php-format
 msgid ""
-"You can make the schema change of the table body. Also, there is able to do "
-"such as changing permission to access to a table outputted by the shortcode. "
-"%sIn that case is here%s."
+"You can make the schema "
+"change of the table "
+"body. Also, there is "
+"able to do such as "
+"changing permission to "
+"access to a table "
+"outputted by the "
+"shortcode. %sIn that "
+"case is here%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:484
-msgid "Modifies to the scheme of table body"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:488
+#: templates/admin/cdbt_tables.php:484
 msgid ""
-"Modify the scheme of the specified table by running the SQL query (mainly "
-"\"ALTER TABLE\"). Please enter the item you want to modify."
+"Modifies to the scheme "
+"of table body"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:498
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:508
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:526
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:546
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:566
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:614
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:635
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:656
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:677
+#: templates/admin/cdbt_tables.php:488
+msgid ""
+"Modify the scheme of the "
+"specified table by "
+"running the SQL query "
+"(mainly \"ALTER TABLE"
+"\"). Please enter the "
+"item you want to modify."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:498
+#: templates/admin/cdbt_tables.php:508
+#: templates/admin/cdbt_tables.php:526
+#: templates/admin/cdbt_tables.php:546
+#: templates/admin/cdbt_tables.php:566
+#: templates/admin/cdbt_tables.php:614
+#: templates/admin/cdbt_tables.php:635
+#: templates/admin/cdbt_tables.php:656
+#: templates/admin/cdbt_tables.php:677
 msgid "Undo"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:552
-msgid "Custom Alter Table SQL"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:557
-msgid "Show Create Table SQL"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:595
-msgid "Modify the table attributes (setting option of plugin)"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:599
+#: templates/admin/cdbt_tables.php:552
 msgid ""
-"Settings in this section affects the output attribute of the table to handle "
-"with mainly shortcodes."
+"Custom Alter Table SQL"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:751
+#: templates/admin/cdbt_tables.php:557
+msgid ""
+"Show Create Table SQL"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:595
+msgid ""
+"Modify the table "
+"attributes (setting "
+"option of plugin)"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:599
+msgid ""
+"Settings in this section "
+"affects the output "
+"attribute of the table "
+"to handle with mainly "
+"shortcodes."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:751
 msgid "Detail View"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:752
+#: templates/admin/cdbt_tables.php:752
 msgid "Import Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:753
+#: templates/admin/cdbt_tables.php:753
 msgid "Export Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:754
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1208
+#: templates/admin/cdbt_tables.php:754
+#: templates/admin/cdbt_tables.php:1208
 msgid "Duplicate Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:755
+#: templates/admin/cdbt_tables.php:755
 msgid "Truncate Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:757
+#: templates/admin/cdbt_tables.php:757
 msgid "Backup Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:758
+#: templates/admin/cdbt_tables.php:758
 msgid "Delete Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:797
-msgid "Change Operation Table"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:826
+#: templates/admin/cdbt_tables.php:797
 msgid ""
-"You can perform various operations to the specified table at this section. "
-"Please press the operation buttons you want to run."
+"Change Operation Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:827
+#: templates/admin/cdbt_tables.php:826
 msgid ""
-"You can manipulate the data in the specified table on this section. Please "
-"press the operation buttons you want to run."
+"You can perform various "
+"operations to the "
+"specified table at this "
+"section. Please press "
+"the operation buttons "
+"you want to run."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:836
+#: templates/admin/cdbt_tables.php:827
+msgid ""
+"You can manipulate the "
+"data in the specified "
+"table on this section. "
+"Please press the "
+"operation buttons you "
+"want to run."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:836
 msgid "Column Information"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:841
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:44
+#: templates/admin/cdbt_tables.php:841
+#: templates/components/cdbt_table_creator.php:44
 msgid "Column Name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:872
+#: templates/admin/cdbt_tables.php:872
 msgid "Table Information"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:891
+#: templates/admin/cdbt_tables.php:891
 msgid "Import Data Options"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:895
+#: templates/admin/cdbt_tables.php:895
 #, php-format
 msgid ""
-"Import the data into the current specified table \"%s\". Import is done in "
-"the wizard format along the procedure. Please follow the instructions of "
-"each step."
+"Import the data into the "
+"current specified table "
+"\"%s\". Import is done "
+"in the wizard format "
+"along the procedure. "
+"Please follow the "
+"instructions of each "
+"step."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:938
+#: templates/admin/cdbt_tables.php:938
 msgid "Upload import file"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:940
+#: templates/admin/cdbt_tables.php:940
 msgid "Upload File Type"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:958
-msgid "Add first line of file"
+#: templates/admin/cdbt_tables.php:958
+msgid ""
+"Add first line of file"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:975
+#: templates/admin/cdbt_tables.php:975
 msgid "Remove"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:980
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:239
+#: templates/admin/cdbt_tables.php:980
+#: templates/components/cdbt_table_creator.php:239
 #, php-format
 msgid "and %s more..."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:991
+#: templates/admin/cdbt_tables.php:991
 msgid ""
-"If you will upload the file of \"CSV\" or \"TSV\", you must insert of the "
-"head line by the column name only as an index row."
+"If you will upload the "
+"file of \"CSV\" or \"TSV"
+"\", you must insert of "
+"the head line by the "
+"column name only as an "
+"index row."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:991
+#: templates/admin/cdbt_tables.php:991
 msgid ""
-"If necessary, please edit to match the data column of the index rows "
-"template in the above textarea."
+"If necessary, please "
+"edit to match the data "
+"column of the index rows "
+"template in the above "
+"textarea."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:995
+#: templates/admin/cdbt_tables.php:995
 msgid "Insert Upload File"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:998
-msgid "Please upload a file of the specified format in the previous item."
+#: templates/admin/cdbt_tables.php:998
+msgid ""
+"Please upload a file of "
+"the specified format in "
+"the previous item."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1003
+#: templates/admin/cdbt_tables.php:1003
 msgid "Upload"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1009
-msgid "Confirm SQL for importing data"
+#: templates/admin/cdbt_tables.php:1009
+msgid ""
+"Confirm SQL for "
+"importing data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1014
-msgid "Import SQL Statement"
+#: templates/admin/cdbt_tables.php:1014
+msgid ""
+"Import SQL Statement"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1017
-msgid "SQL that contains the binary data may not be successfully imported."
+#: templates/admin/cdbt_tables.php:1017
+msgid ""
+"SQL that contains the "
+"binary data may not be "
+"successfully imported."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1026
+#: templates/admin/cdbt_tables.php:1026
 msgid "Import"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1035
-msgid "Checking the import result"
+#: templates/admin/cdbt_tables.php:1035
+msgid ""
+"Checking the import "
+"result"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1040
+#: templates/admin/cdbt_tables.php:1040
 msgid "See Table Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1042
+#: templates/admin/cdbt_tables.php:1042
 msgid ""
-"If you have enabled debug mode, it will be outputted error of the "
-"importation details to debug log."
+"If you have enabled "
+"debug mode, it will be "
+"outputted error of the "
+"importation details to "
+"debug log."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1043
+#: templates/admin/cdbt_tables.php:1043
 msgid "Retry Import"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1061
-msgid "Export Table Options"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1066
+#: templates/admin/cdbt_tables.php:1061
 msgid ""
-"We will do the export of data stored in the table currently. Please choice "
-"of the download file format, and specify the exportation columns that you "
-"want."
+"Export Table Options"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1068
-msgid "There is no data to be exported to this table."
+#: templates/admin/cdbt_tables.php:1066
+msgid ""
+"We will do the export of "
+"data stored in the table "
+"currently. Please choice "
+"of the download file "
+"format, and specify the "
+"exportation columns that "
+"you want."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1081
+#: templates/admin/cdbt_tables.php:1068
+msgid ""
+"There is no data to be "
+"exported to this table."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:1081
 msgid "Download File Type"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1099
+#: templates/admin/cdbt_tables.php:1099
 msgid "Add Index Line"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1104
+#: templates/admin/cdbt_tables.php:1104
 msgid ""
-"Add a column of only column name as the index at the beginning of the line"
+"Add a column of only "
+"column name as the index "
+"at the beginning of the "
+"line"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1107
+#: templates/admin/cdbt_tables.php:1107
 msgid ""
-"This setting will be enable only if you choose \"CSV\" or \"TSV\" in the "
-"download file."
+"This setting will be "
+"enable only if you "
+"choose \"CSV\" or \"TSV"
+"\" in the download file."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1112
-msgid "Output Encoding Charset"
+#: templates/admin/cdbt_tables.php:1112
+msgid ""
+"Output Encoding Charset"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1127
+#: templates/admin/cdbt_tables.php:1127
 #, php-format
-msgid "Internal encoding of the current system is the %s."
+msgid ""
+"Internal encoding of the "
+"current system is the %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1127
-msgid "In the case of downloading JSON file recommend \"UTF-8\"."
+#: templates/admin/cdbt_tables.php:1127
+msgid ""
+"In the case of "
+"downloading JSON file "
+"recommend \"UTF-8\"."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1132
+#: templates/admin/cdbt_tables.php:1132
 msgid "Export Columns"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1143
+#: templates/admin/cdbt_tables.php:1143
 msgid "PK"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1148
-msgid "You must specify at least one or more columns."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1149
-msgid "Switch of all checking"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1167
-msgid "Duplicate Table Options"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1171
+#: templates/admin/cdbt_tables.php:1148
 msgid ""
-"The setting other of table name in the duplication table takes over the "
-"setting of the origin table. If you want to modify the settings, please "
-"modify individually after table duplication."
+"You must specify at "
+"least one or more "
+"columns."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1182
-msgid "Duplicate Table Name"
+#: templates/admin/cdbt_tables.php:1149
+msgid ""
+"Switch of all checking"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1185
-msgid "Please enter the duplication table name."
+#: templates/admin/cdbt_tables.php:1167
+msgid ""
+"Duplicate Table Options"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1189
+#: templates/admin/cdbt_tables.php:1171
+msgid ""
+"The setting other of "
+"table name in the "
+"duplication table takes "
+"over the setting of the "
+"origin table. If you "
+"want to modify the "
+"settings, please modify "
+"individually after table "
+"duplication."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:1182
+msgid ""
+"Duplicate Table Name"
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:1185
+msgid ""
+"Please enter the "
+"duplication table name."
+msgstr ""
+
+#: templates/admin/cdbt_tables.php:1189
 msgid "Duplicate With Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1194
+#: templates/admin/cdbt_tables.php:1194
 msgid ""
-"Do a complete duplication that contains the data stored in the origin table"
+"Do a complete "
+"duplication that "
+"contains the data stored "
+"in the origin table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1200
+#: templates/admin/cdbt_tables.php:1200
 msgid ""
-"Do a duplication copy only scheme of the origin table which does not contain "
-"the data. (the duplicated table will be empty table with no data)"
+"Do a duplication copy "
+"only scheme of the "
+"origin table which does "
+"not contain the data. "
+"(the duplicated table "
+"will be empty table with "
+"no data)"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1217
-msgid "Backup Table Options"
+#: templates/admin/cdbt_tables.php:1217
+msgid ""
+"Backup Table Options"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_tables.php:1230
-msgid "Please select the table to perform data manipulation."
+#: templates/admin/cdbt_tables.php:1230
+msgid ""
+"Please select the table "
+"to perform data "
+"manipulation."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:15
+#: templates/admin/cdbt_web_apis.php:15
 msgid "Allowed Hosts"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:16
+#: templates/admin/cdbt_web_apis.php:16
 msgid "API Key generator"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:17
+#: templates/admin/cdbt_web_apis.php:17
 msgid "API Requests"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:42
+#: templates/admin/cdbt_web_apis.php:42
 msgid ""
-"From the external sites will be able to access and manipulate the table that "
-"is managed by this plugin by using the API key."
+"From the external sites "
+"will be able to access "
+"and manipulate the table "
+"that is managed by this "
+"plugin by using the API "
+"key."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:43
-#, php-format
-msgid "Learn more %sabout currently available API request%s."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:44
-msgid "Currently list of hosts that was allowed API request is as follows."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:45
+#: templates/admin/cdbt_web_apis.php:43
 #, php-format
 msgid ""
-"The currently allowed host does not exists. Please %sregister the host%s."
+"Learn more %sabout "
+"currently available API "
+"request%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:79
-msgid "You can generate an API key for any host, and register to the plugin."
+#: templates/admin/cdbt_web_apis.php:44
+msgid ""
+"Currently list of hosts "
+"that was allowed API "
+"request is as follows."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:104
-msgid "Allowing Hosts Registration"
+#: templates/admin/cdbt_web_apis.php:45
+#, php-format
+msgid ""
+"The currently allowed "
+"host does not exists. "
+"Please %sregister the "
+"host%s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:107
+#: templates/admin/cdbt_web_apis.php:79
+msgid ""
+"You can generate an API "
+"key for any host, and "
+"register to the plugin."
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:104
+msgid ""
+"Allowing Hosts "
+"Registration"
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:107
 msgid "Request Origin Host"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:109
-msgid "Enter the FQDN or IP address"
+#: templates/admin/cdbt_web_apis.php:109
+msgid ""
+"Enter the FQDN or IP "
+"address"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:111
+#: templates/admin/cdbt_web_apis.php:111
 #, php-format
 msgid ""
-"Please enter the FQDN (for example, the site name such as %s) or IP address "
-"of the requesting origin site."
+"Please enter the FQDN "
+"(for example, the site "
+"name such as %s) or IP "
+"address of the "
+"requesting origin site."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:117
+#: templates/admin/cdbt_web_apis.php:117
 msgid ""
-"Please enter as like description about this host that will be displayed in "
-"the list screen."
+"Please enter as like "
+"description about this "
+"host that will be "
+"displayed in the list "
+"screen."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:121
-msgid "Request Method Permissions"
+#: templates/admin/cdbt_web_apis.php:121
+msgid ""
+"Request Method "
+"Permissions"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:133
+#: templates/admin/cdbt_web_apis.php:133
 #, php-format
-msgid "Allow the request of %s method."
+msgid ""
+"Allow the request of %s "
+"method."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:143
+#: templates/admin/cdbt_web_apis.php:143
 msgid "Generate API Key"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:167
-msgid "Here you can create the API request (URL) and test it."
+#: templates/admin/cdbt_web_apis.php:167
+msgid ""
+"Here you can create the "
+"API request (URL) and "
+"test it."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:174
+#: templates/admin/cdbt_web_apis.php:174
 msgid "Allowed Host Name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:183
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:203
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:223
+#: templates/admin/cdbt_web_apis.php:183
+#: templates/admin/cdbt_web_apis.php:203
+#: templates/admin/cdbt_web_apis.php:223
 msgid "Please choose item"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:183
-msgid "Allowed host is none"
+#: templates/admin/cdbt_web_apis.php:183
+msgid ""
+"Allowed host is none"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:194
+#: templates/admin/cdbt_web_apis.php:194
 msgid "Target Table"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:203
-msgid "Selectable table is none"
+#: templates/admin/cdbt_web_apis.php:203
+msgid ""
+"Selectable table is none"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:214
+#: templates/admin/cdbt_web_apis.php:214
 msgid "Request Method"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:239
-msgid "Request Queries Definition"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:242
-msgid "Search Keywords Specification"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:245
+#: templates/admin/cdbt_web_apis.php:239
 msgid ""
-"If you want to narrow down the data by keyword, please specify the keywords "
-"of comma-separator. For example, \"keyword1,keyword2,...\" so on."
+"Request Queries "
+"Definition"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:249
-msgid "Target Columns Specification"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:252
+#: templates/admin/cdbt_web_apis.php:242
 msgid ""
-"Please enter the column names of comma-separator if you want to get the data "
-"from specific columns. For example, \"col1,col2,...\" so on."
+"Search Keywords "
+"Specification"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:256
+#: templates/admin/cdbt_web_apis.php:245
+msgid ""
+"If you want to narrow "
+"down the data by "
+"keyword, please specify "
+"the keywords of comma-"
+"separator. For example, "
+"\"keyword1,keyword2,..."
+"\" so on."
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:249
+msgid ""
+"Target Columns "
+"Specification"
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:252
+msgid ""
+"Please enter the column "
+"names of comma-separator "
+"if you want to get the "
+"data from specific "
+"columns. For example, "
+"\"col1,col2,...\" so on."
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:256
 msgid "Where Conditions"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:259
+#: templates/admin/cdbt_web_apis.php:259
 msgid ""
-"Please specify the conditions of the data to retrieve as the hash value in "
-"the pair of column name and value. For example, \"col1:value1,col2:value2,..."
-"\" so on."
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:263
-msgid "Upsert Data"
-msgstr ""
-
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:266
-msgid ""
-"Please specify the data insertion or updation as the hash values in the "
-"pairs of column name and value. For example, \"col1:value1,col2:value2,...\" "
+"Please specify the "
+"conditions of the data "
+"to retrieve as the hash "
+"value in the pair of "
+"column name and value. "
+"For example, \"col1:"
+"value1,col2:value2,...\" "
 "so on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:270
+#: templates/admin/cdbt_web_apis.php:263
+msgid "Upsert Data"
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:266
+msgid ""
+"Please specify the data "
+"insertion or updation as "
+"the hash values in the "
+"pairs of column name and "
+"value. For example, "
+"\"col1:value1,col2:"
+"value2,...\" so on."
+msgstr ""
+
+#: templates/admin/cdbt_web_apis.php:270
 msgid "Primary Key Value"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:274
+#: templates/admin/cdbt_web_apis.php:274
 msgid ""
-"Please specify the value of the primary key of the operation target data."
+"Please specify the value "
+"of the primary key of "
+"the operation target "
+"data."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:277
+#: templates/admin/cdbt_web_apis.php:277
 msgid "Orders"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:280
+#: templates/admin/cdbt_web_apis.php:280
 msgid ""
-"Please specify the sort order of the retrieve data at the hash value in the "
-"pair of the column name and the order. For example, \"col1:asc,col2:desc,..."
+"Please specify the sort "
+"order of the retrieve "
+"data at the hash value "
+"in the pair of the "
+"column name and the "
+"order. For example, "
+"\"col1:asc,col2:desc,..."
 "\" so on."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:284
-msgid "Limit of Getting Data"
+#: templates/admin/cdbt_web_apis.php:284
+msgid ""
+"Limit of Getting Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:293
-msgid "This specifies the maximum number of retrieved data."
+#: templates/admin/cdbt_web_apis.php:293
+msgid ""
+"This specifies the "
+"maximum number of "
+"retrieved data."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:297
+#: templates/admin/cdbt_web_apis.php:297
 msgid "Starting Offset"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:306
-msgid "This specifies the starting offset number to retrieve data."
+#: templates/admin/cdbt_web_apis.php:306
+msgid ""
+"This specifies the "
+"starting offset number "
+"to retrieve data."
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:311
-msgid "Generated API Request"
+#: templates/admin/cdbt_web_apis.php:311
+msgid ""
+"Generated API Request"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:314
+#: templates/admin/cdbt_web_apis.php:314
 msgid "Generated URI"
 msgstr ""
 
-#: ../../custom-database-tables/templates/admin/cdbt_web_apis.php:323
+#: templates/admin/cdbt_web_apis.php:323
 msgid "Preview Request"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:199
+#: templates/components/cdbt_forms.php:199
 #, php-format
 msgid "Please enter the %s"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:387
+#: templates/components/cdbt_forms.php:387
 #, php-format
-msgid "Notice: Maximum upload file size is %s."
+msgid ""
+"Notice: Maximum upload "
+"file size is %s."
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:399
+#: templates/components/cdbt_forms.php:399
 msgid "January"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:399
+#: templates/components/cdbt_forms.php:399
 msgid "Jan"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:400
+#: templates/components/cdbt_forms.php:400
 msgid "February"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:400
+#: templates/components/cdbt_forms.php:400
 msgid "Feb"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:401
+#: templates/components/cdbt_forms.php:401
 msgid "March"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:401
+#: templates/components/cdbt_forms.php:401
 msgid "Mar"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:402
+#: templates/components/cdbt_forms.php:402
 msgid "April"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:402
+#: templates/components/cdbt_forms.php:402
 msgid "Apr"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:403
+#: templates/components/cdbt_forms.php:403
 msgid "May"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:404
+#: templates/components/cdbt_forms.php:404
 msgid "June"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:404
+#: templates/components/cdbt_forms.php:404
 msgid "Jun"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:405
+#: templates/components/cdbt_forms.php:405
 msgid "July"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:405
+#: templates/components/cdbt_forms.php:405
 msgid "Jul"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:406
+#: templates/components/cdbt_forms.php:406
 msgid "August"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:406
+#: templates/components/cdbt_forms.php:406
 msgid "Aug"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:407
+#: templates/components/cdbt_forms.php:407
 msgid "September"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:407
+#: templates/components/cdbt_forms.php:407
 msgid "Sep"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:408
+#: templates/components/cdbt_forms.php:408
 msgid "October"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:408
+#: templates/components/cdbt_forms.php:408
 msgid "Oct"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:409
+#: templates/components/cdbt_forms.php:409
 msgid "November"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:409
+#: templates/components/cdbt_forms.php:409
 msgid "Nov"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:410
+#: templates/components/cdbt_forms.php:410
 msgid "December"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:410
+#: templates/components/cdbt_forms.php:410
 msgid "Dec"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:413
+#: templates/components/cdbt_forms.php:413
 msgid "Sunday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:413
+#: templates/components/cdbt_forms.php:413
 msgid "Su"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:414
+#: templates/components/cdbt_forms.php:414
 msgid "Monday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:414
+#: templates/components/cdbt_forms.php:414
 msgid "Mo"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:415
+#: templates/components/cdbt_forms.php:415
 msgid "Tuesday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:415
+#: templates/components/cdbt_forms.php:415
 msgid "Tu"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:416
+#: templates/components/cdbt_forms.php:416
 msgid "Wednesday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:416
+#: templates/components/cdbt_forms.php:416
 msgid "We"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:417
+#: templates/components/cdbt_forms.php:417
 msgid "Thursday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:417
+#: templates/components/cdbt_forms.php:417
 msgid "Th"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:418
+#: templates/components/cdbt_forms.php:418
 msgid "Friday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:418
+#: templates/components/cdbt_forms.php:418
 msgid "Fr"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:419
+#: templates/components/cdbt_forms.php:419
 msgid "Saturday"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:419
+#: templates/components/cdbt_forms.php:419
 msgid "Sa"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:457
+#: templates/components/cdbt_forms.php:457
 msgid "Toggle Calendar"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:462
+#: templates/components/cdbt_forms.php:462
 msgid "Previous Month"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:463
+#: templates/components/cdbt_forms.php:463
 msgid "Next Month"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:484
+#: templates/components/cdbt_forms.php:484
 msgid "Today"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:489
+#: templates/components/cdbt_forms.php:489
 msgid "Month"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:497
+#: templates/components/cdbt_forms.php:497
 msgid "Year"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:501
+#: templates/components/cdbt_forms.php:501
 msgid "Return to Calendar"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:502
+#: templates/components/cdbt_forms.php:502
 msgid "Select"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:502
+#: templates/components/cdbt_forms.php:502
 msgid "Month and Year"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_forms.php:606
+#: templates/components/cdbt_forms.php:606
 msgid "Register Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_modal.php:108
-#: ../../custom-database-tables/templates/components/cdbt_modal.php:115
+#: templates/components/cdbt_modal.php:108
+#: templates/components/cdbt_modal.php:115
 msgid "Close"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:207
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:211
-#: ../../custom-database-tables/templates/components/cdbt_table.php:101
-#: ../../custom-database-tables/templates/components/cdbt_table.php:103
+#: templates/components/cdbt_repeater.php:207
+#: templates/components/cdbt_repeater.php:211
+#: templates/components/cdbt_table.php:101
+#: templates/components/cdbt_table.php:103
 msgid "Search"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:224
+#: templates/components/cdbt_repeater.php:224
 msgid "Toggle Filters"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:227
+#: templates/components/cdbt_repeater.php:227
 msgid "all"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:246
-msgid "Disable the data editing because it can not identify a single data."
+#: templates/components/cdbt_repeater.php:246
+msgid ""
+"Disable the data editing "
+"because it can not "
+"identify a single data."
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:249
+#: templates/components/cdbt_repeater.php:249
 msgid "Refresh List"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:250
+#: templates/components/cdbt_repeater.php:250
 msgid "Delete Data"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:264
+#: templates/components/cdbt_repeater.php:264
 #, php-format
-msgid "%1$s - %2$s of %3$s items"
+msgid ""
+"%1$s - %2$s of %3$s items"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:286
+#: templates/components/cdbt_repeater.php:286
 msgid "Per Page"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:293
+#: templates/components/cdbt_repeater.php:293
 msgid "Previous Page"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:295
+#: templates/components/cdbt_repeater.php:295
 msgid "Page"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:309
+#: templates/components/cdbt_repeater.php:309
 #, php-format
 msgid "of %1$s"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:312
+#: templates/components/cdbt_repeater.php:312
 msgid "Next Page"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_repeater.php:524
-msgid "nothing to see here... move along"
+#: templates/components/cdbt_repeater.php:524
+msgid ""
+"nothing to see here... "
+"move along"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table.php:122
+#: templates/components/cdbt_table.php:122
 msgid "Previous"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table.php:124
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:103
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:143
+#: templates/components/cdbt_table.php:124
+#: templates/components/cdbt_wizard.php:103
+#: templates/components/cdbt_wizard.php:143
 msgid "Next"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:44
-msgid "Enter the column name"
+#: templates/components/cdbt_table_creator.php:44
+msgid ""
+"Enter the column name"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:45
+#: templates/components/cdbt_table_creator.php:45
 msgid "Type Format"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:45
-msgid "Choose or enter the column type"
+#: templates/components/cdbt_table_creator.php:45
+msgid ""
+"Choose or enter the "
+"column type"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:46
-msgid "Sizing/Define Values"
+#: templates/components/cdbt_table_creator.php:46
+msgid ""
+"Sizing/Define Values"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:46
+#: templates/components/cdbt_table_creator.php:46
 msgid "Edit Define Values"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:47
+#: templates/components/cdbt_table_creator.php:47
 msgid "Not Null"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:48
+#: templates/components/cdbt_table_creator.php:48
 msgid "Default Value"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:48
-msgid "Enter the default value"
+#: templates/components/cdbt_table_creator.php:48
+msgid ""
+"Enter the default value"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:49
+#: templates/components/cdbt_table_creator.php:49
 msgid "Attributes"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:49
-msgid "Choose or enter the attribute"
+#: templates/components/cdbt_table_creator.php:49
+msgid ""
+"Choose or enter the "
+"attribute"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:50
+#: templates/components/cdbt_table_creator.php:50
 msgid "Auto Incr."
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:51
+#: templates/components/cdbt_table_creator.php:51
 msgid "Key/Index"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:51
-msgid "Choose or enter the key or index"
+#: templates/components/cdbt_table_creator.php:51
+msgid ""
+"Choose or enter the key "
+"or index"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:52
+#: templates/components/cdbt_table_creator.php:52
 msgid "Extra"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:52
-msgid "Enter the other definitions"
+#: templates/components/cdbt_table_creator.php:52
+msgid ""
+"Enter the other "
+"definitions"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:53
+#: templates/components/cdbt_table_creator.php:53
 msgid "Comment"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:53
+#: templates/components/cdbt_table_creator.php:53
 msgid "Enter the comment"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:72
+#: templates/components/cdbt_table_creator.php:72
 msgid "Define Values"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:100
+#: templates/components/cdbt_table_creator.php:100
 msgid "Add New Column"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:101
+#: templates/components/cdbt_table_creator.php:101
 msgid "Remove Column"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:240
+#: templates/components/cdbt_table_creator.php:240
 msgid "Add New Value"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_table_creator.php:257
+#: templates/components/cdbt_table_creator.php:257
 msgid "Set Values"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:52
+#: templates/components/cdbt_wizard.php:52
 #, php-format
 msgid "Step%d"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:102
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:142
+#: templates/components/cdbt_wizard.php:102
+#: templates/components/cdbt_wizard.php:142
 msgid "Prev"
 msgstr ""
 
-#: ../../custom-database-tables/templates/components/cdbt_wizard.php:103
+#: templates/components/cdbt_wizard.php:103
 msgid "Complete"
 msgstr ""
-
-#~ msgid "http://ka2.org/"
-#~ msgstr "http://ka2.org/"
-
-#~ msgid ""
-#~ "Custom DataBase Tables plugin allows you to perform data storage and "
-#~ "reference by creating a free tables in database of WordPress."
-#~ msgstr ""
-#~ "このプラグインを使用すると、WordPress のデータベースに自由にテーブルを作成"
-#~ "し、データの格納と参照を簡単に行うことができます。"
-
-#~ msgid ""
-#~ "[Please visit here for more description of the plugin](http://ka2.org/)."
-#~ msgstr "[プラグイン詳細についてこちら](http://ka2.org)もご参照ください。"
-
-#~ msgid "TableComment"
-#~ msgstr "テーブルコメント"
-
-#~ msgid "Information"
-#~ msgstr "テーブル情報"
-
-#~ msgid "Modify"
-#~ msgstr "変更"
-
-#~ msgid "Drop"
-#~ msgstr "削除"
-
-#~ msgid "ViewData"
-#~ msgstr "データ閲覧"
-
-#~ msgid "EntryData"
-#~ msgstr "データ登録"
-
-#~ msgid "EditData"
-#~ msgstr "データ編集"
