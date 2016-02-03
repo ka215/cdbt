@@ -294,6 +294,14 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         </div>
       </div><!-- /register-shortcode-image_render [v] -->
 
+      <div class="form-group switching-item on-i">
+        <label for="register-shortcode-redirect_url" class="col-sm-2 control-label"><?php _e('Redirect URL', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="register-shortcode-redirect_url" name="<?php echo $this->domain_name; ?>[redirect_url]" type="text" value="<?php if (isset($this_tab_vars['redirect_url'])) echo $this_tab_vars['redirect_url']; ?>" class="form-control" placeholder="Absolute URI">
+          <p class="help-block"><?php _e('Please enter URL (absolute URI) that you want to redirect after the completion of the data registration.', CDBT); ?></p>
+        </div>
+      </div><!-- /register-shortcode-redirect_url [i] -->
+
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-display_filter" class="col-sm-2 control-label"><?php _e('Display Filter Box', CDBT); ?></label>
         <div class="col-sm-10">
@@ -629,6 +637,14 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"><?php _e('Please choose class name for rendering image tag.', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-image_render [v] -->
+
+      <div class="form-group switching-item on-i">
+        <label for="edit-shortcode-redirect_url" class="col-sm-2 control-label"><?php _e('Redirect URL', CDBT); ?></label>
+        <div class="col-sm-9">
+          <input id="edit-shortcode-redirect_url" name="<?php echo $this->domain_name; ?>[redirect_url]" type="text" value="<?php if (isset($this_tab_vars['redirect_url'])) echo $this_tab_vars['redirect_url']; ?>" class="form-control" placeholder="Absolute URI">
+          <p class="help-block"><?php _e('Please enter URL (absolute URI) that you want to redirect after the completion of the data registration.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-shortcode-redirect_url [i] -->
 
       <div class="form-group switching-item on-v on-e">
         <label for="edit-shortcode-display_filter" class="col-sm-2 control-label"><?php _e('Display Filter Box', CDBT); ?></label>

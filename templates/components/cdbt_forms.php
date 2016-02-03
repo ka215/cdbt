@@ -11,6 +11,7 @@
  * 'formAction' => @string [optional] For default is `entry_data`
  * 'displaySubmit' => @boolean [optional] For default is true; Is false only if called from `cdbt-edit`.
  * 'whereClause' => @array [optional] For default is null; Only if called from `cdbt-edit`.
+ * 'redirectUrl' => @string [optional] For default is null;
  * 'formElements' => @array [require] As follow is: 
  *   [
  *   'elementName' => @string [require] Column name
@@ -150,6 +151,13 @@ if (isset($this->component_options['whereClause']) && !empty($this->component_op
   $is_wc_exists = false;
 }
 
+// `redirectUrl` section
+$_redirect_url = '';
+if (isset($this->component_options['redirectUrl']) && !empty($this->component_options['redirectUrl'])) {
+  $_redirect_url = esc_url( $this->component_options['redirectUrl'] );
+}
+$hidden_fields[] = sprintf( '<input type="hidden" id="cdbt-entry-redirection" name="redirect_url" value="%s">', $_redirect_url );
+
 // is editable form
 $is_editable = !$display_submit_button && $is_wc_exists ? true : false;
 
@@ -160,12 +168,8 @@ if (!isset($this->component_options['formElements']) || empty($this->component_o
   $form_elements = $this->component_options['formElements'];
 }
 
-
-//$_token = ! empty( $this->onetime_token ) && array_key_exists( session_id(), $this->onetime_token ) ? $this->onetime_token[session_id()] : '';
-//$_token = ! empty( $this->onetime_token ) ? $this->onetime_token : '';
-$_token = $_SESSION['cdbt_token'];
-//$_token = session_id();
-var_dump( __FUNCTION__, $this->cdbt_sessions, $_SESSION, $this->onetime_token );
+// set one time token
+$_cdbt_token = isset( $_COOKIE['_cdbt_token'] ) ? $_COOKIE['_cdbt_token'] : '';
 /**
  * Render the Form common header
  * ---------------------------------------------------------------------------
@@ -176,7 +180,7 @@ var_dump( __FUNCTION__, $this->cdbt_sessions, $_SESSION, $this->onetime_token );
     <?php if (!empty($hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="<?php echo $form_action; ?>">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
-    <input type="hidden" name="_token" value="<?php echo $_token; ?>">
+    <input type="hidden" name="_cdbt_token" value="<?php echo $_cdbt_token; ?>">
     <?php wp_nonce_field( $wp_nonce_action ); ?>
     
     <?php if (!empty($form_title)) { echo $form_title; } ?>

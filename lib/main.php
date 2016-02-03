@@ -187,23 +187,26 @@ final class CdbtFrontend extends CdbtDB {
    * Initialize sessions and actions for shortcode
    *
    * @since 2.0.0
+   * @revision 2.0.5
    */
   public function frontend_initialize() {
     
-    //if ( ! session_id() ) {
+    if ( ! session_id() ) {
+      session_set_cookie_params( 0, '/', $_SERVER['HTTP_HOST'] );
       session_start();
       
       // Issue a one-time token
-var_dump( $_SESSION );
-      if ( isset( $_SESSION['cdbt_token'] ) ) {
-        $this->onetime_token = $_SESSION['cdbt_token'];
-      } else {
-        $_SESSION['cdbt_token'] = $this->onetime_token = sha1( session_id() . microtime( true ) );
+      if ( isset( $_COOKIE ) ) {
+        $_sid = $_COOKIE[session_name()];
+        session_id( $_sid );
       }
-      $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : null;
+      if ( ! isset( $_COOKIE['_cdbt_token'] ) ) {
+        $_cdbt_token = sha1( session_id() . microtime( true ) );
+        setcookie( '_cdbt_token', $_cdbt_token, time() + 60 * 60 );
+      }
+      $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : [];
       
-var_dump( __FUNCTION__, $this->cdbt_sessions );
-    //}
+    }
     
     foreach ($this->shortcodes as $shortcode_name => $definitions) {
       add_action( "pre_shortcode_{$shortcode_name}", array($this, 'cdbt_pre_shortcode_render'), 10, 2 );
@@ -216,6 +219,7 @@ var_dump( __FUNCTION__, $this->cdbt_sessions );
    * For updating a session
    *
    * @since 2.0.0
+   * @revision 2.0.5
    *
    * @param string $session_key [optional] Update all sessions if session key does not specify
    */
@@ -243,6 +247,7 @@ var_dump( __FUNCTION__, $this->cdbt_sessions );
    * Destroy a session
    *
    * @since 2.0.0
+   * @revision 2.0.5
    *
    * @param string $session_key [optional] Destroy all sessions if session key does not specify
    */
@@ -353,7 +358,7 @@ var_dump( __FUNCTION__, $this->cdbt_sessions );
         'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', [ 'cdbt-fuelux-style' ], $this->version, 'all' ], 
       ], 
       'scripts' => [
-        'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, true ], 
+        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, true ], 
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, true ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
         // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
@@ -558,6 +563,7 @@ var_dump( __FUNCTION__, $this->cdbt_sessions );
    * Insert data via shortcode `cdbt-entry` from the frontend
    *
    * @since 2.0.0
+   * @revision 2.0.5
    */
   public function do_entry_data() {
     static $message = '';
@@ -570,20 +576,14 @@ var_dump( __FUNCTION__, $this->cdbt_sessions );
     }
     
     $table_name = $_POST['table'];
-    //$session_key = str_replace( '_', '-', __FUNCTION__ .'-'. $table_name );
-    //$_sid = session_id();
-    //$_cdbt_token = $_sid ? sha1( $_sid ) : '';
-    $_cdbt_token = ! empty( $this->onetime_token[session_id()] ) ? $this->onetime_token[session_id()] : '';
-var_dump( $_SESSION );
-//var_dump( $this->onetime_token, $_cdbt_token, $_POST['_token'], $_cdbt_token === $_POST['_token'] );
-exit;
-    if ( ! empty( $_cdbt_token ) && $_cdbt_token === $_POST['_token'] ) {
-      // $this->update_session( $session_key );
+    
+    if ( isset( $_COOKIE['_cdbt_token'] ) && ! empty( $_POST['_cdbt_token'] ) && $_COOKIE['_cdbt_token'] === $_POST['_cdbt_token'] ) {
       $post_data = $_POST[$this->domain_name];
       $register_data = $this->cleanup_data( $table_name, $post_data );
       if ($this->insert_data( $table_name, $register_data )) {
         $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
         $this->emit_type = 'notice';
+        setcookie( '_cdbt_token', '' );
         $this->destroy_session();
       } else {
         $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
@@ -592,7 +592,7 @@ exit;
         $this->update_session();
       }
     } else {
-      $message = sprintf( __( 'Could not multiple registration by the continuous transmission.', CDBT ) );
+      $message = __( 'Could not multiple registration by the continuous transmission.', CDBT );
       $this->destroy_session();
     }
     

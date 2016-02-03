@@ -3,6 +3,46 @@
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
+/**
+ * Common processing that does not depend on jQuery
+ */
+function setCookie(ck_name, ck_value, expiredays) {
+  // SetCookie
+  var path = '/';
+  var extime = new Date().getTime();
+  var cltime = new Date(extime + (60*60*24*1000*expiredays));
+  var exdate = cltime.toUTCString();
+  var tmp_data = new Array(ck_value);
+  var fix_data = tmp_data.filter(function (x, i, self) { return self.indexOf(x) === i; });
+  var s = '';
+  s += ck_name + '=' + escape(fix_data.join(','));
+  s += '; path=' + path;
+  s += expiredays ? '; expires=' + exdate + '; ' : '; ';
+  document.cookie = s;
+}
+function getCookie(ck_name) {
+  // GetCookie
+  var st = '', ed = '', res = '';
+  if (document.cookie.length > 0) {
+    st = document.cookie.indexOf(ck_name + '=');
+    if (st !== -1) {
+      st = st + ck_name.length + 1;
+      ed = document.cookie.indexOf(';', st);
+      if (ed === -1) {
+        ed = document.cookie.length;
+      }
+      res = unescape(document.cookie.substring(st, ed));
+    }
+  }
+  return res;
+}
+function removeCookie(ck_name) {
+  // removeCookie
+  var path = '/';
+  if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
+  document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
+}
+/* jQuery main */
 $(document).ready(function() {
   
   /**
@@ -158,6 +198,20 @@ $(document).ready(function() {
     }
     
     cdbtCallAjax( $.ajaxUrl, 'post', _.extend(post_data, { 'event': 'retrieve_modal' }), 'html', 'render_modal' );
+    
+    // Whether correspond of redirection after data registration
+    // 
+    // @since 2.0.5
+    $(document).on('hide.bs.modal', 'div.cdbt-modal, #append-dynamic-modal', function(){
+      if ( $('.cdbt-entry-data-form').size() > 0 ) {
+        if ( $('#cdbt-entry-redirection').val() !== '' ) {
+          location.replace( $('#cdbt-entry-redirection').val() );
+        } else {
+        	// This do not take over the session for multiple transmission prevention.
+          location.replace( location.href );
+        }
+      }
+    });
     
   };
   
@@ -613,46 +667,6 @@ $(document).ready(function() {
   
   
 });
-/**
- * Common processing that does not depend on jQuery
- */
-function setCookie(ck_name, ck_value, expiredays) {
-  // SetCookie
-  var path = '/';
-  var extime = new Date().getTime();
-  var cltime = new Date(extime + (60*60*24*1000*expiredays));
-  var exdate = cltime.toUTCString();
-  var tmp_data = new Array(ck_value);
-  var fix_data = tmp_data.filter(function (x, i, self) { return self.indexOf(x) === i; });
-  var s = '';
-  s += ck_name + '=' + escape(fix_data.join(','));
-  s += '; path=' + path;
-  s += expiredays ? '; expires=' + exdate + '; ' : '; ';
-  document.cookie = s;
-}
-function getCookie(ck_name) {
-  // GetCookie
-  var st = '', ed = '', res = '';
-  if (document.cookie.length > 0) {
-    st = document.cookie.indexOf(ck_name + '=');
-    if (st !== -1) {
-      st = st + ck_name.length + 1;
-      ed = document.cookie.indexOf(';', st);
-      if (ed === -1) {
-        ed = document.cookie.length;
-      }
-      res = unescape(document.cookie.substring(st, ed));
-    }
-  }
-  return res;
-}
-function removeCookie(ck_name) {
-  // removeCookie
-  var path = '/';
-  if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
-  document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
-}
-
 /**
  * Convert datetime format as common utility function for repeater
  */

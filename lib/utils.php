@@ -51,6 +51,9 @@ class CdbtUtility {
     if (!$options['debug_mode']) 
       return;
     
+    if ( ! isset( $this->errors ) || is_object($this->errors) ) 
+      $this->errors = new \WP_Error();
+    
     if (empty($message) || '' === trim($message)) {
       $message = $this->errors->get_error_message();
       if (!is_wp_error($this->errors) || empty($message)) 

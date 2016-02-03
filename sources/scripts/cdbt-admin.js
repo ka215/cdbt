@@ -1402,6 +1402,11 @@ $(document).ready(function() {
         modalExtras: { shortcode: $('#'+prefix+'-shortcode-generate_shortcode').val() }
       };
       init_modal( post_data );
+      
+      $(document).on('hide.bs.modal', '#cdbtModal', function(){
+        $(this).find('.modal-body').html('');
+      });
+      
     });
     
   }

@@ -35,14 +35,9 @@ class CdbtCore extends CdbtUtility {
   public $user_options = array();
   
   /**
-   * @var string one-time token for session
-   */
-  public $onetime_token = null;
-  
-  /**
    * @var mixed False when not error or default; WP_Error object when has errors
    */
-  public $errors = false;
+  public $errors;
   
   /**
    * @var boolean True is if debug mode

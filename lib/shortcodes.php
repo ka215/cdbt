@@ -184,8 +184,8 @@ trait CdbtShortcodes {
     return $is_allowed;
   }
   
-  
   /**
+   * for [cdbt-view] ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    * Retrieve a table data that match the specified conditions, then it outputs as list
    *
    * @since 1.0.0
@@ -329,7 +329,7 @@ trait CdbtShortcodes {
     }
     
     if ($csid > 0 && $this->validate->checkInt($csid)) {
-      // csidに対応したショートコードが存在するかのチェックを行う
+      // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
       $loaded_settings = $this->get_shortcode_option($csid);
       if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
         foreach ($loaded_settings as $_key => $_val) {
@@ -653,6 +653,7 @@ trait CdbtShortcodes {
   
   
   /**
+   * for [cdbt-entry] ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    * Render the data registration form for the specified table
    *
    * @since 1.0.0
@@ -675,6 +676,7 @@ trait CdbtShortcodes {
       'form_action' => 'entry_data', // String of action name as method after submiting [optional] Is `edit_data` if edit data
       'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
       'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
+      'redirect_url' => '', // String of the url to redirect after data insertion (since version 2.0.5)
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
@@ -748,7 +750,7 @@ trait CdbtShortcodes {
       $add_class = implode(' ', $add_classes);
     }
     if ($csid > 0 && $this->validate->checkInt($csid)) {
-      // csidに対応したショートコードが存在するかのチェックを行う
+      // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
       $loaded_settings = $this->get_shortcode_option($csid);
       if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
         foreach ($loaded_settings as $_key => $_val) {
@@ -924,19 +926,14 @@ trait CdbtShortcodes {
       $conponent_options['displaySubmit'] = $display_submit;
     if (!empty($where_clause) && is_array($where_clause)) 
       $conponent_options['whereClause'] = $where_clause;
+    if (!empty($redirect_url)) 
+      $conponent_options['redirectUrl'] = $redirect_url;
     
     // Filter the conponent definition of the list content that is output by this shortcode
     //
     // @since 2.0.0
     $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
     
-    //$_token = sha1( $this->domain_name ."\t". microtime( true ) );
-    //$_token = sha1( session_id() );
-    //$_SESSION['cdbt_token'] = $_token;
-    //session_write_close();
-    //session_start();
-    //$this->update_session();
-//var_dump( __FUNCTION__, $this->cdbt_sessions, $_SESSION, $this->onetime_token );
     if ( is_admin() ) {
       return $this->component_render('forms', $conponent_options);
     } else {
@@ -955,6 +952,7 @@ trait CdbtShortcodes {
   
   
   /**
+   * for [cdbt-edit] ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    * Render the editable data list for the specified table
    *
    * @since 1.0.0
@@ -1087,7 +1085,7 @@ trait CdbtShortcodes {
     }
     $image_render = 'responsive';
     if ($csid > 0 && $this->validate->checkInt($csid)) {
-      // csidに対応したショートコードが存在するかのチェックを行う
+      // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
       $loaded_settings = $this->get_shortcode_option($csid);
       if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
         foreach ($loaded_settings as $_key => $_val) {

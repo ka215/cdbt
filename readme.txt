@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.4.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,8 +72,18 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 == Changelog ==
 
+= 2.0.5 =
+* Fixed a bug that had been left in the processing of the attributes of hidden_cols of shortcode "cdbt-entry".
+* Fixed a bug that can not be entered for a table with a specific column name at the shortcode "cdbt-entry".
+* Transmitting data at shortcode cdbt-entry is corresponding an issue where would have been multiplexed registered. (for correspondence of some tickets)
+* Fixed a bug that will be not generated SQL when you set of "None" to the "key/index" at the "table creator".
+* Fixed a bug that unnecessary attributes to the shortcode that is generated after the preview at the shortcodes management will be added.
+* Added a filter "cdbt_before_insert_data" just before you insert the data into the database via "insert_data" method.
+* Added a filter "cdbt_before_update_data" and "cdbt_before_update_where" just before you update the data to the database via "update_data" method.
+* Added an attribute of "redirect_url" in which you can specify the redirect URL after the data registration at shortcode "cdbt-entry".
+
 = 2.0.4 =
-* Fixed the conflict of some javascripts (Ex, Deregister an bundled jquery in wordpress).
+* Fixed the conflict of some javascripts (Ex, Deregister a bundled jquery in wordpress).
 * Resolved the problem of case in which fuelux class is missing from the body.
 * Changed to use customized jQueryUI from jQueryUI that is bundled with WordPress.
 * The untranslation text on the dashboard had been localized. (for ticket: [English version](https://wordpress.org/support/topic/english-version-11?replies=1) )

@@ -1051,6 +1051,17 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Main processing of data update
+    
+    // Filter the data before any data modification to the table
+    // 
+    // @since 2.0.5
+    $data = apply_filters( 'cdbt_before_update_data', $data, $table_name, $data_field_format );
+    
+    // Filter the where condition before any data modification to the table
+    // 
+    // @since 2.0.5
+    $where_data = apply_filters( 'cdbt_before_update_where', $where_data, $table_name, $where_field_format );
+    
     $_diff_result = array_diff_key($data, $data_field_format);
     if ($is_update_to_null) {
       add_filter('query', array($this, 'update_at_null_data'));
