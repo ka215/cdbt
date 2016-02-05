@@ -226,13 +226,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"><?php _e('Separator is a single-byte space character', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-add_class [v,i,e] -->
-      <div class="form-group switching-item on-v">
+      <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-narrow_keyword" class="col-sm-2 control-label"><?php _e('Narrow Keywords', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="register-shortcode-narrow_keyword" name="<?php echo $this->domain_name; ?>[narrow_keyword]" type="text" value="<?php if (isset($this_tab_vars['narrow_keyword'])) echo $this_tab_vars['narrow_keyword']; ?>" class="form-control" placeholder="keyword1,keyword2,... or col1:keyword1,col2:keyword2,...">
           <p class="help-block"><?php _e('Please enter the narrow keywords in a comma-separated. For example, "keyword1,keyword2,..." or "col1:keyword1,col2:keyword2,..." so on.', CDBT); ?></p>
         </div>
-      </div><!-- /register-shortcode-narrow_keyword [v] -->
+      </div><!-- /register-shortcode-narrow_keyword [v,e] -->
       <div class="form-group switching-item on-i">
         <label for="register-shortcode-hidden_cols" class="col-sm-2 control-label"><?php _e('Hidden Columns', CDBT); ?></label>
         <div class="col-sm-9">
@@ -254,13 +254,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"><?php _e('Please enter the displaying column order in comma-delimited. If it overlap with display columns, this setting takes precedence.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-order_cols [v] -->
-      <div class="form-group switching-item on-v">
+      <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-sort_order" class="col-sm-2 control-label"><?php _e('Column Sort Order', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="register-shortcode-sort_order" name="<?php echo $this->domain_name; ?>[sort_order]" type="text" value="<?php if (isset($this_tab_vars['sort_order'])) : echo $this_tab_vars['sort_order']; else : echo 'created:desc'; endif; ?>" class="form-control" placeholder="updated:desc,ID:asc,...">
           <p class="help-block"><?php _e('Please enter the default column sort order at comma-delimited. For example, "updated:desc,ID:asc,..." so on.', CDBT); ?></p>
         </div>
-      </div><!-- /register-shortcode-sort_order [v] -->
+      </div><!-- /register-shortcode-sort_order [v,e] -->
 
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-limit_items" class="col-sm-2 control-label"><?php _e('Limit Records Per Page', CDBT); ?></label>
@@ -570,13 +570,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"><?php _e('Separator is a single-byte space character', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-add_class [v,i,e] -->
-      <div class="form-group switching-item on-v">
+      <div class="form-group switching-item on-v on-e">
         <label for="edit-shortcode-narrow_keyword" class="col-sm-2 control-label"><?php _e('Narrow Keywords', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="edit-shortcode-narrow_keyword" name="<?php echo $this->domain_name; ?>[narrow_keyword]" type="text" value="<?php if (isset($this_tab_vars['narrow_keyword'])) echo $this_tab_vars['narrow_keyword']; ?>" class="form-control" placeholder="keyword1,keyword2,... or col1:keyword1,col2:keyword2,...">
           <p class="help-block"><?php _e('Please enter the narrow keywords in a comma-separated. For example, "keyword1,keyword2,..." or "col1:keyword1,col2:keyword2,..." so on.', CDBT); ?></p>
         </div>
-      </div><!-- /edit-shortcode-narrow_keyword [v] -->
+      </div><!-- /edit-shortcode-narrow_keyword [v,e] -->
       <div class="form-group switching-item on-i">
         <label for="edit-shortcode-hidden_cols" class="col-sm-2 control-label"><?php _e('Hidden Columns', CDBT); ?></label>
         <div class="col-sm-9">
@@ -598,13 +598,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"><?php _e('Please enter the displaying column order in comma-delimited. If it overlap with display columns, this setting takes precedence.', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-order_cols [v] -->
-      <div class="form-group switching-item on-v">
+      <div class="form-group switching-item on-v on-e">
         <label for="edit-shortcode-sort_order" class="col-sm-2 control-label"><?php _e('Column Sort Order', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="edit-shortcode-sort_order" name="<?php echo $this->domain_name; ?>[sort_order]" type="text" value="<?php if (isset($this_tab_vars['sort_order'])) : echo $this_tab_vars['sort_order']; else : echo 'created:desc'; endif; ?>" class="form-control" placeholder="updated:desc,ID:asc,...">
           <p class="help-block"><?php _e('Please enter the default column sort order at comma-delimited. For example, "updated:desc,ID:asc,..." so on.', CDBT); ?></p>
         </div>
-      </div><!-- /edit-shortcode-sort_order [v] -->
+      </div><!-- /edit-shortcode-sort_order [v,e] -->
 
       <div class="form-group switching-item on-v">
         <label for="edit-shortcode-limit_items" class="col-sm-2 control-label"><?php _e('Limit Records Per Page', CDBT); ?></label>

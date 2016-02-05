@@ -204,11 +204,11 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
       <?php if ($enable_search) : ?>
         <div class="repeater-search">
           <div class="search input-group">
-            <input type="search" class="form-control" placeholder="<?php esc_html_e('Search', CDBT); ?>"/>
+            <input type="search" class="form-control" placeholder="<?php _e('Search', CDBT); ?>"/>
             <span class="input-group-btn">
               <button class="btn btn-default" type="button">
                 <span class="glyphicon glyphicon-search"></span>
-                <span class="sr-only"><?php esc_html_e('Search', CDBT); ?></span>
+                <span class="sr-only"><?php _e('Search', CDBT); ?></span>
               </button>
             </span>
           </div>
@@ -221,10 +221,10 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="selected-label">&nbsp;</span>
             <span class="caret"></span>
-            <span class="sr-only"><?php esc_html_e('Toggle Filters', CDBT); ?></span>
+            <span class="sr-only"><?php _e('Toggle Filters', CDBT); ?></span>
           </button>
           <ul class="dropdown-menu" role="menu">
-            <li data-value="all" data-selected="true"><a href="#"><?php esc_html_e('all', CDBT); ?></a></li>
+            <li data-value="all" data-selected="true"><a href="#"><?php _e('all', CDBT); ?></a></li>
             <?php echo implode("\n", $filters_list); ?>
           </ul>
           <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
@@ -241,7 +241,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
         </div><!-- /.repeater-views -->
       <?php endif; ?>
       <?php if ($enable_editor) : ?>
-        <div class="repeater-editor">
+        <div class="repeater-editor<?php if ($enable_filter) : ?> pull-right<?php endif; ?>">
         <?php if ($disable_edit) : ?>
           <p class="text-danger" style="margin-top: 6px;"><?php _e('Disable the data editing because it can not identify a single data.', CDBT); ?></p>
         <?php else : ?>
@@ -266,7 +266,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
               <span class="selected-label">&nbsp;</span>
               <span class="caret"></span>
-              <span class="sr-only"><?php esc_html_e('Toggle Dropdown', CDBT); ?></span>
+              <span class="sr-only"><?php _e('Toggle Dropdown', CDBT); ?></span>
             </button>
             <ul class="dropdown-menu" role="menu">
               <?php if ($insert_position === 0) echo $insert_page_size_line; ?>
@@ -283,23 +283,23 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
             </ul>
             <input class="hidden hidden-field" name="itemsPerPage" readonly="readonly" aria-hidden="true" type="text"/>
           </div>
-          <span><?php esc_html_e('Per Page', CDBT); ?></span>
+          <span><?php _e('Per Page', CDBT); ?></span>
         </div>
       </div>
       <div class="repeater-footer-right">
         <div class="repeater-pagination">
           <button type="button" class="btn btn-default btn-sm repeater-prev">
             <span class="glyphicon glyphicon-chevron-left"></span>
-            <span class="sr-only"><?php esc_html_e('Previous Page', CDBT); ?></span>
+            <span class="sr-only"><?php _e('Previous Page', CDBT); ?></span>
           </button>
-          <label class="page-label" id="cdbtPageLabel"><?php esc_html_e('Page', CDBT); ?></label>
+          <label class="page-label" id="cdbtPageLabel"><?php _e('Page', CDBT); ?></label>
           <div class="repeater-primaryPaging active">
             <div class="input-group input-append dropdown combobox">
               <input type="text" class="form-control" aria-labelledby="cdbtPageLabel">
               <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
-                  <span class="sr-only"><?php esc_html_e('Toggle Dropdown', CDBT); ?></span>
+                  <span class="sr-only"><?php _e('Toggle Dropdown', CDBT); ?></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right"></ul>
               </div>
@@ -309,7 +309,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
           <span><?php printf(esc_html__('of %1$s', CDBT), '<span class="repeater-pages"></span>'); ?></span>
           <button type="button" class="btn btn-default btn-sm repeater-next">
             <span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="sr-only"><?php esc_html_e('Next Page', CDBT); ?></span>
+            <span class="sr-only"><?php _e('Next Page', CDBT); ?></span>
           </button>
         </div>
       </div>
@@ -521,7 +521,7 @@ endif; ?>
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
     list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
-    list_noItemsHTML: "<?php esc_html_e( 'nothing to see here... move along', CDBT); ?>",
+    list_noItemsHTML: "<?php _e( 'nothing to see here... move along', CDBT); ?>",
     
     // <?php /* カスタムレンダラを介して列出力をオーバーライドする - */ ?> override the column output via a custom renderer.
     // <?php /* これにより各列の出力のカスタムマークアップが可能になる - */ ?> this will allow you to output custom markup for each column.

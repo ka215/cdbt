@@ -407,13 +407,15 @@ $(document).ready(function() {
       });
       
       
+      /*
       $(document).on('shown.bs.modal', '#cdbtEditData', function(){
         var form = $('#cdbtEditData div.cdbt-entry-data-form form');
         $('#run_update_data').prop('disabled', true);
         $(form).on('input change click', function(){ 
-          $('#run_update_data').prop('disabled', !this.checkValidity());
+          $('#run_update_data').prop('disabled', this.checkValidity());
         });
       });
+      */
       
       
       $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {

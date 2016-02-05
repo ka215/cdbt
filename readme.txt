@@ -3,18 +3,18 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
-Tested up to: 4.4.1
-Stable tag: 2.0.5
+Tested up to: 4.4.2
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress. Note: at version 2.0.0 or later, on the operating environment required PHP5.4 or more.
+Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
 
 == Description ==
 
 WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, is more better to create a new table. 
 
-This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. At the since plugin version 2.x works with PHP5.4 or more. 
+This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. **At the since plugin version 2.x works with PHP5.4 or more**. 
 
 If you make by full use the various APIs, methods, and shortcodes that is provided a rich set on this plugin, WordPress might be transformed into a powerful CMS.
 
@@ -56,24 +56,27 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 == Screenshots ==
 
-1. You can see the usable shortcodes and information of table schema that was created in the dashboard.
-2. You can control the common actions of this plugin in the setting general options.
-3. You can create a new table in the database at will from the management console.
-4. You can be created design structure of the table in visually using a GUI tool called table creator.
-5. You can activate the table you want to operate from the list of tables that you created.
-6. You can use the import feature, you can register in bulk data into a table that was created.
-7. All data in the table can be viewed as a list at any time.
-8. Entry Form of registration data to the table is automatically generated as well.
-9. You can check the data in the table, or to edit, and to remove it is also easy.
-10. If you have stored binary data as images in the database, preview is available in the modal window.
-11. Of course, download function of binary data is also provided.
-12. The pages of Viewer, Editor, and Entry Forms can display to frontend by using shortcodes.
-13. You can modify table as add an index or column in the table, and delete or change. As you can be done that easily by using various presets.
+1. On this plugin, you will be able to manipulate various tables of the database from wordpress management screen.
+2. You can create free their own table in the database.
+3. Your database creation can be intuitively designed with a drag-and-drop.
+4. Since version 2, you can also manage the core tables that is built in WordPress.
+5. You can easily operate data in any tables via simply and useful interface.
+6. By the multi-functional shortcodes, you are able to provide any tables to the front-end visitors.
+7. With the Web API features, you will be able to allow table operation from other than your own site.
+8. Sorry, please use the previous version 1.x if your environment has PHP 5.3 or less.
+9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
 
+= 2.0.6 =
+* Fixed a bug in the session and cookie processing for the continuous transmission prevention.
+* Fixed a bug that edit button can not click on the shortcode "cdbt-edit" at the frontend side.
+* Enabled the feature of filter in the shortcode "cdbt-edit", because it has been implementation leakage.
+* Fixed the wrong loading order of multi-language translation file.
+* Added attributes of "narrow_keyword" and "sort_order" to the shortcode of "cdbt-edit".
+
 = 2.0.5 =
-* Fixed a bug that had been left in the processing of the attributes of hidden_cols of shortcode "cdbt-entry".
+* Fixed a bug that had been left in the processing of the attribute of "hidden_cols" at shortcode "cdbt-entry".
 * Fixed a bug that can not be entered for a table with a specific column name at the shortcode "cdbt-entry".
 * Transmitting data at shortcode cdbt-entry is corresponding an issue where would have been multiplexed registered. (for correspondence of some tickets)
 * Fixed a bug that will be not generated SQL when you set of "None" to the "key/index" at the "table creator".
@@ -227,9 +230,14 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 All official development on this plugin is on GitHub. Published version will bump here on WordPress.org. You can find the repository at [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt).
 
+Detailed documentation has published at the site of author. If you are free, Please try to qv.
+
+* [Version 2.x related documentation](https://ka2.org/cdbt/v2/)
+* [Version 1.x related documentation](https://ka2.org/cdbt/v1/)
+
+(Sorry, for about documentation will be only the Japanese version currently.)
 
 == Upgrade Notice ==
 
-* 1.1.14 - [Important Update] xxx
-
-* 1.1.12 - [Important Update] Fixed the bug that could not use the features such as creating table on Firefox and Internet Explorer browser.
+= 2.0.6 =
+Because there had improvemented around the session, please use after you delete your browser's cache and Cookie once.

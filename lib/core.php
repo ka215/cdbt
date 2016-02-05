@@ -77,8 +77,7 @@ class CdbtCore extends CdbtUtility {
     
     // Languages
     $this->plugin_lang_dir = apply_filters( 'cdbt_plugin_lang_dir', plugin_basename($this->plugin_dir) . '/langs' );
-    load_plugin_textdomain( $this->domain_name )
-    or load_plugin_textdomain( $this->domain_name, false, $this->plugin_lang_dir );
+    load_plugin_textdomain( $this->domain_name, false, $this->plugin_lang_dir );
     
     // Ajax Action name
     $this->plugin_ajax_action = apply_filters( 'cdbt_plugin_ajax_action', 'cdbt_ajax_handler' );

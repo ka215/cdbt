@@ -193,19 +193,21 @@ final class CdbtFrontend extends CdbtDB {
     
     if ( ! session_id() ) {
       session_set_cookie_params( 0, '/', $_SERVER['HTTP_HOST'] );
-      session_start();
       
+      /*
       // Issue a one-time token
       if ( isset( $_COOKIE[session_name()] ) ) {
         $_sid = $_COOKIE[session_name()];
         session_id( $_sid );
       }
+      */
       if ( ! isset( $_COOKIE['_cdbt_token'] ) ) {
         $_cdbt_token = sha1( session_id() . microtime( true ) );
         setcookie( '_cdbt_token', $_cdbt_token, time() + 60 * 60 );
       }
       $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : [];
       
+      session_start();
     }
     
     foreach ($this->shortcodes as $shortcode_name => $definitions) {
@@ -219,26 +221,24 @@ final class CdbtFrontend extends CdbtDB {
    * For updating a session
    *
    * @since 2.0.0
-   * @revision 2.0.5
+   * @revision 2.0.6
    *
    * @param string $session_key [optional] Update all sessions if session key does not specify
    */
   public function update_session( $session_key=null ) {
     
-    if (empty($session_key)) {
+    if ( empty( $session_key ) ) {
       // global sessions
       $this->cdbt_sessions = array_merge($this->cdbt_sessions, array_diff($_SESSION, $this->cdbt_sessions));
     } else {
       // local page sessions
       $this->cdbt_sessions[$session_key] = $_SESSION;
-      foreach ($this->cdbt_sessions as $key => $value) {
-        if ($session_key !== $key) 
-          unset($this->cdbt_sessions[$key]);
+      foreach ( $this->cdbt_sessions as $key => $value ) {
+        if ( $session_key !== $key ) 
+          unset( $this->cdbt_sessions[$key] );
       }
     }
-    //$_SESSION = [];
-    session_write_close();
-    session_start();
+    $_SESSION = [];
     
   }
 
@@ -247,7 +247,7 @@ final class CdbtFrontend extends CdbtDB {
    * Destroy a session
    *
    * @since 2.0.0
-   * @revision 2.0.5
+   * @revision 2.0.6
    *
    * @param string $session_key [optional] Destroy all sessions if session key does not specify
    */
@@ -256,8 +256,8 @@ final class CdbtFrontend extends CdbtDB {
     if (empty($session_key)) {
       // global sessions
       $this->cdbt_sessions = [];
-      //$_SESSION = [];
-      session_destroy();
+      $_SESSION = [];
+      session_write_close();
     } else {
       // local page (or tab) sessions
       if (array_key_exists($session_key, $this->cdbt_sessions)) 
@@ -266,7 +266,6 @@ final class CdbtFrontend extends CdbtDB {
       if (array_key_exists($session_key, $_SESSION)) 
         unset($_SESSION[$session_key]);
       
-      session_write_close();
     }
     
   }
@@ -563,7 +562,7 @@ final class CdbtFrontend extends CdbtDB {
    * Insert data via shortcode `cdbt-entry` from the frontend
    *
    * @since 2.0.0
-   * @revision 2.0.5
+   * @revision 2.0.6
    */
   public function do_entry_data() {
     static $message = '';
@@ -584,16 +583,12 @@ final class CdbtFrontend extends CdbtDB {
         $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
         $this->emit_type = 'notice';
         setcookie( '_cdbt_token', '' );
-        $this->destroy_session();
       } else {
         $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
         $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
-        $_SESSION = $post_data;
-        $this->update_session();
       }
     } else {
-      $message = __( 'Could not multiple registration by the continuous transmission.', CDBT );
-      $this->destroy_session();
+      $message = __( 'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', CDBT );
     }
     
     if ( ! empty( $message ) ) {

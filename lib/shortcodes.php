@@ -396,33 +396,33 @@ trait CdbtShortcodes {
     if (!isset($output_columns)) 
       $output_columns = $all_columns;
     
-    $narrow_keyword = $this->strtohash($narrow_keyword);
-    if (!$narrow_keyword) {
+    $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
+    if ( ! $narrow_keyword ) {
       $query_type = 'get';
     } else {
-      $query_type = $this->is_assoc($narrow_keyword) ? 'get' : 'find';
+      $query_type = $this->is_assoc( $narrow_keyword ) ? 'get' : 'find';
       $conditions = [];
-      if ('get' === $query_type) {
-        foreach ($narrow_keyword as $_col => $_keywd) {
-          if (in_array($_col, $all_columns)) 
+      if ( 'get' === $query_type ) {
+        foreach ( $narrow_keyword as $_col => $_keywd ) {
+          if ( in_array( $_col, $all_columns ) ) 
             $conditions[$_col] = $_keywd;
         }
       } else {
         $conditions = $narrow_keyword;
       }
     }
-    if (!isset($conditions)) 
+    if ( ! isset( $conditions ) ) 
       $conditions = null;
     
-    $sort_order = $this->is_assoc($sort_order) ? $sort_order : $this->strtohash($sort_order);
-    if ($this->is_assoc($sort_order)) {
+    $sort_order = $this->is_assoc( $sort_order ) ? $sort_order : $this->strtohash( $sort_order );
+    if ( $this->is_assoc( $sort_order ) ) {
       $orders = [];
-      foreach ($sort_order as $_col => $_order) {
-        if (!is_int($_col) && in_array($_col, $all_columns)) 
-          $orders[$_col] = in_array(strtolower($_order), [ 'asc', 'desc' ]) ? $_order : 'asc';
+      foreach ( $sort_order as $_col => $_order ) {
+        if ( ! is_int( $_col ) && in_array( $_col, $all_columns ) ) 
+          $orders[$_col] = in_array( strtolower( $_order ), [ 'asc', 'desc' ] ) ? $_order : 'asc';
       }
     }
-    if (!isset($orders) || empty($orders)) 
+    if ( ! isset( $orders ) || empty( $orders ) ) 
       $orders = null;
     
     if (!in_array($filter_column, $all_columns)) {
@@ -979,6 +979,9 @@ trait CdbtShortcodes {
       'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
       'ajax_load' => false, // Is enabled only if "bootstrap_style" is true.
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+      /* Added new attribute from 2.0.6 is follows: */
+      'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
+      'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -1072,7 +1075,7 @@ trait CdbtShortcodes {
     foreach ($not_assoc_atts as $attribute_name) {
       ${$attribute_name} = $this->strtoarray(${$attribute_name});
     }
-    $hash_atts = [ 'filters' ];
+    $hash_atts = [ 'narrow_keyword', 'sort_order', 'filters' ];
     foreach ($hash_atts as $attribute_name) {
       ${$attribute_name} = $this->strtohash(${$attribute_name});
     }
@@ -1119,11 +1122,63 @@ trait CdbtShortcodes {
     }
     $filters = $this->strtohash($filters);
     
+    // Added since version 2.0.6
+    $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
+    if ( ! $narrow_keyword ) {
+      $query_type = 'get';
+    } else {
+      $query_type = $this->is_assoc( $narrow_keyword ) ? 'get' : 'find';
+      $conditions = [];
+      if ( 'get' === $query_type ) {
+        foreach ( $narrow_keyword as $_col => $_keywd ) {
+          if ( in_array( $_col, $all_columns ) ) 
+            $conditions[$_col] = $_keywd;
+        }
+      } else {
+        $conditions = $narrow_keyword;
+      }
+    }
+    if ( ! isset( $conditions ) ) 
+      $conditions = null;
     
+    $sort_order = $this->is_assoc( $sort_order ) ? $sort_order : $this->strtohash( $sort_order );
+    if ( $this->is_assoc( $sort_order ) ) {
+      $orders = [];
+      foreach ( $sort_order as $_col => $_order ) {
+        if ( ! is_int( $_col ) && in_array( $_col, $all_columns ) ) 
+          $orders[$_col] = in_array( strtolower( $_order ), [ 'asc', 'desc' ] ) ? $_order : 'asc';
+      }
+    }
+    if ( ! isset( $orders ) || empty( $orders ) ) 
+      $orders = null;
     
-    $datasource = $this->get_data($table, 'ARRAY_A');
-    if (empty($datasource))
-      return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
+    if ( 'get' === $query_type ) {
+      // $datasource = $this->get_data( $table, 'ARRAY_A' );
+      $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $orders, 'ARRAY_A' );
+    } else {
+      $datasource = [];
+      if ( is_array( $conditions ) && ! empty( $conditions ) ) {
+        foreach ( $conditions as $_i => $_keyword ) {
+          if ( 0 === $_i ) {
+            $datasource = $this->find_data( $table, $_keyword, $output_columns, $orders, 'ARRAY_A' );
+          } else {
+            // Currently, the plurality of keywords are not supported
+            /*
+            $diff_datasource = $this->find_data( $table, $_keyword, $output_columns, $orders, 'ARRAY_A' );
+            if ( is_array( $diff_datasource ) && is_array( $datasource ) ) {
+              $datasource = array_intersect( $diff_datasource, $datasource );
+              //$datasource = array_merge( $datasource, $diff_datasource );
+            }
+            */
+            break;
+          }
+        }
+      } else {
+        $datasource = $this->find_data( $table, $conditions, $output_columns, $orders, 'ARRAY_A' );
+      }
+    }
+    if ( empty( $datasource ) ) 
+      return sprintf( '<p>%s</p>', __('Data in this table does not exist.', CDBT ) );
     
     // If contain binary data in the datasource
     if (!empty($has_bin)) {
@@ -1297,6 +1352,7 @@ trait CdbtShortcodes {
         'id' => 'cdbt-repeater-edit-' . $table, 
         'enableSearch' => true, 
         'enableFilter' => $display_filter, 
+        'filter_column' => $filter_column, 
         'filters' => $filters, 
         'enableView' => false, 
         'defaultView' => 'list', 
