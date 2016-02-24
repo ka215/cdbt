@@ -165,7 +165,8 @@ trait CdbtApis {
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
                 break;
               case 'find_data': 
-                $allow_args = [ 'search_key' => 'array', 'columns' => 'mixed', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int' ];
+              	// Modified at version 2.0.7; added element of 'narrow_operator'
+                $allow_args = [ 'search_key' => 'array', 'narrow_operator' => 'string', 'columns' => 'mixed', 'order' => 'hash', 'limit' => 'int', 'offset' => 'int' ];
                 $response['data'] = $this->api_method_wrapper($target_table, $request, $allow_args);
                 break;
               case 'insert_data': 
@@ -291,7 +292,8 @@ trait CdbtApis {
         $result = $this->get_data($target_table, $columns, $conditions, $order, $limit, $offset);
         break;
       case 'find_data': 
-        $result = $this->find_data($target_table, $search_key, $columns, $order, $limit, $offset);
+        // Modified at version 2.0.7; added argument of 'narrow_operator'
+        $result = $this->find_data($target_table, $search_key, $narrow_operator, $columns, $order, $limit, $offset);
         break;
       case 'insert_data': 
         $result = $this->insert_data($target_table, $data, null);

@@ -92,6 +92,9 @@ class CdbtConfig extends CdbtCore {
       'default_db_engine' => '', // add new from ver.2
       'default_per_records' => 10, // add new from ver.2
       'allow_rendering_shortcodes' => true, // add new from ver.2
+      'include_assets' => [], // add new from ver. 2.0.7
+      'prevent_duplicate_sending' => false, // add new from ver. 2.0.7
+      'plugin_menu_position' => 'bottom', // add new from ver. 2.0.7
       'tables' => [
         [
           'table_name' => '', // table name
@@ -103,6 +106,7 @@ class CdbtConfig extends CdbtCore {
           'table_collation' => '', // add new from ver.2
           'db_engine' => 'InnoDB', // "InnoDB" or "MyISAM"
           'show_max_records' => 10, // default is 10
+          'sanitization' => true, // Whether to do sanitization when register the string type data. since 2.0.7
           'roles' => [ // For old ver.1.x; Leave for backward compatibility
             'view_role' => 0, 
             'input_role' => 1, 
@@ -417,13 +421,15 @@ class CdbtConfig extends CdbtCore {
     }
     $table_status = $this->get_table_status( $table_name );
     $table_charset = $this->db_default_charset;
-    $show_max_records = $this->options['default_per_records'];
+    $max_show_records = $this->options['default_per_records'];
+    $sanitization = true;
     $user_permission_view = 'guest';
     $user_permission_entry = 'contributor';
     $user_permission_edit = 'editor';
     if (!empty($table_options)) {
       $table_charset = array_key_exists('table_charset', $table_options) ? $table_options['table_charset'] : $table_charset;
-      $show_max_records = array_key_exists('show_max_records', $table_options) ? $table_options['show_max_records'] : $show_max_records;
+      $max_show_records = array_key_exists('max_show_records', $table_options) ? $table_options['max_show_records'] : $show_max_records;
+      $sanitization = array_key_exists( 'sanitization', $table_options ) ? $table_options['sanitization'] : $sanitization;
       $user_permission_view = array_key_exists('user_permission_view', $table_options) ? $table_options['user_permission_view'] : $user_permission_view;
       $user_permission_entry = array_key_exists('user_permission_entry', $table_options) ? $table_options['user_permission_entry'] : $user_permission_view;
       $user_permission_edit = array_key_exists('user_permission_edit', $table_options) ? $table_options['user_permission_edit'] : $user_permission_view;
@@ -438,7 +444,8 @@ class CdbtConfig extends CdbtCore {
       'table_charset' => $table_charset,
       'table_collation' => $table_status['Collation'], 
       'db_engine' => $table_status['Engine'], 
-      'show_max_records' => $show_max_records, 
+      'show_max_records' => $max_show_records, 
+      'sanitization' => $sanitization, 
       'roles' => [
         'view_role' => 0, 
         'input_role' => 1, 
@@ -494,31 +501,31 @@ class CdbtConfig extends CdbtCore {
    * @return mixed $tabel_permission
    */
   public function get_table_permission( $table_name=null, $search_key=null ) {
-    if (empty($table_name)) 
+    if ( empty( $table_name ) ) 
       return false;
     
-    $table_options = $this->get_table_option($table_name);
+    $table_options = $this->get_table_option( $table_name );
     $table_permission = [];
-    if (is_array($table_options) && array_key_exists('permission', $table_options) && !empty($table_options['permission'])) {
-      if (!empty($search_key)) {
-        foreach ($table_options['permission'] as $_key => $_values) {
-          if ($search_key === strstr($_key, '_global', true)) 
+    if ( is_array( $table_options ) && array_key_exists( 'permission', $table_options ) && ! empty( $table_options['permission'] ) ) {
+      if ( ! empty( $search_key ) ) {
+        foreach ( $table_options['permission'] as $_key => $_values ) {
+          if ( $search_key === strstr( $_key, '_global', true ) ) 
             $table_permission += $_values; //array_merge($table_permission);
         }
       } else {
         $table_permission = $table_options['permission'];
       }
     } else
-    if (is_array($table_options) && array_key_exists('roles', $table_options) && !empty($table_options['roles'])) {
+    if ( is_array( $table_options ) && array_key_exists( 'roles', $table_options ) && ! empty( $table_options['roles'] ) ) {
       // For legacy plugin version
-      if (!empty($search_key)) {
-        foreach ($table_options['roles'] as $_key => $_level) {
-          if ($search_key === strstr($_key, '_role', true)) 
-            $table_permission = $this->convert_cap_level($_level);
+      if ( ! empty( $search_key ) ) {
+        foreach ( $table_options['roles'] as $_key => $_level ) {
+          if ( $search_key === strstr( $_key, '_role', true ) ) 
+            $table_permission = $this->convert_cap_level( $_level );
         }
       } else {
-        foreach ($table_options['roles'] as $_key => $_level) {
-          $table_permission[str_replace('_role', '_global', $_key)] = $this->convert_cap_level($_level);
+        foreach ( $table_options['roles'] as $_key => $_level ) {
+          $table_permission[str_replace( '_role', '_global', $_key )] = $this->convert_cap_level( $_level );
         }
       }
     } else {

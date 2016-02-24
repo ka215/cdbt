@@ -76,6 +76,7 @@ trait CdbtShortcodes {
    * Retrieve specific shortcode list as an array
    *
    * @since 2.0.0
+   * @since 2.0.7 Fixed a bug
    *
    * @param string $shortcode_type [optional]
    * @return array $shortcode_list
@@ -84,18 +85,24 @@ trait CdbtShortcodes {
     $shortcode_list = $this->shortcodes;
     
     $custom_shortcodes = $this->get_shortcode_option();
-    if (!empty($custom_shortcodes)) {
+    if ( ! empty( $custom_shortcodes ) ) {
       $_add_shortcodes = [];
-      foreach ($custom_shortcodes as $_i => $_shortcode_options) {
-        $_permissions = $this->get_table_permission( $_shortcode_options['target_table'], str_replace('cdbt-', '', $_shortcode_options['base_name']) );
-        if (!$_permissions) 
-          $_permissions = $this->shortcodes[$_shortcode_options['base_name']]['permission'];
+      foreach ( $custom_shortcodes as $_i => $_shortcode_options ) {
+        if ( $this->check_table_exists( $_shortcode_options['target_table'] ) ) {
+          $_permissions = $this->get_table_permission( $_shortcode_options['target_table'], str_replace( 'cdbt-', '', $_shortcode_options['base_name'] ) );
+          if ( ! $_permissions ) 
+            $_permissions = $this->shortcodes[$_shortcode_options['base_name']]['permission'];
+          $_desc = isset($_shortcode_options['description']) && !empty($_shortcode_options['description']) ? esc_html($_shortcode_options['description']) : '-';
+        } else {
+          $_permissions = [];
+          $_desc = __('This shortcode is not valid because the table that is specified does not exist.', CDBT);
+        }
         
         $_add_shortcodes[stripslashes_deep($_shortcode_options['alias_code'])] = [
-          'description' => isset($_shortcode_options['description']) && !empty($_shortcode_options['description']) ? esc_html($_shortcode_options['description']) : '-', 
+          'description' => $_desc, 
           'type' => 'custom', 
           'author' => isset($_shortcode_options['author']) ? intval($_shortcode_options['author']) : 0, 
-          'permission' => implode(', ', $_permissions), 
+          'permission' => ! empty( $_permissions ) ? implode( ', ', $_permissions ) : '-', 
           'alias_id' => $_shortcode_options['csid'], 
         ];
       }
@@ -225,6 +232,8 @@ trait CdbtShortcodes {
       'thumbnail_width' => 100, // Integer of thumbnail block size
       'ajax_load' => false, //
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+      /* Added new attributes from 2.0.7 is follows: */
+      'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -236,13 +245,20 @@ trait CdbtShortcodes {
     $shortcode_name = 'cdbt-view';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $pk_columns = $has_bin = [];
+    $pk_columns = $has_char = $has_text = $has_bin = $has_list = $has_bit = $has_datetime = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
-      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($table_option['show_max_records']) : intval($limit_items);
+      $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
+      $strip_tags = $table_option['sanitization'];
       foreach ($table_schema as $column => $scheme) {
+      	if ($this->validate->check_column_type($scheme['type'], 'char'))
+      	  $has_char[] = $column;
+      	
+      	if ($this->validate->check_column_type($scheme['type'], 'text'))
+      	  $has_text[] = $column;
+      	
         if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
         
@@ -309,7 +325,7 @@ trait CdbtShortcodes {
       return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load', 'strip_tags' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool(${$attribute_name});
     }
@@ -440,10 +456,12 @@ trait CdbtShortcodes {
       $datasource = $this->get_data($table, '`'.implode('`,`', $output_columns).'`', $conditions, $orders, 'ARRAY_A');
     } else {
       $datasource = [];
+      // Added since version 2.0.7
+      $narrow_operator = strtolower( $narrow_operator );
       if (is_array($conditions) && !empty($conditions)) {
         foreach ($conditions as $_i => $_keyword) {
           if (0 === $_i) {
-            $datasource = $this->find_data($table, $_keyword, $output_columns, $orders, 'ARRAY_A');
+            $datasource = $this->find_data($table, $_keyword, $narrow_operator, $output_columns, $orders, 'ARRAY_A');
           } else {
             // Currently, the plurality of keywords are not supported
             /*
@@ -456,13 +474,43 @@ trait CdbtShortcodes {
           }
         }
       } else {
-        $datasource = $this->find_data($table, $conditions, $output_columns, $orders, 'ARRAY_A');
+        $datasource = $this->find_data($table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A');
       }
     }
     if (empty($datasource))
       return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
     
     $custom_column_renderer = [];
+    
+    // If contain string as char in the data source (added since version 2.0.7)
+    if ( ! empty( $has_char ) ) {
+      foreach ( $has_char as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) ) {
+          foreach ($datasource as $i => $row_data) {
+            if ( $strip_tags ) {
+              $datasource[$i][$column] = strip_tags( $row_data[$column] );
+            } else {
+              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'char' ) );
+            }
+          }
+        }
+      }
+    }
+    
+    // If contain string as text in the data source (added since version 2.0.7)
+    if ( ! empty( $has_text ) ) {
+      foreach ( $has_text as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) ) {
+          foreach ($datasource as $i => $row_data) {
+            if ( $strip_tags ) {
+              $datasource[$i][$column] = strip_tags( $row_data[$column] );
+            } else {
+              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'text' ) );
+            }
+          }
+        }
+      }
+    }
     
     // If contain binary data in the datasource
     if (!empty($has_bin)) {
@@ -898,7 +946,7 @@ trait CdbtShortcodes {
       if (!empty($_current_data) && array_key_exists(0, $_current_data)) {
         foreach ($elements_options as $_i => $_element) {
           if (array_key_exists($_element['elementName'], $_current_data[0])) {
-            $elements_options[$_i]['defaultValue'] = $_current_data[0][$_element['elementName']];
+            $elements_options[$_i]['defaultValue'] = stripslashes_deep( $_current_data[0][$_element['elementName']] );
           }
         }
       }
@@ -982,6 +1030,8 @@ trait CdbtShortcodes {
       /* Added new attribute from 2.0.6 is follows: */
       'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
       'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
+      /* Added new attributes from 2.0.7 is follows: */
+      'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -993,13 +1043,20 @@ trait CdbtShortcodes {
     $shortcode_name = 'cdbt-edit';
     $table_schema = $this->get_table_schema($table);
     $table_option = $this->get_table_option($table);
-    $pk_columns = $has_bin = $has_list = $has_bit = $has_datetime = [];
+    $pk_columns = $has_char = $has_text = $has_bin = $has_list = $has_bit = $has_datetime = [];
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
-      $limit_items = intval($table_option['show_max_records']);
+      $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
+      $strip_tags = $table_option['sanitization'];
       foreach ($table_schema as $column => $scheme) {
+      	if ($this->validate->check_column_type($scheme['type'], 'char'))
+      	  $has_char[] = $column;
+      	
+      	if ($this->validate->check_column_type($scheme['type'], 'text'))
+      	  $has_text[] = $column;
+      	
         if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
         
@@ -1067,7 +1124,7 @@ trait CdbtShortcodes {
     
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool(${$attribute_name});
     }
@@ -1157,10 +1214,12 @@ trait CdbtShortcodes {
       $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $orders, 'ARRAY_A' );
     } else {
       $datasource = [];
+      // Added since version 2.0.7
+      $narrow_operator = strtolower( $narrow_operator );
       if ( is_array( $conditions ) && ! empty( $conditions ) ) {
         foreach ( $conditions as $_i => $_keyword ) {
           if ( 0 === $_i ) {
-            $datasource = $this->find_data( $table, $_keyword, $output_columns, $orders, 'ARRAY_A' );
+            $datasource = $this->find_data( $table, $_keyword, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
           } else {
             // Currently, the plurality of keywords are not supported
             /*
@@ -1174,15 +1233,46 @@ trait CdbtShortcodes {
           }
         }
       } else {
-        $datasource = $this->find_data( $table, $conditions, $output_columns, $orders, 'ARRAY_A' );
+        $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
       }
     }
     if ( empty( $datasource ) ) 
       return sprintf( '<p>%s</p>', __('Data in this table does not exist.', CDBT ) );
     
+    $custom_column_renderer = [];
+    
+    // If contain string as char in the data source (added since version 2.0.7)
+    if ( ! empty( $has_char ) ) {
+      foreach ( $has_char as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) ) {
+          foreach ($datasource as $i => $row_data) {
+            if ( $strip_tags ) {
+              $datasource[$i][$column] = strip_tags( $row_data[$column] );
+            } else {
+              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'char' ) );
+            }
+          }
+        }
+      }
+    }
+    
+    // If contain string as text in the data source (added since version 2.0.7)
+    if ( ! empty( $has_text ) ) {
+      foreach ( $has_text as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) ) {
+          foreach ($datasource as $i => $row_data) {
+            if ( $strip_tags ) {
+              $datasource[$i][$column] = strip_tags( $row_data[$column] );
+            } else {
+              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'text' ) );
+            }
+          }
+        }
+      }
+    }
+    
     // If contain binary data in the datasource
     if (!empty($has_bin)) {
-      $custom_column_renderer = [];
       foreach ($datasource as $i => $row_data) {
         foreach ($has_bin as $col_name) {
           if (array_key_exists($col_name, $row_data)) {

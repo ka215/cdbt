@@ -4,6 +4,7 @@
  * URL: `/wp-admin/admin.php?page=cdbt_options`
  *
  * @since 2.0.0
+ * @since 2.0.7 Revision version
  *
  */
 $options = get_option($this->domain_name);
@@ -231,6 +232,34 @@ $default_action = 'update';
           </div>
         </div>
       </div><!-- /option-item-33 -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label"><?php _e('Prevent Duplicate Sending', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="option-item-34">
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[prevent_duplicate_sending]" type="checkbox" value="1"<?php checked( '1', $options['prevent_duplicate_sending'] ); ?>>
+              <span class="checkbox-label"><?php _e('For preventing duplicate registration of the data when register the data, we will issue an one-time token in the cookie.', $this->domain_name); ?></span> <?php $this->during_trial( 'prevent_duplicate_sending' ); ?>
+            </label>
+          </div>
+        </div>
+      </div><!-- /option-item-34 -->
+      <div class="form-group">
+        <label for="option-item-35" class="col-sm-2 control-label"><?php _e('Plugin Menu Position', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-35">
+            <input type="text" name="<?php echo $this->domain_name; ?>[plugin_menu_position]" value="<?php esc_attr_e($options['plugin_menu_position']); ?>" class="form-control">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ($this->db_engines as $i => $db_engine) : ?>
+                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $db_engine; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('Set the display position of plugin menu on the WordPress admin panel.', $this->domain_name); ?> <?php $this->during_trial( 'plugin_menu_position' ); ?></p>
+        </div>
+      </div><!-- /option-item-35 -->
       
       
       <div class="clearfix"><br></div>

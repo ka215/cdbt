@@ -37,41 +37,59 @@ trait CdbtExtras {
    * Condition of features during trial
    *
    * @since 2.0.0
+   * @since 2.0.7 For revision
    *
    * @param string $feature_name
    * @return void
    */
   public function during_trial( $feature_name ) {
     $new_features = [
-      'enable_core_tables', 
-      'display_datetime_format', 
-      'debug_mode', 
-      'default_charset', 
-      'localize_timezone', 
-      'default_db_engine', 
-      'default_per_records', 
-      'auto_add_columns', 
-      'user_permission_view', 
-      'user_permission_entry', 
-      'user_permission_edit', 
-      'import_table', 
-      'export_table', 
-      'duplicate_table', 
-      'backup_table', 
-      'view_data', 
-      'entry_data', 
-      'edit_data', 
-      'shortcode_list', 
-      'shortcode_register', 
-      'shortcode_edit', 
-      'hosts_list', 
-      'apikey_generator', 
-      'apikey_requests', 
-      'allow_rendering_shortcodes', 
-      'include_assets', 
+      'enable_core_tables' => 'done', 
+      'display_datetime_format' => 'done', 
+      'debug_mode' => 'done', 
+      'default_charset' => 'done', 
+      'localize_timezone' => 'done', 
+      'default_db_engine' => 'done', 
+      'default_per_records' => 'done', 
+      'auto_add_columns' => 'done', 
+      'user_permission_view' => 'done', 
+      'user_permission_entry' => 'done', 
+      'user_permission_edit' => 'done', 
+      'import_table' => 'done', 
+      'export_table' => 'done', 
+      'duplicate_table' => 'done', 
+      'backup_table' => 'unreleased', 
+      'view_data' => 'done', 
+      'entry_data' => 'done', 
+      'edit_data' => 'done', 
+      'shortcode_list' => 'done', 
+      'shortcode_register' => 'done', 
+      'shortcode_edit' => 'done', 
+      'hosts_list' => 'try-yet', 
+      'apikey_generator' => 'try-yet', 
+      'apikey_requests' => 'try-yet', 
+      'allow_rendering_shortcodes' => 'done', 
+      'ajax_loading' => 'unreleased', 
+      'include_assets' => 'unreleased', 
+      'prevent_duplicate_sending' => 'new', 
+      'plugin_menu_position' => 'new', 
+      'sanitaization' => 'new', 
     ];
-    if (in_array($feature_name, $new_features)) {
-      printf( '<span class="label label-warning">%s</span>', __('Trialling', CDBT) );
+    if ( array_key_exists( $feature_name, $new_features ) ) {
+      if ( 'try-yet' === $new_features[$feature_name] ) {
+        $_label = __('Try yet', CDBT);
+        $_class = 'warning';
+      }
+      if ( 'new' === $new_features[$feature_name] ) {
+        $_label = __('New added', CDBT);
+        $_class = 'success';
+      }
+      if ( 'unreleased' === $new_features[$feature_name] ) {
+        $_label = __('Future releases', CDBT);
+        $_class = 'default';
+      }
+      if ( isset( $_label ) && isset( $_class ) ) 
+        printf( '<span class="label label-%s">%s</span>', $_class, $_label );
     }
   }
 

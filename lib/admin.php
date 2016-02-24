@@ -822,6 +822,10 @@ final class CdbtAdmin extends CdbtDB {
       $source_data = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
       $errors = [];
       
+      // For added option of sanitization (Since version 2.0.7)
+      if ( ! array_key_exists( 'sanitization', $source_data ) ) 
+        $source_data['sanitization'] = false;
+      
       // Check the required item is whether it is empty
       $check_items = [ 'table_name', 'table_charset', 'table_db_engine', 'create_table_sql' ];
       foreach ($check_items as $item_key) {
@@ -1009,10 +1013,14 @@ final class CdbtAdmin extends CdbtDB {
         }
         if (empty($message) && !empty($post_data['alter_table_sql'])) {
           // Custom alter table SQL
-          if (!$this->validate->validate_alter_sql( $table_name, esc_sql($post_data['alter_table_sql']) )) {
+          if (!$this->validate->validate_alter_sql( $table_name, $post_data['alter_table_sql'] )) {
             $message = $process_msg[0];
           } else {
-            $result = $this->run_query(esc_sql($post_data['alter_table_sql']));
+            // Filter sql statement for alter table defined by user
+            //
+            // @since 2.0.7
+            $alter_table_sql = apply_filters( 'cdbt_before_alter_table', $post_data['alter_table_sql'], $table_name );
+            $result = $this->run_query( $alter_table_sql );
             if (!$result) {
               $message = $process_msg[1];
             } else {
@@ -1061,45 +1069,55 @@ final class CdbtAdmin extends CdbtDB {
         ];
         
         $modification_option = [];
-        if ($post_data['max_show_records'] !== $current_options['show_max_records']) {
+        if ( ! empty( $post_data['max_show_records'] ) && $post_data['max_show_records'] !== $current_options['show_max_records']) {
           // Modify max show records
           $_new_value = intval($post_data['max_show_records']);
           $modification_option['show_max_records'] = $_new_value;
         }
-        if ($post_data['user_permission_view'] !== implode(',', $current_options['permission']['view_global'])) {
+        $post_data['sanitization'] = ! array_key_exists( 'sanitization', $post_data ) ? false : $post_data['sanitization'];
+        if ( ! isset( $current_options['sanitization'] ) || $post_data['sanitization'] !== $current_options['sanitization'] ) {
+          // Modify sanitization (added since 2.0.7)
+          $_new_value = $this->strtobool( $post_data['sanitization'] );
+          $modification_option['sanitization'] = $_new_value;
+        }
+        if ( ! empty( $post_data['user_permission_view'] ) && $post_data['user_permission_view'] !== implode(',', $current_options['permission']['view_global'])) {
           // Modify user permission view
           $_new_value = $this->strtoarray($post_data['user_permission_view']);
           $modification_option['permission']['view_global'] = $_new_value;
         }
-        if ($post_data['user_permission_entry'] !== implode(',', $current_options['permission']['entry_global'])) {
+        if ( ! empty( $post_data['user_permission_entry'] ) && $post_data['user_permission_entry'] !== implode(',', $current_options['permission']['entry_global'])) {
           // Modify user permission entry
           $_new_value = $this->strtoarray($post_data['user_permission_entry']);
           $modification_option['permission']['entry_global'] = $_new_value;
         }
-        if ($post_data['user_permission_edit'] !== implode(',', $current_options['permission']['edit_global'])) {
+        if ( ! empty( $post_data['user_permission_edit'] ) && $post_data['user_permission_edit'] !== implode(',', $current_options['permission']['edit_global'])) {
           // Modify user permission edit
           $_new_value = $this->strtoarray($post_data['user_permission_edit']);
           $modification_option['permission']['edit_global'] = $_new_value;
         }
         
-        if (!empty($modification_option)) {
-          foreach ($modification_option as $key => $value) {
-            if (array_key_exists($key, $current_options)) {
-              if ('permission' !== $key) {
+        if ( ! empty( $modification_option ) ) {
+          foreach ( $modification_option as $key => $value ) {
+            if ( array_key_exists( $key, $current_options ) ) {
+              if ( 'permission' !== $key ) {
                 $current_options[$key] = $value;
               } else {
-                foreach ($modification_option[$key] as $_key => $_value) {
+                foreach ( $modification_option[$key] as $_key => $_value ) {
                   $current_options[$key][$_key] = $_value;
                 }
               }
+            } else {
+              $_default_options = $this->set_option_template();
+              if ( array_key_exists( $key, $_default_options['tables'][0] ) ) 
+                $current_options[$key] = $value;
             }
           }
-          if ($this->update_options( $current_options, 'override', 'tables' )) {
+          if ( $this->update_options( $current_options, 'override', 'tables' ) ) {
             // If modification succeeds
             $message = __('Modification was successful.', CDBT); 
             $notice_class = CDBT . '-notice';
             $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
-            unset($modification_option, $current_options, $key, $value, $_key, $_value);
+            unset( $modification_option, $current_options, $key, $value, $_key, $_value );
           } else {
             $message = __('Failed to update of the plugin options.', CDBT);
           }
@@ -1701,6 +1719,9 @@ final class CdbtAdmin extends CdbtDB {
         case 'notices_updated': 
           $args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          if ( is_admin() && strpos( $_SERVER['HTTP_REFERER'], 'page=cdbt_tables&tab=modify_table' ) ) {
+            $args['modalShowEvent'] = "$('#cdbtModal').on('hidden.bs.modal', function(){ location.replace('". $_SERVER['HTTP_REFERER'] ."'); });";
+          }
           break;
         case 'changing_item_none': 
           $args['modalTitle'] = __('Modification item none', CDBT);

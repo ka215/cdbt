@@ -619,10 +619,17 @@ $(document).ready(function() {
     $('button[id^="btn-undo-modify-table-"]').on('click', function() {
       var undo_target = $(this).attr('id').replace('btn-undo-', '');
       $('#' + undo_target).val($(this).data().prevValue);
+      if ( 'modify-table-sanitization_input' === undo_target ) {
+        if ( $(this).data().prevValue ) {
+          $('#' + undo_target).parent().checkbox( 'check' );
+        } else {
+          $('#' + undo_target).parent().checkbox( 'uncheck' );
+        }
+      }
     });
     
     // The effect occurs if changed
-    $('input,button,.dropdown-menu>li>a').on('click blur', function(){
+    $('input,button,.dropdown-menu>li>a').on('click blur change', function(){
       $('.form-group').each(function(){
         var current_value = $(this).find('input[id^="modify-table-"]').val();
         if ('undefined' !== current_value && '' !== current_value) {
@@ -644,6 +651,13 @@ $(document).ready(function() {
         $(this).parents('.form-group').addClass('has-success');
       } else {
         $(this).parents('.form-group').removeClass('has-success');
+      }
+    });
+    $('.checkbox input').on('change', function () {
+      if ( $(this).is(':checked') ) {
+        $(this).val('1');
+      } else {
+        $(this).val('0');
       }
     });
     
@@ -1443,7 +1457,8 @@ $(document).ready(function() {
           show_classes = [ 'target-columns', 'conditions', 'orders', 'limit', 'offset' ];
           break;
         case 'find_data':
-          show_classes = [ 'search-key', 'target-columns', 'orders', 'limit', 'offset' ];
+          // Added class of 'narrow-operator'
+          show_classes = [ 'search-key', 'narrow-operator', 'target-columns', 'orders', 'limit', 'offset' ];
           break;
         case 'insert_data':
           show_classes = [ 'upsert_data' ];

@@ -632,16 +632,16 @@ class CdbtDB extends CdbtConfig {
    * Same behavior as get_data() If there is no schema of the table argument is.
    *
    * @param string $table_name [require]
-//   * @param array $table_schema default null
-   * @param string $search_key [require]
-   * @param array $columns [optional] Use as select clause, for default is wildcard of '*'.
+   * @param mixed $search_key [require] String or Array
+   * @param string $operator [optional] Operators of multiple keywords; default is 'and', or 'or'. Note: Added version 2.0.7
+   * @param mixed $columns [optional] Use as select clause, for default is wildcard of '*'. String or Array
    * @param array $order [optional] Use as orderby and order clause, for default is "order by `created` desc".
    * @param int $limit [optional] Use as limit clause.
    * @param int $offset [optional] Use as offset clause.
    * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
    * @return array
    */
-  public function find_data( $table_name, $search_key, $columns='*', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
+  public function find_data( $table_name, $search_key, $operator='and', $columns='*', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
     if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ])) {
@@ -652,6 +652,7 @@ class CdbtDB extends CdbtConfig {
     $arg_default_vars = [
       'table_name' => null, 
       'search_key' => null, 
+      'operator' => 'and', 
       'columns' => '*', 
       'order' => ['created'=>'desc'], 
       'limit' => null, 
@@ -659,7 +660,7 @@ class CdbtDB extends CdbtConfig {
     ];
     $i = 0;
     foreach ($arg_default_vars as $variable_name => $default_value) {
-      if (isset($arguments[$i])) {
+      if ( isset( $arguments[$i] ) && !empty( $arguments[$i] ) ) {
         ${$variable_name} = $arguments[$i];
       } else {
         ${$variable_name} = $default_value;
@@ -675,7 +676,7 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Main Process
-    $select_clause = is_array($columns) ? implode(',', $columns) : $columns;
+    $select_clause = is_array( $columns ) ? implode( ',', $columns ) : $columns;
     $where_clause = $order_clause = $limit_clause = null;
     if (!empty($order)) {
       $i = 0;
@@ -707,11 +708,14 @@ class CdbtDB extends CdbtConfig {
     }
     if (!empty($keywords)) {
       $primary_key_name = null;
+      $_col_index = [];
+      $_i = 0;
       foreach ($table_schema as $col_name => $col_scm) {
         if (empty($primary_key_name) && $col_scm['primary_key']) {
           $primary_key_name = $col_name;
-          break;
         }
+        $_col_index[$col_name] = $_i;
+        $_i++;
       }
       $union_clauses = [];
       foreach ($keywords as $value) {
@@ -732,40 +736,46 @@ class CdbtDB extends CdbtConfig {
           }
         }
       }
-      if (!empty($target_columns)) {
-        foreach ($target_columns as $target_column_name) {
+      // Rebuilt the processing of union selection for fixing bug
+      // @since version 2.0.7
+      if ( ! empty( $target_columns ) ) {
+      	$_result_column = count( $target_columns ) > 1 ? '*' : $select_clause;
+        foreach ( $target_columns as $target_column_name ) {
           $i = 0;
-          foreach ($keywords as $value) {
-            if ($i === 0) {
+          foreach ( $keywords as $value ) {
+            if ( $i === 0 ) {
               $where_clause = "WHERE `$target_column_name` LIKE '%%$value%%' ";
             } else {
-              $where_clause .= "AND `$target_column_name` LIKE '%%$value%%' ";
+              $operator = in_array( strtolower( $operator ), [ 'and', 'or' ] ) ? strtoupper( $operator ) : 'AND';
+              $where_clause .= $operator . " `$target_column_name` LIKE '%%$value%%' ";
             }
             $i++;
           }
-          $union_clauses[] = sprintf('SELECT %s FROM %s %s', $select_clause, $table_name, $where_clause);
+          $_select_statements[] = sprintf( 'SELECT %s FROM %s %s', $_result_column, $table_name, $where_clause );
         }
       }
-      if (!empty($union_clauses)) {
-        if (count($union_clauses) === 1) {
-          $union_clause = array_shift($union_clauses) . ' %s';
-          $sql = sprintf($union_clause, $limit_clause);
+      if ( ! empty( $_select_statements ) ) {
+        if ( count( $_select_statements ) === 1 ) {
+          // Single select query
+          $sql = array_shift( $_select_statements ) .' '. $order_clause .' '. $limit_clause;
         } else {
+          // Multiple select query (union)
+          $where_clause = [];
           $i = 0;
-          foreach ($union_clauses as $union_clause) {
-            if ($i === 0) {
-              $sql = '(' . $union_clause . ')';
+          foreach ( $_select_statements as $_select_sql ) {
+            if ( $i === 0 ) {
+              $where_clause[] = '(' . $_select_sql . ')';
             } else {
-              $sql .= ' UNION (' . $union_clause . ')';
+              $where_clause[] = 'UNION (' . $_select_sql . ')';
             }
             $i++;
           }
-          $sql .= " $order_clause $limit_clause";
+          $sql = implode( ' ', $where_clause ) . " $order_clause $limit_clause";
         }
       }
     }
     
-    if (!isset($sql) || empty($sql)) {
+    if ( ! isset( $sql ) || empty( $sql ) ) {
       $sql = sprintf(
         "SELECT %s FROM `%s` %s %s %s", 
         $select_clause, 
@@ -780,7 +790,41 @@ class CdbtDB extends CdbtConfig {
     // @since 2.0.0
     $sql = apply_filters( 'cdbt_crud_find_data_sql', $sql, $table_name, [ $select_clause, $where_clause, $order_clause, $limit_clause ] );
     
-    return $this->wpdb->get_results($sql, $output_type);
+    $result = $this->wpdb->get_results($sql, $output_type);
+    
+    if ( ! empty( $result ) && '*' !== $select_clause && is_array( $where_clause ) ) {
+      // Narrowing of result of union selection
+      $_retval = [];
+      $select_clause = explode( ',', $select_clause );
+      switch ( $output_type ) {
+        case 'OBJECT': 
+        case 'OBJECT_K': 
+          foreach ( $result as $_row_key => $_row_data ) {
+            $_retval[$_row_key] = new \stdClass;
+            foreach ( $select_clause as $_col ) {
+              $_retval[$_row_key]->$_col = $_row_data->$_col;
+            }
+          }
+          break;
+        case 'ARRAY_A': 
+          foreach ( $result as $_row_index => $_row_data ) {
+            foreach ( $select_clause as $_col ) {
+              $_retval[$_row_index][$_col] = $_row_data[$_col];
+            }
+          }
+          break;
+        case 'ARRAY_N': 
+          foreach ( $result as $_row_index => $_row_data ) {
+          	foreach ( $select_clause as $_col ) {
+       	      $_retval[$_row_index][] = $_row_data[$_col_index[$_col]];
+            }
+          }
+          break;
+      }
+      $result = $_retval;
+    }
+    
+    return $result;
   }
   
   
@@ -792,7 +836,7 @@ class CdbtDB extends CdbtConfig {
    * @since 2.0.0 Have refactored logic.
    *
    * @param string $table_name [require]
-   * @param array $data
+   * @param array $data [require]
    * @return mixed Integer of the primary key that was inserted when was successful against a table with a surrogate key, otherwise is boolean that representing the success or failure of processing
    */
   public function insert_data( $table_name=null, $data=[] ) {
@@ -1199,7 +1243,7 @@ class CdbtDB extends CdbtConfig {
    * @since 2.0.0 Have refactored logic.
    *
    * @param string $table_name [require]
-   * @param string $where_clause [require] In legacy v1.0 was the designation of the `$primary_key_value`
+   * @param mixed $where_clause [require] In legacy v1.0 was the designation of the `$primary_key_value`
    * @return boolean
    */
   public function delete_data( $table_name=null, $where_clause=null ) {
@@ -1213,17 +1257,17 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Check condition to specify data
-    if (empty($where_clause)) {
+    if ( empty( $where_clause ) ) {
       $message = __('Condition to find the deletion data is not specified.', CDBT);
+    } else {
+      $_deletion_where = is_string( $where_clause ) ? $this->strtohash( $where_clause ) : $where_clause;
+      if ( false === $_deletion_where || ! $this->is_assoc( $_deletion_where ) ) 
+        $message = __('Condition for finding the deletion data is invalid.', CDBT);
     }
-    if (false === ($_deletion_where = $this->strtohash($where_clause))) {
-      $message = __('Condition for finding the deletion data is invalid.', CDBT);
-    }
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->logger( $message );
       return false;
     }
-    
     
     $delete_where = [];
     $field_format = [];
@@ -1252,8 +1296,13 @@ class CdbtDB extends CdbtConfig {
       $result = $this->wpdb->delete( $table_name, $delete_where );
     }
     $retvar = $this->strtobool($result);
-    if (!$retvar) {
-      $message = sprintf( __('Failed to remove data of the deletion condition of "%s".', CDBT), $where_clause );
+    if ( ! $retvar ) {
+      $_hash_where_clause = '{ ';
+      foreach ( $delete_where as $_col => $_val ) {
+        $_hash_where_clause .= $_col .':'. $_val .', ';
+      }
+      $_hash_where_clause .= '}';
+      $message = sprintf( __('Failed to remove data of the deletion condition of "%s".', CDBT), $_hash_where_clause );
       $message .= $this->retrieve_db_error();
       $this->logger( $message );
     }
@@ -1261,7 +1310,8 @@ class CdbtDB extends CdbtConfig {
     // Fire after the data deletion
     //
     // @since 2.0.0
-    do_action( 'cdbt_after_data_deletion', $retvar, $table_name, $where_clause );
+    // @since 2.0.7 Enhancement of function
+    do_action( 'cdbt_after_data_deletion', $retvar, $table_name, $_deletion_where );
     
     return $retvar;
     
@@ -1269,19 +1319,59 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
-   * Run the custom query
+   * Run the custom query via `$wpdb::query` or `mysqli` or `PDO`
    *
-   * @since
-   * @since 2.0.0
+   * @since 2.0.0 For bundle as protected method
+   * @since 2.0.7 Change to public method, and added enhancement of function
    *
-   * @param string $query
+   * @param string $query [required] Must be the runnable correct SQL statement
+   * @param string $api [optional] Whether mysql api is "wpdb" or "mysqli" or "PDO"; default value is "wpdb".
    * @return mixed
    */
-  protected function run_query( $query=null ) {
+  public function run_query( $query=null, $api='wpdb' ) {
+  	if ( empty( $query ) || ! is_string( $query ) ) {
+  	  return false;
+  	} else {
+  	  $query = stripslashes_deep( $query );
+  	}
+  	
+    if ( empty( $api ) || 'wpdb' === $api || ! in_array( strtolower( $api ), [ 'wpdb', 'mysqli', 'pdo' ] ) ) {
+      $retvar = $this->wpdb->query( $query );
+    } elseif ( 'mysqli' === strtolower( $api ) && class_exists( '\mysqli' ) ) {
+      $db_handler = new \mysqli( DB_HOST, DB_USER, DB_PASSWORD, DB_NAME );
+      if ( is_object( $db_handler ) ) {
+        $result = $db_handler->query( $query );
+        if ( $result ) {
+          $rows = $result->fetch_all( MYSQLI_ASSOC );
+          $retvar = count( $rows ) > 1 ? $rows : $rows[0];
+        } else {
+          $retvar = $result;
+        }
+      } else {
+        $message = sprintf( __( 'The %s does not supported on your environment.', CDBT ), 'mysqli' );
+      }
+    } elseif ( 'pdo' === strtolower( $api ) && class_exists( '\PDO' ) ) {
+      $db_handler = new \PDO( 'mysql:host='. DB_HOST .';dbname='. DB_NAME, DB_USER, DB_PASSWORD );
+      if ( is_object( $db_handler ) ) {
+        $result = $db_handler->query( $query, \PDO::FETCH_ASSOC );
+        if ( $result ) {
+          $rows = [];
+          foreach ( $result as $row ) {
+            $rows[] = $row;
+          }
+          $retvar = count( $rows ) > 1 ? $rows : $rows[0];
+        } else {
+          $retvar = $result;
+        }
+      } else {
+        $message = sprintf( __( 'The %s does not supported on your environment.', CDBT ), 'PDO' );
+      }
+    }
     
-    $retvar = $this->wpdb->query( stripslashes_deep($query) );
-    if (!$retvar) {
+    if ( ! $retvar ) {
       $message = $this->retrieve_db_error();
+    }
+    if ( ! empty( $message ) ) {
       $this->logger( $message );
     }
     return $retvar;
@@ -1293,15 +1383,16 @@ class CdbtDB extends CdbtConfig {
    * Run the dump of specific table like mysqldump
    *
    * @since 2.0.0
+   * @since 2.0.7 Enhancement of function
    *
    * @param string $table_name [require]
    * @param array $columns [optional] Array of column names of when dump a specific column
    * @param boolean $contains_create_sql [optional] For default `False`
-   * @return string $insert_sql
+   * @return string $dump_sql
    */
   public function dump_table( $table_name=null, $columns=[], $contains_create_sql=false ) {
     if (empty($table_name)) 
-      return false;
+      return '';
     
     $table_schema = $this->get_table_schema( $table_name );
     $orderby = null;
@@ -1310,7 +1401,8 @@ class CdbtDB extends CdbtConfig {
         $orderby[$column] = 'ASC';
     }
     
-    $raw_data = $this->get_data( $table_name, $columns, null, $orderby, 'ARRAY_A' );
+    $target_columns = empty( $columns ) || $this->is_assoc( $columns ) ? '*' : $columns;
+    $raw_data = $this->get_data( $table_name, $target_columns, null, $orderby, 'ARRAY_A' );
     $rows = [];
     foreach ($raw_data as $raw_value) {
       $esc_values = [];
@@ -1319,9 +1411,23 @@ class CdbtDB extends CdbtConfig {
       }
       $rows[] = "('". implode("','", $esc_values) ."')";
     }
-    $insert_sql = sprintf("INSERT INTO `%s` (`%s`) VALUES %s;", $table_name, implode('`,`', array_keys($raw_value)), implode(',', $rows));
+    $insert_sql = '';
+    if ( ! empty( $rows ) && ! empty( $raw_value ) ) {
+      $insert_sql = sprintf( "INSERT INTO `%s` (`%s`) VALUES %s;", $table_name, implode( '`,`', array_keys( $raw_value ) ), implode( ',', $rows ) );
+    }
     
-    return $insert_sql;
+    // Added at version 2.0.7
+    $create_sql = '';
+    if ( $this->strtobool( $contains_create_sql ) ) {
+      $create_sql = $this->get_create_table_sql( $table_name );
+      if ( 0 === stripos( $create_sql, 'CREATE TABLE ' ) ) {
+        $create_sql = 'CREATE TABLE IF NOT EXISTS ' . substr( $create_sql, strlen( 'CREATE TABLE ' ) );
+      }
+      $create_sql .= "; \n";
+    }
+    $dump_sql = $create_sql . $insert_sql;
+    
+    return $dump_sql;
   }
   
   
@@ -1375,7 +1481,7 @@ class CdbtDB extends CdbtConfig {
    * @param string $table_name [require]
    * @return boolean
    */
-  protected function compare_reservation_tables( $table_name=null ) {
+  public function compare_reservation_tables( $table_name=null ) {
     if (empty($table_name)) 
       return false;
     
@@ -1490,6 +1596,7 @@ class CdbtDB extends CdbtConfig {
    * Inputted data is validation and sanitization and rasterization data is returned.
    *
    * @since 2.0.0
+   * @since 2.0.7 Added of escaping the HTML statements that is included in the field value of the string type.
    *
    * @param string $table_name [require]
    * @param array $post_data [require]
@@ -1509,24 +1616,28 @@ class CdbtDB extends CdbtConfig {
         }
       	
         $detect_column_type = $this->validate->check_column_type($table_schema[$post_key]['type']);
-//var_dump([ $detect_column_type, $table_schema[$post_key]['type'] ]);
         
-        if (array_key_exists('char', $detect_column_type)) {
-          if (array_key_exists('text', $detect_column_type)) {
-            // Sanitization data from textarea
-            $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
-            // Filter of the tag list to be allowed for data in the text area
-            //
-            // @since 2.0.0
-            $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
-            $register_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
-          } else {
-            // Sanitization data from text field
-            if (is_email($post_value)) {
-              $register_data[$post_key] = sanitize_email($post_value);
+        if ( array_key_exists( 'char', $detect_column_type ) ) {
+          $_table_option = $this->get_table_option( $table_name );
+          if ( array_key_exists( 'sanitization', $_table_option ) && $_table_option['sanitization'] ) {
+            if ( array_key_exists( 'text', $detect_column_type ) ) {
+              // Sanitization data from textarea
+              $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];
+              // Filter of the tag list to be allowed for data in the text area
+              //
+              // @since 2.0.0
+              $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
+              $register_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
             } else {
-              $register_data[$post_key] = sanitize_text_field($post_value);
+              // Sanitization data from text field
+              if ( is_email( $post_value ) ) {
+                $register_data[$post_key] = sanitize_email( $post_value );
+              } else {
+                $register_data[$post_key] = sanitize_text_field( $post_value );
+              }
             }
+          } else {
+            $register_data[$post_key] = $post_value;
           }
         }
         
@@ -1541,13 +1652,13 @@ class CdbtDB extends CdbtConfig {
           } else
           if (array_key_exists('binary', $detect_column_type)) {
             // Sanitization data of bainary bit
-            if (in_array($post_value, [0, 1, '0', '1', true, false, 'true', 'false'])) {
-              $register_data[$post_key] = $this->strtobool($post_value);
+            if ( in_array( $post_value, [ 0, 1, '0', '1', true, false, 'true', 'false', 'TRUE', 'FALSE' ] ) ) {
+              $register_data[$post_key] = $this->strtobool( $post_value );
             } else {
-              $register_data[$post_key] = sprintf("b'%s'", decbin($post_value));
+              $register_data[$post_key] = sprintf( "b'%s'", decbin( $post_value ) );
             }
           } else {
-            $register_data[$post_key] = intval($post_value);
+            $register_data[$post_key] = intval( $post_value );
           }
         }
         

@@ -153,11 +153,18 @@ foreach ($this->allow_file_types as $file_type) {
           <p class="help-block"><?php _e('Table Comments are used to display name as a logical name.', CDBT); ?></p>
         </div>
       </div><!-- /create-table-table_comment -->
+<?php //var_dump([ $this->charset, $this->db_default_charset, $options['charset'] ]); ?>
       <div class="form-group">
         <label for="create-table-table_charset" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?><h6> <?php $this->during_trial( 'default_charset' ); ?></h6></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-table_charset">
-            <input type="text" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php if (isset($session_vars)) { esc_attr_e($session_vars[$this->domain_name]['table_charset']); } else { esc_attr_e($this->charset); } ?>" class="form-control">
+          <?php if ( isset( $session_vars ) ) {
+            $_default_charset = ! empty( $session_vars[$this->domain_name]['table_charset'] ) ? $session_vars[$this->domain_name]['table_charset'] : $this->db_default_charset;
+          }
+          if ( ! isset( $_default_charset ) || empty( $_default_charset ) ) {
+            $_default_charset = ! empty( $options['charset'] ) ? $options['charset'] : $this->charset;
+          } ?>
+            <input type="text" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php esc_attr_e( $_default_charset ); ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -174,7 +181,13 @@ foreach ($this->allow_file_types as $file_type) {
         <label for="create-table-table_db_engine" class="col-sm-2 control-label"><?php _e('DB Engine', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="create-table-table_db_engine">
-            <input type="text" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php if (isset($session_vars)) { esc_attr_e($session_vars[$this->domain_name]['table_db_engine']); } else { esc_attr_e($this->db_default_engine); } ?>" class="form-control">
+          <?php if ( isset( $session_vars ) ) {
+            $_default_engine = ! empty( $session_vars[$this->domain_name]['table_db_engine'] ) ? $session_vars[$this->domain_name]['table_db_engine'] : $this->db_default_engine;
+          }
+          if ( ! isset( $_default_engine ) || empty( $_default_engine ) ) {
+            $_default_engine = ! empty( $options['default_db_engine'] ) ? $options['default_db_engine'] : $this->db_default_engine;
+          } ?>
+            <input type="text" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php esc_attr_e( $_default_engine ); ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -258,6 +271,29 @@ foreach ($this->allow_file_types as $file_type) {
           <p class="help-block"><?php _e('This value is the maximum data rows per one page to be displayed the table is managed with this plugin.', CDBT); ?></p>
         </div>
       </div><!-- /create-table-max_show_records -->
+      <div class="form-group">
+        <label for="create-table-sanitaization" class="col-sm-2 control-label"><?php _e('Sanitization', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="create-table-sanitaization">
+            <label class="checkbox-custom" data-initialize="checkbox">
+            <?php if ( isset( $session_vars ) ) {
+                if ( isset( $session_vars[$this->domain_name][ 'sanitization' ] ) ) {
+                  $_atts_checked = $session_vars[$this->domain_name]['sanitization'] ? ' checked="checked"' : '';
+                } else {
+                  $_atts_checked = '';
+                }
+              } else {
+                $_atts_checked = ' checked="checked"';
+              } ?>
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[sanitization]" type="checkbox" value="1"<?php echo $_atts_checked; ?>>
+              <span class="checkbox-label"><?php _e('Whether to do sanitization when register the string type data into this table.', CDBT); ?></span>
+              <?php $this->during_trial( 'sanitaization' ); ?>
+            </label>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php _e('If enabled, it will be removed tags from the entry data except allowed tags (these default "a", "br", "em", "strong"). Please uncheck if you want to allowed all tags.', CDBT); ?></p>
+        </div>
+      </div><!-- /create-table-sanitaization -->
       <div class="form-group">
         <label for="create-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT); ?></label>
         <div class="col-sm-10">
@@ -617,6 +653,32 @@ foreach ($this->allow_file_types as $file_type) {
           <p class="help-block"><?php _e('This value is the maximum data rows per one page to be displayed the table is managed with this plugin.', CDBT); ?></p>
         </div>
       </div><!-- /modify-table-max_show_records -->
+      <div class="form-group">
+        <label for="modify-table-sanitaization" class="col-sm-2 control-label"><?php _e('Sanitization', CDBT); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="modify-table-sanitaization">
+            <label class="checkbox-custom" data-initialize="checkbox">
+            <?php if ( isset( $session_vars ) && isset( $session_vars[$this->domain_name][ 'sanitization' ] ) ) {
+                $_atts_checked = $session_vars[$this->domain_name]['sanitization'] ? ' checked="checked"' : '';
+                $_undo_val = $session_vars[$this->domain_name]['sanitization'] ? '1' : '0';
+              } else if ( isset( $table_options['sanitization'] ) ) {
+                $_atts_checked = $table_options['sanitization'] ? ' checked="checked"' : '';
+                $_undo_val = $table_options['sanitization'] ? '1' : '0';
+              }
+              if ( ! isset( $_atts_checked ) ) {
+                $_atts_checked = ' checked="checked"';
+                $_undo_val = '1';
+              } ?>
+              <input class="sr-only" id="modify-table-sanitization_input" name="<?php echo $this->domain_name; ?>[sanitization]" type="checkbox" value="1"<?php echo $_atts_checked; ?>>
+              <span class="checkbox-label"><?php _e('Whether to do sanitization when register the string type data into this table.', CDBT); ?></span>
+              <?php $this->during_trial( 'sanitaization' ); ?>
+              <button type="button" id="btn-undo-modify-table-sanitization_input" class="btn btn-default" data-prev-value="<?php echo $_undo_val; ?>" style="margin-left: 15px;"><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+            </label>
+          </div>
+          <div class="clearfix"></div>
+          <p class="help-block"><?php _e('If enabled, it will be removed tags from the entry data except allowed tags (these default "a", "br", "em", "strong"). Please uncheck if you want to allowed all tags.', CDBT); ?></p>
+        </div>
+      </div><!-- /create-table-sanitaization -->
       <div class="form-group">
         <label for="modify-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT); ?></label>
         <div class="col-sm-10">

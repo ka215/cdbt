@@ -467,14 +467,17 @@ class CdbtValidator extends CommonValidator {
    * Escape stored value by detected column type in table
    *
    * @since 2.0.0
+   * @since 2.0.7 Allowed of specifying at strings to the second argument
    *
    * @param string $raw_value [require] Raw values obtained from the database
-   * @param array $detect_type [require] Array of column types that have been detected in `check_column_type()`
+   * @param mixed $detect_type [require] Array of column types that have been detected in `check_column_type()` or string
    * @return mixed Such as the escaped string or numeric
    */
   public function esc_column_value( $raw_value=null, $detect_type=[] ) {
-    if (empty($raw_value) || empty($detect_type) || !is_array($detect_type)) 
+    if ( empty( $raw_value ) || empty( $detect_type )) 
       return false;
+    if ( ! is_array( $detect_type ) ) 
+      $detect_type = [ $detect_type => 1 ];
     
     if (array_key_exists('integer', $detect_type)) {
       $retvar = intval($raw_value);
