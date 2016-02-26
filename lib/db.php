@@ -336,6 +336,38 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
+   * Get table charset
+   *
+   * @since 2.0.7
+   *
+   * @param string $table_name [require]
+   * @return mixed String of table default charset if could get that, otherwise false
+   */
+  public function get_table_charset( $table_name=null ) {
+    static $message = '';
+    
+    if ( empty( $table_name ) ) {
+      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      return false;
+    }
+    
+    if ( $_create_sql = $this->get_create_table_sql( $table_name ) ) {
+      if ( strpos( $_create_sql, 'DEFAULT CHARSET=' ) !== false ) {
+        list( , $_charset_str ) = explode( ' ', substr( $_create_sql, strpos( $_create_sql, 'DEFAULT CHARSET=' ) ) );
+        $charset = str_replace( '=', '', strstr( $_charset_str, '=' ) );
+      }
+    } else {
+      $charset = false;
+    }
+    
+    if ( ! empty( $message ) ) 
+      $this->logger( $message );
+    
+    return $charset;
+  }
+  
+  
+  /**
    * Get table status
    *
    * @since 2.0.0

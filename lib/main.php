@@ -187,25 +187,27 @@ final class CdbtFrontend extends CdbtDB {
    * Initialize sessions and actions for shortcode
    *
    * @since 2.0.0
-   * @revision 2.0.5
+   * @since 2.0.7 Revision version
    */
   public function frontend_initialize() {
     
     if ( ! session_id() ) {
-      session_set_cookie_params( 0, '/', $_SERVER['HTTP_HOST'] );
-      
-      /*
-      // Issue a one-time token
-      if ( isset( $_COOKIE[session_name()] ) ) {
-        $_sid = $_COOKIE[session_name()];
-        session_id( $_sid );
+      if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->options['prevent_duplicate_sending'] ) {
+        session_set_cookie_params( 0, '/', $_SERVER['HTTP_HOST'] );
+        
+        /*
+        // Issue a one-time token
+        if ( isset( $_COOKIE[session_name()] ) ) {
+          $_sid = $_COOKIE[session_name()];
+          session_id( $_sid );
+        }
+        */
+        if ( ! isset( $_COOKIE['_cdbt_token'] ) ) {
+          $_cdbt_token = sha1( session_id() . microtime( true ) );
+          setcookie( '_cdbt_token', $_cdbt_token, time() + 60 * 60 );
+        }
+        $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : [];
       }
-      */
-      if ( ! isset( $_COOKIE['_cdbt_token'] ) ) {
-        $_cdbt_token = sha1( session_id() . microtime( true ) );
-        setcookie( '_cdbt_token', $_cdbt_token, time() + 60 * 60 );
-      }
-      $this->cdbt_sessions = ! empty( $_SESSION ) ? $_SESSION : [];
       
       session_start();
     }
@@ -353,17 +355,35 @@ final class CdbtFrontend extends CdbtDB {
     wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
-        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 
         'cdbt-main-style' => [ $this->plugin_url . 'assets/styles/cdbt-main.css', [ 'cdbt-fuelux-style' ], $this->version, 'all' ], 
       ], 
       'scripts' => [
-        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, true ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, true ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
-        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
-        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', [ 'cdbt-underscore' ], null, true ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
+        'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
+        'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
+        'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', [ 'cdbt-underscore' ], $this->version, true ], 
       ]
     ];
+    // Override from the option of `include_assets`
+    if ( isset( $this->options['include_assets'] ) ) {
+      if ( isset( $this->options['include_assets']['main_jquery'] ) && ! $this->options['include_assets']['main_jquery'] ) {
+        unset( $assets['scripts']['cdbt-jquery'] );
+        $assets['scripts']['jquery'] = null;
+      }
+      if ( isset( $this->options['include_assets']['main_underscore_js'] ) && ! $this->options['include_assets']['main_underscore_js'] ) {
+        unset( $assets['scripts']['cdbt-underscore'] );
+        $assets['scripts']['underscore'] = null;
+      }
+      if ( isset( $this->options['include_assets']['main_bootstrap'] ) && ! $this->options['include_assets']['main_bootstrap'] ) {
+        unset( $assets['scripts']['cdbt-bootstrap'] );
+      }
+      if ( isset( $this->options['include_assets']['main_fuel_ux'] ) && ! $this->options['include_assets']['main_fuel_ux'] ) {
+        unset( $assets['styles']['cdbt-fuelux-style'] );
+        unset( $assets['scripts']['cdbt-fuelux-script'] );
+      }
+    }
     //
     // Filter the assets to be importing in admin panel (before registration)
     //
@@ -562,7 +582,7 @@ final class CdbtFrontend extends CdbtDB {
    * Insert data via shortcode `cdbt-entry` from the frontend
    *
    * @since 2.0.0
-   * @revision 2.0.6
+   * @since 2.0.7 Revision version
    */
   public function do_entry_data() {
     static $message = '';
@@ -575,20 +595,30 @@ final class CdbtFrontend extends CdbtDB {
     }
     
     $table_name = $_POST['table'];
+    $post_data = $_POST[$this->domain_name];
+    $register_data = $this->cleanup_data( $table_name, $post_data );
     
-    if ( isset( $_COOKIE['_cdbt_token'] ) && ! empty( $_POST['_cdbt_token'] ) && $_COOKIE['_cdbt_token'] === $_POST['_cdbt_token'] ) {
-      $post_data = $_POST[$this->domain_name];
-      $register_data = $this->cleanup_data( $table_name, $post_data );
+    if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->options['prevent_duplicate_sending'] ) {
+      if ( isset( $_COOKIE['_cdbt_token'] ) && ! empty( $_POST['_cdbt_token'] ) && $_COOKIE['_cdbt_token'] === $_POST['_cdbt_token'] ) {
+        if ($this->insert_data( $table_name, $register_data )) {
+          $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
+          $this->emit_type = 'notice';
+          setcookie( '_cdbt_token', '' );
+        } else {
+          $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
+          $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
+        }
+      } else {
+        $message = __( 'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', CDBT );
+      }
+    } else {
       if ($this->insert_data( $table_name, $register_data )) {
         $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
         $this->emit_type = 'notice';
-        setcookie( '_cdbt_token', '' );
       } else {
         $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
         $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
       }
-    } else {
-      $message = __( 'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', CDBT );
     }
     
     if ( ! empty( $message ) ) {

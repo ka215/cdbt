@@ -52,7 +52,8 @@ $default_action = 'update';
       <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
       <input type="hidden" name="action" value="<?php echo $default_action; ?>">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
-      <h4 class="title"><?php _e('Plugin Setting', $this->domain_name); ?></h4>
+      
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Plugin Setting', $this->domain_name); ?></h4>
       <div class="form-group">
         <label class="col-sm-2 control-label"><?php _e('Cleaning option', $this->domain_name); ?></label>
         <div class="col-sm-10">
@@ -107,6 +108,54 @@ $default_action = 'update';
         </div>
       </div><!-- /option-item-11 -->
       <div class="form-group">
+        <label for="option-item-12" class="col-sm-2 control-label"><?php _e('Plugin menu position', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-12">
+          <?php 
+            $_positions = [
+              'top' => __( 'Top (After &quot;dashboard&quot;): 3', CDBT ), 
+              'default' => __( 'Default (Before &quot;appearance&quot;): 55', CDBT ), 
+              'middle' => __( 'Middle (After &quot;tools&quot;): 77', CDBT ), 
+              'bottom' => __( 'Bottom (After &quot;setting&quot;): 85', CDBT ), 
+            ];
+            $_default_value = '';
+            if ( array_key_exists( 'plugin_menu_position', $options ) ) {
+              if ( array_key_exists( $options['plugin_menu_position'], $_positions ) ) {
+                $_current_pos = $options['plugin_menu_position'];
+              } else {
+                $_current_pos = intval( $options['plugin_menu_position'] ) > 0 ? intval( $options['plugin_menu_position'] ) : 'default';
+                if ( is_int( $_current_pos ) ) 
+                  $_default_value = ' value="'. $_current_pos .'"';
+              }
+            } else {
+              $_current_pos = 'bottom';
+            }
+          ?>
+            <input type="text" name="<?php echo $this->domain_name; ?>[plugin_menu_position]" class="form-control"<?php echo $_default_value;?> placeholder="<?= _e( 'Enter position number', CDBT ); ?>">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+              <?php foreach ( $_positions as $_pos => $_desc ) : ?>
+                <li data-value="<?php echo $_pos; ?>"<?php if ( $_pos === $_current_pos ) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $_desc; ?></a></li>
+              <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('Set the display position of plugin menu on the WordPress admin panel.', $this->domain_name); ?> <?php $this->during_trial( 'plugin_menu_position' ); ?></p>
+        </div>
+      </div><!-- /option-item-12 -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label"><?php _e('Notices via modal', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="option-item-13">
+            <label class="checkbox-custom" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[notices_via_modal]" type="checkbox" value="1" <?php checked('1', $options['notices_via_modal']); ?>>
+              <span class="checkbox-label"><?php _e('If enabled, all notifications (on the management console) from this plugin will be displayed on the modal window.', $this->domain_name); ?> <?php $this->during_trial( 'notices_via_modal' ); ?></span>
+            </label>
+          </div>
+        </div>
+      </div><!-- /option-item-13 -->
+      <div class="form-group">
         <label class="col-sm-2 control-label"><?php _e('Debug mode', $this->domain_name); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-15">
@@ -119,7 +168,7 @@ $default_action = 'update';
       </div><!-- /option-item-15 -->
       
       <div class="clearfix"><br></div>
-      <h4 class="title"><?php _e('Initial definition for table creation', $this->domain_name); ?></h4>
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Initial definition for table creation', $this->domain_name); ?></h4>
       
       <div class="form-group">
         <label class="col-sm-2 control-label"><?php _e('Table prefix', $this->domain_name); ?></label>
@@ -208,10 +257,10 @@ $default_action = 'update';
       </div>
       
       <div class="clearfix"><br></div>
-      <h4 class="title"><?php _e('Advanced Plugin Settings', $this->domain_name); ?></h4>
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Advanced Plugin Settings', $this->domain_name); ?></h4>
       
       <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Allow Rendering Shortcodes', $this->domain_name); ?></label>
+        <label class="col-sm-2 control-label" for="option-item-31"><?php _e('Allow rendering shortcodes', $this->domain_name); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-31">
             <label class="checkbox-custom" data-initialize="checkbox">
@@ -222,18 +271,51 @@ $default_action = 'update';
         </div>
       </div><!-- /option-item-31 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label text-muted"><?php _e('Included Assets Definition', $this->domain_name); ?></label>
+        <label class="col-sm-2 control-label" for="option-item-32"><?php _e('Included assets setting', $this->domain_name); ?></label>
         <div class="col-sm-10">
-          <div class="checkbox disabled" id="option-item-33">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets]" type="checkbox" value="1" <?php /*checked('1', $options['include_assets']);*/ ?> disabled="disabled">
-              <span class="checkbox-label"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); ?></span> <?php $this->during_trial( 'include_assets' ); ?>
-            </label>
-          </div>
+          <p style="margin-top: 6px; font-size: 14px;"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); ?> <?php $this->during_trial( 'include_assets' ); ?></p>
+          <table class="table table-bordered col-sm-10" id="option-item-32">
+            <thead>
+              <tr>
+                <th><?php _e('At the admin panel (when managed this plugin)', CDBT); ?></th>
+                <th><?php _e('At the front-end (when rendered shortcode)', CDBT); ?></th>
+              </tr>
+            </thead>
+            <tbody>
+              <td><ul>
+              <?php $_admin_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX' ]; ?>
+              <?php foreach ( $_admin_assets as $_asset_name ) : 
+                $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
+                $_checked_cond = isset( $options['include_assets']['admin_'. $_asset_slug ] ) ? $options['include_assets']['admin_'. $_asset_slug ] : '1'; ?>
+                <li><div class="checkbox">
+                  <label class="checkbox-custom" data-initialize="checkbox">
+                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][admin_<?php echo $_asset_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
+                    <span class="checkbox-label"><?php printf( __('%s (v%s) that is built in plugin', CDBT), $_asset_name, $this->contribute_extends[$_asset_name]['version'] ); ?></span>
+                  </label>
+                </div></li>
+              <?php endforeach; ?>
+              </ul></td>
+              <td><ul>
+              <?php $_main_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX' ]; ?>
+              <?php foreach ( $_main_assets as $_asset_name ) : 
+                $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
+                $_checked_cond = isset( $options['include_assets']['main_'. $_asset_slug ] ) ? $options['include_assets']['main_'. $_asset_slug ] : '1'; ?>
+                <li><div class="checkbox">
+                  <label class="checkbox-custom" data-initialize="checkbox">
+                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][main_<?php echo $_asset_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
+                    <span class="checkbox-label"><?php printf( __('%s (v%s) that is built in plugin', CDBT), $_asset_name, $this->contribute_extends[$_asset_name]['version'] ); ?></span>
+                  </label>
+                </div></li>
+              <?php endforeach; ?>
+              </ul></td>
+            </tbody>
+          </table>
+          <div class="clearfix"></div>
+          <p class="help-block" style="margin-top: 0;"><?php _e('If disabled the assets, must be loaded individually. Assets disabling at the admin panel does not recommended.', CDBT); ?></p>
         </div>
-      </div><!-- /option-item-33 -->
+      </div><!-- /option-item-32 -->
       <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Prevent Duplicate Sending', $this->domain_name); ?></label>
+        <label class="col-sm-2 control-label" for="option-item-34"><?php _e('Prevent duplicate sending', $this->domain_name); ?></label>
         <div class="col-sm-10">
           <div class="checkbox" id="option-item-34">
             <label class="checkbox-custom" data-initialize="checkbox">
@@ -243,29 +325,13 @@ $default_action = 'update';
           </div>
         </div>
       </div><!-- /option-item-34 -->
-      <div class="form-group">
-        <label for="option-item-35" class="col-sm-2 control-label"><?php _e('Plugin Menu Position', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-35">
-            <input type="text" name="<?php echo $this->domain_name; ?>[plugin_menu_position]" value="<?php esc_attr_e($options['plugin_menu_position']); ?>" class="form-control">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-              <ul class="dropdown-menu dropdown-menu-right">
-              <?php foreach ($this->db_engines as $i => $db_engine) : ?>
-                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $db_engine; ?></a></li>
-              <?php endforeach; ?>
-              </ul>
-            </div>
-          </div>
-          <p class="help-block"><?php _e('Set the display position of plugin menu on the WordPress admin panel.', $this->domain_name); ?> <?php $this->during_trial( 'plugin_menu_position' ); ?></p>
-        </div>
-      </div><!-- /option-item-35 -->
       
       
       <div class="clearfix"><br></div>
       <div class="form-group">
-        <div class="col-sm-2">
-          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-right" value="<?php _e('Save Changes', $this->domain_name); ?>">
+        <div class="col-sm-10 col-sm-offset-2">
+          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-left" value="<?php _e('Save Changes', $this->domain_name); ?>">
+          <input type="button" name="initialize" id="initialize" class="btn btn-default" value="<?php _e('Initialize Options', $this->domain_name); ?>" style="margin-left: 1.5em;">
         </div>
       </div>
     </form>

@@ -3,21 +3,11 @@
     "cdbt-main.js": {
       "files": [
         "scripts/cdbt-main.js"
-      ],
-      "bower": [
-        "bootstrap",
-        "fuelux",
-        "moment"
       ]
     },
     "cdbt-admin.js": {
       "files": [
         "scripts/cdbt-admin.js"
-      ],
-      "bower": [
-        "bootstrap",
-        "fuelux",
-        "moment"
       ]
     },
     "cdbt-table-creator.js": {
@@ -47,8 +37,8 @@
     "jquery.js": {
       "bower": ["jquery"]
     },
-    "modernizr.js": {
-      "bower": ["modernizr"]
+    "bootstrap.js": {
+      "bower": ["bootstrap"]
     },
     "fuelux.js": {
       "bower": [

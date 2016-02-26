@@ -251,7 +251,7 @@ trait CdbtShortcodes {
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
-      $strip_tags = $table_option['sanitization'];
+      $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : true;
       foreach ($table_schema as $column => $scheme) {
       	if ($this->validate->check_column_type($scheme['type'], 'char'))
       	  $has_char[] = $column;
@@ -1049,7 +1049,7 @@ trait CdbtShortcodes {
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
-      $strip_tags = $table_option['sanitization'];
+      $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : true;
       foreach ($table_schema as $column => $scheme) {
       	if ($this->validate->check_column_type($scheme['type'], 'char'))
       	  $has_char[] = $column;

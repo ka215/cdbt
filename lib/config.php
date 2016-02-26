@@ -33,6 +33,8 @@ class CdbtConfig extends CdbtCore {
   
   var $user_capabilities;
   
+  var $contribute_extends = array(); // Added since version 2.0.7
+  
   /**
    * Initialize of the plugin options if options does not exist or loaded options
    *
@@ -60,6 +62,17 @@ class CdbtConfig extends CdbtCore {
     
     $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
     
+    $this->contribute_extends = [
+      'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.1.4' ], 
+      'jQuery UI' => [ 'url' => 'http://jqueryui.com/', 'version' => '1.11.4' ], 
+      // 'modernizr.js' => [ 'url' => 'https://modernizr.com/', 'version' => '3.1.0' ], 
+      'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.6' ], 
+      'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
+      'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.5' ], 
+      'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.10.6' ], 
+      'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.4.0' ], 
+    ];
+    
     // Switching debug mode
     $this->debug = $this->strtobool($this->options['debug_mode']);
     if ( $this->debug ) 
@@ -85,6 +98,8 @@ class CdbtConfig extends CdbtCore {
       'resume_options' => false, 
       'enable_core_tables' => false, // add new from ver.2
       'display_datetime_format' => $default_datetime_format, // add new from ver.2
+      'plugin_menu_position' => 'default', // add new from ver. 2.0.7
+      'notices_via_modal' => true, // add new from ver 2.0.7
       'debug_mode' => $this->debug, // add new from ver.2
       'use_wp_prefix' => true, 
       'charset' => 'utf8', 
@@ -94,7 +109,6 @@ class CdbtConfig extends CdbtCore {
       'allow_rendering_shortcodes' => true, // add new from ver.2
       'include_assets' => [], // add new from ver. 2.0.7
       'prevent_duplicate_sending' => false, // add new from ver. 2.0.7
-      'plugin_menu_position' => 'bottom', // add new from ver. 2.0.7
       'tables' => [
         [
           'table_name' => '', // table name
@@ -420,13 +434,13 @@ class CdbtConfig extends CdbtCore {
       }
     }
     $table_status = $this->get_table_status( $table_name );
-    $table_charset = $this->db_default_charset;
+    $table_charset = $this->get_table_charset( $table_name ); // $this->db_default_charset;
     $max_show_records = $this->options['default_per_records'];
     $sanitization = true;
     $user_permission_view = 'guest';
     $user_permission_entry = 'contributor';
     $user_permission_edit = 'editor';
-    if (!empty($table_options)) {
+    if ( ! empty( $table_options ) ) {
       $table_charset = array_key_exists('table_charset', $table_options) ? $table_options['table_charset'] : $table_charset;
       $max_show_records = array_key_exists('max_show_records', $table_options) ? $table_options['max_show_records'] : $show_max_records;
       $sanitization = array_key_exists( 'sanitization', $table_options ) ? $table_options['sanitization'] : $sanitization;

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,9 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.0.7 =
+* 
 
 = 2.0.6 =
 * Fixed a bug in the session and cookie processing for the continuous transmission prevention.

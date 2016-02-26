@@ -168,8 +168,11 @@ if (!isset($this->component_options['formElements']) || empty($this->component_o
   $form_elements = $this->component_options['formElements'];
 }
 
-// set one time token
-$_cdbt_token = isset( $_COOKIE['_cdbt_token'] ) ? $_COOKIE['_cdbt_token'] : '';
+if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->options['prevent_duplicate_sending'] ) {
+  // set one time token
+  $_cdbt_token = isset( $_COOKIE['_cdbt_token'] ) ? $_COOKIE['_cdbt_token'] : '';
+}
+
 /**
  * Render the Form common header
  * ---------------------------------------------------------------------------
@@ -180,7 +183,7 @@ $_cdbt_token = isset( $_COOKIE['_cdbt_token'] ) ? $_COOKIE['_cdbt_token'] : '';
     <?php if (!empty($hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="<?php echo $form_action; ?>">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
-    <input type="hidden" name="_cdbt_token" value="<?php echo $_cdbt_token; ?>">
+    <?php if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->options['prevent_duplicate_sending'] ) : ?><input type="hidden" name="_cdbt_token" value="<?php echo $_cdbt_token; ?>"><?php endif; ?>
     <?php wp_nonce_field( $wp_nonce_action ); ?>
     
     <?php if (!empty($form_title)) { echo $form_title; } ?>

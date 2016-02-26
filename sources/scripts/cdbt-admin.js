@@ -1,5 +1,5 @@
 /*!
- * Custom DataBase Tables v2.0.0 (http://ka2.org)
+ * Custom DataBase Tables v2.0.7 (http://ka2.org)
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
@@ -26,9 +26,10 @@ $(document).ready(function() {
   $.isDebug = 'true' === cdbt_admin_vars.is_debug ? true : false;
   $.ajaxUrl = cdbt_admin_vars.ajax_url;
   $.ajaxNonce = cdbt_admin_vars.ajax_nonce;
+  $.modalNotices = 'true' === cdbt_admin_vars.notices_via_modal ? true : false;
   if ($.isDebug) {
     // check debug mode
-    console.info( $.extend({ debugMode: 'ON' }, $.QueryString) );
+    console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices }, $.QueryString) );
   }
   
   /**
@@ -423,7 +424,7 @@ $(document).ready(function() {
    * Common display notice handler
    */
   if ('' !== $('#message').text().trim()) {
-    if ($.isDebug) {
+    if ($.modalNotices) {
       var post_data = {
         id: 'cdbtModal', 
         insertContent: true, 
@@ -629,14 +630,14 @@ $(document).ready(function() {
     });
     
     // The effect occurs if changed
-    $('input,button,.dropdown-menu>li>a').on('click blur change', function(){
+    $('input,button,.dropdown-menu>li>a').on('click blur change keypress keyup', function(){
       $('.form-group').each(function(){
         var current_value = $(this).find('input[id^="modify-table-"]').val();
-        if ('undefined' !== current_value && '' !== current_value) {
-          if (typeof $(this).find('button[id^="btn-undo-"]') !== 'undefined') {
-            if ($(this).find('button[id^="btn-undo-"]').attr('data-prev-value')) {
+        if ( typeof current_value === 'string' ) {
+          if ( $(this).find('button[id^="btn-undo-"]').size() > 0 ) {
+            if ( typeof $(this).find('button[id^="btn-undo-"]').attr('data-prev-value') !== 'undefined' ) {
               var prev_value = $(this).find('button[id^="btn-undo-"]').attr('data-prev-value');
-              if (current_value !== String(prev_value)) {
+              if ( current_value !== prev_value ) {
                 $(this).addClass('has-success');
               } else {
                 $(this).removeClass('has-success');
@@ -646,12 +647,15 @@ $(document).ready(function() {
         }
       });
     });
-    $('textarea[id^="modify-table-"]').on('blur', function(){
+    $('textarea[id^="modify-table-"]').on('blur keypress keyup', function(){
       if ($(this).val() !== $('#btn-undo-' + $(this).attr('id')).data().prevValue) {
         $(this).parents('.form-group').addClass('has-success');
       } else {
         $(this).parents('.form-group').removeClass('has-success');
       }
+    });
+    $('#btn-undo-modify-table-alter_table_sql').on('click', function(){
+      $('#modify-table-alter_table_sql').parents('.form-group').removeClass('has-success');
     });
     $('.checkbox input').on('change', function () {
       if ( $(this).is(':checked') ) {
@@ -1594,6 +1598,18 @@ $(document).ready(function() {
     
   }
   
+  
+  /**
+   * Helper UI scripts for general options section
+   */
+  if ('cdbt_options' === $.QueryString.page) {
+    $('#initialize').on('click', function(e){
+      e.preventDefault();
+      $(this).parents('form').children('input[name=action]').val( $(this).attr('id') );
+      $('#submit').trigger('click');
+    });
+    
+  }
   
   /**
    * Helper UI scripts for debug section

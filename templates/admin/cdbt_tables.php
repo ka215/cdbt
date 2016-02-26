@@ -153,7 +153,6 @@ foreach ($this->allow_file_types as $file_type) {
           <p class="help-block"><?php _e('Table Comments are used to display name as a logical name.', CDBT); ?></p>
         </div>
       </div><!-- /create-table-table_comment -->
-<?php //var_dump([ $this->charset, $this->db_default_charset, $options['charset'] ]); ?>
       <div class="form-group">
         <label for="create-table-table_charset" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?><h6> <?php $this->during_trial( 'default_charset' ); ?></h6></label>
         <div class="col-sm-10">
@@ -548,18 +547,29 @@ foreach ($this->allow_file_types as $file_type) {
         <label for="modify-table-table_charset" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-table_charset">
-            <input type="text" id="modify-table-table_charset_input" name="<?php echo $this->domain_name; ?>[table_charset]" value="<?php echo isset($session_vars) && isset($session_vars['table_charset']) ? esc_attr($session_vars['table_charset']) : esc_attr($table_options['table_charset']); ?>" class="form-control">
+          <?php 
+            if ( isset( $session_vars ) && isset( $session_vars['table_charset'] ) ) {
+              $current_charset = esc_attr( $session_vars['table_charset'] );
+            } else {
+              $current_charset = $_undo_charset = $this->get_table_charset( $modify_table );
+            }
+            if ( ! in_array( $current_charset, $this->db_charsets ) ) {
+              $_default_charset_value = ' value="'. $current_charset .'"';
+            } else {
+              $_default_charset_value = '';
+            } ?>
+            <input type="text" id="modify-table-table_charset_input" name="<?php echo $this->domain_name; ?>[table_charset]"<?php echo $_default_charset_value; ?> class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
               <?php foreach ($this->db_charsets as $i => $charset) : ?>
-                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $charset; ?></a></li>
+                <li data-value="<?php echo $i + 1; ?>"<?php if ( $current_charset === $charset ) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $charset; ?></a></li>
               <?php endforeach; ?>
               </ul>
             </div>
           </div>
           <div class="col-sm-7 pull-left" style="margin-left: 15px;">
-            <button type="button" id="btn-undo-modify-table-table_charset_input" class="btn btn-default" data-prev-value="<?php echo esc_attr($table_options['table_charset']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+            <button type="button" id="btn-undo-modify-table-table_charset_input" class="btn btn-default" data-prev-value="<?php echo esc_attr( $_undo_charset ); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
           </div>
           <div class="clearfix"></div>
         </div>
@@ -568,18 +578,29 @@ foreach ($this->allow_file_types as $file_type) {
         <label for="modify-table-table_db_engine" class="col-sm-2 control-label"><?php _e('DB Engine', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-table_db_engine">
-            <input type="text" id="modify-table-table_db_engine_input" name="<?php echo $this->domain_name; ?>[table_db_engine]" value="<?php echo isset($session_vars) && isset($session_vars['table_db_engine']) ? esc_attr($session_vars['table_db_engine']) : esc_attr($table_options['db_engine']); ?>" class="form-control">
+          <?php 
+            if ( isset( $session_vars ) && isset( $session_vars['table_db_engine'] ) ) {
+              $current_db_engine = esc_attr( $session_vars['table_db_engine'] );
+            } else {
+              $current_db_engine = $_undo_engine = $this->get_table_status( $modify_table, 'Engine' );
+            }
+            if ( ! in_array( $current_db_engine, $this->db_engines ) ) {
+              $_default_engine_value = ' value="'. $current_db_engine .'"';
+            } else {
+              $_default_engine_value = '';
+            } ?>
+            <input type="text" id="modify-table-table_db_engine_input" name="<?php echo $this->domain_name; ?>[table_db_engine]"<?php echo $_default_engine_value; ?> class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
               <?php foreach ($this->db_engines as $i => $db_engine) : ?>
-                <li data-value="<?php echo $i + 1; ?>"><a href="#"><?php echo $db_engine; ?></a></li>
+                <li data-value="<?php echo $i + 1; ?>"<?php if ( $current_db_engine === $db_engine ) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $db_engine; ?></a></li>
               <?php endforeach; ?>
               </ul>
             </div>
           </div>
           <div class="col-sm-7 pull-left" style="margin-left: 15px;">
-            <button type="button" id="btn-undo-modify-table-table_db_engine_input" class="btn btn-default" data-prev-value="<?php echo esc_attr($table_options['db_engine']); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
+            <button type="button" id="btn-undo-modify-table-table_db_engine_input" class="btn btn-default" data-prev-value="<?php echo esc_attr( $_undo_engine ); ?>" ><i class="fa fa-undo"></i> <?php _e('Undo', CDBT); ?></button>
           </div>
           <div class="clearfix"></div>
         </div>

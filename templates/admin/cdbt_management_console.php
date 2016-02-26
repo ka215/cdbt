@@ -10,16 +10,7 @@
 $this->destroy_session();
 $_local_code = defined('WPLANG') ? '-' . WPLANG : '';
 
-$contribute_extends = [
-  'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.1.4' ], 
-  'jQuery UI' => [ 'url' => 'http://jqueryui.com/', 'version' => '1.11.4' ], 
-  'modernizr.js' => [ 'url' => 'https://modernizr.com/', 'version' => '3.1.0' ], 
-  'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.6' ], 
-  'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
-  'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.5' ], 
-  'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.10.6' ], 
-  'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.4.0' ], 
-];
+$contribute_extends = $this->contribute_extends;
 
 $_contribute_list = [];
 foreach ($contribute_extends as $_key => $_val) {

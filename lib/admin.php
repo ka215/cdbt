@@ -279,6 +279,11 @@ final class CdbtAdmin extends CdbtDB {
     $operating_capability = apply_filters( 'cdbt_operating_capability', $this->maximum_capability );
     
     $menus = [];
+    if ( array_key_exists( 'plugin_menu_position', $this->options ) ) {
+      $_menu_position = $this->options['plugin_menu_position'];
+    } else {
+      $_menu_position = 'bottom';
+    }
     
     $menus[] = add_menu_page( 
       __('CDBT Management Console', $this->domain_name), 
@@ -287,7 +292,7 @@ final class CdbtAdmin extends CdbtDB {
       'cdbt_management_console', 
       array($this, 'admin_page_render'), 
       'dashicons-admin-generic', 
-      $this->admin_menu_position( 'bottom' )
+      $this->admin_menu_position( $_menu_position )
     );
     
     $menus[] = add_submenu_page( 
@@ -374,7 +379,8 @@ final class CdbtAdmin extends CdbtDB {
    * Define used assets at admin panel and register
    *
    * @since 2.0.0
-   * @updated 2.0.4
+   * @since 2.0.4 Updated
+   * @since 2.0.7 Changed assets including
    */
   public function admin_assets() {
     // Fire this hook when register CSS and JavaScript to admin panel (on the all admin page)
@@ -386,18 +392,36 @@ final class CdbtAdmin extends CdbtDB {
     wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
-        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, null, 'all' ], 
+        'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 
         'cdbt-admin-style' => [ $this->plugin_url . 'assets/styles/cdbt-admin.css', [ 'cdbt-fuelux-style' ], $this->version, 'all' ], 
       ], 
       'scripts' => [
-        // 'cdbt-modernizr' => [ $this->plugin_url . 'assets/scripts/modernizr.js', [], null, false ], 
-        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], null, false ], 
+        'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
         'cdbt-blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, true ], 
-        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], null, true ], 
-        // 'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [], null, true ], 
-        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], null, true ], 
+        'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
+        'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
+        'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
+        'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], $this->version, true ], 
       ]
     ];
+    // Override from the option of `include_assets`
+    if ( isset( $this->options['include_assets'] ) ) {
+      if ( isset( $this->options['include_assets']['admin_jquery'] ) && ! $this->options['include_assets']['admin_jquery'] ) {
+        unset( $assets['scripts']['cdbt-jquery'] );
+        $assets['scripts']['jquery'] = null;
+      }
+      if ( isset( $this->options['include_assets']['admin_underscore_js'] ) && ! $this->options['include_assets']['admin_underscore_js'] ) {
+        unset( $assets['scripts']['cdbt-underscore'] );
+        $assets['scripts']['underscore'] = null;
+      }
+      if ( isset( $this->options['include_assets']['admin_bootstrap'] ) && ! $this->options['include_assets']['admin_bootstrap'] ) {
+        unset( $assets['scripts']['cdbt-bootstrap'] );
+      }
+      if ( isset( $this->options['include_assets']['admin_fuel_ux'] ) && ! $this->options['include_assets']['admin_fuel_ux'] ) {
+        unset( $assets['styles']['cdbt-fuelux-style'] );
+        unset( $assets['scripts']['cdbt-fuelux-script'] );
+      }
+    }
     //
     // Filter the assets to be importing in admin panel (before registration)
     //
@@ -447,12 +471,14 @@ final class CdbtAdmin extends CdbtDB {
    * Fire after execution of `wp_enqueue_script()` for passing a variable to javascript
    *
    * @since 2.0.0
+   * @since 2.0.7 Revision version
    */
   public function admin_localize_script( $asset_data ) {
     if ( array_key_exists( 'cdbt-admin-script', $asset_data ) ) {
       $cdbt_admin_vars = [
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
+        'notices_via_modal' => isset( $this->options['notices_via_modal'] ) && $this->options['notices_via_modal'] ? 'true' : 'false', 
       ];
       if (array_key_exists( 'cdbt-table-creator-script', $asset_data ) ) {
         $cdbt_admin_vars['column_types'] =  null;
@@ -603,10 +629,10 @@ final class CdbtAdmin extends CdbtDB {
       'middle' => 77, // after tools
       'bottom' => 85, // after setting
     ];
-    if (array_key_exists($position, $defined_position)) {
+    if ( array_key_exists( $position, $defined_position ) ) {
       $position = $defined_position[$position];
     } else {
-      $position = intval($position) > 0 ? intval($position) : $defined_position['default'];
+      $position = intval($position) > 0 ? intval( $position ) : $defined_position['default'];
     }
     
     // Filter of menu position of this plugin in the admin menu
@@ -700,18 +726,24 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_options | Tab: general_setting
    *
    * @since 2.0.0
+   : @since 2.0.7 Added new options
    */
   public function do_cdbt_options_general_setting() {
     static $message = '';
     
     // Access authentication process to the page
-    $message = $this->access_page_authentication( [ 'update' ] );
+    $message = $this->access_page_authentication( [ 'update', 'initialize' ] );
     if (!empty($message)) {
       $this->register_admin_notices( CDBT . '-error', $message, 3, true );
       return;
     }
     
-    $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
+    if ( 'update' === $_POST['action'] ) {
+      $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
+    } else
+    if ( 'initialize' === $_POST['action'] ) {
+      $submit_options = $this->set_option_template();
+    }
     
     // sanitaize empty values
     foreach ($submit_options as $key => $value) {
@@ -720,10 +752,56 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'debug_mode', 'use_wp_prefix', 'allow_rendering_shortcodes' ];
+    $checkbox_options = [ 'cleaning_options', 'uninstall_options', 'resume_options', 'enable_core_tables', 'notices_via_modal', 'debug_mode', 'use_wp_prefix', 'allow_rendering_shortcodes', 'prevent_duplicate_sending' ];
     foreach ($checkbox_options as $option_name) {
       if (!array_key_exists($option_name, $submit_options)) 
         $submit_options[$option_name] = false;
+    }
+    
+    // for value of `plugin_menu_position`
+    if ( array_key_exists( 'plugin_menu_position', $submit_options ) ) {
+      $_candidates = [ 3 => 'top', 55 => 'default', 77 => 'middle', 85 => 'bottom' ];
+      $_fixed_pos = null;
+      foreach( $_candidates as $_num => $_pos ) {
+        if ( strpos( strtolower( $submit_options['plugin_menu_position'] ), $_pos ) !== false ) {
+          $_fixed_pos = $_pos;
+          break;
+        } else
+        if ( strpos( $submit_options['plugin_menu_position'], ':' ) !== false ) {
+          list( , $_str ) = explode( ':', $submit_options['plugin_menu_position'] );
+          $_pos_num = intval( trim( $_str ) );
+          if ( array_key_exists( $_pos_num, $_candidates ) ) {
+            $_fixed_pos = $_candidates[$_pos_num];
+            break;
+          }
+        }
+      }
+      if ( empty( $_fixed_pos ) ) {
+        if ( intval( $submit_options['plugin_menu_position'] ) > 0 ) {
+          $_fixed_pos = intval( $submit_options['plugin_menu_position'] );
+        } else {
+          $_fixed_pos = 'default';
+        }
+      }
+    } else {
+      $_fixed_pos = 'bottom';
+    }
+    $submit_options['plugin_menu_position'] = $_fixed_pos;
+    
+    // for values of `include_assets`
+    $_chk_include_assets = [ 'admin_jquery', 'admin_underscore_js', 'admin_bootstrap', 'admin_fuel_ux', 'main_jquery', 'main_underscore_js', 'main_bootstrap', 'main_fuel_ux' ];
+    if ( array_key_exists( 'include_assets', $submit_options ) ) {
+      foreach ( $_chk_include_assets as $_asset_name ) {
+        if ( ! array_key_exists( $_asset_name, $submit_options['include_assets'] ) ) {
+          $submit_options['include_assets'][$_asset_name] = false;
+        } else {
+          $submit_options['include_assets'][$_asset_name] = true;
+        }
+      }
+    } else {
+      foreach ( $_chk_include_assets as $_asset_name ) {
+        $submit_options['include_assets'][$_asset_name] = true;
+      }
     }
     
     $updated_options = array_merge($this->current_options, $submit_options);
@@ -805,6 +883,7 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_tables | Tab: create_table
    *
    * @since 2.0.0
+   * @since 2.0.7 Revision version
    */
   public function do_cdbt_tables_create_table() {
     static $message = '';
@@ -922,6 +1001,7 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_tables | Tab: modify_table
    *
    * @since 2.0.0
+   * @since 2.0.7 Revision version
    */
   public function do_cdbt_tables_modify_table() {
     static $message = '';
@@ -1045,6 +1125,7 @@ final class CdbtAdmin extends CdbtDB {
             $current_options['primary_key'] = $new_pk;
             $current_options['sql'] = $this->get_create_table_sql($table_name);
             $current_options['table_charset'] = $post_data['table_charset'];
+            $current_options['table_collation'] = $new_table_status['Collation'];
             $current_options['db_engine'] = $new_table_status['Engine'];
             if ($this->update_options( $current_options, 'override', 'tables' )) {
               $message = __('Modification was successful.', CDBT); 
@@ -1719,8 +1800,14 @@ final class CdbtAdmin extends CdbtDB {
         case 'notices_updated': 
           $args['modalTitle'] = 'notices_error' === $args['modalTitle'] ? __('Reporting Errors', CDBT) : __('Reporting Results', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
-          if ( is_admin() && strpos( $_SERVER['HTTP_REFERER'], 'page=cdbt_tables&tab=modify_table' ) ) {
-            $args['modalShowEvent'] = "$('#cdbtModal').on('hidden.bs.modal', function(){ location.replace('". $_SERVER['HTTP_REFERER'] ."'); });";
+          if ( is_admin() ) {
+            $_pages = [ 'page=cdbt_tables&tab=modify_table', 'page=cdbt_options', 'page=cdbt_options&tab=general_setting' ];
+            foreach ( $_pages as $_param ) {
+              if ( strpos( $_SERVER['HTTP_REFERER'], $_param ) ) {
+                $args['modalShowEvent'] = "$('#cdbtModal').on('hidden.bs.modal', function(){ location.replace('". $_SERVER['HTTP_REFERER'] ."'); });";
+                break;
+              }
+            }
           }
           break;
         case 'changing_item_none': 

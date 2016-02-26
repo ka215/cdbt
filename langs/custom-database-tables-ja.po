@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.0.6\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-02-24 22:35+0900\n"
+"POT-Creation-Date: 2016-02-26 20:52+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -78,83 +78,83 @@ msgstr "メソッド \"%s\" がありません。"
 msgid "Property \"%s\" does not exist."
 msgstr "プロパティ \"%s\" がありません。"
 
-#: lib/admin.php:284 templates/admin/cdbt_management_console.php:35
+#: lib/admin.php:290 templates/admin/cdbt_management_console.php:26
 msgid "CDBT Management Console"
 msgstr "カスタムDBテーブル 管理画面"
 
-#: lib/admin.php:285
+#: lib/admin.php:291
 msgid "CDBT"
 msgstr "CDBT"
 
-#: lib/admin.php:295 templates/admin/cdbt_tables.php:44
+#: lib/admin.php:301 templates/admin/cdbt_tables.php:44
 msgid "CDBT Tables Management"
 msgstr "カスタムDBテーブル テーブル管理"
 
-#: lib/admin.php:296
+#: lib/admin.php:302
 msgid "Tables"
 msgstr "テーブル管理"
 
-#: lib/admin.php:304 templates/admin/cdbt_shortcodes.php:32
+#: lib/admin.php:310 templates/admin/cdbt_shortcodes.php:32
 msgid "CDBT Shortcodes Management"
 msgstr "CDBT ショートコード管理"
 
-#: lib/admin.php:305
+#: lib/admin.php:311
 msgid "Shortcodes"
 msgstr "ショートコード管理"
 
-#: lib/admin.php:313 templates/admin/cdbt_web_apis.php:29
+#: lib/admin.php:319 templates/admin/cdbt_web_apis.php:29
 msgid "CDBT Web APIs Management"
 msgstr "カスタムDBテーブル WEB API管理"
 
-#: lib/admin.php:314
+#: lib/admin.php:320
 msgid "Web APIs"
 msgstr "WEB API管理"
 
-#: lib/admin.php:322 templates/admin/cdbt_options.php:30
+#: lib/admin.php:328 templates/admin/cdbt_options.php:31
 msgid "CDBT Plugin Options"
 msgstr "カスタムDBテーブル プラグイン設定"
 
-#: lib/admin.php:323
+#: lib/admin.php:329
 msgid "Plugin Options"
 msgstr "プラグイン設定"
 
-#: lib/admin.php:490
+#: lib/admin.php:517
 msgid "Custom DB Tables"
 msgstr "カスタム DB テーブル"
 
-#: lib/admin.php:580
+#: lib/admin.php:607
 msgid "Settings"
 msgstr "設定"
 
-#: lib/admin.php:588
+#: lib/admin.php:615
 msgid "Edit"
 msgstr "編集"
 
-#: lib/admin.php:647 lib/admin.php:652 lib/main.php:434 lib/main.php:439
+#: lib/admin.php:674 lib/admin.php:679 lib/main.php:436 lib/main.php:441
 msgid "Invalid access this page."
 msgstr "このページへのアクセスが不正です。"
 
-#: lib/admin.php:675 lib/main.php:464
+#: lib/admin.php:702 lib/main.php:466
 msgid "Illegal access is."
 msgstr "不正なアクセスです。"
 
-#: lib/admin.php:678 lib/admin.php:681
+#: lib/admin.php:705 lib/admin.php:708
 msgid "You do not have access privileges on this page."
 msgstr "このページにアクセスする権限がありません。"
 
-#: lib/admin.php:734
+#: lib/admin.php:813
 msgid "Plugin options saved."
 msgstr "プラグイン設定を保存しました。"
 
-#: lib/admin.php:736
+#: lib/admin.php:815
 msgid "Could not save options."
 msgstr "設定を保存できませんでした。"
 
-#: lib/admin.php:768
+#: lib/admin.php:847
 msgid "Log file does not exist."
 msgstr "ログファイルがありません。"
 
-#: lib/admin.php:778
+#: lib/admin.php:857
 msgid ""
 "Could not make a directory for backup. Then, it was interrupted of log "
 "deletion."
@@ -162,57 +162,57 @@ msgstr ""
 "バックアップ用のディレクトリを作成できませんでした。そのためログ削除を中断し"
 "ました。"
 
-#: lib/admin.php:785
+#: lib/admin.php:864
 msgid "Could not copy of the log file."
 msgstr "ログファイルをコピーできませんでした。"
 
-#: lib/admin.php:794
+#: lib/admin.php:873
 msgid "Could not clear the log."
 msgstr "ログを消去できませんでした。"
 
-#: lib/admin.php:800
+#: lib/admin.php:879
 msgid "Have cleared the log."
 msgstr "ログを消去しました。"
 
-#: lib/admin.php:833 lib/admin.php:1521 lib/admin.php:1588
+#: lib/admin.php:912 lib/admin.php:1600 lib/admin.php:1667
 #, php-format
 msgid "%s does not exist."
 msgstr "%sがありません。"
 
-#: lib/admin.php:844
+#: lib/admin.php:923
 #, php-format
 msgid "Contains characters which cannot be used in %s."
 msgstr "%s中に使用できない文字が含まれています。"
 
-#: lib/admin.php:886
+#: lib/admin.php:965
 msgid "Incorporatable table does not exist."
 msgstr "取り込み可能なテーブルがありません。"
 
-#: lib/admin.php:904
+#: lib/admin.php:983
 msgid "Table incorporation has been completed successfully."
 msgstr "テーブルの取り込みが正常に完了しました。"
 
-#: lib/admin.php:907
+#: lib/admin.php:986
 msgid "Failed the table incorporation."
 msgstr "テーブルの取り込みに失敗しました。"
 
-#: lib/admin.php:953
+#: lib/admin.php:1032
 msgid "Invalid sql statement of `ALTER TABLE`."
 msgstr "\"ALTER TABLE\"のSQL文が無効です。"
 
-#: lib/admin.php:954
+#: lib/admin.php:1033
 msgid "Failed to run the query of `ALTER TABLE`."
 msgstr "\"ALTER TABLE\"のクエリ実行に失敗しました。"
 
-#: lib/admin.php:1050 lib/admin.php:1117
+#: lib/admin.php:1129 lib/admin.php:1196
 msgid "Modification was successful."
 msgstr "変更に成功しました。"
 
-#: lib/admin.php:1057 lib/admin.php:1122
+#: lib/admin.php:1136 lib/admin.php:1201
 msgid "Failed to update of the plugin options."
 msgstr "プラグイン設定の更新に失敗しました。"
 
-#: lib/admin.php:1061 lib/admin.php:1125
+#: lib/admin.php:1140 lib/admin.php:1204
 msgid ""
 "There was no item to be modify. Please run again after you correct the item "
 "you want to modify."
@@ -220,19 +220,19 @@ msgstr ""
 "修正すべき項目がありませんでした。変更したい項目を修正後に再度実行してくださ"
 "い。"
 
-#: lib/admin.php:1130 lib/admin.php:1370 lib/admin.php:1477
+#: lib/admin.php:1209 lib/admin.php:1449 lib/admin.php:1556
 msgid "Illegal operation was called."
 msgstr "無効な操作が呼び出されました。"
 
-#: lib/admin.php:1167 lib/admin.php:1407
+#: lib/admin.php:1246 lib/admin.php:1486
 msgid "Could not change the operate table."
 msgstr "操作テーブルを変更できませんでした。"
 
-#: lib/admin.php:1187
+#: lib/admin.php:1266
 msgid "Invalid step transition."
 msgstr "不正なステップ遷移です。"
 
-#: lib/admin.php:1214
+#: lib/admin.php:1293
 msgid ""
 "The uploaded file could not be parsed. It likely has deficiencies in the "
 "file."
@@ -240,7 +240,7 @@ msgstr ""
 "アップロードされたファイルをパースできませんでした。ファイルに不備がある可能"
 "性があります。"
 
-#: lib/admin.php:1217
+#: lib/admin.php:1296
 msgid ""
 "The number of data to be imported is not consistent with the number of the "
 "specified column. Please specify the column to match the import data again."
@@ -248,54 +248,54 @@ msgstr ""
 "インポートするデータ数が指定されたカラムの数と一致しません。インポートデータ"
 "に合わせてカラムの指定を行ってください。"
 
-#: lib/admin.php:1228
+#: lib/admin.php:1307
 msgid "It does not contain the data to import in your uploaded files."
 msgstr "アップロードファイルにインポートするデータが含まれていません。"
 
-#: lib/admin.php:1269
+#: lib/admin.php:1348
 msgid "Uploaded file format is different from the specified format."
 msgstr "アップロードされたファイル形式が指定された形式と異なります。"
 
-#: lib/admin.php:1272
+#: lib/admin.php:1351
 msgid "Import file has not been uploaded."
 msgstr "インポートファイルがアップロードされていません。"
 
-#: lib/admin.php:1275
+#: lib/admin.php:1354
 msgid "Uploaded file format is invalid, or parameter is not enough."
 msgstr "ファイル形式に不備があるか、もしくはパラメータが足りません。"
 
-#: lib/admin.php:1290
+#: lib/admin.php:1369
 #, php-format
 msgid "%d of the data has been successfully imported."
 msgstr "%d件のデータが正常にインポートされました。"
 
-#: lib/admin.php:1293
+#: lib/admin.php:1372
 msgid "Failed to import the data."
 msgstr "データのインポートに失敗しました。"
 
-#: lib/admin.php:1324
+#: lib/admin.php:1403
 msgid "Duplicate table name is not specified."
 msgstr "複製テーブル名が指定されていません。"
 
-#: lib/admin.php:1327
+#: lib/admin.php:1406
 msgid "Parameter for duplicating the table is incomplete."
 msgstr "テーブル複製を行うためのパラーメータが不完全です。"
 
-#: lib/admin.php:1330
+#: lib/admin.php:1409
 msgid "Original table for duplicating is not specified."
 msgstr "複製元のテーブルが指定されていません。"
 
-#: lib/admin.php:1333
+#: lib/admin.php:1412
 msgid ""
 "Duplicate table name already exists. Please specify a different table name."
 msgstr ""
 "重複するテーブル名がすでに存在しています。別のテーブル名を指定してください。"
 
-#: lib/admin.php:1341
+#: lib/admin.php:1420
 msgid "Duplication of the table has been completed successfully."
 msgstr "テーブルの複製が正常に完了しました。"
 
-#: lib/admin.php:1343
+#: lib/admin.php:1422
 msgid ""
 "Duplication of table has been completed, but have failed to register as a "
 "manageable table of plugin. Please retry from resuming the table."
@@ -303,36 +303,36 @@ msgstr ""
 "テーブル複製は完了しましたが、プラグインで管理可能なテーブルとして登録するこ"
 "とができませんでした。既存テーブルの組み込みから再試行してください。"
 
-#: lib/admin.php:1346
+#: lib/admin.php:1425
 msgid "Failed to replication of the table."
 msgstr "テーブルの複製に失敗しました。"
 
-#: lib/admin.php:1439 lib/main.php:583
+#: lib/admin.php:1518 lib/main.php:586 lib/main.php:598
 #, php-format
 msgid "Your entry data has been successfully registered to \"%s\" table."
 msgstr "あなたが登録したデータが正常に「%s」テーブルに登録されました。"
 
-#: lib/admin.php:1441 lib/main.php:587
+#: lib/admin.php:1520 lib/main.php:590 lib/main.php:601
 #, php-format
 msgid "Could not insert data to \"%s\" table."
 msgstr "「%s」テーブルへデータの登録ができませんでした。"
 
-#: lib/admin.php:1460 lib/main.php:493
+#: lib/admin.php:1539 lib/main.php:495
 msgid "Update of the data has been completed successfully."
 msgstr "データの更新が正常に完了しました。"
 
-#: lib/admin.php:1462 lib/main.php:496
+#: lib/admin.php:1541 lib/main.php:498
 #, php-format
 msgid "Could not update data of \"%s\" table."
 msgstr "「%s」テーブルのデータを更新できませんでした。"
 
-#: lib/admin.php:1463 lib/main.php:497
+#: lib/admin.php:1542 lib/main.php:499
 msgid ""
 "Not done updating of data if there is no change to the data in updating "
 "before and after."
 msgstr "更新前後でデータに変更がない場合、データの更新は行われません。"
 
-#: lib/admin.php:1464 lib/main.php:498
+#: lib/admin.php:1543 lib/main.php:500
 msgid ""
 "Or, it is possible that the record having the same data could not be updated "
 "in order that existed in the other."
@@ -340,77 +340,77 @@ msgstr ""
 "もしくは、同じデータを持つレコードが他に存在していたために更新されなかった可"
 "能性もあります。"
 
-#: lib/admin.php:1539
+#: lib/admin.php:1618
 #, php-format
 msgid "Have been saved successfully as a custom shortcode ID: %d."
 msgstr "カスタムショートコードID: %d として正常に保存されました。"
 
-#: lib/admin.php:1541
+#: lib/admin.php:1620
 msgid "Could not save the custom shortcode."
 msgstr "カスタムショートコードを保存できませんでした。"
 
-#: lib/admin.php:1544
+#: lib/admin.php:1623
 msgid "Could not save because the specific custom shortcode id already exists."
 msgstr ""
 "指定のカスタムショートコードIDが既に存在しているため保存できませんでした。"
 
-#: lib/admin.php:1612
+#: lib/admin.php:1691
 #, php-format
 msgid "Have been updated successfully as a custom shortcode ID: %d."
 msgstr "カスタムショートコードID: %d の更新に成功しました。"
 
-#: lib/admin.php:1614
+#: lib/admin.php:1693
 msgid "Could not update the custom shortcode."
 msgstr "カスタムショートコードを更新できませんでした。"
 
-#: lib/admin.php:1617
+#: lib/admin.php:1696
 msgid "Could not update because the specified custom shortcode does not exist."
 msgstr "指定されたショートコードが存在しないため、更新できませんでした。"
 
-#: lib/admin.php:1651
+#: lib/admin.php:1730
 msgid "Request origin host does not specified."
 msgstr "リクエスト元ホストが指定されていません。"
 
-#: lib/admin.php:1659
+#: lib/admin.php:1738
 msgid "Specified request origin host is invalid."
 msgstr "リクエスト元ホストの指定が無効です。"
 
-#: lib/admin.php:1663
+#: lib/admin.php:1742
 msgid ""
 "Hosts that do not allow all of the request methods can not be registered."
 msgstr "すべてのリクエストメソッドを許可しないホストは登録できません。"
 
-#: lib/admin.php:1692
+#: lib/admin.php:1771
 #, php-format
 msgid "The \"%s\" was registered as a host to allow the API request."
 msgstr "「%s」をAPIリクエストを許可するホストとして登録しました。 "
 
-#: lib/admin.php:1695
+#: lib/admin.php:1774
 msgid "Failed to generate the API key."
 msgstr "APIキーの生成に失敗しました。"
 
-#: lib/admin.php:1720
+#: lib/admin.php:1799
 msgid "Reporting Errors"
 msgstr "エラーレポート"
 
-#: lib/admin.php:1720
+#: lib/admin.php:1799
 msgid "Reporting Results"
 msgstr "結果レポート"
 
-#: lib/admin.php:1727
+#: lib/admin.php:1812
 msgid "Modification item none"
 msgstr "変更項目なし"
 
-#: lib/admin.php:1728
+#: lib/admin.php:1813
 msgid "Please run again after you correct the item you want to modify."
 msgstr "変更したい項目を修正した後に再度実行してください。"
 
-#: lib/admin.php:1734
+#: lib/admin.php:1819
 #, php-format
 msgid "Export data from \"%s\" table"
 msgstr "「%s」テーブルからデータをエクスポート"
 
-#: lib/admin.php:1735
+#: lib/admin.php:1820
 msgid ""
 "If specified table has a lot of data for exporting, it may take long time "
 "until the download is complete.<br>Please start the export if it is good."
@@ -419,16 +419,16 @@ msgstr ""
 "ドが完了するまで長い時間がかかる場合があります。<br>よろしければ、エクスポー"
 "トを開始してください。"
 
-#: lib/admin.php:1737 templates/admin/cdbt_tables.php:1219
+#: lib/admin.php:1822 templates/admin/cdbt_tables.php:1219
 msgid "Export"
 msgstr "エクスポート"
 
-#: lib/admin.php:1742
+#: lib/admin.php:1827
 #, php-format
 msgid "Truncate data in \"%s\" table"
 msgstr "%sテーブルのデータを初期化"
 
-#: lib/admin.php:1743
+#: lib/admin.php:1828
 msgid ""
 "When you truncate a table, all data that currently stored will be lost. "
 "Then, you can not resume this process.<br>Do you want to truncate this table "
@@ -438,16 +438,16 @@ msgstr ""
 "れます。さらに、このプロセスはやり直すことができません。<br>本当にテーブル初"
 "期化を行ってもよろしいですか？"
 
-#: lib/admin.php:1744
+#: lib/admin.php:1829
 msgid "Truncate"
 msgstr "初期化"
 
-#: lib/admin.php:1748
+#: lib/admin.php:1833
 #, php-format
 msgid "Remove the \"%s\" table"
 msgstr "「%s」テーブルの削除"
 
-#: lib/admin.php:1749
+#: lib/admin.php:1834
 msgid ""
 "If you have removed a table, at same time all data that currently stored "
 "will be lost. Then, you can not resume this process.<br>Do you want to "
@@ -457,48 +457,48 @@ msgstr ""
 "失われます。さらに、削除後はこのプロセスをやり直すことができません。<br>本当"
 "にテーブルを削除しますか？"
 
-#: lib/admin.php:1750 lib/admin.php:1775 lib/admin.php:1810 lib/admin.php:1816
+#: lib/admin.php:1835 lib/admin.php:1860 lib/admin.php:1895 lib/admin.php:1901
 msgid "Delete"
 msgstr "削除"
 
-#: lib/admin.php:1754
+#: lib/admin.php:1839
 msgid "Table is not selected"
 msgstr "テーブルが選択されていません"
 
-#: lib/admin.php:1755
+#: lib/admin.php:1840
 msgid "Please retry to operate that after the table selection."
 msgstr "テーブル選択後に再試行してください。"
 
-#: lib/admin.php:1758
+#: lib/admin.php:1843
 msgid "Data is not selected"
 msgstr "データが選択されていません"
 
-#: lib/admin.php:1759
+#: lib/admin.php:1844
 msgid "Please retry to operate that after the data selection."
 msgstr "データ選択後に再試行してください。"
 
-#: lib/admin.php:1763
+#: lib/admin.php:1848
 msgid "Selected data is too many"
 msgstr "選択されたデータが多すぎます"
 
-#: lib/admin.php:1764
+#: lib/admin.php:1849
 msgid "Please retry after selecting one data you want to edit."
 msgstr "編集したい1つのデータを選択後に再試行してください。"
 
-#: lib/admin.php:1767
+#: lib/admin.php:1852
 msgid "Edit Data Form"
 msgstr "データ編集フォーム"
 
-#: lib/admin.php:1769
+#: lib/admin.php:1854
 msgid "Update"
 msgstr "更新"
 
-#: lib/admin.php:1773
+#: lib/admin.php:1858
 #, php-format
 msgid "Remove the selected %s of data"
 msgstr "選択された%sのデータを削除"
 
-#: lib/admin.php:1774
+#: lib/admin.php:1859
 msgid ""
 "You can not restore that data after deleted the data. Are you sure to delete "
 "the data?"
@@ -506,39 +506,39 @@ msgstr ""
 "データ削除後にそのデータを復元することはできません。データ削除を実行してもよ"
 "ろしいですか？"
 
-#: lib/admin.php:1779
+#: lib/admin.php:1864
 msgid "Preview Image"
 msgstr "画像プレビュー"
 
-#: lib/admin.php:1783
+#: lib/admin.php:1868
 msgid "Describe File Information"
 msgstr "ファイル詳細"
 
-#: lib/admin.php:1795
+#: lib/admin.php:1880
 msgid "File Name"
 msgstr "ファイル名"
 
-#: lib/admin.php:1796
+#: lib/admin.php:1881
 msgid "MIME Type"
 msgstr "ファイルタイプ"
 
-#: lib/admin.php:1797
+#: lib/admin.php:1882
 msgid "File Size"
 msgstr "ファイルサイズ"
 
-#: lib/admin.php:1798
+#: lib/admin.php:1883
 msgid "File Hash"
 msgstr "ファイルハッシュ"
 
-#: lib/admin.php:1802
+#: lib/admin.php:1887
 msgid "Download"
 msgstr "ダウンロード"
 
-#: lib/admin.php:1808
+#: lib/admin.php:1893
 msgid "Remove the shortcode"
 msgstr "ショートコードの削除"
 
-#: lib/admin.php:1809
+#: lib/admin.php:1894
 msgid ""
 "You can not restore the shortcode settings after deleted. Are you sure to "
 "delete this shortcode settings?"
@@ -546,11 +546,11 @@ msgstr ""
 "削除後にショートコードの設定を復元することはできません。このショートコード設"
 "定を削除してもよろしいですか？"
 
-#: lib/admin.php:1814
+#: lib/admin.php:1899
 msgid "Remove the allowed host"
 msgstr "許可されたホストの削除"
 
-#: lib/admin.php:1815
+#: lib/admin.php:1900
 #, php-format
 msgid ""
 "You can not restore the allowed host %s after deleted. Are you sure to "
@@ -559,19 +559,19 @@ msgstr ""
 "削除後に許可されたホスト %s の設定を復元することはできません。このホスト設定"
 "を削除してもよろしいですか？"
 
-#: lib/admin.php:1820
+#: lib/admin.php:1905
 msgid "Preview shortcode"
 msgstr "ショートコードのプレビュー"
 
-#: lib/admin.php:1827
+#: lib/admin.php:1912
 msgid "Preview Request Web API"
 msgstr "WEB APIリクエスト プレビュー"
 
-#: lib/admin.php:1839 templates/admin/cdbt_tables.php:232
+#: lib/admin.php:1924 templates/admin/cdbt_tables.php:232
 msgid "Table Creator"
 msgstr "テーブルクリエーター"
 
-#: lib/admin.php:1840
+#: lib/admin.php:1925
 msgid ""
 "In the \"table creator\" you can intuitively create the columns "
 "configuration of table. It will be cached the settings when you click of "
@@ -581,11 +581,11 @@ msgstr ""
 "「SQLを適用する」を実行した設定内容はキャッシュされ、このウィンドウを閉じても"
 "失われません。"
 
-#: lib/admin.php:1841
+#: lib/admin.php:1926
 msgid "Reset"
 msgstr "リセット"
 
-#: lib/admin.php:1841
+#: lib/admin.php:1926
 msgid "Apply SQL"
 msgstr "SQLを適用する"
 
@@ -645,19 +645,19 @@ msgstr "「%s」テーブルの削除に失敗しました。"
 msgid "Parameters required for table deletion is missing."
 msgstr "テーブル削除に必要なパラメータが不足しています"
 
-#: lib/ajax.php:318 lib/ajax.php:361 lib/main.php:548
+#: lib/ajax.php:318 lib/ajax.php:361 lib/main.php:550
 msgid "Parameters required for data deletion is missing."
 msgstr "データ削除に必要なパラメータが不足しています。"
 
-#: lib/ajax.php:351 lib/main.php:537
+#: lib/ajax.php:351 lib/main.php:539
 msgid "Specified data have been removed successfully."
 msgstr "指定されたデータの削除に成功しました。"
 
-#: lib/ajax.php:353 lib/main.php:540
+#: lib/ajax.php:353 lib/main.php:542
 msgid "Some of the data could not remove."
 msgstr "いくつかのデータが削除できませんでした。"
 
-#: lib/ajax.php:356 lib/main.php:543
+#: lib/ajax.php:356 lib/main.php:545
 msgid "Specified conditions for finding to delete data is invalid."
 msgstr "削除するデータを検索するための指定条件が無効です。"
 
@@ -686,55 +686,55 @@ msgstr "指定ホストの削除に失敗しました。"
 msgid "Specified host does not exist."
 msgstr "指定のホストがありません。"
 
-#: lib/config.php:150
+#: lib/config.php:167
 #, php-format
 msgid "The missing options is as follow: %s"
 msgstr "次のとおり、不足している設定があります: %s"
 
-#: lib/config.php:223
+#: lib/config.php:240
 msgid "Plugin options has upgraded."
 msgstr "プラグイン設定をアップグレードしました。"
 
-#: lib/config.php:253
+#: lib/config.php:270
 msgid "Table settings in plugin option is empty."
 msgstr "プラグインオプションのテーブル設定が空です。"
 
-#: lib/config.php:290
+#: lib/config.php:307
 #, php-format
 msgid "New options is not specified when the method \"%s\" call."
 msgstr ""
 "メソッド「%s」呼び出しにおいて新しいオプション設定が指定されていません。"
 
-#: lib/config.php:293
+#: lib/config.php:310
 #, php-format
 msgid "Illegal action is specified to the method \"%s\" call."
 msgstr "メソッド「%s」呼び出しにおいて不正なアクションが指定されています。"
 
-#: lib/config.php:310 lib/config.php:382
+#: lib/config.php:327 lib/config.php:399
 msgid "Failed to save the option."
 msgstr "設定の保存に失敗しました。"
 
-#: lib/config.php:312
+#: lib/config.php:329
 msgid "Options format is invalid."
 msgstr "オプション設定のフォーマットが不正です。"
 
-#: lib/config.php:316
+#: lib/config.php:333
 msgid "Specified option key does not exist in option settings."
 msgstr "オプション設定内のオプションキーの指定がありません。"
 
-#: lib/config.php:347
+#: lib/config.php:364
 msgid "Table settings for removing does not exist."
 msgstr "削除するテーブル設定がありません。"
 
-#: lib/config.php:362
+#: lib/config.php:379
 msgid "Api key settings for removing does not exist."
 msgstr "削除するAPIキー設定がありません。"
 
-#: lib/config.php:384
+#: lib/config.php:401
 msgid "Update process of setting did not take place."
 msgstr "設定の更新処理は行われませんでした。"
 
-#: lib/config.php:578
+#: lib/config.php:595
 msgid "Debug log file does not have permission of writable."
 msgstr "デバッグログファイルに書き込み権限がありません。"
 
@@ -928,133 +928,133 @@ msgstr "エクスポートする対象カラムが指定されていません。
 msgid "Export target column \"%s\" does not exist."
 msgstr "エクスポート対象の「%s」カラムがありません。"
 
-#: lib/extras.php:79
+#: lib/extras.php:81
 msgid "Try yet"
 msgstr "試験実装"
 
-#: lib/extras.php:83
+#: lib/extras.php:85
 msgid "New added"
 msgstr "新規追加"
 
-#: lib/extras.php:87
+#: lib/extras.php:89
 msgid "Future releases"
 msgstr "実装予定"
 
-#: lib/extras.php:182
+#: lib/extras.php:184
 msgid "Oparate Table"
 msgstr "テーブル操作"
 
-#: lib/extras.php:184 templates/admin/cdbt_tables.php:825
+#: lib/extras.php:186 templates/admin/cdbt_tables.php:825
 msgid "View Data"
 msgstr "データ閲覧"
 
-#: lib/extras.php:185 templates/admin/cdbt_tables.php:826
+#: lib/extras.php:187 templates/admin/cdbt_tables.php:826
 msgid "Entry Data"
 msgstr "データ登録"
 
-#: lib/extras.php:186 templates/admin/cdbt_tables.php:827
+#: lib/extras.php:188 templates/admin/cdbt_tables.php:827
 #: templates/components/cdbt_repeater.php:248
 msgid "Edit Data"
 msgstr "データ編集"
 
-#: lib/extras.php:199
+#: lib/extras.php:201
 msgid "TableName"
 msgstr "テーブル名"
 
-#: lib/extras.php:206
+#: lib/extras.php:208
 msgid "Records"
 msgstr "データ数"
 
-#: lib/extras.php:213
+#: lib/extras.php:215
 msgid "PrimaryKey"
 msgstr "主キー"
 
-#: lib/extras.php:218
+#: lib/extras.php:220
 msgid "Charset"
 msgstr "文字コード"
 
-#: lib/extras.php:223
+#: lib/extras.php:225
 msgid "Collation"
 msgstr "照合順序"
 
-#: lib/extras.php:228
+#: lib/extras.php:230
 msgid "Engine"
 msgstr "DBエンジン"
 
-#: lib/extras.php:233
+#: lib/extras.php:235
 msgid "PerPageRecords"
 msgstr "ページ毎データ数"
 
-#: lib/extras.php:253 lib/extras.php:315
+#: lib/extras.php:255 lib/extras.php:317
 msgid "Operation"
 msgstr "オペレーション"
 
-#: lib/extras.php:264
+#: lib/extras.php:266
 msgid "Register Shortcode"
 msgstr "ショートコードの登録"
 
-#: lib/extras.php:266 templates/admin/cdbt_shortcodes.php:17
+#: lib/extras.php:268 templates/admin/cdbt_shortcodes.php:17
 msgid "Edit Shortcode"
 msgstr "ショートコード編集"
 
-#: lib/extras.php:267 lib/extras.php:327
+#: lib/extras.php:269 lib/extras.php:329
 msgid "Delete Shortcode"
 msgstr "ショートコード削除"
 
-#: lib/extras.php:280
+#: lib/extras.php:282
 msgid "CSID"
 msgstr "CSID"
 
-#: lib/extras.php:286
+#: lib/extras.php:288
 msgid "Shortcode Name / Alias Shortcode"
 msgstr "ショートコード名／エイリアスコード"
 
-#: lib/extras.php:293 templates/admin/cdbt_shortcodes.php:388
+#: lib/extras.php:295 templates/admin/cdbt_shortcodes.php:388
 #: templates/admin/cdbt_shortcodes.php:732
 msgid "Description"
 msgstr "備考"
 
-#: lib/extras.php:298
+#: lib/extras.php:300
 msgid "Type"
 msgstr "タイプ"
 
-#: lib/extras.php:304
+#: lib/extras.php:306
 msgid "Author"
 msgstr "作成者"
 
-#: lib/extras.php:310 lib/extras.php:361
+#: lib/extras.php:312 lib/extras.php:363
 msgid "Permission"
 msgstr "利用権限"
 
-#: lib/extras.php:327
+#: lib/extras.php:329
 msgid "Delete Host"
 msgstr "ホスト削除"
 
-#: lib/extras.php:338
+#: lib/extras.php:340
 msgid "ID"
 msgstr "ID"
 
-#: lib/extras.php:344
+#: lib/extras.php:346
 msgid "Host Name"
 msgstr "ホスト名"
 
-#: lib/extras.php:350
+#: lib/extras.php:352
 msgid "API Key"
 msgstr "APIキー"
 
-#: lib/extras.php:356 templates/admin/cdbt_web_apis.php:114
+#: lib/extras.php:358 templates/admin/cdbt_web_apis.php:114
 msgid "Description Host"
 msgstr "ホストの説明"
 
-#: lib/extras.php:366
+#: lib/extras.php:368
 msgid "Generated Date"
 msgstr "作成日時"
 
-#: lib/extras.php:372
+#: lib/extras.php:374
 msgid "Deletion"
 msgstr "削除"
 
-#: lib/main.php:591
+#: lib/main.php:594
 msgid ""
 "Could not multiple registration by the continuous transmission. So you "
 "reload this entry page, please try to refresh the token."
@@ -1193,7 +1193,7 @@ msgstr "成功"
 msgid "failur"
 msgstr "失敗"
 
-#: templates/admin/cdbt_management_console.php:38
+#: templates/admin/cdbt_management_console.php:29
 msgid ""
 "Welcome to the \"Custom DataBase Tables\" plugin! In this page is "
 "introductions about feature of plugin, and be able to go short trip as the "
@@ -1202,7 +1202,7 @@ msgstr ""
 "「カスタムDBテーブル」プラグインへようこそ！ このページではプラグインの機能の"
 "紹介と、簡単なチュートリアルを体験できます。"
 
-#: templates/admin/cdbt_management_console.php:49
+#: templates/admin/cdbt_management_console.php:40
 msgid ""
 "Sorry I made you wait! Just barely plug-major upgrade version of "
 "\"CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, "
@@ -1212,7 +1212,7 @@ msgstr ""
 "す）」プラグインのメジャーバージョンアップ版「バージョン2（以降、V2と呼称しま"
 "す）」が登場しました。"
 
-#: templates/admin/cdbt_management_console.php:50
+#: templates/admin/cdbt_management_console.php:41
 msgid ""
 "The CDBT is a database management plugin that you can create your own tables "
 "in the MySQL database for WordPress, you can directly input and output of "
@@ -1222,7 +1222,7 @@ msgstr ""
 "の入出力ができ、テーマや外部サイトとデータを連携することができるデータベース"
 "管理プラグインです。"
 
-#: templates/admin/cdbt_management_console.php:51
+#: templates/admin/cdbt_management_console.php:42
 msgid ""
 "For using this plugin, you never need detailed knowledge of the database. "
 "Then you  can intuitively handle tables and data in database."
@@ -1230,7 +1230,7 @@ msgstr ""
 "このプラグインを利用することで、データベースの詳しい知識を持っていなくても直"
 "感的にテーブルやデータを取り扱うことができるようになります。"
 
-#: templates/admin/cdbt_management_console.php:52
+#: templates/admin/cdbt_management_console.php:43
 msgid ""
 "Your website that will be able to store own extended data by this plugin, it "
 "will give you some phenomenal extension idea to your envisioning project."
@@ -1238,7 +1238,7 @@ msgstr ""
 "このプラグインによってオリジナルのデータ格納領域が追加されたサイトは、あなた"
 "が構想するプロジェクトを驚異的に拡張してくれるでしょう。"
 
-#: templates/admin/cdbt_management_console.php:53
+#: templates/admin/cdbt_management_console.php:44
 msgid ""
 "Also at the CDBT V2, finally ability to manage the core table of WordPress "
 "has been added. In this feature, you should be able to using the WordPress "
@@ -1248,7 +1248,7 @@ msgstr ""
 "した。これによって、WordPressをよりCMS的に使い倒すことができるようになるはず"
 "です。"
 
-#: templates/admin/cdbt_management_console.php:54
+#: templates/admin/cdbt_management_console.php:45
 msgid ""
 "However, in order to utilize the CDBT V2, please be aware that it is "
 "necessary to <strong class=\"text-danger\">PHP5.4 or higher</strong> "
@@ -1259,7 +1259,7 @@ msgstr ""
 "strong>が必要になります。また、本プラグインでは下記の外部ライブラリを使用しま"
 "す。"
 
-#: templates/admin/cdbt_management_console.php:59
+#: templates/admin/cdbt_management_console.php:50
 msgid ""
 "CDBT V2 In addition to the new features of the WordPress core table "
 "management has been added a lot. Then, review the internal processing for "
@@ -1270,7 +1270,7 @@ msgstr ""
 "した。そして、従来の機能についても処理の内部を見直して、使いやすいインター"
 "フェースへ刷新することで、大幅な機能強化を行いました。"
 
-#: templates/admin/cdbt_management_console.php:60
+#: templates/admin/cdbt_management_console.php:51
 msgid ""
 "Added typical new feature in V2 is as follows.<br><ol><li>Management "
 "functions of the WordPress core table</li><li>Table replication function of</"
@@ -1281,7 +1281,7 @@ msgstr ""
 "管理機能</li><li>テーブルの複製機能</li><li>ショートコードの編集と保存機能</"
 "li><li>WebAPIの編集機能</li><li>デバッグモードの実装</li></ol><br>"
 
-#: templates/admin/cdbt_management_console.php:62
+#: templates/admin/cdbt_management_console.php:53
 msgid ""
 "In addition,  significantly enhancemented benefits is as follows.<br><ol "
 "style=\"list-style-position: inside;\"><li>Added a file type of import/"
@@ -1296,11 +1296,11 @@ msgstr ""
 "をFuelUXのリピーター形式に変更</li><li>テーブルの詳細情報表示の精密化</"
 "li><li>管理画面のインターフェースの刷新</li></ol><br>"
 
-#: templates/admin/cdbt_management_console.php:67
+#: templates/admin/cdbt_management_console.php:58
 msgid "So, let&apos;s create a new table first with CDBT V2."
 msgstr "それでは、まずCDBT V2で新しいテーブルを作成してみましょう。"
 
-#: templates/admin/cdbt_management_console.php:68
+#: templates/admin/cdbt_management_console.php:59
 msgid ""
 "First, please choose the \"tables\" from the CDBT menu of WordPress, then "
 "selected of \"Create Table\" tab. When you see the screen of the \"Table "
@@ -1311,7 +1311,7 @@ msgstr ""
 "クリックしてください。「データベース用テーブル設定」の画面が表示されたら、作"
 "成したいテーブル名を入力しましょう。"
 
-#: templates/admin/cdbt_management_console.php:69
+#: templates/admin/cdbt_management_console.php:60
 msgid ""
 "Then, select a character set and the database engine of the table, please "
 "click on the button of \"Make Template\" on the right-hand side of the "
@@ -1324,7 +1324,7 @@ msgstr ""
 "するテーブルのSQL文が自動で生成されました。基本的なテーブル作成操作はこの流れ"
 "になります。"
 
-#: templates/admin/cdbt_management_console.php:70
+#: templates/admin/cdbt_management_console.php:61
 msgid ""
 "This left the table when you run the \"Create Table\" will be created at "
 "this time. But, there is no shelf (column) in that table to store your data. "
@@ -1334,7 +1334,7 @@ msgstr ""
 "データを格納する棚（カラム）がありません。そこで、次はテーブルにカラムを追加"
 "してみましょう。"
 
-#: templates/admin/cdbt_management_console.php:72
+#: templates/admin/cdbt_management_console.php:63
 msgid ""
 "When you click the \"Table Creator\" tab of the \"Create Table SQL\" column, "
 "a new dialog opens, it dedicated editor that you can insert and update the "
@@ -1343,7 +1343,7 @@ msgstr ""
 "「テーブル作成SQL」欄の「テーブルクリエーター」タブをクリックすると、新しいダ"
 "イアログが開いて、カラムを追加・編集できる専用エディッタが表示されます。"
 
-#: templates/admin/cdbt_management_console.php:73
+#: templates/admin/cdbt_management_console.php:64
 msgid ""
 "At the \"Table Creator\", enter the column name, and it will automatically "
 "switch settable item column when you choose the data format to be stored in "
@@ -1356,7 +1356,7 @@ msgstr ""
 "ドラッグ＆ドロップで変更することもできます。このエディッタを利用することで"
 "データベースの知識がなくても自由自在にテーブルを編集することができるのです。"
 
-#: templates/admin/cdbt_management_console.php:74
+#: templates/admin/cdbt_management_console.php:65
 msgid ""
 "When you are finished editing the column, Do not forget to click the \"Apply "
 "SQL\" button. At this time, the column settings that you&apos;ve edited will "
@@ -1367,7 +1367,7 @@ msgstr ""
 "によってあなたが編集したカラム設定はブラウザに保存され、ダイアログを閉じて開"
 "きなおした時でもカラム編集作業を再開できるようになります。"
 
-#: templates/admin/cdbt_management_console.php:76
+#: templates/admin/cdbt_management_console.php:67
 msgid ""
 "The section of \"Table setting for the plugin\", it sets for when you want "
 "to use a table that you have created at CDBT V2 on the web frontend. It is "
@@ -1379,7 +1379,7 @@ msgstr ""
 "場合向けの設定になります。なお、この設定はテーブル作成後にいつでも変更が可能"
 "です。"
 
-#: templates/admin/cdbt_management_console.php:77
+#: templates/admin/cdbt_management_console.php:68
 msgid ""
 "Finally, there is table importation to CDBT. You can also allow you to "
 "manage it at CDBT V2, in the own table that you have created via like "
@@ -1390,11 +1390,11 @@ msgstr ""
 "に取り込んで、CDBT V2で管理できるようにすることもできます。その場合は「既存の"
 "テーブルを取り込む」のセクションから、取り込みたいテーブルを選んでください。"
 
-#: templates/admin/cdbt_management_console.php:78
+#: templates/admin/cdbt_management_console.php:69
 msgid "Go To Table Creation"
 msgstr "テーブル作成をしてみる"
 
-#: templates/admin/cdbt_management_console.php:83
+#: templates/admin/cdbt_management_console.php:74
 msgid ""
 "Table managed by the CDBT V2 is, it is possible to use some shortcodes, you "
 "can display the data content to the frontend of the site, or you can be "
@@ -1407,7 +1407,7 @@ msgstr ""
 "きます。このショートコードを利用することで、あなたのサイトに訪れるユーザーに"
 "インタラクティブなデータベース利用を提供することができます。"
 
-#: templates/admin/cdbt_management_console.php:84
+#: templates/admin/cdbt_management_console.php:75
 msgid ""
 "For example, it can in cooperation with the user to collect and accumulate "
 "content and data. Or you may be able to provide like CRM service that built "
@@ -1416,7 +1416,7 @@ msgstr ""
 "ユーザーと協力してコンテンツやデータを収集・蓄積したり、独自のユーザー管理"
 "テーブルとしてCRM的なテーブルを構築することも可能になるのです。"
 
-#: templates/admin/cdbt_management_console.php:85
+#: templates/admin/cdbt_management_console.php:76
 msgid ""
 "The appearance of the content that is output via the shortcode can be fully "
 "customizable from the management screen to fit the available scene. In "
@@ -1431,11 +1431,11 @@ msgstr ""
 "には複雑な属性設定が省略されたエイリアスコードが発行されます。実際に利用する"
 "際は、そのエイリアスコードを投稿や固定ページに貼り付けるだけです。"
 
-#: templates/admin/cdbt_management_console.php:86
+#: templates/admin/cdbt_management_console.php:77
 msgid "Go To Shortcodes Management"
 msgstr "ショートコード管理をしてみる"
 
-#: templates/admin/cdbt_management_console.php:91
+#: templates/admin/cdbt_management_console.php:82
 msgid ""
 "The data in the table managed by the CDBT V2 By using the Web API, you can "
 "access from the outside of the site. To do this you need to register the "
@@ -1446,62 +1446,62 @@ msgstr ""
 "トからアクセスすることができます。そのためには「WEB API管理」からアクセスを許"
 "可するサイトを登録する必要があります。"
 
-#: templates/admin/cdbt_management_console.php:92
+#: templates/admin/cdbt_management_console.php:83
 msgid "Since not yet written content, please wait."
 msgstr "しばらくお待ちください。"
 
-#: templates/admin/cdbt_management_console.php:93
+#: templates/admin/cdbt_management_console.php:84
 msgid "Go To WebAPIs Management"
 msgstr "WebAPI管理をしてみる"
 
-#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:92
 #: templates/admin/cdbt_tables.php:987
 msgid "Step1"
 msgstr "ステップ1"
 
-#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:92
 #: templates/admin/cdbt_tables.php:987
 msgid "Step2"
 msgstr "ステップ2"
 
-#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:92
 #: templates/admin/cdbt_tables.php:987
 msgid "Step3"
 msgstr "ステップ3"
 
-#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:92
 msgid "Step4"
 msgstr "ステップ4"
 
-#: templates/admin/cdbt_management_console.php:101
+#: templates/admin/cdbt_management_console.php:92
 msgid "Step5"
 msgstr "ステップ5"
 
-#: templates/admin/cdbt_management_console.php:103
+#: templates/admin/cdbt_management_console.php:94
 msgid "Custom DataBase Tables version 2 arrival now!"
 msgstr "カスタムDBテーブルプラグインのバージョン２が登場！"
 
-#: templates/admin/cdbt_management_console.php:104
+#: templates/admin/cdbt_management_console.php:95
 msgid "Version 2 has powered up all feature!"
 msgstr "バージョン2はすべての機能がパワーアップしています！"
 
-#: templates/admin/cdbt_management_console.php:105
+#: templates/admin/cdbt_management_console.php:96
 msgid "Let&#39;s create a new table!"
 msgstr "新しいテーブルを作ってみよう！"
 
-#: templates/admin/cdbt_management_console.php:106
+#: templates/admin/cdbt_management_console.php:97
 msgid "Let&#39;s use the shortcode!"
 msgstr "ショートコードを使ってみよう！"
 
-#: templates/admin/cdbt_management_console.php:107
+#: templates/admin/cdbt_management_console.php:98
 msgid "Cooperation with external site by API"
 msgstr "APIによる外部サイトとの連携"
 
-#: templates/admin/cdbt_management_console.php:116
+#: templates/admin/cdbt_management_console.php:107
 msgid "About Custom DataBase Tables"
 msgstr "カスタム DB テーブルについて"
 
-#: templates/admin/cdbt_management_console.php:118
+#: templates/admin/cdbt_management_console.php:109
 #, php-format
 msgid ""
 "Custom DataBase Tables is provided an extensive %sdocumentations%s. It "
@@ -1512,13 +1512,13 @@ msgstr ""
 "は、テーマやプラグインを利用するにあたってのよくある質問だけでなく、プログラ"
 "マーのための詳細説明ドキュメントなども含まれています。"
 
-#: templates/admin/cdbt_management_console.php:119
+#: templates/admin/cdbt_management_console.php:110
 #, php-format
 msgid "If you wonder how you can help the project, just %sread this%s."
 msgstr ""
 "どのように使えば良いかわからなくなった際は、%sこちらをお読みください%s。"
 
-#: templates/admin/cdbt_management_console.php:120
+#: templates/admin/cdbt_management_console.php:111
 #, php-format
 msgid ""
 "Custom DataBase Table is free of charge and is released under the same "
@@ -1527,7 +1527,7 @@ msgstr ""
 "カスタム DB テーブルは無料であり、WordPressと同じ %sGPL%sライセンスの下でリ"
 "リースされています。"
 
-#: templates/admin/cdbt_management_console.php:121
+#: templates/admin/cdbt_management_console.php:112
 #, php-format
 msgid ""
 "You will also find useful information in the %ssupport forum%s. However "
@@ -1536,7 +1536,7 @@ msgstr ""
 "%sサポートフォーラム%s を利用して情報を見つけることも出来ますが、新しいトピッ"
 "クを投稿する前には過去ログを検索することを忘れないでください。"
 
-#: templates/admin/cdbt_management_console.php:122
+#: templates/admin/cdbt_management_console.php:113
 msgid ""
 "Finally if you like this plugin or if it helps your business, donations to "
 "the author are greatly appreciated."
@@ -1544,20 +1544,20 @@ msgstr ""
 "最後に、もしこのプラグインがあなたのビジネスに役立った場合などに、作者へ寄付"
 "していただけると大変嬉しいです。"
 
-#: templates/admin/cdbt_management_console.php:131
-#: templates/admin/cdbt_management_console.php:132
+#: templates/admin/cdbt_management_console.php:122
+#: templates/admin/cdbt_management_console.php:123
 msgid "The safer, easier way to pay online!"
 msgstr "オンラインでより安全・簡単にお支払い"
 
-#: templates/admin/cdbt_management_console.php:143
+#: templates/admin/cdbt_management_console.php:134
 msgid "Please Donate To Bitcoin Address:"
 msgstr "Bitcoinアドレスへ寄付:"
 
-#: templates/admin/cdbt_management_console.php:163
+#: templates/admin/cdbt_management_console.php:154
 msgid "CustomDataBaseTables License Agreement"
 msgstr "プラグイン・ライセンス規約"
 
-#: templates/admin/cdbt_management_console.php:166
+#: templates/admin/cdbt_management_console.php:157
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License, version 2, as published "
@@ -1567,7 +1567,7 @@ msgstr ""
 "under the terms of the GNU General Public License, version 2, as published "
 "by the Free Software Foundation."
 
-#: templates/admin/cdbt_management_console.php:167
+#: templates/admin/cdbt_management_console.php:158
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -1579,7 +1579,7 @@ msgstr ""
 "FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
 "more details."
 
-#: templates/admin/cdbt_management_console.php:168
+#: templates/admin/cdbt_management_console.php:159
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
@@ -1589,15 +1589,15 @@ msgstr ""
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
 "Franklin St, Fifth Floor, Boston, MA  02110-1301  USA"
 
-#: templates/admin/cdbt_options.php:11
+#: templates/admin/cdbt_options.php:12
 msgid "General Setting"
 msgstr "一般設定"
 
-#: templates/admin/cdbt_options.php:12
+#: templates/admin/cdbt_options.php:13
 msgid "Debug"
 msgstr "デバッグ"
 
-#: templates/admin/cdbt_options.php:44
+#: templates/admin/cdbt_options.php:45
 msgid ""
 "In this configuration page, you can edit the common settings that affect the "
 "overall operation of the \"Custom DataBase Tables\" plugin."
@@ -1605,15 +1605,15 @@ msgstr ""
 "この設定ページでは、「Custom DataBase Tables」プラグインの動作全体に影響する"
 "共通設定を編集できます。"
 
-#: templates/admin/cdbt_options.php:54
+#: templates/admin/cdbt_options.php:56
 msgid "Plugin Setting"
 msgstr "プラグインの設定"
 
-#: templates/admin/cdbt_options.php:56
+#: templates/admin/cdbt_options.php:58
 msgid "Cleaning option"
 msgstr "設定値のクリーニング"
 
-#: templates/admin/cdbt_options.php:61
+#: templates/admin/cdbt_options.php:63
 msgid ""
 "When you save common settings, such as deleting the table settings that do "
 "not exist in the database, to perform the cleaning of the set value."
@@ -1621,11 +1621,11 @@ msgstr ""
 "共通設定を保存する時に、データベースに存在しないテーブル設定を削除するなど、"
 "設定値のクリーニングを行う。"
 
-#: templates/admin/cdbt_options.php:67
+#: templates/admin/cdbt_options.php:69
 msgid "Uninstall setting"
 msgstr "アンインストール設定"
 
-#: templates/admin/cdbt_options.php:72
+#: templates/admin/cdbt_options.php:74
 msgid ""
 "When you will uninstall this plugin, remove all of the configuration "
 "information related to plugin (but your created table is not deleted)."
@@ -1633,11 +1633,11 @@ msgstr ""
 "このプラグインをアンインストールする時に、プラグインに関わるすべての設定情報"
 "を削除する（作成したテーブルは削除されません）。"
 
-#: templates/admin/cdbt_options.php:78
+#: templates/admin/cdbt_options.php:80
 msgid "Manageable table restoration"
 msgstr "管理テーブルの復元"
 
-#: templates/admin/cdbt_options.php:83
+#: templates/admin/cdbt_options.php:85
 msgid ""
 "It will reconfigure tables from the past plugin configuration. However, the "
 "table that does not exist in the database at the time of restoration can not "
@@ -1646,11 +1646,11 @@ msgstr ""
 "過去のプラグイン設定から管理対象テーブルを再設定します。ただし、復元時にデー"
 "タベースに存在していないテーブルは復旧できません。"
 
-#: templates/admin/cdbt_options.php:89
+#: templates/admin/cdbt_options.php:91
 msgid "Manage WordPress core table"
 msgstr "WordPressコアテーブル管理"
 
-#: templates/admin/cdbt_options.php:94
+#: templates/admin/cdbt_options.php:96
 msgid ""
 "You make manageable of the WordPress core tables. Then, you will allow the "
 "table management, data browsing, registration, editing, and the import or "
@@ -1659,11 +1659,11 @@ msgstr ""
 "WordPressのコアテーブルが管理できるようになります。テーブル管理、データの閲"
 "覧・登録・編集、インポートやエクスポートが行えるようになります。"
 
-#: templates/admin/cdbt_options.php:100
+#: templates/admin/cdbt_options.php:102
 msgid "Display format of datetime"
 msgstr "表示日時のフォーマット"
 
-#: templates/admin/cdbt_options.php:105
+#: templates/admin/cdbt_options.php:107
 msgid ""
 "You can define the display format of datetime type data that is displayed in "
 "the plugin. By default, it will use the datetime format of the WordPress "
@@ -1672,11 +1672,51 @@ msgstr ""
 "プラグインで表示されるdatetime型データの表示フォーマットを定義できます。デ"
 "フォルトではWordPressの一般設定の日時フォーマットを利用します。"
 
-#: templates/admin/cdbt_options.php:109
+#: templates/admin/cdbt_options.php:111
+msgid "Plugin menu position"
+msgstr "プラグインメニューの位置"
+
+#: templates/admin/cdbt_options.php:116
+msgid "Top (After &quot;dashboard&quot;): 3"
+msgstr "上部（「ダッシュボード」の後）: 3"
+
+#: templates/admin/cdbt_options.php:117
+msgid "Default (Before &quot;appearance&quot;): 55"
+msgstr "初期（「外観」の前）: 55"
+
+#: templates/admin/cdbt_options.php:118
+msgid "Middle (After &quot;tools&quot;): 77"
+msgstr "中部（「ツール」の後）: 77"
+
+#: templates/admin/cdbt_options.php:119
+msgid "Bottom (After &quot;setting&quot;): 85"
+msgstr "下部（「設定」の後）: 85"
+
+#: templates/admin/cdbt_options.php:134
+msgid "Enter position number"
+msgstr "位置番号を入力してください"
+
+#: templates/admin/cdbt_options.php:144
+msgid "Set the display position of plugin menu on the WordPress admin panel."
+msgstr "WordPress管理パネル上のプラグインメニューの表示位置を設定します。"
+
+#: templates/admin/cdbt_options.php:148
+msgid "Notices via modal"
+msgstr "モーダルによる通知"
+
+#: templates/admin/cdbt_options.php:153
+msgid ""
+"If enabled, all notifications (on the management console) from this plugin "
+"will be displayed on the modal window."
+msgstr ""
+"有効の場合、（管理画面上の）すべてのプラグインからの通知はモーダルウィンドウ"
+"に表示されます。"
+
+#: templates/admin/cdbt_options.php:159
 msgid "Debug mode"
 msgstr "デバッグモード"
 
-#: templates/admin/cdbt_options.php:114
+#: templates/admin/cdbt_options.php:164
 msgid ""
 "If you enable the debug mode, an error that occurred in the plugin will be "
 "output as a log. Please use as you want to investigate incidents."
@@ -1684,15 +1724,15 @@ msgstr ""
 "デバッグモードを有効にすると、プラグインで発生したエラーがログとして出力され"
 "ます。不具合の調査を行う時などに利用してください。"
 
-#: templates/admin/cdbt_options.php:121
+#: templates/admin/cdbt_options.php:171
 msgid "Initial definition for table creation"
 msgstr "テーブル作成時の初期値設定"
 
-#: templates/admin/cdbt_options.php:124
+#: templates/admin/cdbt_options.php:174
 msgid "Table prefix"
 msgstr "テーブル接頭辞"
 
-#: templates/admin/cdbt_options.php:129
+#: templates/admin/cdbt_options.php:179
 #, php-format
 msgid ""
 "Automatically prepend table prefix %s defined at the WordPress config (wp-"
@@ -1701,27 +1741,27 @@ msgstr ""
 "新しいテーブルを作成する時にテーブル名にWordPressの設定（wp-config.php）で定"
 "義されているテーブル接頭辞%sを自動付与する。"
 
-#: templates/admin/cdbt_options.php:131
+#: templates/admin/cdbt_options.php:181
 msgid "This setting can be changed individually at the time of table creation."
 msgstr "この設定はテーブル作成時に個別に変更可能です。"
 
-#: templates/admin/cdbt_options.php:136
+#: templates/admin/cdbt_options.php:186
 msgid "Table character set"
 msgstr "テーブルの文字コード"
 
-#: templates/admin/cdbt_options.php:149
+#: templates/admin/cdbt_options.php:199
 msgid "This setting is default character set when created the table."
 msgstr "この設定は作成されるテーブルの文字コードの初期値になります。"
 
-#: templates/admin/cdbt_options.php:153
+#: templates/admin/cdbt_options.php:203
 msgid "Default timezone"
 msgstr "デフォルトタイムゾーン"
 
-#: templates/admin/cdbt_options.php:166
+#: templates/admin/cdbt_options.php:216
 msgid "Currently timezone of the MySQL database"
 msgstr "現在のMySQLデータベースのタイムゾーン"
 
-#: templates/admin/cdbt_options.php:168
+#: templates/admin/cdbt_options.php:218
 msgid ""
 "When this plugin insert the datetime type data, localized the value "
 "according to the set timezone."
@@ -1729,41 +1769,41 @@ msgstr ""
 "このプラグインからdatetime型のデータをテーブルに格納する時に、設定されたタイ"
 "ムゾーンに応じて値をローカライズします。"
 
-#: templates/admin/cdbt_options.php:173
+#: templates/admin/cdbt_options.php:223
 msgid "Default database engine"
 msgstr "デフォルトDBエンジン"
 
-#: templates/admin/cdbt_options.php:186
+#: templates/admin/cdbt_options.php:236
 msgid ""
 "This initial value is the database engine of the table created by the plugin."
 msgstr ""
 "プラグインで作成されるテーブルのデータベースエンジンの初期値になります。"
 
-#: templates/admin/cdbt_options.php:190
+#: templates/admin/cdbt_options.php:240
 msgid "Initial display number of records"
 msgstr "初期表示レコード数"
 
-#: templates/admin/cdbt_options.php:195 templates/admin/cdbt_shortcodes.php:271
+#: templates/admin/cdbt_options.php:245 templates/admin/cdbt_shortcodes.php:271
 #: templates/admin/cdbt_shortcodes.php:361
 #: templates/admin/cdbt_shortcodes.php:615
 #: templates/admin/cdbt_shortcodes.php:705 templates/admin/cdbt_tables.php:267
 #: templates/admin/cdbt_tables.php:645 templates/admin/cdbt_web_apis.php:289
 #: templates/admin/cdbt_web_apis.php:302
-#: templates/components/cdbt_forms.php:241
+#: templates/components/cdbt_forms.php:244
 msgid "Increase"
 msgstr "増やす"
 
-#: templates/admin/cdbt_options.php:196 templates/admin/cdbt_shortcodes.php:272
+#: templates/admin/cdbt_options.php:246 templates/admin/cdbt_shortcodes.php:272
 #: templates/admin/cdbt_shortcodes.php:362
 #: templates/admin/cdbt_shortcodes.php:616
 #: templates/admin/cdbt_shortcodes.php:706 templates/admin/cdbt_tables.php:268
 #: templates/admin/cdbt_tables.php:646 templates/admin/cdbt_web_apis.php:290
 #: templates/admin/cdbt_web_apis.php:303
-#: templates/components/cdbt_forms.php:242
+#: templates/components/cdbt_forms.php:245
 msgid "Decrease"
 msgstr "減らす"
 
-#: templates/admin/cdbt_options.php:199
+#: templates/admin/cdbt_options.php:249
 msgid ""
 "This initial value is the number of displayed records per one page of the "
 "table created by the plugin."
@@ -1771,7 +1811,7 @@ msgstr ""
 "このプラグインで作成するテーブルの1ページに表示されるレコード数の初期値となり"
 "ます。"
 
-#: templates/admin/cdbt_options.php:205
+#: templates/admin/cdbt_options.php:255
 msgid ""
 "Already it is not reflected in the previously created table. Please change "
 "the table settings individually if you want to change it."
@@ -1779,25 +1819,25 @@ msgstr ""
 "すでに作成済みのテーブルには反映されません。変更したい場合は個別にテーブル設"
 "定を変更してください。"
 
-#: templates/admin/cdbt_options.php:210
+#: templates/admin/cdbt_options.php:260
 msgid "Advanced Plugin Settings"
 msgstr "高度なプラグイン設定"
 
-#: templates/admin/cdbt_options.php:213
-msgid "Allow Rendering Shortcodes"
+#: templates/admin/cdbt_options.php:263
+msgid "Allow rendering shortcodes"
 msgstr "ショートコード出力設定"
 
-#: templates/admin/cdbt_options.php:218
+#: templates/admin/cdbt_options.php:268
 msgid "The Rendering shortcodes will be allow into singular post only."
 msgstr ""
 "このプラグインのショートコードの出力を個別記事（Singular Post）のみに制限す"
 "る。"
 
-#: templates/admin/cdbt_options.php:224
-msgid "Included Assets Definition"
-msgstr "インクルードされるアセット定義"
+#: templates/admin/cdbt_options.php:274
+msgid "Included assets setting"
+msgstr "インクルードアセット設定"
 
-#: templates/admin/cdbt_options.php:229
+#: templates/admin/cdbt_options.php:276
 msgid ""
 "It will control the reading of various assets. Please change this settings "
 "if it conflicts the assets of the theme and other plugin."
@@ -1805,11 +1845,48 @@ msgstr ""
 "読み込まれる各種アセットを制御します。テーマや他のプラグインと競合する場合、"
 "この設定を変更してください。"
 
-#: templates/admin/cdbt_options.php:239 templates/admin/cdbt_tables.php:755
+#: templates/admin/cdbt_options.php:280
+msgid "At the admin panel (when managed this plugin)"
+msgstr "管理パネル（プラグイン管理時）"
+
+#: templates/admin/cdbt_options.php:281
+msgid "At the front-end (when rendered shortcode)"
+msgstr "フロントエンド（ショートコード使用時）"
+
+#: templates/admin/cdbt_options.php:293 templates/admin/cdbt_options.php:306
+#, php-format
+msgid "%s (v%s) that is built in plugin"
+msgstr "プラグインバンドル版 %s（バージョン %s）"
+
+#: templates/admin/cdbt_options.php:314
+msgid ""
+"If disabled the assets, must be loaded individually. Assets disabling at the "
+"admin panel does not recommended."
+msgstr ""
+"アセットを無効化した場合、個別に読み込む必要があります。管理パネルのアセット"
+"無効化は推奨しません。"
+
+#: templates/admin/cdbt_options.php:318
+msgid "Prevent duplicate sending"
+msgstr "多重送信抑止設定"
+
+#: templates/admin/cdbt_options.php:323
+msgid ""
+"For preventing duplicate registration of the data when register the data, we "
+"will issue an one-time token in the cookie."
+msgstr ""
+"データ登録時にデータの重複登録を抑止するため、COOKIEにワンタイム・トークンを"
+"発行する。"
+
+#: templates/admin/cdbt_options.php:333 templates/admin/cdbt_tables.php:755
 msgid "Save Changes"
 msgstr "変更を保存"
 
-#: templates/admin/cdbt_options.php:250
+#: templates/admin/cdbt_options.php:334
+msgid "Initialize Options"
+msgstr "設定を初期化"
+
+#: templates/admin/cdbt_options.php:345
 msgid ""
 "In this section you can check the log of various processes executed at the "
 "\"Custom DataBase Tables\" plugin."
@@ -1817,22 +1894,22 @@ msgstr ""
 "このセクションでは「Custom DataBase Tables」プラグインの各種処理実行時のログ"
 "を確認できます。"
 
-#: templates/admin/cdbt_options.php:251
+#: templates/admin/cdbt_options.php:346
 msgid ""
 "Available as a debugging log to follow the flow of the processing such as "
 "when trouble occurs."
 msgstr ""
 "不具合発生時等の処理の流れを追うためのデバッグログとしてご利用いただけます。"
 
-#: templates/admin/cdbt_options.php:270
+#: templates/admin/cdbt_options.php:365
 msgid "Clear Logs"
 msgstr "ログ削除"
 
-#: templates/admin/cdbt_options.php:275
+#: templates/admin/cdbt_options.php:370
 msgid "Remove the current log after backup of the log file."
 msgstr "ログファイルのバックアップ後に現在のログを削除する。"
 
-#: templates/admin/cdbt_options.php:279
+#: templates/admin/cdbt_options.php:374
 #, php-format
 msgid "Note: Backup files stores to the directory of %s."
 msgstr "注: バックアップファイルは %s ディレクトリに格納されます。"
@@ -1871,15 +1948,15 @@ msgstr "ベースショートコード名"
 #: templates/admin/cdbt_tables.php:1244 templates/admin/cdbt_tables.php:1251
 #: templates/admin/cdbt_web_apis.php:107 templates/admin/cdbt_web_apis.php:174
 #: templates/admin/cdbt_web_apis.php:194 templates/admin/cdbt_web_apis.php:214
-#: templates/components/cdbt_forms.php:223
-#: templates/components/cdbt_forms.php:236
-#: templates/components/cdbt_forms.php:253
-#: templates/components/cdbt_forms.php:281
-#: templates/components/cdbt_forms.php:309
-#: templates/components/cdbt_forms.php:332
-#: templates/components/cdbt_forms.php:352
-#: templates/components/cdbt_forms.php:384
-#: templates/components/cdbt_forms.php:449
+#: templates/components/cdbt_forms.php:226
+#: templates/components/cdbt_forms.php:239
+#: templates/components/cdbt_forms.php:256
+#: templates/components/cdbt_forms.php:284
+#: templates/components/cdbt_forms.php:312
+#: templates/components/cdbt_forms.php:335
+#: templates/components/cdbt_forms.php:355
+#: templates/components/cdbt_forms.php:387
+#: templates/components/cdbt_forms.php:452
 msgid "require"
 msgstr "必須"
 
@@ -3056,201 +3133,201 @@ msgstr "生成URI（APIリクエストのURL）"
 msgid "Preview Request"
 msgstr "APIリクエストのテスト"
 
-#: templates/components/cdbt_forms.php:199
+#: templates/components/cdbt_forms.php:202
 #, php-format
 msgid "Please enter the %s"
 msgstr "%sを入力してください"
 
-#: templates/components/cdbt_forms.php:387
+#: templates/components/cdbt_forms.php:390
 #, php-format
 msgid "Notice: Maximum upload file size is %s."
 msgstr "注意：アップロードファイルの最大サイズは %s です。"
 
-#: templates/components/cdbt_forms.php:399
+#: templates/components/cdbt_forms.php:402
 msgid "January"
 msgstr "1月"
 
-#: templates/components/cdbt_forms.php:399
+#: templates/components/cdbt_forms.php:402
 msgid "Jan"
 msgstr "1月"
 
-#: templates/components/cdbt_forms.php:400
+#: templates/components/cdbt_forms.php:403
 msgid "February"
 msgstr "2月"
 
-#: templates/components/cdbt_forms.php:400
+#: templates/components/cdbt_forms.php:403
 msgid "Feb"
 msgstr "2月"
 
-#: templates/components/cdbt_forms.php:401
+#: templates/components/cdbt_forms.php:404
 msgid "March"
 msgstr "3月"
 
-#: templates/components/cdbt_forms.php:401
+#: templates/components/cdbt_forms.php:404
 msgid "Mar"
 msgstr "3月"
 
-#: templates/components/cdbt_forms.php:402
+#: templates/components/cdbt_forms.php:405
 msgid "April"
 msgstr "4月"
 
-#: templates/components/cdbt_forms.php:402
+#: templates/components/cdbt_forms.php:405
 msgid "Apr"
 msgstr "4月"
 
-#: templates/components/cdbt_forms.php:403
+#: templates/components/cdbt_forms.php:406
 msgid "May"
 msgstr "5月"
 
-#: templates/components/cdbt_forms.php:404
+#: templates/components/cdbt_forms.php:407
 msgid "June"
 msgstr "6月"
 
-#: templates/components/cdbt_forms.php:404
+#: templates/components/cdbt_forms.php:407
 msgid "Jun"
 msgstr "6月"
 
-#: templates/components/cdbt_forms.php:405
+#: templates/components/cdbt_forms.php:408
 msgid "July"
 msgstr "7月"
 
-#: templates/components/cdbt_forms.php:405
+#: templates/components/cdbt_forms.php:408
 msgid "Jul"
 msgstr "7月"
 
-#: templates/components/cdbt_forms.php:406
+#: templates/components/cdbt_forms.php:409
 msgid "August"
 msgstr "8月"
 
-#: templates/components/cdbt_forms.php:406
+#: templates/components/cdbt_forms.php:409
 msgid "Aug"
 msgstr "8月"
 
-#: templates/components/cdbt_forms.php:407
+#: templates/components/cdbt_forms.php:410
 msgid "September"
 msgstr "9月"
 
-#: templates/components/cdbt_forms.php:407
+#: templates/components/cdbt_forms.php:410
 msgid "Sep"
 msgstr "9月"
 
-#: templates/components/cdbt_forms.php:408
+#: templates/components/cdbt_forms.php:411
 msgid "October"
 msgstr "10月"
 
-#: templates/components/cdbt_forms.php:408
+#: templates/components/cdbt_forms.php:411
 msgid "Oct"
 msgstr "10月"
 
-#: templates/components/cdbt_forms.php:409
+#: templates/components/cdbt_forms.php:412
 msgid "November"
 msgstr "11月"
 
-#: templates/components/cdbt_forms.php:409
+#: templates/components/cdbt_forms.php:412
 msgid "Nov"
 msgstr "11月"
 
-#: templates/components/cdbt_forms.php:410
+#: templates/components/cdbt_forms.php:413
 msgid "December"
 msgstr "12月"
 
-#: templates/components/cdbt_forms.php:410
+#: templates/components/cdbt_forms.php:413
 msgid "Dec"
 msgstr "12月"
 
-#: templates/components/cdbt_forms.php:413
+#: templates/components/cdbt_forms.php:416
 msgid "Sunday"
 msgstr "日曜日"
 
-#: templates/components/cdbt_forms.php:413
+#: templates/components/cdbt_forms.php:416
 msgid "Su"
 msgstr "日"
 
-#: templates/components/cdbt_forms.php:414
+#: templates/components/cdbt_forms.php:417
 msgid "Monday"
 msgstr "月曜日"
 
-#: templates/components/cdbt_forms.php:414
+#: templates/components/cdbt_forms.php:417
 msgid "Mo"
 msgstr "月"
 
-#: templates/components/cdbt_forms.php:415
+#: templates/components/cdbt_forms.php:418
 msgid "Tuesday"
 msgstr "火曜日"
 
-#: templates/components/cdbt_forms.php:415
+#: templates/components/cdbt_forms.php:418
 msgid "Tu"
 msgstr "火"
 
-#: templates/components/cdbt_forms.php:416
+#: templates/components/cdbt_forms.php:419
 msgid "Wednesday"
 msgstr "水曜日"
 
-#: templates/components/cdbt_forms.php:416
+#: templates/components/cdbt_forms.php:419
 msgid "We"
 msgstr "水"
 
-#: templates/components/cdbt_forms.php:417
+#: templates/components/cdbt_forms.php:420
 msgid "Thursday"
 msgstr "木曜日"
 
-#: templates/components/cdbt_forms.php:417
+#: templates/components/cdbt_forms.php:420
 msgid "Th"
 msgstr "木"
 
-#: templates/components/cdbt_forms.php:418
+#: templates/components/cdbt_forms.php:421
 msgid "Friday"
 msgstr "金曜日"
 
-#: templates/components/cdbt_forms.php:418
+#: templates/components/cdbt_forms.php:421
 msgid "Fr"
 msgstr "金"
 
-#: templates/components/cdbt_forms.php:419
+#: templates/components/cdbt_forms.php:422
 msgid "Saturday"
 msgstr "土曜日"
 
-#: templates/components/cdbt_forms.php:419
+#: templates/components/cdbt_forms.php:422
 msgid "Sa"
 msgstr "土"
 
-#: templates/components/cdbt_forms.php:457
+#: templates/components/cdbt_forms.php:460
 msgid "Toggle Calendar"
 msgstr "カレンダー切替"
 
-#: templates/components/cdbt_forms.php:462
+#: templates/components/cdbt_forms.php:465
 msgid "Previous Month"
 msgstr "前月"
 
-#: templates/components/cdbt_forms.php:463
+#: templates/components/cdbt_forms.php:466
 msgid "Next Month"
 msgstr "次月"
 
-#: templates/components/cdbt_forms.php:484
+#: templates/components/cdbt_forms.php:487
 msgid "Today"
 msgstr "今日"
 
-#: templates/components/cdbt_forms.php:489
+#: templates/components/cdbt_forms.php:492
 msgid "Month"
 msgstr "月"
 
-#: templates/components/cdbt_forms.php:497
+#: templates/components/cdbt_forms.php:500
 msgid "Year"
 msgstr "年"
 
-#: templates/components/cdbt_forms.php:501
+#: templates/components/cdbt_forms.php:504
 msgid "Return to Calendar"
 msgstr "カレンダーに戻る"
 
-#: templates/components/cdbt_forms.php:502
+#: templates/components/cdbt_forms.php:505
 msgid "Select"
 msgstr "選択"
 
-#: templates/components/cdbt_forms.php:502
+#: templates/components/cdbt_forms.php:505
 msgid "Month and Year"
 msgstr "年月"
 
-#: templates/components/cdbt_forms.php:606
+#: templates/components/cdbt_forms.php:609
 msgid "Register Data"
 msgstr "データ登録"
 
@@ -3427,6 +3504,18 @@ msgstr "前へ"
 #: templates/components/cdbt_wizard.php:103
 msgid "Complete"
 msgstr "終了"
+
+#~ msgid "Allow Rendering Shortcodes"
+#~ msgstr "ショートコード出力設定"
+
+#~ msgid "Included Assets Definition"
+#~ msgstr "インクルードされるアセット定義"
+
+#~ msgid "Prevent Duplicate Sending"
+#~ msgstr "多重送信抑止設定"
+
+#~ msgid "Plugin Menu Position"
+#~ msgstr "プラグインメニューの位置"
 
 #~ msgid "Trialling"
 #~ msgstr "試用中"

@@ -1,5 +1,5 @@
 /*!
- * Custom DataBase Tables v2.0.0 (http://ka2.org)
+ * Custom DataBase Tables v2.0.7 (http://ka2.org)
  * Copyright 2014-2015 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
@@ -66,11 +66,12 @@ $(document).ready(function() {
   $.isDebug = 'true' === cdbt_main_vars.is_debug ? true : false;
   $.ajaxUrl = cdbt_main_vars.ajax_url;
   $.nonce = '';
+  $.modalNotices = 'true' === cdbt_main_vars.notices_via_modal ? true : false;
   $.emitMessage = cdbt_main_vars.emit_message;
   $.emitType = cdbt_main_vars.emit_type;
   if ($.isDebug) {
     // check debug mode
-    console.info( $.extend({ debugMode: 'ON' }, $.QueryString) );
+    console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices }, $.QueryString) );
   }
   
   /**

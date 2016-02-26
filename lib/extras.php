@@ -70,10 +70,11 @@ trait CdbtExtras {
       'apikey_requests' => 'try-yet', 
       'allow_rendering_shortcodes' => 'done', 
       'ajax_loading' => 'unreleased', 
-      'include_assets' => 'unreleased', 
+      'include_assets' => 'new', 
       'prevent_duplicate_sending' => 'new', 
       'plugin_menu_position' => 'new', 
       'sanitaization' => 'new', 
+      'notices_via_modal' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {
@@ -131,7 +132,7 @@ trait CdbtExtras {
           'logical_name' => !empty($table_info['table_comment']) ? $table_info['table_comment'] : ($is_assoc ? $key : $value), 
           'records' => $current_data[0], 
           'primary_key' => !empty($table_info['primary_key']) ? implode(', ', $table_info['primary_key']) : '-', 
-          'charset' => isset($table_info['table_charset']) ? $table_info['table_charset'] : $this->db_default_charset, 
+          'charset' => $this->get_table_charset( $value ), // isset($table_info['table_charset']) ? $table_info['table_charset'] : $this->db_default_charset, 
           'collation' => isset($table_info['table_collation']) ? $table_info['table_collation'] : $table_info['Collation'], 
           'engine' => isset($table_info['db_engine']) ? $table_info['db_engine'] : $table_info['Engine'], 
           'per_records' => isset($table_info['show_max_records']) ? $table_info['show_max_records'] : $this->options['default_per_records'], 
