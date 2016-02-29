@@ -1660,7 +1660,7 @@ class CdbtDB extends CdbtConfig {
         
         if ( array_key_exists( 'char', $detect_column_type ) ) {
           $_table_option = $this->get_table_option( $table_name );
-          if ( array_key_exists( 'sanitization', $_table_option ) && $_table_option['sanitization'] ) {
+          if ( $_table_option && array_key_exists( 'sanitization', $_table_option ) && $_table_option['sanitization'] ) {
             if ( array_key_exists( 'text', $detect_column_type ) ) {
               // Sanitization data from textarea
               $allowed_html_tags = [ 'a' => [ 'href' => [], 'title' => [] ], 'br' => [], 'em' => [], 'strong' => [] ];

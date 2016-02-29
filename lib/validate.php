@@ -474,7 +474,7 @@ class CdbtValidator extends CommonValidator {
    * @return mixed Such as the escaped string or numeric
    */
   public function esc_column_value( $raw_value=null, $detect_type=[] ) {
-    if ( empty( $raw_value ) || empty( $detect_type )) 
+    if ( is_null( $raw_value ) || empty( $detect_type )) 
       return false;
     if ( ! is_array( $detect_type ) ) 
       $detect_type = [ $detect_type => 1 ];
