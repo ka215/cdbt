@@ -303,6 +303,79 @@ $(document).ready(function() {
        * When edit via shortcode
        */
       
+      // Check empty fields
+      // Added since version 2.0.7
+      var checkEmptyFields = function(){
+        if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+          var required_fields = 0;
+          var empty_fields = 0;
+          $('.form-group').each( function() {
+            if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
+              required_fields += 1;
+              var checked = 0;
+              var inputted = 0;
+              if ( $(this).find('.checkbox').size() > 0 ) {
+                $(this).find('.checkbox-custom').each( function() {
+                  if ( $(this).checkbox('isChecked') ) {
+                    checked++;
+                  }
+                });
+                if ( checked === 0 ) {
+                  empty_fields++;
+                }
+              } else
+              if ( $(this).find('.selectlist').size() > 0 ) {
+                if ( ! $(this).find('.selectlist').selectlist('selectedItem').selected ) {
+                  empty_fields++;
+                }
+              } else
+              if ( $(this).find('input[type="text"]').size() > 0 ) {
+                $(this).find('input[type="text"]').each( function() {
+                  if ( $(this).val() !== '' ) {
+                    inputted++;
+                  }
+                });
+                if ( inputted !== $(this).find('input[type="text"]').size() ) {
+                  empty_fields++;
+                }
+              } else
+              if ( $(this).find('input[type="number"]').size() > 0 ) {
+                $(this).find('input[type="number"]').each( function() {
+                  if ( $(this).val() !== '' ) {
+                    inputted++;
+                  }
+                });
+                if ( inputted !== $(this).find('input[type="number"]').size() ) {
+                  empty_fields++;
+                }
+              } else
+              if ( $(this).find('textarea').size() > 0 ) {
+                $(this).find('textarea').each( function() {
+                  if ( $(this).val() !== '' ) {
+                    inputted++;
+                  }
+                });
+                if ( inputted !== $(this).find('textarea').size() ) {
+                  empty_fields++;
+                }
+              } else
+              if ( $(this).find('input[type="file"]').size() > 0 ) {
+                // do nothing
+              }
+            }
+            
+          });
+          if ( required_fields === 0 || empty_fields === 0 ) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return true;
+        }
+      };
+      
+      
       // Button effect
       var effect_buttons = function(){
         var selectedItem = $('.repeater[id^="cdbt-repeater-edit-"]').repeater('list_getSelectedItems');
@@ -408,17 +481,6 @@ $(document).ready(function() {
       });
       
       
-      /*
-      $(document).on('shown.bs.modal', '#cdbtEditData', function(){
-        var form = $('#cdbtEditData div.cdbt-entry-data-form form');
-        $('#run_update_data').prop('disabled', true);
-        $(form).on('input change click', function(){ 
-          $('#run_update_data').prop('disabled', this.checkValidity());
-        });
-      });
-      */
-      
-      
       $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
         if ($(this).parent().hasClass('multiple')) {
           var counter_elm = $('input[name="' + $(this).attr('name').replace('[]', '') + '[checked]"]');
@@ -455,6 +517,7 @@ $(document).ready(function() {
         e.preventDefault();
         var form = $('#cdbtEditData div.cdbt-entry-data-form form');
         form.children('input[name="_wp_http_referer"]').val(location.href);
+        /* Disabled since v2.0.7
         var check_result = true;
         form.find('.checkbox-custom').each(function(){
           if ($(this).hasClass('multiple')) {
@@ -476,6 +539,12 @@ $(document).ready(function() {
           }
         });
         if (check_result) {
+          form.submit();
+        } else {
+          return false;
+        }
+        */
+        if ( checkEmptyFields() ) {
           form.submit();
         } else {
           return false;

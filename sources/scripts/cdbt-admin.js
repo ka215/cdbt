@@ -1036,6 +1036,7 @@ $(document).ready(function() {
     }
     
     // Check empty fields
+    // Added since version 2.0.7
     var checkEmptyFields = function(){
       if ( $('.cdbt-entry-data-form form').size() > 0 ) {
         var required_fields = 0;
@@ -1276,7 +1277,7 @@ $(document).ready(function() {
       e.preventDefault();
       var form = $('#cdbtEditData div.cdbt-entry-data-form form');
       form.children('input[name="_wp_http_referer"]').val(location.href);
-      /*
+      /* Disabled since v2.0.7
       var check_result = true;
       form.find('.checkbox-custom').each(function(){
         
