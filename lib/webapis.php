@@ -21,40 +21,44 @@ trait CdbtApis {
    * @since 2.0.0
    */
   protected function init_allowed_hosts() {
-    $chk_post_data = $this->array_flatten($_POST);
-    if (!empty($chk_post_data)) 
+    $chk_post_data = $this->array_flatten( $_POST );
+    if ( ! empty( $chk_post_data ) ) 
       return;
     
-    $_api_hosts = ( isset($this->options['api_hosts']) && is_array($this->options['api_hosts']) ) ? $this->options['api_hosts'] : [];
+    $_api_hosts = ( isset( $this->options['api_hosts'] ) && is_array( $this->options['api_hosts'] ) ) ? $this->options['api_hosts'] : [];
     
-    if (isset($this->options['api_key']) && is_array($this->options['api_key']) && !empty($this->options['api_key'])) {
+    if ( isset( $this->options['api_key'] ) && is_array( $this->options['api_key'] ) && ! empty( $this->options['api_key'] ) ) {
       // Convert the option setting of version 1.x
-      $_max_host_id = max(array_keys($_api_hosts));
-      foreach ($this->options['api_key'] as $_host_name => $_api_key) {
+      $_max_host_id = max( array_keys( $_api_hosts ) );
+      foreach ( $this->options['api_key'] as $_host_name => $_api_key ) {
         $_max_host_id++;
         $_api_hosts[$_max_host_id] = [
           'host_name' => $_host_name, 
           'api_key' => $_api_key, 
-          'desc' => __('Converted from version 1.x', CDBT), 
+          'desc' => __( 'Converted from version 1.x', CDBT ), 
           'permission' => '11111', 
-          'generated' => date('Y-m-d H:i:s'), 
+          'generated' => date( 'Y-m-d H:i:s' ), 
         ];
       }
-      unset($this->options['api_key']);
+      unset( $this->options['api_key'] );
     }
     
     $this->allowed_hosts = $_api_hosts;
     
-    if (isset($this->allowed_hosts)) {
-      add_action( 'init', array($this, 'flush_rules') );
+    // Added from v2.0.7; WIP
+    $_ip = isset( $_SERVER['SERVER_NAME'] ) ? gethostbyname( $_SERVER['SERVER_NAME'] ) : gethostbyname( $_SERVER['HTTP_HOST'] );
+    $_is_localhost = $this->strtobool( preg_match( '/127\.0\.0\.?/', $_ip ) );
+    
+    if ( isset( $this->allowed_hosts ) || $_is_localhost ) {
+      add_action( 'init', array( $this, 'flush_rules' ) );
       //add_filter( 'rewrite_rules_array', array($this, 'insert_rewrite_rules') );
-      add_action( 'generate_rewrite_rules', array($this, 'insert_rewrite_rules') );
-      add_filter( 'query_vars', array($this, 'insert_query_vars'), 10, 1 );
+      add_action( 'generate_rewrite_rules', array( $this, 'insert_rewrite_rules' ) );
+      add_filter( 'query_vars', array( $this, 'insert_query_vars' ), 10, 1 );
       
-      if (!empty($this->allowed_hosts)) {
-        add_action( 'send_headers', array($this, 'allow_host') );
+      if ( ! empty( $this->allowed_hosts ) || ! $_is_localhost ) {
+        add_action( 'send_headers', array( $this, 'allow_host' ) );
       }
-      add_action( 'pre_get_posts', array($this, 'receive_api_request') );
+      add_action( 'pre_get_posts', array( $this, 'receive_api_request' ) );
       
     }
     
@@ -70,7 +74,7 @@ trait CdbtApis {
    * @param array $wp_rewrite Array including object of the currently rewrite rules
    */
   protected function insert_rewrite_rules( $wp_rewrite ) {
-    if (!$this->plugin_enabled) 
+    if ( ! $this->plugin_enabled ) 
       return;
     
     $new_rules = [
@@ -93,8 +97,8 @@ trait CdbtApis {
    */
   public function insert_query_vars( $qvars ) {
     $add_queries = [ 'cdbt_api_key', 'cdbt_table', 'cdbt_api_request' ];
-    foreach ($add_queries as $_query) {
-      if (!array_key_exists($_query , $qvars)) 
+    foreach ( $add_queries as $_query ) {
+      if ( ! array_key_exists( $_query , $qvars ) ) 
         $qvars[] = $_query;
     }
     return $qvars;
@@ -109,8 +113,8 @@ trait CdbtApis {
    */
   public function flush_rules() {
     $_pattern = '^cdbt_api/([^/]*)/([^/]*)/([^/]*)?$';
-    $rules = get_option('rewrite_rules');
-    if (is_array($rules) && !array_key_exists($_pattern, $rules)) {
+    $rules = get_option( 'rewrite_rules' );
+    if ( is_array( $rules ) && ! array_key_exists( $_pattern, $rules ) ) {
       global $wp_rewrite;
       $wp_rewrite->flush_rules();
     }
@@ -135,6 +139,8 @@ trait CdbtApis {
    * controller process when receive the api request
    *
    * @since 1.1.6
+   * @since 2.0.0 Refactored
+   * @since 2.0.7 Update to download binary file
    *
    * @param string $wp_query
    * @return void
@@ -197,8 +203,21 @@ trait CdbtApis {
           $response = [ 'error' => [ 'code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
         }
       } else {
-        // 401: Authentication failure
-        $response = [ 'error' => [ 'code' => 401, 'desc' => 'Authentication Failure', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
+        $target_table = ( isset( $_cdbt_table ) && ! empty( $_cdbt_table ) ) ? $_cdbt_table : '';
+        if ( ! empty( $target_table ) && isset( $_cdbt_request_method ) && 'binary_download' === $_cdbt_request_method ) {
+          if ( $this->check_table_exists( $target_table ) ) {
+            // 200: Successful
+            $response = [ 'success' => [ 'code' => 200, 'table' => $target_table, 'request' => $_cdbt_request_method, 'request_uri' => $request_uri, 'request_date' => $request_date] ];
+            $allow_args = [ 'column' => 'string', 'conditions' => 'hash', 'hash' => 'string' ];
+            $response['data'] = $this->api_method_wrapper( $target_table, $_cdbt_request_method, $allow_args );
+          } else {
+            $response = [ 'error' => [ 'code' => 400, 'desc' => 'Invalid Request', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
+          }
+        }
+        if ( ! isset( $response ) || empty( $response ) ) {
+          // 401: Authentication failure
+          $response = [ 'error' => [ 'code' => 401, 'desc' => 'Authentication Failure', 'request_uri' => $request_uri, 'request_date' => $request_date] ];
+        }
       }
       $is_crossdomain = (isset($_REQUEST['callback']) && !empty($_REQUEST['callback'])) ? trim($_REQUEST['callback']) : false;
       $_charset = isset($wp_query->query['charset']) ? trim($wp_query->query['charset']) : 'utf-8';

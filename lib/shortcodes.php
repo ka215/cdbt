@@ -524,30 +524,30 @@ trait CdbtShortcodes {
     }
     
     // If contain binary data in the datasource
-    if (!empty($has_bin)) {
+    if ( ! empty( $has_bin ) ) {
       $custom_row_scripts = [];
-      if ($has_pk) {
+      if ( $has_pk ) {
         
       }
-      foreach ($datasource as $i => $row_data) {
-        foreach ($has_bin as $col_name) {
-          if (array_key_exists($col_name, $row_data)) {
-            if ('image' === $this->check_binary_data($row_data[$col_name])) {
-              $row_data[$col_name] = sprintf('data:%s;base64,%s', $this->esc_binary_data($row_data[$col_name], 'mime_type'), $this->esc_binary_data($row_data[$col_name], 'bin_data') );
-              if (is_admin() && empty($thumbnail_column)) {
+      foreach ( $datasource as $i => $row_data ) {
+        foreach ( $has_bin as $col_name ) {
+          if ( array_key_exists( $col_name, $row_data ) ) {
+            if ( 'image' === $this->check_binary_data( $row_data[$col_name] ) ) {
+              $row_data[$col_name] = sprintf( 'data:%s;base64,%s', $this->esc_binary_data( $row_data[$col_name], 'mime_type' ), $this->esc_binary_data( $row_data[$col_name], 'bin_data' ) );
+              if ( is_admin() && empty( $thumbnail_column ) ) {
                 $display_view = true;
                 $thumbnail_column = $col_name;
               }
-              $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name);
+              $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name );
             } else {
               $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
             }
             $_where_conditions = [];
-            if ($has_pk) {
+            if ( $has_pk ) {
               $_where_conditions = $pk_columns;
             }
             $_render_script_base = 'rowData.%s !== false ? \'<a href="javascript:;" class="binary-data modal-preview" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData.%s + \'" data-class="img-%s"></a>\' : \'\'';
-            $custom_column_renderer[$col_name] = sprintf($_render_script_base, $col_name, $col_name, implode(',', $_where_conditions), $col_name, $image_render);
+            $custom_column_renderer[$col_name] = sprintf( $_render_script_base, $col_name, $col_name, implode( ',', $_where_conditions ), $col_name, $image_render );
             $datasource[$i] = $row_data;
           } else {
             $custom_column_renderer[$col_name] = '';

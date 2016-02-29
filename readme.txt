@@ -80,6 +80,9 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Added to be able to specify conditions of the join operator to the "find_data" (you can use a "narrow_operator" attribute at "[cdbt-view]" and "[cdbt-edit]").
 * Changed of the "run_query" to public method, and it became to able to use PDO and mysqli library.
 * Changed of the "compare_reservation_tables" to public method.
+* Changed to use methods of "pack" and "unpack" of the binary data conversion process.
+* Had bundled the latest assets. ("jQuery v2.2.1", "font-awesome v4.5.0", "fuelux v3.13.1", "moment v2.11.2")
+* Fixed a bug that could not edit data if table has a multiple checkbox form.
 * Other, fixed the 9 bugs, had enhancemented the 6 features.
 
 = 2.0.6 =

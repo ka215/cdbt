@@ -1035,22 +1035,91 @@ $(document).ready(function() {
       
     }
     
+    // Check empty fields
+    var checkEmptyFields = function(){
+      if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+        var required_fields = 0;
+        var empty_fields = 0;
+        $('.form-group').each( function() {
+          if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
+            required_fields += 1;
+            var checked = 0;
+            var inputted = 0;
+            if ( $(this).find('.checkbox').size() > 0 ) {
+              $(this).find('.checkbox-custom').each( function() {
+                if ( $(this).checkbox('isChecked') ) {
+                  checked++;
+                }
+              });
+              if ( checked === 0 ) {
+                empty_fields++;
+              }
+            } else
+            if ( $(this).find('.selectlist').size() > 0 ) {
+              if ( ! $(this).find('.selectlist').selectlist('selectedItem').selected ) {
+                empty_fields++;
+              }
+            } else
+            if ( $(this).find('input[type="text"]').size() > 0 ) {
+              $(this).find('input[type="text"]').each( function() {
+                if ( $(this).val() !== '' ) {
+                  inputted++;
+                }
+              });
+              if ( inputted !== $(this).find('input[type="text"]').size() ) {
+                empty_fields++;
+              }
+            } else
+            if ( $(this).find('input[type="number"]').size() > 0 ) {
+              $(this).find('input[type="number"]').each( function() {
+                if ( $(this).val() !== '' ) {
+                  inputted++;
+                }
+              });
+              if ( inputted !== $(this).find('input[type="number"]').size() ) {
+                empty_fields++;
+              }
+            } else
+            if ( $(this).find('textarea').size() > 0 ) {
+              $(this).find('textarea').each( function() {
+                if ( $(this).val() !== '' ) {
+                  inputted++;
+                }
+              });
+              if ( inputted !== $(this).find('textarea').size() ) {
+                empty_fields++;
+              }
+            } else
+            if ( $(this).find('input[type="file"]').size() > 0 ) {
+              // do nothing
+            }
+          }
+          
+        });
+        if ( required_fields === 0 || empty_fields === 0 ) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    };
+    
     
     // Actions when entry data
-    if (typeof $('.cdbt-entry-data-form') !== 'undefined' && $('.cdbt-entry-data-form').size() === 1) {
+    if (typeof $('.cdbt-entry-data-form') !== 'undefined' && $('.cdbt-entry-data-form').size() > 0) {
       
       $('.cdbt-entry-data-form form .checkbox-custom').on('checked.fu.checkbox unchecked.fu.checkbox', function () {
         if ($(this).hasClass('multiple')) {
           var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
         	var checked_count = Number(counter_elm.val());
-// console.info([ $(this).children('input').prop('checked'), $(this).checkbox('isChecked') ]);
           if ( $(this).checkbox('isChecked') ) {
             checked_count += 1;
           } else {
-            checked_count -= 1;
+            checked_count -= checked_count > 0 ? 1 : 0;
           }
           counter_elm.val(checked_count);
-// console.log( counter_elm.val() );
         }
       });
       
@@ -1064,23 +1133,12 @@ $(document).ready(function() {
               var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
               var checked_count = Number(counter_elm.val());
               if (checked_count === 0) {
-                //$(this).children('input').prop('required', true);
                 check_result = false;
               }
             }
-          } else {
-            /*
-            if (!$(this).checkbox('isChecked')) {
-// console.info([ $(this).html(), $(this).children('input').attr('name') ]);
-        	    $(this).children('input').val('0').prop('checked', true);
-            } else {
-              $(this).children('input').val('1').prop('checked', true);
-            }
-            */
           }
         });
         if (check_result) {
-          //entry_form.submit();
           return true;
         } else {
           return false;
@@ -1187,28 +1245,16 @@ $(document).ready(function() {
       return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
     });
     
-    $(document).on('shown.bs.modal', '#cdbtEditData', function(){
-      /*
-      var form = $('#cdbtEditData div.cdbt-entry-data-form form');
-      $('#run_update_data').prop('disabled', true);
-      $(form).on('input change click', function(){ 
-        $('#run_update_data').prop('disabled', !this.checkValidity());
-      });
-      */
-    });
-    
     $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
       if ($(this).parent().hasClass('multiple')) {
         var counter_elm = $('input[name="' + $(this).attr('name').replace('[]', '') + '[checked]"]');
         var checked_count = Number(counter_elm.val());
-// console.info([ $(this).prop('checked'), $(this).parent().checkbox('isChecked'), $(this).is(':checked') ]);
         if ( $(this).prop('checked') ) {
           checked_count += 1;
         } else {
           checked_count -= 1;
         }
         counter_elm.val(checked_count);
-// console.log( counter_elm.val() );
       }
     });
     
@@ -1230,6 +1276,7 @@ $(document).ready(function() {
       e.preventDefault();
       var form = $('#cdbtEditData div.cdbt-entry-data-form form');
       form.children('input[name="_wp_http_referer"]').val(location.href);
+      /*
       var check_result = true;
       form.find('.checkbox-custom').each(function(){
         
@@ -1252,10 +1299,15 @@ $(document).ready(function() {
           
         }
       });
-//console.info(check_result);
       if (check_result) {
         form.submit();
         //return true;
+      } else {
+        return false;
+      }
+      */
+      if ( checkEmptyFields() ) {
+        form.submit();
       } else {
         return false;
       }

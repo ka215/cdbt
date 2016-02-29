@@ -553,6 +553,7 @@ class CdbtDB extends CdbtConfig {
    *
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
+   * @since 2.0.7 Fixed a bug of $columns argument
    *
    * @param string $table_name [require]
    * @param mixed $columns [optional] Use as select clause, for default is wildcard of '*'.
@@ -597,7 +598,15 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Main Process
-    $select_clause = is_array($columns) ? implode(',', $columns) : $columns;
+    $_cols = explode( ',', $columns );
+    foreach ( $_cols as $_i => $_col ) {
+      if ( strpos( strtolower( $_col ), 'count(' ) !== false || strpos( strtolower( $_col ), '*' ) !== false ) {
+        $_cols[$_i] = trim( $_col );
+      } else {
+        $_cols[$_i] = '`'. trim( trim( $_col ), '`' ) .'`';
+      }
+    }
+    $select_clause = implode( ',', $_cols ); //is_array( $columns ) ? implode( ',', $columns ) : '`'. $columns .'`';
     $where_clause = $order_clause = $limit_clause = null;
     if (!empty($conditions)) {
       $i = 0;

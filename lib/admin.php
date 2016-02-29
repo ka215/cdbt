@@ -1867,27 +1867,29 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
           break;
         case 'binary_downloader': 
-          $args['modalTitle'] = __('Describe File Information', CDBT);
-          $_table_name = trim($args['modalExtras']['table_name']);
-          $_target_column = trim($args['modalExtras']['target_column']);
-          $_where_clause = $this->strtohash($args['modalExtras']['where_clause']);
-          $ret = $this->array_flatten($this->get_data($_table_name, $_target_column, $_where_clause, null, 1, ARRAY_A));
-          if (array_key_exists($_target_column, $ret)) {
-            $_bin_array = unserialize($ret[$_target_column]);
+          $args['modalTitle'] = __( 'Describe File Information', CDBT );
+          $_table_name = trim( $args['modalExtras']['table_name'] );
+          $_target_column = trim( $args['modalExtras']['target_column'] );
+          $_where_clause = $this->strtohash( $args['modalExtras']['where_clause'] );
+          $ret = $this->array_flatten( $this->get_data( $_table_name, $_target_column, $_where_clause, null, 1, ARRAY_A ) );
+          if ( array_key_exists( $_target_column, $ret ) ) {
+            $_bin_array = unserialize( $ret[$_target_column] );
             unset($_bin_array['bin_data']);
           }
-          $info_html = '<table class="table table-bordered describe-file-info"><tbody>%s</tbody></table>';
-          $inner_line_tmpl = '<tr><th>%s</th><td>%s</td></tr>';
-          $inner_lines = [];
-          $inner_lines[] = sprintf($inner_line_tmpl, __('File Name', CDBT), rawurldecode($_bin_array['origin_file']));
-          $inner_lines[] = sprintf($inner_line_tmpl, __('MIME Type', CDBT), $_bin_array['mime_type']);
-          $inner_lines[] = sprintf($inner_line_tmpl, __('File Size', CDBT), $this->convert_filesize($_bin_array['file_size']));
-          $inner_lines[] = sprintf($inner_line_tmpl, __('File Hash', CDBT), esc_attr($_bin_array['hash']));
-          $download_url = '/index.php?cdbt_api_key=%s&cdbt_table=%s&cdbt_api_request=binary_download&column=%s&conditions={%s}&hash=%s';
-          $download_url = sprintf($download_url, wp_create_nonce( 'cdbt_api_ownhost-' . $_table_name ), $_table_name, $_target_column, $args['modalExtras']['where_clause'], esc_attr($_bin_array['hash']));
-          $args['modalBody'] = sprintf($info_html, implode("\n", $inner_lines));
-          $args['modalFooter'] = [ sprintf('<a href="%s" id="run_download_file" class="btn btn-primary">%s</a>', $download_url, __('Download', CDBT)), ];
-          //$args['modalShowEvent'] = "$('#run_download_file').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          if ( $_bin_array ) {
+            $info_html = '<table class="table table-bordered describe-file-info"><tbody>%s</tbody></table>';
+            $inner_line_tmpl = '<tr><th>%s</th><td>%s</td></tr>';
+            $inner_lines = [];
+            $inner_lines[] = sprintf($inner_line_tmpl, __('File Name', CDBT), rawurldecode($_bin_array['origin_file']));
+            $inner_lines[] = sprintf($inner_line_tmpl, __('MIME Type', CDBT), $_bin_array['mime_type']);
+            $inner_lines[] = sprintf($inner_line_tmpl, __('File Size', CDBT), $this->convert_filesize($_bin_array['file_size']));
+            $inner_lines[] = sprintf($inner_line_tmpl, __('File Hash', CDBT), esc_attr($_bin_array['hash']));
+            $download_url = '/index.php?cdbt_api_key=%s&cdbt_table=%s&cdbt_api_request=binary_download&column=%s&conditions={%s}&hash=%s';
+            $download_url = sprintf($download_url, wp_create_nonce( 'cdbt_api_ownhost-' . $_table_name ), $_table_name, $_target_column, $args['modalExtras']['where_clause'], esc_attr($_bin_array['hash']));
+            $args['modalBody'] = sprintf($info_html, implode("\n", $inner_lines));
+            $args['modalFooter'] = [ sprintf('<a href="%s" id="run_download_file" class="btn btn-primary">%s</a>', $download_url, __('Download', CDBT)), ];
+            //$args['modalShowEvent'] = "$('#run_download_file').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          }
           break;
         case 'delete_shortcode': 
           $_current_shortcode = $this->get_shortcode_option($args['modalExtras']['target_scid']);
