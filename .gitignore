@@ -9,6 +9,7 @@ node_modules/
 backup/
 npm-debug.log
 debug.log
+change.log
 external_tranlated_text.php
 
 # Temporary definition

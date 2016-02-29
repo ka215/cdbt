@@ -234,6 +234,7 @@ trait CdbtShortcodes {
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
       /* Added new attributes from 2.0.7 is follows: */
       'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
+      // 'strip_tags' => true, // Whether to strip the tags in the string type data.
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -283,13 +284,23 @@ trait CdbtShortcodes {
         if ($scheme['primary_key']) {
           $has_pk = true;
           $pk_columns[] = $column;
-          break;
         }
-        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+      	if ($this->validate->check_column_type($scheme['type'], 'char')) 
+      	  $has_char[] = $column;
+      	
+      	if ($this->validate->check_column_type($scheme['type'], 'text')) 
+      	  $has_text[] = $column;
+      	
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+          if (in_array($scheme['type'], [ 'date', 'datetime', 'timestamp' ])) 
+            $has_datetime[] = $column;
         }
       }
       $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($this->options['default_per_records']) : intval($limit_items);
+      $strip_tags = false;
     }
     $content = '';
     
@@ -1032,6 +1043,7 @@ trait CdbtShortcodes {
       'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
       /* Added new attributes from 2.0.7 is follows: */
       'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
+      // 'strip_tags' => true, // Whether to strip the tags in the string type data.
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -1081,13 +1093,23 @@ trait CdbtShortcodes {
         if ($scheme['primary_key']) {
           $has_pk = true;
           $pk_columns[] = $column;
-          break;
         }
-        if ($this->validate->check_column_type($scheme['type'], 'blob')) {
+      	if ($this->validate->check_column_type($scheme['type'], 'char')) 
+      	  $has_char[] = $column;
+      	
+      	if ($this->validate->check_column_type($scheme['type'], 'text')) 
+      	  $has_text[] = $column;
+      	
+        if ($this->validate->check_column_type($scheme['type'], 'blob')) 
           $has_bin[] = $column;
+        
+        if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
+          if (in_array($scheme['type'], [ 'date', 'datetime', 'timestamp' ])) 
+            $has_datetime[] = $column;
         }
       }
       $limit_items = intval($this->options['default_per_records']);
+      $strip_tags = false;
     }
     $content = '';
     

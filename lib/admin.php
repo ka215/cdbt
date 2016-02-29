@@ -726,7 +726,7 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_options | Tab: general_setting
    *
    * @since 2.0.0
-   : @since 2.0.7 Added new options
+   * @since 2.0.7 Added new options
    */
   public function do_cdbt_options_general_setting() {
     static $message = '';

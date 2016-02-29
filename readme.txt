@@ -69,7 +69,18 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 2.0.7 =
-* 
+* Added option to change the plugin menu position.
+* Added option to change of loading any assets.
+* Some concatenate assets had subdivided. (bootstrap, fuel UX).
+* Added option whether to use a modal as the notification method on the management screen.
+* Added the initialization function of the option settings.
+* Added the function "get_table_charset" for get the charset of the table.
+* Added option to prevent the duplicate sending.
+* Added the sanitization option in the table setting. (the WordPress core table does not  sanitized).
+* Added to be able to specify conditions of the join operator to the "find_data" (you can use a "narrow_operator" attribute at "[cdbt-view]" and "[cdbt-edit]").
+* Changed of the "run_query" to public method, and it became to able to use PDO and mysqli library.
+* Changed of the "compare_reservation_tables" to public method.
+* Other, fixed the 9 bugs, had enhancemented the 6 features.
 
 = 2.0.6 =
 * Fixed a bug in the session and cookie processing for the continuous transmission prevention.
