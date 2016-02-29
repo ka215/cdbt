@@ -1,6 +1,6 @@
 {
   "name": "CustomDataBaseTables",
-  "version": "2.0.4",
+  "version": "2.0.7",
   "homepage": "https://ka2.org/",
   "authors": [
     "ka2 <ka2@ka2.org>"
@@ -8,17 +8,13 @@
   "license": "GPL-2.0",
   "private": true,
   "dependencies": {
-    "modernizr": "~3.1.0",
-    "jquery": "~2.1.4",
+    "jquery": "~2.2.1",
     "bootstrap-sass": "~3.3.6",
-    "font-awesome-sass": "~4.4.0",
+    "font-awesome-sass": "~4.5.0",
     "underscore": "~1.8.3",
-    "fuelux": "~3.11.5"
+    "fuelux": "~3.13.0"
   },
   "overrides": {
-    "modernizr": {
-      "main": "./modernizr.js"
-    },
     "bootstrap-sass": {
       "main": [
         "./assets/stylesheets/_bootstrap.scss",

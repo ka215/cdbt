@@ -63,14 +63,13 @@ class CdbtConfig extends CdbtCore {
     $this->user_roles = [ 'administrator', 'editor', 'author', 'contributor', 'subscriber', 'guest' ];
     
     $this->contribute_extends = [
-      'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.1.4' ], 
+      'jQuery' => [ 'url' => 'https://jquery.com/', 'version' => '2.2.1' ], 
       'jQuery UI' => [ 'url' => 'http://jqueryui.com/', 'version' => '1.11.4' ], 
-      // 'modernizr.js' => [ 'url' => 'https://modernizr.com/', 'version' => '3.1.0' ], 
       'Bootstrap' => [ 'url' => 'http://getbootstrap.com/', 'version' => '3.3.6' ], 
       'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
-      'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.11.5' ], 
-      'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.10.6' ], 
-      'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.4.0' ], 
+      'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.13.1' ], 
+      'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.11.2' ], 
+      'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.5.0' ], 
     ];
     
     // Switching debug mode
