@@ -1764,7 +1764,6 @@ class CdbtDB extends CdbtConfig {
             } else {
               $register_data[$post_key] = empty($post_value) ? $table_schema[$post_key]['default'] : $post_value;
             }
-//var_dump([ $post_key, $post_value, $register_data ]);
             // Validation data of datetime
             if (!$this->validate->checkDateTime($register_data[$post_key], 'Y-m-d H:i:s')) {
               $register_data[$post_key] = '0000-00-00 00:00:00';
@@ -1817,10 +1816,20 @@ class CdbtDB extends CdbtConfig {
           //var_dump($detect_column_type['file']); // debug code
         }
         
-      } else {
-        
-        
       }
+      $_diff = array_diff_key( $table_schema, $post_data );
+      if ( ! empty( $_diff ) ) {
+        foreach ( $_diff as $_column => $_scheme ) {
+          if ( $_scheme['primary_key'] && 'auto_increment' === $_scheme['extra'] ) 
+            continue;
+          if ( 'CURRENT_TIMESTAMP' === $_scheme['default'] && 'on update CURRENT_TIMESTAMP' === $_scheme['extra'] ) 
+            continue;
+          if ( 'bit(1)' === $_scheme['type_format'] ) {
+            $register_data[$_column] = false;
+          }
+        }
+      }
+      
     }
     
     if (!empty($_FILES[$this->domain_name])) {
