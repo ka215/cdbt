@@ -78,13 +78,15 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Added option to prevent the duplicate sending.
 * Added the sanitization option in the table setting. (the WordPress core table does not  sanitized).
 * Added to be able to specify conditions of the join operator to the "find_data" (you can use a "narrow_operator" attribute at "[cdbt-view]" and "[cdbt-edit]").
+* Added of the filter `cdbt_select_clause_optimaize` for filtering the select clause of SQL query.
 * Changed of the "run_query" to public method, and it became to able to use PDO and mysqli library.
 * Changed of the "compare_reservation_tables" to public method.
 * Changed to use methods of "pack" and "unpack" of the binary data conversion process.
 * Had bundled the latest assets. ("jQuery v2.2.1", "font-awesome v4.5.0", "fuelux v3.13.1", "moment v2.11.2")
 * Fixed a bug that could not edit data if table has a multiple checkbox form.
 * Fixed a bug that had not display for interpreting as a "false" of boolean value if the registration data is "0".
-* Other, fixed the 10 bugs, had enhancemented the 6 features.
+* Fixed a bug that the values obtained from bit type field was often null.
+* Other, fixed the 9 bugs, had enhancemented the 6 features.
 
 = 2.0.6 =
 * Fixed a bug in the session and cookie processing for the continuous transmission prevention.

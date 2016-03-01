@@ -577,16 +577,27 @@ trait CdbtShortcodes {
     }
     
     // If contain bit binary data in the datasource
-    if (!empty($has_bit)) {
-      foreach ($has_bit as $column) {
-        if (array_key_exists($column, $datasource[0])) {
+    // @since 2.0.7 Updated
+    if ( ! empty( $has_bit ) ) {
+      foreach ( $has_bit as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) || array_key_exists( 'BIN('. $column .')', $datasource[0] ) ) {
           
+          foreach ( $datasource as $_i => $_data_row ) {
+            foreach ( $_data_row as $_dcol => $_dval ) {
+              if ( $column === $_dcol || 'BIN('. $column .')' === $_dcol ) {
+                $datasource[$_i][$column] = $_dval;
+                unset( $datasource[$_i][$_dcol] );
+              } else {
+                $datasource[$_i][$_dcol] = $_dval;
+              }
+            }
+          }
           // Filter whether to use the icon display in the case of outputting the data registered in boolean form
           //
           // @since 2.0.0
           $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
           
-          if ($bool_data_with_icon) {
+          if ( $bool_data_with_icon ) {
             $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
           } else {
             $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
@@ -828,7 +839,7 @@ trait CdbtShortcodes {
     }
     
     
-    $elements_options = [];
+    $elements_options = $has_bit = [];
     $is_file_upload = false;
     foreach ($table_schema as $column => $scheme) {
       if ( $scheme['primary_key'] && false !== strpos( $scheme['extra'], 'auto_increment' ) ) 
@@ -877,6 +888,7 @@ trait CdbtShortcodes {
           if (preg_match('/^b\'(.*)\'$/iU', $scheme['default'], $matches) && is_array($matches) && array_key_exists(1, $matches)) {
             $scheme['default'] = $this->strtobool($matches[1]);
           }
+          $has_bit[] = $column;
         } else {
           $input_type = 'text';
           $element_size = ceil($scheme['max_length'] / 10);
@@ -952,11 +964,20 @@ trait CdbtShortcodes {
     }
     
     // Override of initial value to for editing
-    if (!empty($where_clause) && is_array($where_clause)) {
+    // @since 2.0.7 Updated for bit type
+    if ( ! empty( $where_clause ) && is_array( $where_clause ) ) {
       $_current_data = $this->get_data( $table, '*', $where_clause, 'ARRAY_A' );
-      if (!empty($_current_data) && array_key_exists(0, $_current_data)) {
-        foreach ($elements_options as $_i => $_element) {
-          if (array_key_exists($_element['elementName'], $_current_data[0])) {
+      if ( ! empty( $_current_data ) && array_key_exists( 0, $_current_data ) ) {
+        if ( ! empty( $has_bit ) ) {
+          foreach ( $has_bit as $_bit_col ) {
+            if ( array_key_exists( 'BIN('. $_bit_col .')', $_current_data[0] ) ) {
+              $_current_data[0][$_bit_col] = $_current_data[0]['BIN('. $_bit_col .')'];
+              unset( $_current_data[0]['BIN('. $_bit_col .')'] );
+            }
+          }
+        }
+        foreach ( $elements_options as $_i => $_element ) {
+          if ( array_key_exists( $_element['elementName'], $_current_data[0] ) ) {
             $elements_options[$_i]['defaultValue'] = stripslashes_deep( $_current_data[0][$_element['elementName']] );
           }
         }
@@ -1338,18 +1359,31 @@ trait CdbtShortcodes {
     }
     
     // If contain bit binary data in the datasource
-    if (!empty($has_bit)) {
-      foreach ($has_bit as $column) {
-        
-        // Filter whether to use the icon display in the case of outputting the data registered in boolean form
-        //
-        // @since 2.0.0
-        $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
-        
-        if ($bool_data_with_icon) {
-          $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
-        } else {
-        	$custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+    // @since 2.0.7 Updated
+    if ( ! empty( $has_bit ) ) {
+      foreach ( $has_bit as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) || array_key_exists( 'BIN('. $column .')', $datasource[0] ) ) {
+          
+          foreach ( $datasource as $_i => $_data_row ) {
+            foreach ( $_data_row as $_dcol => $_dval ) {
+              if ( $column === $_dcol || 'BIN('. $column .')' === $_dcol ) {
+                $datasource[$_i][$column] = $_dval;
+                unset( $datasource[$_i][$_dcol] );
+              } else {
+                $datasource[$_i][$_dcol] = $_dval;
+              }
+            }
+          }
+          // Filter whether to use the icon display in the case of outputting the data registered in boolean form
+          //
+          // @since 2.0.0
+          $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
+          
+          if ( $bool_data_with_icon ) {
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+          } else {
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+          }
         }
       }
     }

@@ -70,6 +70,8 @@ class CdbtDB extends CdbtConfig {
     }
     $this->wpdb->suppress_errors = $this->suppress_errors;
     
+    // Added Filter
+    add_filter( 'cdbt_select_clause_optimaize', array( $this, 'select_clause_optimaize' ), 10, 3 );
   }
   
   
@@ -567,8 +569,8 @@ class CdbtDB extends CdbtConfig {
   public function get_data( $table_name, $columns='*', $conditions=null, $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
-    if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ])) {
-      $output_type = array_pop($arguments);
+    if ( in_array( end( $arguments ), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ] ) ) {
+      $output_type = array_pop( $arguments );
     } else {
       $output_type = 'OBJECT';
     }
@@ -581,8 +583,8 @@ class CdbtDB extends CdbtConfig {
       'offset' => null, 
     ];
     $i = 0;
-    foreach ($arg_default_vars as $variable_name => $default_value) {
-      if (isset($arguments[$i])) {
+    foreach ( $arg_default_vars as $variable_name => $default_value ) {
+      if ( isset( $arguments[$i] ) ) {
         ${$variable_name} = $arguments[$i];
       } else {
         ${$variable_name} = $default_value;
@@ -591,28 +593,23 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Check Table
-    if (false === ($table_schema = $this->get_table_schema($table_name))) {
+    if ( false === ( $table_schema = $this->get_table_schema( $table_name ) ) ) {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
     
     // Main Process
-    $_cols = explode( ',', $columns );
-    foreach ( $_cols as $_i => $_col ) {
-      if ( strpos( strtolower( $_col ), 'count(' ) !== false || strpos( strtolower( $_col ), '*' ) !== false ) {
-        $_cols[$_i] = trim( $_col );
-      } else {
-        $_cols[$_i] = '`'. trim( trim( $_col ), '`' ) .'`';
-      }
-    }
-    $select_clause = implode( ',', $_cols ); //is_array( $columns ) ? implode( ',', $columns ) : '`'. $columns .'`';
+    // Filter select cluase for value type optimaization
+    //
+    // @since 2.0.7
+    $select_clause = apply_filters( 'cdbt_select_clause_optimaize', $columns, $table_name, 'get_data' );
     $where_clause = $order_clause = $limit_clause = null;
-    if (!empty($conditions)) {
+    if ( ! empty( $conditions ) ) {
       $i = 0;
-      foreach ($conditions as $key => $val) {
-        if (array_key_exists($key, $table_schema)) {
-          if ($i === 0) {
+      foreach ( $conditions as $key => $val ) {
+        if ( array_key_exists( $key, $table_schema ) ) {
+          if ( $i === 0 ) {
             $where_clause = "WHERE `$key` = '$val' ";
           } else {
             $where_clause .= "AND `$key` = '$val' ";
@@ -624,11 +621,11 @@ class CdbtDB extends CdbtConfig {
       }
     }
     
-    if (!empty($order)) {
+    if ( ! empty( $order ) ) {
       $i = 0;
-      foreach ($order as $key => $val) {
-        if (array_key_exists($key, $table_schema)) {
-          $val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
+      foreach ($order as $key => $val ) {
+        if ( array_key_exists( $key, $table_schema ) ) {
+          $val = strtoupper( $val ) === 'DESC' ? 'DESC' : 'ASC';
           if ($i == 0) {
             $order_clause = "ORDER BY `$key` $val ";
           } else {
@@ -641,9 +638,9 @@ class CdbtDB extends CdbtConfig {
       }
     }
     
-    if (!empty($limit)) {
+    if ( ! empty( $limit ) ) {
       $limit_clause = "LIMIT ";
-      $limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
+      $limit_clause .= ( ! empty( $offset ) ) ? intval( $offset ) .', '. intval( $limit ) : intval( $limit );
     }
     
     $sql = sprintf(
@@ -659,7 +656,7 @@ class CdbtDB extends CdbtConfig {
     // @since 2.0.0
     $sql = apply_filters( 'cdbt_crud_get_data_sql', $sql, $table_name, [ $select_clause, $where_clause, $order_clause, $limit_clause ] );
     
-    return $this->wpdb->get_results($sql, $output_type);
+    return $this->wpdb->get_results( $sql, $output_type );
   }
   
   
@@ -717,7 +714,10 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Main Process
-    $select_clause = is_array( $columns ) ? implode( ',', $columns ) : $columns;
+    // Filter select cluase for value type optimaization
+    //
+    // @since 2.0.7
+    $select_clause = apply_filters( 'cdbt_select_clause_optimaize', $columns, $table_name, 'find_data' );
     $where_clause = $order_clause = $limit_clause = null;
     if (!empty($order)) {
       $i = 0;
@@ -1940,6 +1940,71 @@ class CdbtDB extends CdbtConfig {
     
     return $results;
     
+  }
+  
+  
+  /**
+   * Filter select clause optimaization
+   *
+   * @since 2.0.7
+   *
+   * @param mixed $columns [required] String or array
+   * @param string $table_name [optional]
+   * @param string $call_function [optional]
+   * @return string $select_clause
+   */
+  public function select_clause_optimaize( $columns, $table_name=null, $call_function=null ) {
+    $has_bit = [];
+    if ( ! empty( $table_name ) && $_scheme = $this->get_table_schema( $table_name ) ) {
+      foreach ( $_scheme as $_key => $_val ) {
+        if ( 'bit' === $_val['type'] ) {
+          $has_bit[$_key] = $_val['type_format'];
+        }
+      }
+    }
+    if ( is_array( $columns ) ) {
+      $_cols = [];
+      foreach ( $columns as $_i => $_col ) {
+        $_col = substr_replace( $_col, '', strpos( $_col, chr(96) ), 1);
+        $_col = trim( substr_replace( $_col, '', strrpos( $_col, chr(96) ), 1 ) );
+      	if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
+      	  $_cols[$_i] = 'BIN('. $_col . ')';
+        } else {
+          $_cols[$_i] = trim( $_col );
+        }
+      }
+    } else
+    if ( is_string( $columns ) ) {
+      $_cols = explode( ',', $columns );
+      foreach ( $_cols as $_i => $_col ) {
+        if ( strpos( strtolower( $_col ), 'count(' ) !== false || strpos( $_col, '*' ) !== false ) {
+          $_cols[$_i] = trim( $_col );
+        } else {
+          $_col = substr_replace( $_col, '', strpos( $_col, chr(96) ), 1);
+          $_col = trim( substr_replace( $_col, '', strrpos( $_col, chr(96) ), 1 ) );
+          if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
+      	    $_cols[$_i] = 'BIN('. $_col . ')';
+          } else {
+            $_cols[$_i] = chr(96) . $_col . chr(96);
+          }
+        }
+      }
+    } else {
+      $_cols = [ '*' ];
+    }
+    if ( in_array( '*', $_cols ) && ! empty( $_scheme ) ) {
+      $_cols = array_keys( $_scheme );
+      foreach ( $_cols as $_i => $_col ) {
+        if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
+          $_cols[$_i] = 'BIN('. $_col . ')';
+        } else {
+          $_cols[$_i] = chr(96) . $_col . chr(96);
+        }
+      }
+    }
+    $select_clause = implode( ',', $_cols );
+    
+    return $select_clause;
   }
   
   
