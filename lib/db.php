@@ -1667,7 +1667,7 @@ class CdbtDB extends CdbtConfig {
               // Filter of the tag list to be allowed for data in the text area
               //
               // @since 2.0.0
-              $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags );
+              $allowed_html_tags = apply_filters( 'cdbt_sanitize_data_allow_tags', $allowed_html_tags, $table_name );
               $register_data[$post_key] = wp_kses($post_value, $allowed_html_tags);
             } else {
               // Sanitization data from text field
@@ -1947,6 +1947,7 @@ class CdbtDB extends CdbtConfig {
    * Filter select clause optimaization
    *
    * @since 2.0.7
+   * @since 2.0.8 Fixed a bug
    *
    * @param mixed $columns [required] String or array
    * @param string $table_name [optional]
@@ -1965,8 +1966,13 @@ class CdbtDB extends CdbtConfig {
     if ( is_array( $columns ) ) {
       $_cols = [];
       foreach ( $columns as $_i => $_col ) {
-        $_col = substr_replace( $_col, '', strpos( $_col, chr(96) ), 1);
-        $_col = trim( substr_replace( $_col, '', strrpos( $_col, chr(96) ), 1 ) );
+        if ( $_pos = strpos( $_col, chr(96) ) !== false ) {
+          $_col = substr_replace( $_col, '', $_pos, 1);
+        }
+        if ( $_pos = strrpos( $_col, chr(96) ) !== false ) {
+          $_col = substr_replace( $_col, '', $_pos, 1 );
+        }
+        $_col = trim( $_col );
       	if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
       	  $_cols[$_i] = 'BIN('. $_col . ')';
         } else {
@@ -1980,8 +1986,13 @@ class CdbtDB extends CdbtConfig {
         if ( strpos( strtolower( $_col ), 'count(' ) !== false || strpos( $_col, '*' ) !== false ) {
           $_cols[$_i] = trim( $_col );
         } else {
-          $_col = substr_replace( $_col, '', strpos( $_col, chr(96) ), 1);
-          $_col = trim( substr_replace( $_col, '', strrpos( $_col, chr(96) ), 1 ) );
+          if ( $_pos = strpos( $_col, chr(96) ) !== false ) {
+            $_col = substr_replace( $_col, '', $_pos, 1);
+          }
+          if ( $_pos = strrpos( $_col, chr(96) ) !== false ) {
+            $_col = substr_replace( $_col, '', $_pos, 1 );
+          }
+          $_col = trim( $_col );
           if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
       	    $_cols[$_i] = 'BIN('. $_col . ')';
           } else {

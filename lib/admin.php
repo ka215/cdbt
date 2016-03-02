@@ -409,17 +409,22 @@ final class CdbtAdmin extends CdbtDB {
       if ( isset( $this->options['include_assets']['admin_jquery'] ) && ! $this->options['include_assets']['admin_jquery'] ) {
         unset( $assets['scripts']['cdbt-jquery'] );
         $assets['scripts']['jquery'] = null;
+        $assets['scripts']['cdbt-underscore'][1] = [ 'jquery' ];
+        $assets['scripts']['cdbt-bootstrap'][1] = [ 'jquery' ];
       }
       if ( isset( $this->options['include_assets']['admin_underscore_js'] ) && ! $this->options['include_assets']['admin_underscore_js'] ) {
         unset( $assets['scripts']['cdbt-underscore'] );
         $assets['scripts']['underscore'] = null;
+        $assets['scripts']['cdbt-main-script'][1] = [ 'underscore' ];
       }
       if ( isset( $this->options['include_assets']['admin_bootstrap'] ) && ! $this->options['include_assets']['admin_bootstrap'] ) {
         unset( $assets['scripts']['cdbt-bootstrap'] );
+        $assets['scripts']['cdbt-fuelux-script'][1] = [];
       }
       if ( isset( $this->options['include_assets']['admin_fuel_ux'] ) && ! $this->options['include_assets']['admin_fuel_ux'] ) {
         unset( $assets['styles']['cdbt-fuelux-style'] );
         unset( $assets['scripts']['cdbt-fuelux-script'] );
+        $assets['styles']['cdbt-main-style'][1] = [];
       }
     }
     //
