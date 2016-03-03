@@ -967,6 +967,21 @@ foreach ($this->allow_file_types as $file_type) {
       </tfoot>
     </table>
   </div>
+  
+  <div class="table-responsive">
+    <table id="table-create-sql" class="table table-condensed">
+      <thead>
+        <tr>
+          <th class="col"><i class="fa fa-square text-muted"></i> <?php _e('SQL of Create Table', CDBT); ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><pre><code><?php echo $this->get_create_table_sql( $target_table ); ?></code></pre></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
   
 <section id="import" class="<?php if ('import' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">

@@ -1976,12 +1976,12 @@ class CdbtDB extends CdbtConfig {
       	if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
       	  $_cols[$_i] = 'BIN('. $_col . ')';
         } else {
-          $_cols[$_i] = trim( $_col );
+          $_cols[$_i] = '`'. $_col .'`';
         }
       }
     } else
     if ( is_string( $columns ) ) {
-      $_cols = explode( ',', $columns );
+      $_cols = explode( ',', str_replace( chr(96), '', $columns ) );
       foreach ( $_cols as $_i => $_col ) {
         if ( strpos( strtolower( $_col ), 'count(' ) !== false || strpos( $_col, '*' ) !== false ) {
           $_cols[$_i] = trim( $_col );
@@ -1996,7 +1996,7 @@ class CdbtDB extends CdbtConfig {
           if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
       	    $_cols[$_i] = 'BIN('. $_col . ')';
           } else {
-            $_cols[$_i] = chr(96) . $_col . chr(96);
+            $_cols[$_i] = '`'. $_col .'`';
           }
         }
       }
@@ -2009,7 +2009,7 @@ class CdbtDB extends CdbtConfig {
         if ( ! empty( $has_bit ) && array_key_exists( $_col, $has_bit ) ) {
           $_cols[$_i] = 'BIN('. $_col . ')';
         } else {
-          $_cols[$_i] = chr(96) . $_col . chr(96);
+          $_cols[$_i] = strpos( $_col, chr(96) ) === false ? chr(96) . $_col . chr(96) : $_col;
         }
       }
     }

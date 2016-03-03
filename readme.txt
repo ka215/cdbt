@@ -69,6 +69,9 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 2.0.8 =
+* Fixed a bug in the filter of "cdbt_select_clause_optimaize".
+* Fixed a bug when using "Included assets setting" in the plugin options.
+* Added the section of "SQL of Create Table" into the "Operate Table" tab on the "CDBT Tables Management".
 
 
 = 2.0.7 =
@@ -261,6 +264,9 @@ Detailed documentation has published at the site of author. If you are free, Ple
 (Sorry, for about documentation will be only the Japanese version currently.)
 
 == Upgrade Notice ==
+
+= 2.0.8 =
+Hotfix of fixing the bug that had set an invalid select clause in select query.
 
 = 2.0.6 =
 Because there had improvemented around the session, please use after you delete your browser's cache and Cookie once.
