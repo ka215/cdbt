@@ -685,7 +685,10 @@ final class CdbtAdmin extends CdbtDB {
     $this->admin_notices();
     
   }
-
+  
+  
+  
+  
   /**
    * Worker logic methods
    * -------------------------------------------------------------------------
@@ -1857,7 +1860,7 @@ final class CdbtAdmin extends CdbtDB {
           break;
         case 'edit_data_form': 
           $args['modalTitle'] = __('Edit Data Form', CDBT);
-          $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="[cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\']">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
+          $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\'">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
           // $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;

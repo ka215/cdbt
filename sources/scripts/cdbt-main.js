@@ -475,7 +475,7 @@ $(document).ready(function() {
           'table_name': _.last($.sessionKey.split('-')), 
           'operate_action': 'edit_data', 
           'event': 'render_edit_form', 
-          'shortcode': $('#edit-data-form').val(), 
+          'shortcode': '[' + $('#edit-data-form').val() + ']', 
         };
         return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
       });

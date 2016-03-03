@@ -1241,7 +1241,7 @@ $(document).ready(function() {
         'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
         'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
         'event': 'render_edit_form', 
-        'shortcode': $('#edit-data-form').val(), 
+        'shortcode': '[' + $('#edit-data-form').val() + ']', 
       };
       return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
     });

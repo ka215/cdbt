@@ -338,20 +338,20 @@ trait CdbtShortcodes {
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load', 'strip_tags' ];
     foreach ($boolean_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtobool(${$attribute_name});
+      ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
     $not_assoc_atts = [ 'exclude_cols', 'display_cols', 'order_cols' ];
     foreach ($not_assoc_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtoarray(${$attribute_name});
+      ${$attribute_name} = $this->strtoarray( rawurldecode( ${$attribute_name} ) );
     }
     $hash_atts = [ 'narrow_keyword', 'sort_order', 'filters' ];
     foreach ($hash_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtohash(${$attribute_name});
+      ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
     }
     $add_classes = [];
-    if (!empty($add_class)) {
-      foreach (explode(' ', $add_class) as $_class) {
-        $add_classes[] = esc_attr(trim($_class));
+    if ( ! empty( $add_class ) ) {
+      foreach ( explode( ' ', rawurldecode( $add_class ) ) as $_class ) {
+        $add_classes[] = esc_attr( trim( $_class ) );
       }
     }
     
@@ -457,10 +457,10 @@ trait CdbtShortcodes {
     }
     $filters = $this->strtohash($filters);
     
-    if (!$display_index_row) {
+    if ( ! $display_index_row ) {
       $add_classes[] = 'hidden-index-row';
     }
-    $add_class = implode(' ', $add_classes);
+    $add_class = implode( ' ', $add_classes );
     
     if ('get' === $query_type) {
       // $datasource = $this->get_data($table, 'ARRAY_A');
@@ -802,22 +802,22 @@ trait CdbtShortcodes {
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_title', 'display_submit' ];
     foreach ($boolean_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtobool(${$attribute_name});
+      ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
     $not_assoc_atts = [ 'hidden_cols' ];
     foreach ($not_assoc_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtoarray(${$attribute_name});
+      ${$attribute_name} = $this->strtoarray( rawurldecode( ${$attribute_name} ) );
     }
     $hash_atts = [ 'where_clause' ];
     foreach ($hash_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtohash(${$attribute_name});
+      ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
     }
-    if (!empty($add_class)) {
+    if ( ! empty( $add_class ) ) {
       $add_classes = [];
-      foreach (explode(' ', $add_class) as $_class) {
-        $add_classes[] = esc_attr(trim($_class));
+      foreach ( explode( ' ', rawurldecode( $add_class ) ) as $_class ) {
+        $add_classes[] = esc_attr( trim( $_class ) );
       }
-      $add_class = implode(' ', $add_classes);
+      $add_class = implode( ' ', $add_classes );
     }
     if ($csid > 0 && $this->validate->checkInt($csid)) {
       // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
@@ -1006,8 +1006,8 @@ trait CdbtShortcodes {
       $conponent_options['displaySubmit'] = $display_submit;
     if (!empty($where_clause) && is_array($where_clause)) 
       $conponent_options['whereClause'] = $where_clause;
-    if (!empty($redirect_url)) 
-      $conponent_options['redirectUrl'] = $redirect_url;
+    if ( ! empty( $redirect_url ) ) 
+      $conponent_options['redirectUrl'] = rawurldecode( $redirect_url );
     
     // Filter the conponent definition of the list content that is output by this shortcode
     //
@@ -1169,22 +1169,22 @@ trait CdbtShortcodes {
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags' ];
     foreach ($boolean_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtobool(${$attribute_name});
+      ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
     $not_assoc_atts = [ 'exclude_cols' ];
     foreach ($not_assoc_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtoarray(${$attribute_name});
+      ${$attribute_name} = $this->strtoarray( rawurldecode( ${$attribute_name} ) );
     }
     $hash_atts = [ 'narrow_keyword', 'sort_order', 'filters' ];
     foreach ($hash_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtohash(${$attribute_name});
+      ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
     }
-    if (!empty($add_class)) {
+    if ( ! empty( $add_class ) ) {
       $add_classes = [];
-      foreach (explode(' ', $add_class) as $_class) {
-        $add_classes[] = esc_attr(trim($_class));
+      foreach ( explode( ' ', rawurldecode( $add_class ) ) as $_class ) {
+        $add_classes[] = esc_attr( trim( $_class ) );
       }
-      $add_class = implode(' ', $add_classes);
+      $add_class = implode( ' ', $add_classes );
     }
     $image_render = 'responsive';
     if ($csid > 0 && $this->validate->checkInt($csid)) {
