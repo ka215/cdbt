@@ -171,13 +171,16 @@ $(document).ready(function() {
       });
       
       var nonce = $.ajaxResponse.responseText;
-      var generate_form = '<form method="post" action="' + location.href + '" id="data-deletion" style="display: none;">';
+      var generate_form = '<form method="post" action="' + location.href + '" id="data-deletion-' + nonce + '" style="display: none;">';
       generate_form += '<input type="hidden" name="action" value="delete_data">';
       generate_form += '<input type="hidden" name="table" value="' + _.last($.sessionKey.split('-')) + '">';
       generate_form += '<input type="hidden" name="_wpnonce" value="' + nonce + '">';
       generate_form += '<input type="hidden" name="where_conditions" value="' + where_conditions.join(',') + '">';
       generate_form += '</form>';
-      $('#cdbtDeleteData .modal-body').append(generate_form).find('#data-deletion').submit();
+      $('#cdbtDeleteData .modal-body').append(generate_form);
+      var delete_form = $('#cdbtDeleteData .modal-body').find('#data-deletion-' + nonce);
+      setCookie( 'once_action', delete_form.attr( 'id' ) );
+      delete_form.submit();
       
     };
     
@@ -395,13 +398,11 @@ $(document).ready(function() {
       $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(){
         effect_buttons();
       });
-      //$('#repeater-check-switch').on('click', function(){
       $(document).on('click', '#repeater-check-switch', function(){
         effect_buttons();
       });
       
       // Event handler
-      //$('button[id^="repeater-editor-"]').on('click', function(){
       $(document).on('click', 'button[id^="repeater-editor-"]', function(){
         var dataAction = _.last($(this).attr('id').split('-'));
         var targetTable = _.last($('.repeater').attr('id').split('-'));
@@ -465,7 +466,7 @@ $(document).ready(function() {
             
             break;
           default: 
-            break;
+            return false;
         }
       });
       
@@ -545,6 +546,7 @@ $(document).ready(function() {
         }
         */
         if ( checkEmptyFields() ) {
+          setCookie( 'once_action', form.attr( 'id' ) );
           form.submit();
         } else {
           return false;
@@ -554,6 +556,7 @@ $(document).ready(function() {
       
       // Run of deleting data after confirmation
       $(document).on('click', '#run_delete_data', function(){
+        $('#run_delete_data').off();
         var post_data = {
           'table': _.last($.sessionKey.split('-')), 
           'event': 'retrieve_nonce', 
@@ -587,7 +590,7 @@ $(document).ready(function() {
   /**
    * Entry forms via shortcode `cdbt-entry`
    */
-  if ($('.cdbt-entry-data-form').size() > 0) {
+  if ($('.cdbt-entry-data-form form').size() > 0) {
     
     $('.dropdown-toggle').dropdown();
     
@@ -604,9 +607,16 @@ $(document).ready(function() {
       }
     });
     
-    $(document).on('click', '.cdbt-entry-data-form form button[type=submit]', function(e){
-      //e.preventDefault();
-      var entry_form = $('.cdbt-entry-data-form form');
+    /*
+    $(document).on('submit', '.cdbt-entry-data-form form', function(){
+        $('.cdbt-entry-data-form form').off();
+    });
+    */
+    
+    $(document).on('click', 'button[id^="btn-entry/"]', function(e){
+      e.preventDefault();
+      var tmp = $(this).attr('id').split('/');
+      var entry_form = $('#' + tmp[1]);
       var check_result = true;
       entry_form.find('.checkbox-custom').each(function(){
         if ($(this).hasClass('multiple')) {
@@ -618,19 +628,11 @@ $(document).ready(function() {
               check_result = false;
             }
           }
-        } else {
-          /*
-          if (!$(this).checkbox('isChecked')) {
-            $(this).children('input').val('0').prop('checked', true);
-          } else {
-            $(this).children('input').val('1').prop('checked', true);
-          }
-          */
         }
       });
-      if (check_result) {
-        //entry_form.submit();
-        return true;
+      if ( check_result ) {
+        setCookie( 'once_action', entry_form.attr( 'id' ) );
+        entry_form.submit();
       } else {
         return false;
       }
@@ -659,8 +661,9 @@ $(document).ready(function() {
     var post_data = typeof arguments[2] !== 'undefined' ? arguments[2] : null;
     var data_type = typeof arguments[3] !== 'undefined' ? arguments[3] : 'text';
     var callback_function = typeof arguments[4] !== 'undefined' ? arguments[4] : null;
-    
-    var jqXHR = $.ajax({
+    var process_data = typeof arguments[5] !== 'undefined' ? arguments[5] : null;
+    var content_type = typeof arguments[6] !== 'undefined' ? arguments[6] : null;
+    var ajax_param = {
       async: true,
       url: ajax_url,
       type: method,
@@ -670,7 +673,15 @@ $(document).ready(function() {
       beforeSend: function(xhr, set) {
         // return;
       }
-    });
+    };
+    if ( process_data !== null ) {
+      ajax_param.append( 'processData', process_data );
+    }
+    if ( content_type !== null ) {
+      ajax_param.append( 'contentType', content_type );
+    }
+    
+    var jqXHR = $.ajax( ajax_param );
     
     jqXHR.done(function(data, stat, xhr) {
       if ($.isDebug) {

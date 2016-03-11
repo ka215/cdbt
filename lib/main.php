@@ -24,6 +24,13 @@ final class CdbtFrontend extends CdbtDB {
   protected $wpdb;
 
   /**
+   * This member to cache the action performed immediately before
+   *
+   * @since 2.0.8
+   */
+  var $prev_action_cache;
+
+  /**
    * Instance factory method as entry point of plugin.
    *
    * @since 2.0.0
@@ -147,6 +154,9 @@ final class CdbtFrontend extends CdbtDB {
     // Emit Message Initialize
     $this->emit_message = '';
     $this->emit_type = 'error';
+    
+    // Action cache Initialize
+    $this->prev_action_cache = [];
     
   }
 
@@ -448,11 +458,20 @@ final class CdbtFrontend extends CdbtDB {
     
     if (wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
       $worker_method = sprintf('do_%s', $_POST['action']);
-      if (method_exists($this, $worker_method)) {
+      if ( method_exists( $this, $worker_method ) ) {
+//ob_start();
         $_session_key = str_replace('_', '-', $worker_method .'-'. $_POST['table']);
-        $_SESSION = array_map( 'stripslashes_deep', $_POST );
+        $_SESSION = array_merge( $_SESSION, array_map( 'stripslashes_deep', $_POST ) );
         $this->update_session( $_session_key );
-        $this->$worker_method();
+//var_dump([ $_COOKIE['once_action'], $this->prev_action_cache, $this->prev_action_cache === $_COOKIE['once_action'] ]);
+        if ( isset( $this->prev_action_cache ) && $this->prev_action_cache !== $_COOKIE['once_action'] ) {
+          $this->$worker_method();
+        } else {
+          return;
+        }
+        $this->prev_action_cache = $_COOKIE['once_action'];
+//$this->logger( ob_get_contents() );
+//ob_end_clean();
       } else {
         // invalid access
         $this->destroy_session( $worker_method );
@@ -625,10 +644,12 @@ final class CdbtFrontend extends CdbtDB {
         $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
       }
     }
+    unset( $post_data, $register_data );
     
     if ( ! empty( $message ) ) {
       $this->emit_message = $message;
     }
+    
     return;
     
   }

@@ -52,6 +52,7 @@ trait CdbtAjax {
    * Ajax controller calls the actual processing in accordance with the requested event value
    *
    * @since 2.0.0
+   * @since 2.0.8 Update for fixing bug
    **/
   public function ajax_handler() {
     if (!isset($GLOBALS['_REQUEST']['_wpnonce'])) 
@@ -66,22 +67,29 @@ trait CdbtAjax {
       }
     }
     
-    if (!isset($GLOBALS['_REQUEST']['event'])) {
-      if (is_admin()) {
+    if ( ! isset( $GLOBALS['_REQUEST']['event'] ) ) {
+      if ( is_admin() ) {
         $this->ajax_error( __('Ajax event is not specified.', CDBT) );
       } else {
         wp_die();
       }
+    } else {
+      if ( isset( $GLOBALS['_POST']['event'] ) && ! empty( $GLOBALS['_POST']['event'] ) ) {
+        $_event = rtrim( $GLOBALS['_POST']['event'] );
+        $_params = $GLOBALS['_POST'];
+      } else {
+        $_event = rtrim( $GLOBALS['_GET']['event'] );
+        $_params = $GLOBALS['_GET'];
+      }
     }
     
-    $event_method = 'ajax_event_' . rtrim($GLOBALS['_REQUEST']['event']);
+    $event_method = 'ajax_event_' . $_event;
     
-    if (!method_exists($this, $event_method)) {
+    if ( ! method_exists( $this, $event_method ) ) {
       $this->ajax_error( __('Method handling of an Ajax event does not exist.', CDBT) );
     }
     
-    $this->$event_method( $GLOBALS['_REQUEST'] );
-    
+    $this->$event_method( $_params );
   }
 
 
@@ -278,6 +286,23 @@ trait CdbtAjax {
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
     die('location.reload();');
+    
+  }
+  
+  
+  /**
+   * Run the data entry via Ajax
+   *
+   * @since 2.0.8
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_entry_data( $args=[] ) {
+    static $message = '';
+    $notices_class = CDBT . '-error';
+    
+    die( $args );
     
   }
   

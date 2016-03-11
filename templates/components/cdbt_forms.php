@@ -173,13 +173,15 @@ if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->o
   $_cdbt_token = isset( $_COOKIE['_cdbt_token'] ) ? $_COOKIE['_cdbt_token'] : '';
 }
 
+$form_hash = sha1( microtime() );
+
 /**
  * Render the Form common header
  * ---------------------------------------------------------------------------
  */
 ?>
 <div class="cdbt-entry-data-form">
-  <form method="post" action="<?php echo $action_url; ?>" class="form-horizontal"<?php if ($is_file_upload) : ?> enctype="multipart/form-data"<?php endif; ?>>
+  <form method="post" action="<?php echo $action_url; ?>" id="<?php echo $form_hash; ?>" class="form-horizontal"<?php if ($is_file_upload) : ?> enctype="multipart/form-data"<?php endif; ?> >
     <?php if (!empty($hidden_fields)) { echo implode("\n", $hidden_fields); } ?>
     <input type="hidden" name="action" value="<?php echo $form_action; ?>">
     <input type="hidden" name="table" value="<?php echo $this->component_options['entryTable']; ?>">
@@ -606,7 +608,7 @@ search, datetime, date, month, week, time, color
   <?php if ($display_submit_button) : ?>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary"><?php _e('Register Data', CDBT); ?></button>
+        <button type="button" class="btn btn-primary" id="btn-entry/<?php echo $form_hash; ?>"><?php _e('Register Data', CDBT); ?></button>
       </div>
     </div>
   <?php endif; ?>
