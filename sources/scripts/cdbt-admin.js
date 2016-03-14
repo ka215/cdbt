@@ -1,8 +1,61 @@
 /*!
- * Custom DataBase Tables v2.0.7 (http://ka2.org)
- * Copyright 2014-2015 ka2@ka2.org
+ * Custom DataBase Tables v2.0.8 (http://ka2.org)
+ * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
+/*
+ * :: cookies.js ::
+ *
+ * A complete cookies reader/writer framework with full unicode support.
+ *
+ * source:  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+ * localize: https://developer.mozilla.org/ja/docs/Web/API/Document/cookie
+ *
+ * Syntaxes:
+ *
+ * - docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+ * - docCookies.getItem(name)
+ * - docCookies.removeItem(name[, path])
+ * - docCookies.hasItem(name)
+ * - docCookies.keys()
+ *
+ */
+var docCookies = {
+  getItem: function (sKey) {
+    if (!sKey || !this.hasItem(sKey)) { return null; }
+    return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Tue, 19 Jan 2038 03:14:07 GMT" : "; max-age=" + vEnd;
+          break;
+        case String:
+          sExpires = "; expires=" + vEnd;
+          break;
+        case Date:
+          sExpires = "; expires=" + vEnd.toGMTString();
+          break;
+      }
+    }
+    document.cookie = escape(sKey) + "=" + escape(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+  },
+  removeItem: function (sKey, sPath) {
+    if (!sKey || !this.hasItem(sKey)) { return; }
+    document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sPath ? "; path=" + sPath : "");
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = unescape(aKeys[nIdx]); }
+    return aKeys;
+  }
+};
 $(document).ready(function() {
   
   /**
@@ -27,6 +80,7 @@ $(document).ready(function() {
   $.ajaxUrl = cdbt_admin_vars.ajax_url;
   $.ajaxNonce = cdbt_admin_vars.ajax_nonce;
   $.modalNotices = 'true' === cdbt_admin_vars.notices_via_modal ? true : false;
+  $.onTimer = true;
   if ($.isDebug) {
     // check debug mode
     console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices }, $.QueryString) );
@@ -47,11 +101,13 @@ $(document).ready(function() {
      */
     this.reload_timer = function(){
       
-      var now = new Date();
-      $('.cdbt-datepicker').datepicker('getDate', now);
-      $('.datepicker-combobox-hour input[type="text"]').val(('00' + now.getHours()).slice(-2));
-      $('.datepicker-combobox-minute input[type="text"]').val(('00' + now.getMinutes()).slice(-2));
-      $('.datepicker-combobox-second input[type="text"]').val(('00' + now.getSeconds()).slice(-2));
+      if ( $.onTimer ) {
+        var now = new Date();
+        $('.cdbt-datepicker').datepicker('getDate', now);
+        $('.datepicker-combobox-hour input[type="text"]').val(('00' + now.getHours()).slice(-2));
+        $('.datepicker-combobox-minute input[type="text"]').val(('00' + now.getMinutes()).slice(-2));
+        $('.datepicker-combobox-second input[type="text"]').val(('00' + now.getSeconds()).slice(-2));
+      }
       
     };
     
@@ -77,21 +133,22 @@ $(document).ready(function() {
       if ($('div.cdbt-modal').size() > 0) {
         $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
         $.ajaxResponse.responseText = '';
+        var modalForm = $('form#' + $('div.modal-body').find('form').attr('id') );
         // Initialize the form components of fuel ux
-        $('.checkbox-custom').checkbox('enable');
-        $('.combobox').combobox('enable');
-        $('.infinitescroll').infinitescroll('enable');
-        $('.loader').loader('reset');
-        $('.pillbox').pillbox();
-        $('.placard').placard('enable');
-        $('.radio').radio('enable');
-        $('.search').search('enable');
-        $('.selectlist').selectlist('enable');
-        $('.spinbox').spinbox();
-        $('.tree').tree('render');
-        $('.wizard').wizard();
-        $('.repeater').repeater('render');
-        $('.datepicker').each(function(){
+        modalForm.find('.checkbox-custom').checkbox('enable');
+        modalForm.find('.combobox').combobox('enable');
+        modalForm.find('.infinitescroll').infinitescroll('enable');
+        modalForm.find('.loader').loader('reset');
+        modalForm.find('.pillbox').pillbox();
+        modalForm.find('.placard').placard('enable');
+        modalForm.find('.radio').radio('enable');
+        modalForm.find('.search').search('enable');
+        modalForm.find('.selectlist').selectlist('enable');
+        modalForm.find('.spinbox').spinbox();
+        modalForm.find('.tree').tree('render');
+        modalForm.find('.wizard').wizard();
+        modalForm.find('.repeater').repeater('render');
+        modalForm.find('.datepicker').each(function(){
           var parse_id = $(this).attr('id').replace('entry-data-', '').split('-');
           var id = parse_id[0];
           var prev_date = $('input[name="custom-database-tables['+id+'][prev_date]"]').val();
@@ -101,17 +158,13 @@ $(document).ready(function() {
             restrictDateSelection: true, 
             momentConfig: { culture: $(this).data('momentLocale'), format: $(this).data('momentFormat') }, 
           });
+          $.onTimer = false;
         });
         // Initialize other
         dynamicTableRender();
         $('div.modal-body').find('input,textarea,select').each(function(){
           if (typeof $(this).attr('required') !== 'undefined') {
-            // $(this).removeAttr('required');
-            // console.info([$(this).attr('id'), $(this).required, $(this).prop('required')]);
-            // document.getElementById($(this).attr('id')).required = true;
-            // $(this).attr('required', true);
             $(this).prop('required', true);
-            // console.info([$(this).attr('id'), $(this).required, $(this).prop('required')]);
           }
         });
       }
@@ -324,14 +377,23 @@ $(document).ready(function() {
    * Datepicker components of Fuel UX renderer
    */
   if ($('.cdbt-datepicker').size() > 0) {
-    $('.cdbt-datepicker').each(function(){
+    var targetForm = $( 'form#' + $('.cdbt-datepicker').parents('form').attr('id') );
+    targetForm.find('.cdbt-datepicker').each(function(){
       if ($(this).data().momentLocale && $(this).data().momentFormat) {
         $(this).datepicker({ 
           momentConfig: { culture: $(this).data().momentLocale, format: $(this).data().momentFormat } 
         });
       }
-      if (typeof $(this).data().date === 'undefined') {
-        $(this).datepicker('getDate', new Date()); 
+      if (typeof $(this).data('date') === 'undefined') {
+        $(this).datepicker( 'getDate', new Date() ); 
+      } else {
+        $(this).datepicker( 'setDate', $(this).data('date') );
+      }
+      var prevDate = $(this).parent().next('input[type=hidden]').val();
+      if ( prevDate === '0000-00-00 00:00:00' ) {
+        $.onTimer = true;
+      } else {
+        $.onTimer = false;
       }
     });
     setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
@@ -1036,12 +1098,14 @@ $(document).ready(function() {
     }
     
     // Check empty fields
-    // Added since version 2.0.7
-    var checkEmptyFields = function(){
-      if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+    // @since 2.0.7 Added new
+    // @since 2.0.8 Updated
+    var checkEmptyFields = function( formId ){
+      //if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+      if ( $('form#' + formId).size() === 1 ) {
         var required_fields = 0;
         var empty_fields = 0;
-        $('.form-group').each( function() {
+        $('form#' + formId).find('.form-group').each( function() {
           if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
             required_fields += 1;
             var checked = 0;
@@ -1124,10 +1188,11 @@ $(document).ready(function() {
         }
       });
       
-      $(document).on('click', '.cdbt-entry-data-form form button[type=submit]', function(e){
-        //e.preventDefault();
-        var entry_form = $('.cdbt-entry-data-form form');
-        var check_result = true;
+      $(document).on('click', 'button[id^="btn-entry/"]', function(e){
+        e.preventDefault();
+        var tmp = $(this).attr('id').split('/');
+        var entry_form = $('#' + tmp[1]);
+        var check_result = checkEmptyFields( tmp[1] );
         entry_form.find('.checkbox-custom').each(function(){
           if ($(this).hasClass('multiple')) {
             if ($(this).hasClass('required')) {
@@ -1139,8 +1204,9 @@ $(document).ready(function() {
             }
           }
         });
-        if (check_result) {
-          return true;
+        if ( check_result ) {
+          docCookies.setItem( 'once_action', entry_form.attr( 'id' ) );
+          entry_form.submit();
         } else {
           return false;
         }
@@ -1171,7 +1237,6 @@ $(document).ready(function() {
       var dataAction = _.last($(this).attr('id').split('-'));
       var selectedItem = $('.repeater[id^="cdbt-repeater-edit-"]').repeater('list_getSelectedItems');
       var post_data = {};
-//      console.info([dataAction, selectedItem.length]);
       
       $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
       
@@ -1276,38 +1341,10 @@ $(document).ready(function() {
     $(document).on('click', '#run_update_data', function(e){
       e.preventDefault();
       var form = $('#cdbtEditData div.cdbt-entry-data-form form');
+      var formId = form.attr( 'id' );
       form.children('input[name="_wp_http_referer"]').val(location.href);
-      /* Disabled since v2.0.7
-      var check_result = true;
-      form.find('.checkbox-custom').each(function(){
-        
-        if ($(this).hasClass('multiple')) {
-        	countMultipleChecked();
-          var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
-          var checked_count = Number(counter_elm.val());
-          if ($(this).hasClass('required')) {
-            if (checked_count === 0) {
-              check_result = false;
-            }
-          }
-        } else {
-          
-          if (!$(this).checkbox('isChecked')) {
-            $(this).children('input').val('0').prop('checked', true);
-          } else {
-            $(this).children('input').val('1').prop('checked', true);
-          }
-          
-        }
-      });
-      if (check_result) {
-        form.submit();
-        //return true;
-      } else {
-        return false;
-      }
-      */
-      if ( checkEmptyFields() ) {
+      if ( checkEmptyFields( formId ) ) {
+        docCookies.setItem( 'once_action', formId );
         form.submit();
       } else {
         return false;
@@ -1681,60 +1718,6 @@ $(document).ready(function() {
  * jQuery-independent common processing
  * ---------------------------------------------------------------------------
  */
-/*
- * :: cookies.js ::
- *
- * A complete cookies reader/writer framework with full unicode support.
- *
- * source:  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
- * localize: https://developer.mozilla.org/ja/docs/Web/API/Document/cookie
- *
- * Syntaxes:
- *
- * - docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
- * - docCookies.getItem(name)
- * - docCookies.removeItem(name[, path])
- * - docCookies.hasItem(name)
- * - docCookies.keys()
- *
- */
-var docCookies = {
-  getItem: function (sKey) {
-    if (!sKey || !this.hasItem(sKey)) { return null; }
-    return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
-  },
-  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
-    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return; }
-    var sExpires = "";
-    if (vEnd) {
-      switch (vEnd.constructor) {
-        case Number:
-          sExpires = vEnd === Infinity ? "; expires=Tue, 19 Jan 2038 03:14:07 GMT" : "; max-age=" + vEnd;
-          break;
-        case String:
-          sExpires = "; expires=" + vEnd;
-          break;
-        case Date:
-          sExpires = "; expires=" + vEnd.toGMTString();
-          break;
-      }
-    }
-    document.cookie = escape(sKey) + "=" + escape(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
-  },
-  removeItem: function (sKey, sPath) {
-    if (!sKey || !this.hasItem(sKey)) { return; }
-    document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sPath ? "; path=" + sPath : "");
-  },
-  hasItem: function (sKey) {
-    return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
-  },
-  keys: /* optional method: you can safely remove it! */ function () {
-    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
-    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = unescape(aKeys[nIdx]); }
-    return aKeys;
-  }
-};
-
 /**
  * Convert datetime format as common utility function for repeater
  */

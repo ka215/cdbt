@@ -1,6 +1,6 @@
 /*!
- * Custom DataBase Tables v2.0.7 (http://ka2.org)
- * Copyright 2014-2015 ka2@ka2.org
+ * Custom DataBase Tables v2.0.8 (http://ka2.org)
+ * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
 /**
@@ -146,7 +146,6 @@ $(document).ready(function() {
           var parse_id = $(this).attr('id').replace('entry-data-', '').split('-');
           var id = parse_id[0];
           var prev_date = modalForm.find('input[name="custom-database-tables['+id+'][prev_date]"]').val();
-console.info([ parse_id, id, prev_date ]);
           $(this).datepicker({ 
             date: new Date(prev_date), 
             allowPastDates: true, 
@@ -563,11 +562,15 @@ console.info([ parse_id, id, prev_date ]);
           momentConfig: { culture: $(this).data().momentLocale, format: $(this).data().momentFormat } 
         });
       }
-      if ( typeof $(this).data('data') === 'undefined' ) {
+      if ( typeof $(this).data('date') === 'undefined' ) {
         $(this).datepicker( 'getDate', new Date() );
-        $.onTimer = true;
       } else {
         $(this).datepicker( 'setDate', $(this).data('date') );
+      }
+      var prevDate = $(this).parent().next('input[type=hidden]').val();
+      if ( prevDate === '0000-00-00 00:00:00' ) {
+        $.onTimer = true;
+      } else {
         $.onTimer = false;
       }
     });
