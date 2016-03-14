@@ -313,12 +313,14 @@ console.info([ parse_id, id, prev_date ]);
        */
       
       // Check empty fields
-      // Added since version 2.0.7
-      var checkEmptyFields = function(){
-        if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+      // @since 2.0.7 Added new
+      // @since 2.0.8 Updated
+      var checkEmptyFields = function( formId ){
+        //if ( $('.cdbt-entry-data-form form').size() > 0 ) {
+        if ( $('form#' + formId).size() === 1 ) {
           var required_fields = 0;
           var empty_fields = 0;
-          $('.form-group').each( function() {
+          $('form#' + formId).find('.form-group').each( function() {
             if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
               required_fields += 1;
               var checked = 0;
@@ -523,35 +525,9 @@ console.info([ parse_id, id, prev_date ]);
       $(document).on('click', '#run_update_data', function(e){
         e.preventDefault();
         var form = $('#cdbtEditData div.cdbt-entry-data-form form');
+        var formId = form.attr( 'id' );
         form.children('input[name="_wp_http_referer"]').val(location.href);
-        /* Disabled since v2.0.7
-        var check_result = true;
-        form.find('.checkbox-custom').each(function(){
-          if ($(this).hasClass('multiple')) {
-            countMultipleChecked();
-            var counter_elm = $('input[name="' + $(this).children('input').attr('name').replace('[]', '') + '[checked]"]');
-            var checked_count = Number(counter_elm.val());
-            if ($(this).hasClass('required')) {
-              if (checked_count === 0) {
-                check_result = false;
-              }
-            }
-          } else {
-            if (!$(this).checkbox('isChecked')) {
-              //console.info([ $(this).html(), $(this).children('input').attr('name') ]);
-              $(this).children('input').val('0').prop('checked', true);
-            } else {
-              $(this).children('input').val('1').prop('checked', true);
-            }
-          }
-        });
-        if (check_result) {
-          form.submit();
-        } else {
-          return false;
-        }
-        */
-        if ( checkEmptyFields() ) {
+        if ( checkEmptyFields( formId ) ) {
           setCookie( 'once_action', form.attr( 'id' ) );
           form.submit();
         } else {
@@ -628,7 +604,7 @@ console.info([ parse_id, id, prev_date ]);
       e.preventDefault();
       var tmp = $(this).attr('id').split('/');
       var entry_form = $('#' + tmp[1]);
-      var check_result = true;
+      var check_result = checkEmptyFields( tmp[1] );
       entry_form.find('.checkbox-custom').each(function(){
         if ($(this).hasClass('multiple')) {
           if ($(this).hasClass('required')) {
