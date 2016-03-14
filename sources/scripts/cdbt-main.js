@@ -69,9 +69,10 @@ $(document).ready(function() {
   $.modalNotices = 'true' === cdbt_main_vars.notices_via_modal ? true : false;
   $.emitMessage = cdbt_main_vars.emit_message;
   $.emitType = cdbt_main_vars.emit_type;
+  $.onTimer = true;
   if ($.isDebug) {
     // check debug mode
-    console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices }, $.QueryString) );
+    console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices, onTimer: $.onTimer }, $.QueryString) );
   }
   
   /**
@@ -89,11 +90,13 @@ $(document).ready(function() {
      */
     this.reload_timer = function(){
       
-      var now = new Date();
-      $('.cdbt-datepicker').datepicker('getDate', now);
-      $('.datepicker-combobox-hour input[type="text"]').val(('00' + now.getHours()).slice(-2));
-      $('.datepicker-combobox-minute input[type="text"]').val(('00' + now.getMinutes()).slice(-2));
-      $('.datepicker-combobox-second input[type="text"]').val(('00' + now.getSeconds()).slice(-2));
+      if ( $.onTimer ) {
+        var now = new Date();
+        $('.cdbt-datepicker').datepicker( 'getDate', now );
+        $('.datepicker-combobox-hour input[type="text"]').val(('00' + now.getHours()).slice(-2));
+        $('.datepicker-combobox-minute input[type="text"]').val(('00' + now.getMinutes()).slice(-2));
+        $('.datepicker-combobox-second input[type="text"]').val(('00' + now.getSeconds()).slice(-2));
+      }
       
     };
     
@@ -116,38 +119,41 @@ $(document).ready(function() {
      */
     this.load_into_modal = function(){
       
-      if ($('div.cdbt-modal').size() > 0) {
+      if ( $('div.cdbt-modal').size() > 0 ) {
         $('div.modal-body').html( $.ajaxResponse.responseText ).trigger('create');
         $.ajaxResponse.responseText = '';
+        var modalForm = $('form#' + $('div.modal-body').find('form').attr('id') );
         // Initialize the form components of fuel ux
-        $('.dropdown-toggle').dropdown();
-        $('.checkbox-custom').checkbox('enable');
-        $('.combobox').combobox('enable');
-        $('.infinitescroll').infinitescroll('enable');
-        $('.loader').loader('reset');
-        $('.pillbox').pillbox();
-        $('.placard').placard('enable');
-        $('.radio').radio('enable');
-        $('.search').search('enable');
-        $('.selectlist').selectlist('enable');
+        modalForm.find('.dropdown-toggle').dropdown();
+        modalForm.find('.checkbox-custom').checkbox('enable');
+        modalForm.find('.combobox').combobox('enable');
+        modalForm.find('.infinitescroll').infinitescroll('enable');
+        modalForm.find('.loader').loader('reset');
+        modalForm.find('.pillbox').pillbox();
+        modalForm.find('.placard').placard('enable');
+        modalForm.find('.radio').radio('enable');
+        modalForm.find('.search').search('enable');
+        modalForm.find('.selectlist').selectlist('enable');
         /*$('.selectlist').each(function(){
           console.info($(this).attr('id'));
           $('#'+$(this).attr('id')).selectlist('enable');
         });*/
-        $('.spinbox').spinbox();
-        $('.tree').tree('render');
-        $('.wizard').wizard();
-        $('.repeater').repeater('render');
-        $('.datepicker').each(function(){
+        modalForm.find('.spinbox').spinbox();
+        modalForm.find('.tree').tree('render');
+        modalForm.find('.wizard').wizard();
+        modalForm.find('.repeater').repeater('render');
+        modalForm.find('.datepicker').each(function(){
           var parse_id = $(this).attr('id').replace('entry-data-', '').split('-');
           var id = parse_id[0];
-          var prev_date = $('input[name="custom-database-tables['+id+'][prev_date]"]').val();
+          var prev_date = modalForm.find('input[name="custom-database-tables['+id+'][prev_date]"]').val();
+console.info([ parse_id, id, prev_date ]);
           $(this).datepicker({ 
             date: new Date(prev_date), 
             allowPastDates: true, 
             restrictDateSelection: true, 
             momentConfig: { culture: $(this).data('momentLocale'), format: $(this).data('momentFormat') }, 
           });
+          $.onTimer = false;
         });
         // Initialize other
         //dynamicTableRender();
@@ -574,14 +580,19 @@ $(document).ready(function() {
    * Datepicker components of Fuel UX renderer
    */
   if ($('.cdbt-datepicker').size() > 0) {
-    $('.cdbt-datepicker').each(function(){
+    var targetForm = $( 'form#' + $('.cdbt-datepicker').parents('form').attr('id') );
+    targetForm.find('.cdbt-datepicker').each(function(){
       if ($(this).data().momentLocale && $(this).data().momentFormat) {
         $(this).datepicker({ 
           momentConfig: { culture: $(this).data().momentLocale, format: $(this).data().momentFormat } 
         });
       }
-      if (typeof $(this).data().date === 'undefined') {
-        $(this).datepicker('getDate', new Date()); 
+      if ( typeof $(this).data('data') === 'undefined' ) {
+        $(this).datepicker( 'getDate', new Date() );
+        $.onTimer = true;
+      } else {
+        $(this).datepicker( 'setDate', $(this).data('date') );
+        $.onTimer = false;
       }
     });
     setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );

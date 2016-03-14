@@ -78,8 +78,8 @@ trait CdbtAjax {
         $_event = rtrim( $GLOBALS['_POST']['event'] );
         $_params = $GLOBALS['_POST'];
       } else {
-        $_event = rtrim( $GLOBALS['_GET']['event'] );
-        $_params = $GLOBALS['_GET'];
+        $_event = rtrim( $GLOBALS['_REQUEST']['event'] );
+        $_params = $GLOBALS['_REQUEST'];
       }
     }
     
