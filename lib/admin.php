@@ -828,7 +828,7 @@ final class CdbtAdmin extends CdbtDB {
   /**
    * Page: cdbt_options | Tab: messages
    *
-   * @since 2.0.0
+   * @since 2.0.9
    */
   public function do_cdbt_options_messages() {
     static $message = '';
@@ -841,21 +841,23 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     $updated_options = $this->current_options;
+    // Filter translate text to extend
+    $override_messages = apply_filters( 'cdbt_override_translate_text', $this->override_messages );
     if ( 'override' === $_POST['action'] ) {
       $update_messages = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
       
       $_comparison = [];
-      foreach ( $this->override_messages as $_origin_text ) {
+      foreach ( $override_messages as $_origin_text ) {
         $_comparison[] = $this->create_hash( $_origin_text );
       }
       
       foreach ( $update_messages['override_messages'] as $_hash => $_text ) {
         if ( ( $_key = array_search( $_hash, $_comparison ) ) !== false ) {
           if ( ! empty( $_text ) ) {
-            $_has_placeholder = ( $_placeholders = substr_count( $this->override_messages[$_key], '%' ) ) > 0;
+            $_has_placeholder = ( $_placeholders = substr_count( $override_messages[$_key], '%' ) ) > 0;
             if ( $_has_placeholder ) {
               $_placeholder_strings = [];
-              $_haystack = $this->override_messages[$_key];
+              $_haystack = $override_messages[$_key];
               while ( $_placeholders > 0 ) {
                 $_placeholder_strings[] = substr( $_haystack, strpos( $_haystack, '%' ), 2 );
                 $_haystack = substr( strstr( $_haystack, '%' ), 1 );

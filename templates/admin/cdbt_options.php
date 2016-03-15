@@ -339,7 +339,11 @@ $default_action = 'update';
     </form>
   </div>
 <?php endif; ?>
-<?php if ($current_tab == 'messages') : ?>
+<?php if ($current_tab == 'messages') : 
+  // Filter translate text to extend
+  //
+  // @since 2.0.9
+  $override_messages = apply_filters( 'cdbt_override_translate_text', $this->override_messages ); ?>
   <div class="well-sm">
     <p class="text-info">
       <?php _e('You can overwrite of the own messages to the notification messages displayed at this plugin.', $this->domain_name); ?> <?php $this->during_trial( 'override_messages' ); ?>
@@ -357,7 +361,7 @@ $default_action = 'update';
         <div class="col-md-5"><span class="label label-default" style="margin-left: 1em;"><?php _e('Original Text', $this->domain_name); ?></span></div>
         <div class="col-md-7"><span class="label label-default"><?php _e('Current Translated Text', $this->domain_name); ?></span></div>
       </div>
-<?php foreach ( $this->override_messages as $_text ) : $msg_hash = $this->create_hash( $_text ); ?>
+<?php foreach ( $override_messages as $_text ) : $msg_hash = $this->create_hash( $_text ); ?>
       <div class="form-group row">
         <label class="col-md-5 control-label" for="override-messages-<?php echo $msg_hash; ?>"><p class="text-left" style="margin-left: 1em;">
           <?php echo $_text; /* _e( $_text, $this->domain_name ); */ ?>

@@ -97,6 +97,7 @@ class CdbtConfig extends CdbtCore {
       'Or, it is possible that the record having the same data could not be updated in order that existed in the other.', 
       'You do not have viewing permits of this content.', 
       'Data in this table does not exist.', 
+      'View Data in "%s" Table', 
       'Entry Data to "%s" Table', 
       'Edit Data of "%s" Table', 
       'Edit Data Form', 
@@ -107,10 +108,6 @@ class CdbtConfig extends CdbtCore {
       'Close', 
       // '', 
     ];
-    // Filter translate text to extend
-    //
-    // @since 2.0.9
-    $this->override_messages = apply_filters( 'cdbt_override_translate_text', $this->override_messages );
     
     // Switching debug mode
     $this->debug = $this->strtobool($this->options['debug_mode']);
