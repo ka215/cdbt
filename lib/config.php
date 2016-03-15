@@ -36,6 +36,12 @@ class CdbtConfig extends CdbtCore {
   var $contribute_extends = array(); // Added since version 2.0.7
   
   /**
+   * Notification message text that can be overridden at default
+   * @since 2.0.9
+   */
+  var $override_messages = array();
+  
+  /**
    * Initialize of the plugin options if options does not exist or loaded options
    *
    * @since 2.0.0
@@ -71,6 +77,40 @@ class CdbtConfig extends CdbtCore {
       'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.11.2' ], 
       'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.5.0' ], 
     ];
+    
+    $this->override_messages = [
+      'Reporting Results', 
+      'Reporting Errors', 
+      'Your entry data has been successfully registered to "%s" table.', 
+      'Could not insert data to "%s" table.', 
+      'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', 
+      'Remove the selected %s of data', 
+      'You can not restore that data after deleted the data. Are you sure to delete the data?', 
+      'Delete', 
+      'Specified data have been removed successfully.', 
+      'Some of the data could not remove.', 
+      'Specified conditions for finding to delete data is invalid.', 
+      'Parameters required for data deletion is missing.', 
+      'Update of the data has been completed successfully.', 
+      'Could not update data of "%s" table.', 
+      'Not done updating of data if there is no change to the data in updating before and after.', 
+      'Or, it is possible that the record having the same data could not be updated in order that existed in the other.', 
+      'You do not have viewing permits of this content.', 
+      'Data in this table does not exist.', 
+      'Entry Data to "%s" Table', 
+      'Edit Data of "%s" Table', 
+      'Edit Data Form', 
+      'Update', 
+      'Preview Image', 
+      'Describe File Information', 
+      'Download', 
+      'Close', 
+      // '', 
+    ];
+    // Filter translate text to extend
+    //
+    // @since 2.0.9
+    $this->override_messages = apply_filters( 'cdbt_override_translate_text', $this->override_messages );
     
     // Switching debug mode
     $this->debug = $this->strtobool($this->options['debug_mode']);
@@ -137,6 +177,7 @@ class CdbtConfig extends CdbtCore {
       'api_hosts' => [
         // {host_id(not zero)} => [ 'host_name' => {host_name}, 'api_key' => {api_key}, 'desc' => {description}, 'permission' => {permission(bit)}, 'generated' => {generated_date(datetime)} ]
       ],
+      'override_messages' => [], // add new from ver 2.0.9
     ];
     
     return $default_options;

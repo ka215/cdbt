@@ -119,6 +119,8 @@ class CdbtCore extends CdbtUtility {
       
     }
     
+    add_filter( 'gettext', array( &$this, 'cdbt_gettext_messages' ), 10, 3 );
+    
   }
   
   /**

@@ -826,6 +826,73 @@ final class CdbtAdmin extends CdbtDB {
 
 
   /**
+   * Page: cdbt_options | Tab: messages
+   *
+   * @since 2.0.0
+   */
+  public function do_cdbt_options_messages() {
+    static $message = '';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'override', 'format' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
+    
+    $updated_options = $this->current_options;
+    if ( 'override' === $_POST['action'] ) {
+      $update_messages = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
+      
+      $_comparison = [];
+      foreach ( $this->override_messages as $_origin_text ) {
+        $_comparison[] = $this->create_hash( $_origin_text );
+      }
+      
+      foreach ( $update_messages['override_messages'] as $_hash => $_text ) {
+        if ( ( $_key = array_search( $_hash, $_comparison ) ) !== false ) {
+          if ( ! empty( $_text ) ) {
+            $_has_placeholder = ( $_placeholders = substr_count( $this->override_messages[$_key], '%' ) ) > 0;
+            if ( $_has_placeholder ) {
+              $_placeholder_strings = [];
+              $_haystack = $this->override_messages[$_key];
+              while ( $_placeholders > 0 ) {
+                $_placeholder_strings[] = substr( $_haystack, strpos( $_haystack, '%' ), 2 );
+                $_haystack = substr( strstr( $_haystack, '%' ), 1 );
+                $_placeholders = substr_count( $_haystack, '%' );
+              }
+              if ( substr_count( $_text, '%' ) !== count( $_placeholder_strings ) ) {
+                foreach ( $_placeholder_strings as $_placeholder_str ) {
+                  if ( strpos( $_text, $_placeholder_str ) === false ) {
+                    $_text .= '<input type="hidden" value="'. $_placeholder_str .'">';
+                  }
+                }
+              }
+            }
+            $updated_options['override_messages'][$_hash] = $this->cdbt_strarc( $_text );
+          } else {
+            unset( $updated_options['override_messages'][$_hash] );
+          }
+        }
+      }
+    } else {
+      $updated_options['override_messages'] = [];
+    }
+    $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
+    
+    if ( $this->update_options( $updated_options ) ) {
+      $message = 'override' === $_POST['action'] ? __('Message definitions has been saved.', CDBT) : __('Message definitions has initialized.', CDBT);
+      $msg_type = CDBT . '-notice';
+    } else {
+      $message = 'override' === $_POST['action'] ? __('Could not save the messages.', CDBT) : __('Failed to initialize the messages.', CDBT);
+      $msg_type = CDBT . '-error';
+    }
+    $this->register_admin_notices( $msg_type, $message, 3, true );
+    
+  }
+
+
+  /**
    * Page: cdbt_options | Tab: debug
    *
    * @since 2.0.0

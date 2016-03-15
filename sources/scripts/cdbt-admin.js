@@ -1,5 +1,5 @@
 /*!
- * Custom DataBase Tables v2.0.8 (http://ka2.org)
+ * Custom DataBase Tables v2.0.9 (http://ka2.org)
  * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
@@ -1700,6 +1700,45 @@ $(document).ready(function() {
     });
     
   }
+  
+  /**
+   * Helper UI scripts for messages section
+   */
+  if ('cdbt_options' === $.QueryString.page && 'messages' === $.QueryString.tab) {
+    $('#override-messages').on('click', function(e){
+      e.preventDefault();
+      $(this).parents('form').children('input[name=action]').val('override');
+      var override_items = 0;
+      $('textarea[id^="override-messages-"]').each(function(){
+        if ( $(this).val() === $('#' + $(this).attr('id') + '-default').text() ) {
+          $(this).prop('disabled', true);
+        } else {
+          override_items++;
+        }
+      });
+      if ( override_items > 0 ) {
+        $(this).parents('form').submit();
+      } else {
+        $('textarea[id^="override-messages-"]').prop('disabled', false);
+        post_data = {
+          id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'changing_item_none', 
+          modalBody: '', 
+        };
+        init_modal( post_data );
+        return false;
+      }
+    });
+    
+    $('#format-messages').on('click', function(e){
+      e.preventDefault();
+      $(this).parents('form').children('input[name=action]').val('format');
+      $(this).parents('form').submit();
+    });
+    
+  }
+  
   
   /**
    * Helper UI scripts for debug section

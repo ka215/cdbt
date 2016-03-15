@@ -70,11 +70,12 @@ trait CdbtExtras {
       'apikey_requests' => 'try-yet', 
       'allow_rendering_shortcodes' => 'done', 
       'ajax_loading' => 'unreleased', 
-      'include_assets' => 'new', 
-      'prevent_duplicate_sending' => 'new', 
-      'plugin_menu_position' => 'new', 
-      'sanitaization' => 'new', 
-      'notices_via_modal' => 'new', 
+      'include_assets' => 'try-yet', 
+      'prevent_duplicate_sending' => 'try-yet', 
+      'plugin_menu_position' => 'try-yet', 
+      'sanitaization' => 'try-yet', 
+      'notices_via_modal' => 'try-yet', 
+      'override_messages' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {

@@ -15,7 +15,7 @@ class CdbtUtility {
    * Stored the last message at the time of logger method call as a cache
    */
   protected $logger_cache;
-
+  
   public function __construct() {
     
     $this->setup_globals();
@@ -28,6 +28,7 @@ class CdbtUtility {
     global $cdbt;
     if (!isset($cdbt)) 
       $cdbt = $this;
+    
   }
 
 
@@ -657,6 +658,76 @@ class CdbtUtility {
     
     return $multidimensional && $has_array ? true : false;
    
+  }
+  
+  
+  /**
+   * Filter the gettext function
+   *
+   * @since 2.0.9
+   *
+   * @param string $translated_text
+   * @param string $text
+   * @param string $domain
+   * @return string $translated_message
+   */
+  public function cdbt_gettext_messages( $translated_text, $text, $domain ) {
+    if ( $domain === $this->domain_name ) {
+      $msg_hash = $this->create_hash( $text );
+      if ( array_key_exists( $msg_hash, $this->options['override_messages'] ) ) {
+        $translated_text = $this->cdbt_strarc( $this->options['override_messages'][$msg_hash], 'decode' );
+      }
+    }
+    return $translated_text;
+  }
+  
+  
+  /**
+   * Create short hash (URL Safe)
+   *
+   * @since 2.0.9
+   *
+   * @param mixed $data [required]
+   * @param string $algorithm [optional] Default is `crc32`etc
+   * @return string $hash
+   */
+  public function create_hash( $data, $algorithm='crc32' ) {
+    if ( empty( $data ) ) 
+      return false;
+    
+    if ( empty( $algorithm ) ) 
+      $algorithm = 'crc32';
+    
+    return strtr( rtrim( base64_encode( pack( 'H*', hash( $algorithm, $data ) ) ), '=' ), '+/', '-_' );
+  }
+  
+  
+  /**
+   * Do compression encoding or uncompression decoding
+   *
+   * @since 2.0.9
+   *
+   * @param string $data [required]
+   * @param string $method [optional] Default is `encode`; Or `decode`
+   * @param string $lib [optional] Default is `deflate`; Or `zlib`
+   * @return string
+   */
+  public function cdbt_strarc( $data, $method='encode', $lib='deflate' ) {
+    if ( empty( $data ) || ! is_string( $data ) ) 
+      return false;
+    
+    $method = in_array( strtolower( $method ), [ 'encode', 'decode' ] ) ? strtolower( $method ) : 'encode';
+    $lib = in_array( strtolower( $lib ), [ 'deflate', 'zlib' ] ) ? strtolower( $lib ) : 'deflate';
+    
+    if ( 'encode' === $method ) {
+      $data = 'deflate' === $lib ? gzdeflate( $data, 9 ) : gzcompress( $data, 9 );
+      $data = base64_encode( $data );
+    } else {
+      $data = base64_decode( $data );
+      $data = 'deflate' === $lib ? gzinflate( $data ) : gzuncompress( $data );
+    }
+    
+    return $data;
   }
   
   

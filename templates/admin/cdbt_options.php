@@ -4,13 +4,15 @@
  * URL: `/wp-admin/admin.php?page=cdbt_options`
  *
  * @since 2.0.0
- * @since 2.0.7 Revision version
+ * @since 2.0.7 Added new options
+ * @since 2.0.8 Added new tab
  *
  */
 $options = get_option($this->domain_name);
 $tabs = [
-  'general_setting' => esc_html__('General Setting', CDBT), 
-  'debug' => esc_html__('Debug', CDBT), 
+  'general_setting' => __('General Setting', CDBT), 
+  'messages' => __('Messages', CDBT), 
+  'debug' => __('Debug', CDBT), 
 ];
 $default_tab = 'general_setting';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
@@ -28,7 +30,7 @@ $default_action = 'update';
  */
 ?>
 <div class="wrap">
-  <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Plugin Options', $this->domain_name); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT Plugin Options', $this->domain_name); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -337,9 +339,50 @@ $default_action = 'update';
     </form>
   </div>
 <?php endif; ?>
+<?php if ($current_tab == 'messages') : ?>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('You can overwrite of the own messages to the notification messages displayed at this plugin.', $this->domain_name); ?> <?php $this->during_trial( 'override_messages' ); ?>
+    </p>
+  </div>
   
+  <div class="messages-section">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="action" value="override">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+      
+      <div class="row" style="margin-bottom: .5em;">
+        <div class="col-md-5"><span class="label label-default" style="margin-left: 1em;"><?php _e('Original Text', $this->domain_name); ?></span></div>
+        <div class="col-md-7"><span class="label label-default"><?php _e('Current Translated Text', $this->domain_name); ?></span></div>
+      </div>
+<?php foreach ( $this->override_messages as $_text ) : $msg_hash = $this->create_hash( $_text ); ?>
+      <div class="form-group row">
+        <label class="col-md-5 control-label" for="override-messages-<?php echo $msg_hash; ?>"><p class="text-left" style="margin-left: 1em;">
+          <?php echo $_text; /* _e( $_text, $this->domain_name ); */ ?>
+        </p></label>
+        <div class="col-md-7"><textarea class="form-control" id="override-messages-<?php echo $msg_hash; ?>" name="<?php echo $this->domain_name; ?>[override_messages][<?php echo $msg_hash; ?>]" rows="2" placeholder="<?php esc_attr_e( $_text ); ?>"><?php if ( isset( $options['override_messages'][$msg_hash] ) ) {
+          echo esc_textarea( strip_tags( $this->cdbt_strarc( $options['override_messages'][$msg_hash], 'decode' ) ) );
+        } else {
+          echo esc_textarea( __( $_text, $this->domain_name ) );
+        } ?></textarea></div>
+        <?php if ( ! isset( $options['override_messages'][$msg_hash] ) ) : ?><div class="hide" id="override-messages-<?php echo $msg_hash; ?>-default"><?php echo esc_textarea( __( $_text, $this->domain_name ) ); ?></div><?php endif; ?>
+      </div>
+<?php endforeach; ?>
+      
+      <div class="form-group">
+        <div class="col-sm-10">
+          <input type="button" name="override" id="override-messages" class="btn btn-primary pull-left" value="<?php _e('Save Changes', $this->domain_name); ?>">
+          <input type="button" name="format" id="format-messages" class="btn btn-default" value="<?php _e('Initialize Messages', $this->domain_name); ?>" style="margin-left: 1.5em;">
+        </div>
+      </div>
+      
+    </form>
+  </div>
+  
+<?php endif; ?>
 <?php if ( $current_tab === 'debug' ) : ?>
-  
   <div class="well-sm">
     <p class="text-info">
       <?php _e('In this section you can check the log of various processes executed at the "Custom DataBase Tables" plugin.', $this->domain_name); ?><br>
