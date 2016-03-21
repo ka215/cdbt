@@ -810,7 +810,7 @@ trait CdbtShortcodes {
     }
     $hash_atts = [ 'where_clause' ];
     foreach ($hash_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
+      ${$attribute_name} = $this->strtohash( ${$attribute_name} );
     }
     if ( ! empty( $add_class ) ) {
       $add_classes = [];
@@ -965,8 +965,12 @@ trait CdbtShortcodes {
     
     // Override of initial value to for editing
     // @since 2.0.7 Updated for bit type
+    // @since 2.0.9 Fixed a bug of datatime type
     if ( ! empty( $where_clause ) && is_array( $where_clause ) ) {
-      $_current_data = $this->get_data( $table, '*', $where_clause, 'ARRAY_A' );
+       foreach ( $where_clause as $_key => $_value ) {
+         $where_clause[$_key] = rawurldecode( $_value );
+       }
+       $_current_data = $this->get_data( $table, '*', $where_clause, 'ARRAY_A' );
       if ( ! empty( $_current_data ) && array_key_exists( 0, $_current_data ) ) {
         if ( ! empty( $has_bit ) ) {
           foreach ( $has_bit as $_bit_col ) {
