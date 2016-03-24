@@ -214,7 +214,21 @@ $(document).ready(function() {
    * Wizard components of Fuel UX renderer
    */
   if (typeof wizard !== 'undefined') {
-    $('#welcome-wizard').wizard();
+    //$('#welcome-wizard').wizard();
+    
+    $('#cdbt-wizard').on('finished.fu.wizard', function(e){
+      if ( 'introduction' === e.target.previousElementSibling.className ) {
+        if ( confirm( 'Keep closing wizard?' ) ) {
+          $(e.target.previousElementSibling).addClass('hide');
+          $(this).addClass('hide');
+          // Save option of hide introduction
+          var post_data = {
+            
+          };
+          //cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+        }
+      }
+    });
   }
   
   /**
