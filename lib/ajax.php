@@ -176,7 +176,7 @@ trait CdbtAjax {
     
     $modal_contents = $this->component_render('modal', $args); // by trait `DynamicTemplate`
     
-    die($modal_contents);
+    wp_die( $modal_contents );
     
   }
   
@@ -196,7 +196,104 @@ trait CdbtAjax {
       $nonce = wp_create_nonce( 'cdbt_entry_data-' . $args['table'] );
     }
     
-    wp_die($nonce);
+    wp_die( $nonce );
+  }
+  
+  
+  /**
+   * Update plugin options via Ajax
+   *
+   * @since 2.0.9
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_update_options( $args=[] ) {
+    
+    if ( array_key_exists( 'hide_tutorial', $args ) ) {
+      $_display_tutorial = $this->strtobool( $args['hide_tutorial'] );
+      if ( $_display_tutorial ) {
+        $this->options['hide_tutorial'] = CDBT_PLUGIN_VERSION;
+      } else {
+        if ( array_key_exists( 'hide_tutorial', $this->options ) ) 
+          unset( $this->options['hide_tutorial'] );
+      }
+      if ( update_option( $this->domain_name, $this->options ) ) {
+        wp_die( 'window.location.replace(window.location.href);' );
+      }
+    }
+    wp_die();
+    
+  }
+  
+  
+  /**
+   * Retrieve the columns information of specific table via Ajax
+   *
+   * @since 2.0.9
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_get_columns_info( $args=[] ) {
+    $render_html = '';
+    
+    if ( array_key_exists( 'table_name', $args ) ) {
+      $columns_schema = $this->get_table_schema( $args['table_name'] );
+      $columns_schema_index = is_array( $columns_schema ) ? array_keys( reset( $columns_schema ) ) : [];
+      if ( empty( $columns_schema ) || empty( $columns_schema_index ) ) {
+        wp_die( '<p class="col-sm-offset-2 text-warning">'. __('Specified table does not exist.', CDBT) .'</p>' );
+      }
+      foreach ( $columns_schema_index as $_i => $_val ) {
+        if ( in_array( $_val, [ 'logical_name', 'octet_length', 'type' ] ) ) 
+          unset( $columns_schema_index[$_i] );
+      }
+      $row_index_number = 1;
+      $render_tmpl = <<<EOH
+<div class="table-responsive">
+  <strong class="text-info"><i class="glyphicon glyphicon-th"></i> %s</strong>
+  <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
+    <thead>
+      <tr class="active">
+        %s
+      </tr>
+    </thead>
+    <tbody>
+      %s
+    </tbody>
+    <tfoot>
+      <tr><td colspan="%d" style="padding: 0;"></td></tr>
+    </tfoot>
+  </table>
+</div>
+EOH;
+      $thead_th = $tbody = [];
+      //$thead_th[] = '<th><small>#</small></th>';
+      $thead_th[] = '<th><small>'. __('Column Name', CDBT) .'</small></th>';
+      foreach ( $columns_schema_index as $columns_index_name ) {
+        $thead_th[] = '<th class="text-center"><small>'. __($columns_index_name, CDBT) .'</small></th>';
+      }
+      foreach ( $columns_schema as $column_name => $column_scheme ) {
+        $tbody_tr = '<tr id="row-index-number-'. $row_index_number .'">';
+        $tbody_td = [];
+        //$tbody_td[] = '<td><small>'. $row_index_number .'</small></td>';
+        $tbody_td[] = '<td><small>'. $column_name .'</small></td>';
+        foreach ( $columns_schema_index as $columns_index_name ) {
+          if ( in_array( $columns_index_name, [ 'not_null', 'primary_key', 'unsigned' ] ) ) {
+            $tbody_td[] = '<td class="text-center"><small>'. ( 1 === intval( $column_scheme[$columns_index_name] ) ? '<i class="fa fa-circle-thin text-center"></i>' : '' ) .'</small></td>';
+          } else {
+            $tbody_td[] = '<td><small>'. $column_scheme[$columns_index_name] .'</small></td>';
+          }
+        }
+        $tbody_tr .= implode( "\n", $tbody_td );
+        $tbody_tr .= '</tr>';
+        $tbody[] = $tbody_tr;
+        $row_index_number++;
+      }
+      $_label = sprintf( __('Reference: columns information of "%s" table', CDBT), $args['table_name'] );
+      $render_html = sprintf( $render_tmpl, $_label, implode( "\n", $thead_th ), implode( "\n", $tbody ), count( $columns_schema_index ) + 2 );
+    }
+    wp_die( $render_html );
   }
   
   
@@ -247,7 +344,7 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    die('location.reload();');
+    wp_die( 'window.location.reload();' );
     
   }
   
@@ -285,7 +382,7 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    die('location.reload();');
+    wp_die( 'window.location.reload();' );
     
   }
   
@@ -302,7 +399,7 @@ trait CdbtAjax {
     static $message = '';
     $notices_class = CDBT . '-error';
     
-    die( $args );
+    wp_die( $args );
     
   }
   
@@ -345,7 +442,7 @@ trait CdbtAjax {
     }
     
 //    $this->register_admin_notices( $notices_class, $message, 3, true );
-//    die('location.reload();');
+//    wp_die('location.reload();');
     
   }
   
@@ -388,7 +485,7 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    die('location.reload();');
+    wp_die( 'window.location.reload();' );
     
   }
   
@@ -404,7 +501,7 @@ trait CdbtAjax {
   public function ajax_event_render_edit_form( $args=[] ) {
     
     if (array_key_exists('shortcode', $args)) {
-      die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
+      wp_die( do_shortcode( stripslashes_deep($args['shortcode']) ) );
     }
     
   }
@@ -446,7 +543,7 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    die('location.reload();');
+    wp_die( 'window.location.reload();' );
     
   }
   
@@ -488,7 +585,7 @@ trait CdbtAjax {
     }
     
     $this->register_admin_notices( $notices_class, $message, 3, true );
-    wp_die('location.reload();');
+    wp_die( 'window.location.reload();' );
     
   }
   
@@ -526,7 +623,8 @@ trait CdbtAjax {
   public function ajax_event_reload_page( $args ) {
     
     $this->register_admin_notices( CDBT . '-notice', '', 1, true );
-    wp_die('location.href="";');
+    $_run_script = 'window.location.reload();'; // 'location.href="";'
+    wp_die( $_run_script );
     
   }
   

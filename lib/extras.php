@@ -413,6 +413,63 @@ trait CdbtExtras {
   }
 
 
+  /**
+   * Retrieve external data via api of wordpress.org
+   *
+   * @since 2.0.9
+   *
+   * @param string $api_uri [required] 
+   * @return array $data
+   */
+  public function retrieve_plugin_api( $api_uri=null ) {
+    if ( empty( $api_uri ) ) 
+      $api_uri = 'https://api.wordpress.org/plugins/info/1.0/' . $this->domain_name;
+    $data = [];
+    $response = wp_remote_get( $api_uri );
+    $body = unserialize( wp_remote_retrieve_body( $response ) );
+    $data = [
+      'name' => $body->name, 
+      'latest_version' => $body->version, 
+      'downloaded' => $body->downloaded, 
+      'last_updated' => $body->last_updated, 
+      'description' => $body->sections['description'], 
+      'changelog' => $body->sections['changelog'], 
+      'short_desc' => $body->short_description, 
+      'download_link' => $body->download_link, 
+      'donate_link' => $body->donate_link, 
+    ];
+    
+    return $data;
+  }
+  
+  
+  /**
+   * Parse changelog html
+   *
+   * @since 2.0.9
+   *
+   * @param string $raw_changelog [required]
+   * @param bool $strip_tags [optional]
+   * @return array $changelogs
+   */
+  public function parse_chengelog( $raw_changelog=null, $strip_tags=false ) {
+    $changelogs = [];
+    if ( empty( $raw_changelog ) ) 
+      return $changelogs;
+    
+    $_ver_temp = explode( "</ul>\n", $raw_changelog );
+    foreach ( $_ver_temp as $_string ) {
+      list( $_version, $_list_string ) = explode( "</h4>\n", $_string );
+      if ( $strip_tags ) {
+        $_transform_list = trim( str_replace( '<li>', '- ', str_replace( '</li>', '', strip_tags( __($_list_string, CDBT), '<li>' ) ) ) );
+        $_transform_list = strip_tags( str_replace( [ "\r\n", "\r", "\n" ], '\n', $_transform_list ) );
+        $changelogs[trim( strip_tags( $_version ) )] = addslashes( $_transform_list );
+      } else {
+        $changelogs[trim( strip_tags( $_version ) )] = $_list_string . "</ul>\n";
+      }
+    }
+    return $changelogs;
+  }
 
 
 }

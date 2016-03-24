@@ -155,6 +155,10 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block"></p>
         </div>
       </div><!-- /register-shortcode-target_table -->
+      <div class="form-group">
+        <div class="col-sm-12" id="columns-information" style="padding: 0 2em;">
+        </div>
+      </div><!-- /colmuns-information -->
       
       <div class="clearfix"><br></div>
       <h4 class="title" id="advanced-settings"><i class="fa fa-cogs text-muted"></i> <?php _e('Advanced setting of shortcode', CDBT); ?></h4>
@@ -499,6 +503,10 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <p class="help-block sr-only"></p>
         </div>
       </div><!-- /edit-shortcode-target_table -->
+      <div class="form-group">
+        <div class="col-sm-12" id="columns-information" style="padding: 0 2em;">
+        </div>
+      </div><!-- /colmuns-information -->
       
       <div class="clearfix"><br></div>
       <h4 class="title" id="advanced-settings"><i class="fa fa-cogs text-muted"></i> <?php _e('Advanced setting of shortcode', CDBT); ?></h4>

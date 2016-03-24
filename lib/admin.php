@@ -880,7 +880,7 @@ final class CdbtAdmin extends CdbtDB {
     } else {
       $updated_options['override_messages'] = [];
     }
-    $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
+    $updated_options = apply_filters( 'before_update_options_messages', $updated_options );
     
     if ( $this->update_options( $updated_options ) ) {
       $message = 'override' === $_POST['action'] ? __('Message definitions has been saved.', CDBT) : __('Message definitions has initialized.', CDBT);
@@ -2005,6 +2005,12 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Table Creator', CDBT);
           $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings when you click of "Apply SQL". Then it is never lost if you close this modal window.', CDBT) . '</p>' . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
+          break;
+        case 'hide_tutorial': 
+          $args['modalTitle'] = __('Tutorial displaying confirmation', CDBT);
+          $args['modalBody'] = '<p class="text-info">' . __('Do you want to hide the display of the tutorial? If so, please click the "Hide" below.', CDBT) . '</p>';
+          $args['modalFooter'] = [ sprintf('<button type="button" id="hide_tutorial" class="btn btn-primary">%s</button>', __('Hide', CDBT)) ];
+          $args['modalShowEvent'] = "$('#hide_tutorial').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         default:
           break;

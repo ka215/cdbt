@@ -189,6 +189,15 @@ $(document).ready(function() {
       
     };
     
+    /**
+     * Render the retrieving content
+     */
+    this.show_columns_info = function(){
+      
+      $('#columns-information').html('').append( $.ajaxResponse.responseText );
+      
+    };
+    
   };
   var Callback = new CallbackClass();
   
@@ -218,17 +227,32 @@ $(document).ready(function() {
     
     $('#cdbt-wizard').on('finished.fu.wizard', function(e){
       if ( 'introduction' === e.target.previousElementSibling.className ) {
-        if ( confirm( 'Keep closing wizard?' ) ) {
-          $(e.target.previousElementSibling).addClass('hide');
-          $(this).addClass('hide');
+        post_data = {
+          id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'hide_tutorial', 
+          modaleBody: '', 
+          //modaleHideEvent: "window.location.replace();", 
+          modalExtras: { 'hide_tutorial': true }, 
+        };
+        init_modal( post_data );
+        
+        var _introduction = $(e.target.previousElementSibling);
+        var _tutorial = $(this);
+        $(document).on('click', '#hide_tutorial', function(e){
+          _introduction.addClass('hide');
+          _tutorial.addClass('hide');
           // Save option of hide introduction
           var post_data = {
-            
+            event: 'update_options',
+            'hide_tutorial': true, 
           };
-          //cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-        }
+          cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+        });
+        
       }
     });
+    
   }
   
   /**
@@ -1452,6 +1476,27 @@ $(document).ready(function() {
     });
     controllForms();
     
+    var getColumnsInfo = function( target_table ){
+      var post_data = {
+        event: 'get_columns_info', 
+        'table_name': target_table, 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'show_columns_info' );
+    };
+    
+    $('#register-shortcode-target_table, #edit-shortcode-target_table').on('changed.fu.combobox', function(e,d){
+      if ( d.text !== '' ) {
+        getColumnsInfo( d.text );
+      }
+    });
+    
+    $(window).on('load', function(){
+      var d = $('#register-shortcode-target_table, #edit-shortcode-target_table').combobox('selectedItem');
+      if ( d.text !== '' ) {
+        getColumnsInfo( d.text );
+      }
+    });
+    
     var generateShortcode = function(){
       var items = $('input[name^="custom-database-tables["]');
       var preview = $('#'+prefix+'-shortcode-generate_shortcode');
@@ -1702,6 +1747,21 @@ $(document).ready(function() {
     
   }
   
+  /**
+   * Helper UI scripts for cdbt_management_console (dashboard) section
+   */
+  if ('cdbt_management_console' === $.QueryString.page) {
+    $('#show-tutorial').on('click', function(e){
+      // Update option of show tutorial
+      var post_data = {
+        event: 'update_options',
+        'hide_tutorial': false, 
+      };
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+    });
+    
+    
+  }
   
   /**
    * Helper UI scripts for general options section

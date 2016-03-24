@@ -4,6 +4,7 @@
  * URL: `/wp-admin/admin.php?page=cdbt_options`
  *
  * @since 2.0.2
+ * @since 2.0.9 Updated
  *
  */
 
@@ -17,6 +18,9 @@ foreach ($contribute_extends as $_key => $_val) {
   $_contribute_list[] = sprintf('<li><a href="%s" target="_blank">%s</a> %s </li>', esc_url($_val['url']), $_key, $_val['version']);
 }
 
+$plugin_information = $this->retrieve_plugin_api();
+$plugin_changelogs = $this->parse_chengelog( $plugin_information['changelog'] );
+$latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -26,10 +30,14 @@ foreach ($contribute_extends as $_key => $_val) {
   <h2><i class="image-icon cdbt-icon square32"></i><?php esc_html_e('CDBT Management Console', CDBT); ?></h2>
   
   <div class="introduction">
-    <p><?php _e('Welcome to the "Custom DataBase Tables" plugin! In this page is introductions about feature of plugin, and be able to go short trip as the tutorial.', CDBT); ?></p>
+  <?php if ( isset( $this->options['hide_tutorial'] ) && $this->options['hide_tutorial'] === $this->version ) : ?>
+    <p><?php _e('Welcome to the "Custom DataBase Tables" plugin!', CDBT); ?> <a href="javascript:;" id="show-tutorial" class="pull-right"><?php _e('Show the tutorial again.', CDBT); ?></a></p>
+  <?php else : ?>
+    <p><?php echo __('Welcome to the "Custom DataBase Tables" plugin!', CDBT), ' ', __('In this page is introductions about feature of plugin, and be able to go short trip as the tutorial.', CDBT); ?></p>
+  <?php endif; ?>
   </div>
   
-  <?php
+  <?php if ( ! isset( $this->options['hide_tutorial'] ) || $this->options['hide_tutorial'] !== $this->version ) :
   /**
    * Define the localized variables for tab of `wizard`
    */
@@ -101,8 +109,19 @@ foreach ($contribute_extends as $_key => $_val) {
   ];
   $this->component_render('wizard', $conponent_options); // by trait `DynamicTemplate`
   
-  ?>
+  endif; ?>
   
+  <div class="row">
+  
+  <div class="col-md-6">
+  <div class="panel panel-default last-changelog">
+    <div class="panel-heading"><span class="glyphicon glyphicon-list-alt text-muted"></span> <?php _e( 'Latest change logs', CDBT ); ?></div>
+    <!-- <div class="panel-body"></div> -->
+    <?php echo str_replace( '<li>', '<li class="list-group-item">', str_replace( '<ul>', '<ul class="list-group">', $latest_changelog ) ); ?>
+  </div><!-- /.panel -->
+  </div>
+  
+  <div class="col-md-6">
   <div class="panel panel-default donate-info">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>
     <div class="panel-body">
@@ -149,6 +168,9 @@ foreach ($contribute_extends as $_key => $_val) {
       </ul>
     </div><!-- /.panel-body -->
   </div><!-- /.panel -->
+  </div>
+  
+  </div><!-- /.row -->
   
   <div class="panel panel-default other-note">
     <div class="panel-heading"><i class="fa fa-check-circle-o" style="color: #999900;"></i> <?php esc_html_e( 'CustomDataBaseTables License Agreement', CDBT ); ?></div>
