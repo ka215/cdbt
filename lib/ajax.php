@@ -251,7 +251,7 @@ trait CdbtAjax {
       $row_index_number = 1;
       $render_tmpl = <<<EOH
 <div class="table-responsive">
-  <strong class="text-info"><i class="glyphicon glyphicon-th"></i> %s</strong>
+  <p class="text-info" id="collapse-reference"><i class="fa fa-minus-square"></i> %s &nbsp; %s</p>
   <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
     <thead>
       <tr class="active">
@@ -291,7 +291,11 @@ EOH;
         $row_index_number++;
       }
       $_label = sprintf( __('Reference: columns information of "%s" table', CDBT), $args['table_name'] );
-      $render_html = sprintf( $render_tmpl, $_label, implode( "\n", $thead_th ), implode( "\n", $tbody ), count( $columns_schema_index ) + 2 );
+      ob_start();
+      $this->during_trial( 'reference_columns' );
+      $_state = ob_get_contents();
+      ob_end_clean();
+      $render_html = sprintf( $render_tmpl, $_label, $_state, implode( "\n", $thead_th ), implode( "\n", $tbody ), count( $columns_schema_index ) + 2 );
     }
     wp_die( $render_html );
   }

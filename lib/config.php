@@ -35,6 +35,8 @@ class CdbtConfig extends CdbtCore {
   
   var $contribute_extends = array(); // Added since version 2.0.7
   
+  var $support_email; // Added since version 2.0.9
+  
   /**
    * Notification message text that can be overridden at default
    * @since 2.0.9
@@ -97,6 +99,13 @@ class CdbtConfig extends CdbtCore {
       'Or, it is possible that the record having the same data could not be updated in order that existed in the other.', 
       'You do not have viewing permits of this content.', 
       'Data in this table does not exist.', 
+      'Data is not selected', 
+      'Please retry to operate that after the data selection.', 
+      'Selected data is too many', 
+      'Please retry after selecting one data you want to edit.', 
+      'Required field is empty', 
+      'Please enter into the required field not entered.', 
+      'An empty required field is exists.', 
       'View Data in "%s" Table', 
       'Entry Data to "%s" Table', 
       'Edit Data of "%s" Table', 
@@ -108,6 +117,8 @@ class CdbtConfig extends CdbtCore {
       'Close', 
       // '', 
     ];
+    
+    $this->support_email = 'support&#064;ka2&#046;org';
     
     // Switching debug mode
     $this->debug = $this->strtobool($this->options['debug_mode']);

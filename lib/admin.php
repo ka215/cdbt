@@ -397,7 +397,7 @@ final class CdbtAdmin extends CdbtDB {
       ], 
       'scripts' => [
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
-        'cdbt-blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, true ], 
+        // 'cdbt-blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
         'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
         'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
@@ -484,6 +484,7 @@ final class CdbtAdmin extends CdbtDB {
         'is_debug' => $this->debug ? 'true' : 'false', 
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
         'notices_via_modal' => isset( $this->options['notices_via_modal'] ) && $this->options['notices_via_modal'] ? 'true' : 'false', 
+        'local_err_msg' => rawurlencode( __( 'An empty required field is exists.', CDBT ) ), 
       ];
       if (array_key_exists( 'cdbt-table-creator-script', $asset_data ) ) {
         $cdbt_admin_vars['column_types'] =  null;
@@ -1926,6 +1927,10 @@ final class CdbtAdmin extends CdbtDB {
         case 'too_many_selected_item': 
           $args['modalTitle'] = __('Selected data is too many', CDBT);
           $args['modalBody'] = __('Please retry after selecting one data you want to edit.', CDBT);
+          break;
+        case 'empty_required_field': 
+          $args['modalTitle'] = __('Required field is empty', CDBT);
+          $args['modalBody'] = __('Please enter into the required field not entered.', CDBT);
           break;
         case 'edit_data_form': 
           $args['modalTitle'] = __('Edit Data Form', CDBT);

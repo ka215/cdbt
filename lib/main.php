@@ -440,6 +440,7 @@ final class CdbtFrontend extends CdbtDB {
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
         'emit_message' => $this->emit_message, 
         'emit_type' => $this->emit_type, 
+        'local_err_msg' => rawurlencode( __( 'An empty required field is exists.', CDBT ) ), 
       ]);
     }
   }

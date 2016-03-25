@@ -73,6 +73,7 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Added the feature to refer the column information for the specified table at the time of shortcode registration and editing.
 * Did enhancement some components on the dashboard of the plugin management.
 * Fixed a bug that was a flaw in the acquisition condition of the column of the datetime format when you edit data in the table without primary key.
+* Fixed a bug that registration button of the shortcode "cdbt-entry" was not working at version 2.0.8.
 
 = 2.0.8 =
 * Fixed a bug that had been created the same number of shortcodes and rows, if you had registered the data when using multiple shortcodes at the same time on one page.

@@ -115,7 +115,7 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
   
   <div class="col-md-6">
   <div class="panel panel-default last-changelog">
-    <div class="panel-heading"><span class="glyphicon glyphicon-list-alt text-muted"></span> <?php _e( 'Latest change logs', CDBT ); ?></div>
+    <div class="panel-heading"><span class="glyphicon glyphicon-list-alt text-muted"></span> <?php _e( 'Latest change logs', CDBT ); ?> &nbsp; <?php $this->during_trial( 'changelog_panel' ); ?></div>
     <!-- <div class="panel-body"></div> -->
     <?php echo str_replace( '<li>', '<li class="list-group-item">', str_replace( '<ul>', '<ul class="list-group">', $latest_changelog ) ); ?>
   </div><!-- /.panel -->
@@ -130,42 +130,33 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
       <?php printf( __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', CDBT), '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>' ); ?></p>
       <p class="pull-left"><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?>
       <?php esc_html_e( 'Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', CDBT ); ?></p>
-      <div class="clearfix"></div>
+      <div class="clearfix" style="margin-bottom: 1em;"></div>
       <ul class="list-inline donate-links">
         <li class="donate-paypal"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
           <input type="hidden" name="cmd" value="_donations">
           <input type="hidden" name="business" value="2YZY4HWYSWEWG">
           <input type="hidden" name="lc" value="en_US">
           <input type="hidden" name="currency_code" value="USD">
-          <input type="hidden" name="item_name" value="Donate to CustomDataBaseTable">
-          <!-- input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - <?php esc_html_e( 'The safer, easier way to pay online!', CDBT ); ?>" -->
-          <button type="submit" name="submit" alt="PayPal - <?php esc_html_e( 'The safer, easier way to pay online!', CDBT ); ?>" class="btn btn-primary"><i class="fa fa-paypal"></i> Donate Paypal</button>
-          <img alt="" border="0" src="https://www.paypalobjects.com/ja_JP/i/scr/pixel.gif" width="1" height="1">
+          <input type="hidden" name="item_name" value="Donation to Custom DataBase Tables">
+          <input type="hidden" name="amount" value="">
+          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - <?php _e( 'The safer, easier way to pay online!', CDBT ); ?>">
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"><?php /* ja_JP */ ?>
         </form></li>
-        <li class="donate-blockchain"><div style="font-size:16px;margin:0 auto;width:300px" class="blockchain-btn" data-address="1821oc4XvWrfiwfVcNCAKEC8gppcrab4Re" data-shared="false">
-          <div class="blockchain stage-begin">
-            <img src="https://blockchain.info/Resources/buttons/donate_64.png"/>
-          </div>
-          <div class="blockchain stage-loading" style="text-align:center">
-            <img src="https://blockchain.info/Resources/loading-large.gif"/>
-          </div>
-          <div class="blockchain stage-ready">
-            <p align="center"><?php _e('Please Donate To Bitcoin Address:', CDBT);?> <b>[[address]]</b></p>
-            <p align="center" class="qr-code"></p>
-          </div>
-          <div class="blockchain stage-paid">
-            Donation of <b>[[value]] BTC</b> Received. Thank You.
-          </div>
-          <div class="blockchain stage-error">
-            <font color="red">[[error]]</font>
-          </div>
-        </div></li>
-<?php /*
-        <li class="donate-coinbase hide">
-          <a class="coinbase-button" data-code="219e4dae601d44bd7c2766178aff9471" data-button-style="custom_small" data-custom="CDBTV2" href="https://www.coinbase.com/checkouts/219e4dae601d44bd7c2766178aff9471">Donate Bitcoins</a><script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
+        <li class="donate-amazon">
+<?php if ( 'ja' === get_locale() ) {
+  $_amazon_url = 'https://www.amazon.co.jp/gp/product/B004N3APGO/ref=gc_lpt3_ttl_eml';
+  $_image_url = 'https://images-na.ssl-images-amazon.com/images/G/09/x-locale/gift-cards/a_com_gift_card_logo_170x54._CB369921052_.png';
+} else {
+  $_amazon_url = 'https://www.amazon.com/gp/product/B0145WHYKC/ref=s9_acss_bw_cg_gclptcg_2a1?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-1&pf_rd_r=1JB8EFNZJZGXQY5N8EK3&pf_rd_t=101&pf_rd_p=2440297402&pf_rd_i=2238192011';
+  $_image_url = 'https://images-na.ssl-images-amazon.com/images/G/01/x-locale/gift-cards/a_com_gift_card_logo_170x54._CB356759947_.png';
+} ?>
+          <a href="<?php echo $_amazon_url; ?>" target="_blank" rel="nofollow">
+            <img src="<?php echo $_image_url; ?>" border="0" alt="<?php _e('Amazon Gift Card', CDBT); ?>">
+          </a>
         </li>
-*/ ?>
       </ul>
+      <div class="clearfix" style="margin-bottom: 1em;"></div>
+      <p class="help-block"><?php printf( __('If you use Amazon.com Gift Cards (E-mail Delivery), please enter "%s" to an email address of recipient.', CDBT), '<em class="text-info">'. $this->support_email .'</em>' ); ?></p>
     </div><!-- /.panel-body -->
   </div><!-- /.panel -->
   </div>

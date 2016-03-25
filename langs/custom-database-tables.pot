@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.0.9\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-03-25 00:27+0900\n"
+"POT-Creation-Date: 2016-03-25 13:15+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -94,472 +94,484 @@ msgstr ""
 msgid "Plugin Options"
 msgstr ""
 
-#: lib/admin.php:521
+#: lib/admin.php:487 lib/main.php:443
+msgid "An empty required field is exists."
+msgstr ""
+
+#: lib/admin.php:522
 msgid "Custom DB Tables"
 msgstr ""
 
-#: lib/admin.php:611
+#: lib/admin.php:612
 msgid "Settings"
 msgstr ""
 
-#: lib/admin.php:619
+#: lib/admin.php:620
 msgid "Edit"
 msgstr ""
 
-#: lib/admin.php:678 lib/admin.php:683 lib/main.php:478 lib/main.php:483
+#: lib/admin.php:679 lib/admin.php:684 lib/main.php:479 lib/main.php:484
 msgid "Invalid access this page."
 msgstr ""
 
-#: lib/admin.php:709 lib/main.php:508
+#: lib/admin.php:710 lib/main.php:509
 msgid "Illegal access is."
 msgstr ""
 
-#: lib/admin.php:712 lib/admin.php:715
+#: lib/admin.php:713 lib/admin.php:716
 msgid "You do not have access privileges on this page."
 msgstr ""
 
-#: lib/admin.php:820
+#: lib/admin.php:821
 msgid "Plugin options saved."
 msgstr ""
 
-#: lib/admin.php:822
+#: lib/admin.php:823
 msgid "Could not save options."
 msgstr ""
 
-#: lib/admin.php:886
+#: lib/admin.php:887
 msgid "Message definitions has been saved."
 msgstr ""
 
-#: lib/admin.php:886
+#: lib/admin.php:887
 msgid "Message definitions has initialized."
 msgstr ""
 
-#: lib/admin.php:889
+#: lib/admin.php:890
 msgid "Could not save the messages."
 msgstr ""
 
-#: lib/admin.php:889
+#: lib/admin.php:890
 msgid "Failed to initialize the messages."
 msgstr ""
 
-#: lib/admin.php:923
+#: lib/admin.php:924
 msgid "Log file does not exist."
 msgstr ""
 
-#: lib/admin.php:933
+#: lib/admin.php:934
 msgid ""
 "Could not make a directory for backup. Then, it was interrupted of log "
 "deletion."
 msgstr ""
 
-#: lib/admin.php:940
+#: lib/admin.php:941
 msgid "Could not copy of the log file."
 msgstr ""
 
-#: lib/admin.php:949
+#: lib/admin.php:950
 msgid "Could not clear the log."
 msgstr ""
 
-#: lib/admin.php:955
+#: lib/admin.php:956
 msgid "Have cleared the log."
 msgstr ""
 
-#: lib/admin.php:989 lib/admin.php:1679 lib/admin.php:1746
+#: lib/admin.php:990 lib/admin.php:1680 lib/admin.php:1747
 #, php-format
 msgid "%s does not exist."
 msgstr ""
 
-#: lib/admin.php:1000
+#: lib/admin.php:1001
 #, php-format
 msgid "Contains characters which cannot be used in %s."
 msgstr ""
 
-#: lib/admin.php:1042
+#: lib/admin.php:1043
 msgid "Incorporatable table does not exist."
 msgstr ""
 
-#: lib/admin.php:1060
+#: lib/admin.php:1061
 msgid "Table incorporation has been completed successfully."
 msgstr ""
 
-#: lib/admin.php:1063
+#: lib/admin.php:1064
 msgid "Failed the table incorporation."
 msgstr ""
 
-#: lib/admin.php:1110
+#: lib/admin.php:1111
 msgid "Invalid sql statement of `ALTER TABLE`."
 msgstr ""
 
-#: lib/admin.php:1111
+#: lib/admin.php:1112
 msgid "Failed to run the query of `ALTER TABLE`."
 msgstr ""
 
-#: lib/admin.php:1208 lib/admin.php:1275
+#: lib/admin.php:1209 lib/admin.php:1276
 msgid "Modification was successful."
 msgstr ""
 
-#: lib/admin.php:1215 lib/admin.php:1280
+#: lib/admin.php:1216 lib/admin.php:1281
 msgid "Failed to update of the plugin options."
 msgstr ""
 
-#: lib/admin.php:1219 lib/admin.php:1283
+#: lib/admin.php:1220 lib/admin.php:1284
 msgid ""
 "There was no item to be modify. Please run again after you correct the item "
 "you want to modify."
 msgstr ""
 
-#: lib/admin.php:1288 lib/admin.php:1528 lib/admin.php:1635
+#: lib/admin.php:1289 lib/admin.php:1529 lib/admin.php:1636
 msgid "Illegal operation was called."
 msgstr ""
 
-#: lib/admin.php:1325 lib/admin.php:1565
+#: lib/admin.php:1326 lib/admin.php:1566
 msgid "Could not change the operate table."
 msgstr ""
 
-#: lib/admin.php:1345
+#: lib/admin.php:1346
 msgid "Invalid step transition."
 msgstr ""
 
-#: lib/admin.php:1372
+#: lib/admin.php:1373
 msgid ""
 "The uploaded file could not be parsed. It likely has deficiencies in the "
 "file."
 msgstr ""
 
-#: lib/admin.php:1375
+#: lib/admin.php:1376
 msgid ""
 "The number of data to be imported is not consistent with the number of the "
 "specified column. Please specify the column to match the import data again."
 msgstr ""
 
-#: lib/admin.php:1386
+#: lib/admin.php:1387
 msgid "It does not contain the data to import in your uploaded files."
 msgstr ""
 
-#: lib/admin.php:1427
+#: lib/admin.php:1428
 msgid "Uploaded file format is different from the specified format."
 msgstr ""
 
-#: lib/admin.php:1430
+#: lib/admin.php:1431
 msgid "Import file has not been uploaded."
 msgstr ""
 
-#: lib/admin.php:1433
+#: lib/admin.php:1434
 msgid "Uploaded file format is invalid, or parameter is not enough."
 msgstr ""
 
-#: lib/admin.php:1448
+#: lib/admin.php:1449
 #, php-format
 msgid "%d of the data has been successfully imported."
 msgstr ""
 
-#: lib/admin.php:1451
+#: lib/admin.php:1452
 msgid "Failed to import the data."
 msgstr ""
 
-#: lib/admin.php:1482
+#: lib/admin.php:1483
 msgid "Duplicate table name is not specified."
 msgstr ""
 
-#: lib/admin.php:1485
+#: lib/admin.php:1486
 msgid "Parameter for duplicating the table is incomplete."
 msgstr ""
 
-#: lib/admin.php:1488
+#: lib/admin.php:1489
 msgid "Original table for duplicating is not specified."
 msgstr ""
 
-#: lib/admin.php:1491
+#: lib/admin.php:1492
 msgid ""
 "Duplicate table name already exists. Please specify a different table name."
 msgstr ""
 
-#: lib/admin.php:1499
+#: lib/admin.php:1500
 msgid "Duplication of the table has been completed successfully."
 msgstr ""
 
-#: lib/admin.php:1501
+#: lib/admin.php:1502
 msgid ""
 "Duplication of table has been completed, but have failed to register as a "
 "manageable table of plugin. Please retry from resuming the table."
 msgstr ""
 
-#: lib/admin.php:1504
+#: lib/admin.php:1505
 msgid "Failed to replication of the table."
 msgstr ""
 
-#: lib/admin.php:1597 lib/main.php:628 lib/main.php:640
+#: lib/admin.php:1598 lib/main.php:629 lib/main.php:641
 #, php-format
 msgid "Your entry data has been successfully registered to \"%s\" table."
 msgstr ""
 
-#: lib/admin.php:1599 lib/main.php:632 lib/main.php:643
+#: lib/admin.php:1600 lib/main.php:633 lib/main.php:644
 #, php-format
 msgid "Could not insert data to \"%s\" table."
 msgstr ""
 
-#: lib/admin.php:1618 lib/main.php:537
+#: lib/admin.php:1619 lib/main.php:538
 msgid "Update of the data has been completed successfully."
 msgstr ""
 
-#: lib/admin.php:1620 lib/main.php:540
+#: lib/admin.php:1621 lib/main.php:541
 #, php-format
 msgid "Could not update data of \"%s\" table."
 msgstr ""
 
-#: lib/admin.php:1621 lib/main.php:541
+#: lib/admin.php:1622 lib/main.php:542
 msgid ""
 "Not done updating of data if there is no change to the data in updating "
 "before and after."
 msgstr ""
 
-#: lib/admin.php:1622 lib/main.php:542
+#: lib/admin.php:1623 lib/main.php:543
 msgid ""
 "Or, it is possible that the record having the same data could not be updated "
 "in order that existed in the other."
 msgstr ""
 
-#: lib/admin.php:1697
+#: lib/admin.php:1698
 #, php-format
 msgid "Have been saved successfully as a custom shortcode ID: %d."
 msgstr ""
 
-#: lib/admin.php:1699
+#: lib/admin.php:1700
 msgid "Could not save the custom shortcode."
 msgstr ""
 
-#: lib/admin.php:1702
+#: lib/admin.php:1703
 msgid "Could not save because the specific custom shortcode id already exists."
 msgstr ""
 
-#: lib/admin.php:1770
+#: lib/admin.php:1771
 #, php-format
 msgid "Have been updated successfully as a custom shortcode ID: %d."
 msgstr ""
 
-#: lib/admin.php:1772
+#: lib/admin.php:1773
 msgid "Could not update the custom shortcode."
 msgstr ""
 
-#: lib/admin.php:1775
+#: lib/admin.php:1776
 msgid "Could not update because the specified custom shortcode does not exist."
 msgstr ""
 
-#: lib/admin.php:1809
+#: lib/admin.php:1810
 msgid "Request origin host does not specified."
 msgstr ""
 
-#: lib/admin.php:1817
+#: lib/admin.php:1818
 msgid "Specified request origin host is invalid."
 msgstr ""
 
-#: lib/admin.php:1821
+#: lib/admin.php:1822
 msgid ""
 "Hosts that do not allow all of the request methods can not be registered."
 msgstr ""
 
-#: lib/admin.php:1850
+#: lib/admin.php:1851
 #, php-format
 msgid "The \"%s\" was registered as a host to allow the API request."
 msgstr ""
 
-#: lib/admin.php:1853
+#: lib/admin.php:1854
 msgid "Failed to generate the API key."
 msgstr ""
 
-#: lib/admin.php:1878
+#: lib/admin.php:1879
 msgid "Reporting Errors"
 msgstr ""
 
-#: lib/admin.php:1878
+#: lib/admin.php:1879
 msgid "Reporting Results"
 msgstr ""
 
-#: lib/admin.php:1891
+#: lib/admin.php:1892
 msgid "Modification item none"
 msgstr ""
 
-#: lib/admin.php:1892
+#: lib/admin.php:1893
 msgid "Please run again after you correct the item you want to modify."
 msgstr ""
 
-#: lib/admin.php:1898
+#: lib/admin.php:1899
 #, php-format
 msgid "Export data from \"%s\" table"
 msgstr ""
 
-#: lib/admin.php:1899
+#: lib/admin.php:1900
 msgid ""
 "If specified table has a lot of data for exporting, it may take long time "
 "until the download is complete.<br>Please start the export if it is good."
 msgstr ""
 
-#: lib/admin.php:1901 templates/admin/cdbt_tables.php:1255
+#: lib/admin.php:1902 templates/admin/cdbt_tables.php:1255
 msgid "Export"
 msgstr ""
 
-#: lib/admin.php:1906
+#: lib/admin.php:1907
 #, php-format
 msgid "Truncate data in \"%s\" table"
 msgstr ""
 
-#: lib/admin.php:1907
+#: lib/admin.php:1908
 msgid ""
 "When you truncate a table, all data that currently stored will be lost. "
 "Then, you can not resume this process.<br>Do you want to truncate this table "
 "really?"
 msgstr ""
 
-#: lib/admin.php:1908
+#: lib/admin.php:1909
 msgid "Truncate"
 msgstr ""
 
-#: lib/admin.php:1912
+#: lib/admin.php:1913
 #, php-format
 msgid "Remove the \"%s\" table"
 msgstr ""
 
-#: lib/admin.php:1913
+#: lib/admin.php:1914
 msgid ""
 "If you have removed a table, at same time all data that currently stored "
 "will be lost. Then, you can not resume this process.<br>Do you want to "
 "remove the table really?"
 msgstr ""
 
-#: lib/admin.php:1914 lib/admin.php:1939 lib/admin.php:1976 lib/admin.php:1982
+#: lib/admin.php:1915 lib/admin.php:1944 lib/admin.php:1981 lib/admin.php:1987
 msgid "Delete"
 msgstr ""
 
-#: lib/admin.php:1918
+#: lib/admin.php:1919
 msgid "Table is not selected"
 msgstr ""
 
-#: lib/admin.php:1919
+#: lib/admin.php:1920
 msgid "Please retry to operate that after the table selection."
 msgstr ""
 
-#: lib/admin.php:1922
+#: lib/admin.php:1923
 msgid "Data is not selected"
 msgstr ""
 
-#: lib/admin.php:1923
+#: lib/admin.php:1924
 msgid "Please retry to operate that after the data selection."
 msgstr ""
 
-#: lib/admin.php:1927
+#: lib/admin.php:1928
 msgid "Selected data is too many"
 msgstr ""
 
-#: lib/admin.php:1928
+#: lib/admin.php:1929
 msgid "Please retry after selecting one data you want to edit."
 msgstr ""
 
-#: lib/admin.php:1931
-msgid "Edit Data Form"
+#: lib/admin.php:1932
+msgid "Required field is empty"
 msgstr ""
 
 #: lib/admin.php:1933
+msgid "Please enter into the required field not entered."
+msgstr ""
+
+#: lib/admin.php:1936
+msgid "Edit Data Form"
+msgstr ""
+
+#: lib/admin.php:1938
 msgid "Update"
 msgstr ""
 
-#: lib/admin.php:1937
+#: lib/admin.php:1942
 #, php-format
 msgid "Remove the selected %s of data"
 msgstr ""
 
-#: lib/admin.php:1938
+#: lib/admin.php:1943
 msgid ""
 "You can not restore that data after deleted the data. Are you sure to delete "
 "the data?"
 msgstr ""
 
-#: lib/admin.php:1943
+#: lib/admin.php:1948
 msgid "Preview Image"
 msgstr ""
 
-#: lib/admin.php:1947
+#: lib/admin.php:1952
 msgid "Describe File Information"
 msgstr ""
 
-#: lib/admin.php:1960
+#: lib/admin.php:1965
 msgid "File Name"
 msgstr ""
 
-#: lib/admin.php:1961
+#: lib/admin.php:1966
 msgid "MIME Type"
 msgstr ""
 
-#: lib/admin.php:1962
+#: lib/admin.php:1967
 msgid "File Size"
 msgstr ""
 
-#: lib/admin.php:1963
+#: lib/admin.php:1968
 msgid "File Hash"
 msgstr ""
 
-#: lib/admin.php:1967
+#: lib/admin.php:1972
 msgid "Download"
 msgstr ""
 
-#: lib/admin.php:1974
+#: lib/admin.php:1979
 msgid "Remove the shortcode"
 msgstr ""
 
-#: lib/admin.php:1975
+#: lib/admin.php:1980
 msgid ""
 "You can not restore the shortcode settings after deleted. Are you sure to "
 "delete this shortcode settings?"
 msgstr ""
 
-#: lib/admin.php:1980
+#: lib/admin.php:1985
 msgid "Remove the allowed host"
 msgstr ""
 
-#: lib/admin.php:1981
+#: lib/admin.php:1986
 #, php-format
 msgid ""
 "You can not restore the allowed host %s after deleted. Are you sure to "
 "delete this host settings?"
 msgstr ""
 
-#: lib/admin.php:1986
+#: lib/admin.php:1991
 msgid "Preview shortcode"
 msgstr ""
 
-#: lib/admin.php:1993
+#: lib/admin.php:1998
 msgid "Preview Request Web API"
 msgstr ""
 
-#: lib/admin.php:2005 templates/admin/cdbt_tables.php:231
+#: lib/admin.php:2010 templates/admin/cdbt_tables.php:231
 msgid "Table Creator"
 msgstr ""
 
-#: lib/admin.php:2006
+#: lib/admin.php:2011
 msgid ""
 "In the \"table creator\" you can intuitively create the columns "
 "configuration of table. It will be cached the settings when you click of "
 "\"Apply SQL\". Then it is never lost if you close this modal window."
 msgstr ""
 
-#: lib/admin.php:2007
+#: lib/admin.php:2012
 msgid "Reset"
 msgstr ""
 
-#: lib/admin.php:2007
+#: lib/admin.php:2012
 msgid "Apply SQL"
 msgstr ""
 
-#: lib/admin.php:2010
+#: lib/admin.php:2015
 msgid "Tutorial displaying confirmation"
 msgstr ""
 
-#: lib/admin.php:2011
+#: lib/admin.php:2016
 msgid ""
 "Do you want to hide the display of the tutorial? If so, please click the "
 "\"Hide\" below."
 msgstr ""
 
-#: lib/admin.php:2012
+#: lib/admin.php:2017
 msgid "Hide"
 msgstr ""
 
@@ -601,127 +613,127 @@ msgstr ""
 msgid "Reference: columns information of \"%s\" table"
 msgstr ""
 
-#: lib/ajax.php:335 lib/db.php:449
+#: lib/ajax.php:339 lib/db.php:449
 #, php-format
 msgid "Table of \"%s\" has been truncated successfully."
 msgstr ""
 
-#: lib/ajax.php:337 lib/db.php:451
+#: lib/ajax.php:341 lib/db.php:451
 #, php-format
 msgid "Failed to truncate the table of \"%s\"."
 msgstr ""
 
-#: lib/ajax.php:342
+#: lib/ajax.php:346
 msgid "Parameters required for table truncation is missing."
 msgstr ""
 
-#: lib/ajax.php:370 lib/db.php:486
+#: lib/ajax.php:374 lib/db.php:486
 #, php-format
 msgid "Table of \"%s\" has been removed successfully."
 msgstr ""
 
-#: lib/ajax.php:372
+#: lib/ajax.php:376
 msgid "Removing table was success, but failed to update options."
 msgstr ""
 
-#: lib/ajax.php:375 lib/db.php:488
+#: lib/ajax.php:379 lib/db.php:488
 #, php-format
 msgid "Failed to remove the table of \"%s\"."
 msgstr ""
 
-#: lib/ajax.php:380
+#: lib/ajax.php:384
 msgid "Parameters required for table deletion is missing."
 msgstr ""
 
-#: lib/ajax.php:440 lib/ajax.php:483 lib/main.php:592
+#: lib/ajax.php:444 lib/ajax.php:487 lib/main.php:593
 msgid "Parameters required for data deletion is missing."
 msgstr ""
 
-#: lib/ajax.php:473 lib/main.php:581
+#: lib/ajax.php:477 lib/main.php:582
 msgid "Specified data have been removed successfully."
 msgstr ""
 
-#: lib/ajax.php:475 lib/main.php:584
+#: lib/ajax.php:479 lib/main.php:585
 msgid "Some of the data could not remove."
 msgstr ""
 
-#: lib/ajax.php:478 lib/main.php:587
+#: lib/ajax.php:482 lib/main.php:588
 msgid "Specified conditions for finding to delete data is invalid."
 msgstr ""
 
-#: lib/ajax.php:536
+#: lib/ajax.php:540
 #, php-format
 msgid "Have deleted a custom shortcode, that ID is follow: %d."
 msgstr ""
 
-#: lib/ajax.php:538
+#: lib/ajax.php:542
 msgid "Failed to delete the custom shortcode."
 msgstr ""
 
-#: lib/ajax.php:541
+#: lib/ajax.php:545
 msgid "Specified custom shortcode does not exist."
 msgstr ""
 
-#: lib/ajax.php:578
+#: lib/ajax.php:582
 msgid "Have deleted the specific allowed host."
 msgstr ""
 
-#: lib/ajax.php:580
+#: lib/ajax.php:584
 msgid "Failed to delete the specified host."
 msgstr ""
 
-#: lib/ajax.php:583
+#: lib/ajax.php:587
 msgid "Specified host does not exist."
 msgstr ""
 
-#: lib/config.php:204
+#: lib/config.php:215
 #, php-format
 msgid "The missing options is as follow: %s"
 msgstr ""
 
-#: lib/config.php:277
+#: lib/config.php:288
 msgid "Plugin options has upgraded."
 msgstr ""
 
-#: lib/config.php:307
+#: lib/config.php:318
 msgid "Table settings in plugin option is empty."
 msgstr ""
 
-#: lib/config.php:344
+#: lib/config.php:355
 #, php-format
 msgid "New options is not specified when the method \"%s\" call."
 msgstr ""
 
-#: lib/config.php:347
+#: lib/config.php:358
 #, php-format
 msgid "Illegal action is specified to the method \"%s\" call."
 msgstr ""
 
-#: lib/config.php:364 lib/config.php:436
+#: lib/config.php:375 lib/config.php:447
 msgid "Failed to save the option."
 msgstr ""
 
-#: lib/config.php:366
+#: lib/config.php:377
 msgid "Options format is invalid."
 msgstr ""
 
-#: lib/config.php:370
+#: lib/config.php:381
 msgid "Specified option key does not exist in option settings."
 msgstr ""
 
-#: lib/config.php:401
+#: lib/config.php:412
 msgid "Table settings for removing does not exist."
 msgstr ""
 
-#: lib/config.php:416
+#: lib/config.php:427
 msgid "Api key settings for removing does not exist."
 msgstr ""
 
-#: lib/config.php:438
+#: lib/config.php:449
 msgid "Update process of setting did not take place."
 msgstr ""
 
-#: lib/config.php:632
+#: lib/config.php:643
 msgid "Debug log file does not have permission of writable."
 msgstr ""
 
@@ -903,133 +915,133 @@ msgstr ""
 msgid "Export target column \"%s\" does not exist."
 msgstr ""
 
-#: lib/extras.php:82
+#: lib/extras.php:84
 msgid "Try yet"
 msgstr ""
 
-#: lib/extras.php:86
+#: lib/extras.php:88
 msgid "New added"
 msgstr ""
 
-#: lib/extras.php:90
+#: lib/extras.php:92
 msgid "Future releases"
 msgstr ""
 
-#: lib/extras.php:185
+#: lib/extras.php:187
 msgid "Oparate Table"
 msgstr ""
 
-#: lib/extras.php:187 templates/admin/cdbt_tables.php:846
+#: lib/extras.php:189 templates/admin/cdbt_tables.php:846
 msgid "View Data"
 msgstr ""
 
-#: lib/extras.php:188 templates/admin/cdbt_tables.php:847
+#: lib/extras.php:190 templates/admin/cdbt_tables.php:847
 msgid "Entry Data"
 msgstr ""
 
-#: lib/extras.php:189 templates/admin/cdbt_tables.php:848
+#: lib/extras.php:191 templates/admin/cdbt_tables.php:848
 #: templates/components/cdbt_repeater.php:248
 msgid "Edit Data"
 msgstr ""
 
-#: lib/extras.php:202
+#: lib/extras.php:204
 msgid "TableName"
 msgstr ""
 
-#: lib/extras.php:209
+#: lib/extras.php:211
 msgid "Records"
 msgstr ""
 
-#: lib/extras.php:216
+#: lib/extras.php:218
 msgid "PrimaryKey"
 msgstr ""
 
-#: lib/extras.php:221
+#: lib/extras.php:223
 msgid "Charset"
 msgstr ""
 
-#: lib/extras.php:226
+#: lib/extras.php:228
 msgid "Collation"
 msgstr ""
 
-#: lib/extras.php:231
+#: lib/extras.php:233
 msgid "Engine"
 msgstr ""
 
-#: lib/extras.php:236
+#: lib/extras.php:238
 msgid "PerPageRecords"
 msgstr ""
 
-#: lib/extras.php:256 lib/extras.php:318
+#: lib/extras.php:258 lib/extras.php:320
 msgid "Operation"
 msgstr ""
 
-#: lib/extras.php:267
+#: lib/extras.php:269
 msgid "Register Shortcode"
 msgstr ""
 
-#: lib/extras.php:269 templates/admin/cdbt_shortcodes.php:17
+#: lib/extras.php:271 templates/admin/cdbt_shortcodes.php:17
 msgid "Edit Shortcode"
 msgstr ""
 
-#: lib/extras.php:270 lib/extras.php:330
+#: lib/extras.php:272 lib/extras.php:332
 msgid "Delete Shortcode"
 msgstr ""
 
-#: lib/extras.php:283
+#: lib/extras.php:285
 msgid "CSID"
 msgstr ""
 
-#: lib/extras.php:289
+#: lib/extras.php:291
 msgid "Shortcode Name / Alias Shortcode"
 msgstr ""
 
-#: lib/extras.php:296 templates/admin/cdbt_shortcodes.php:392
+#: lib/extras.php:298 templates/admin/cdbt_shortcodes.php:392
 #: templates/admin/cdbt_shortcodes.php:740
 msgid "Description"
 msgstr ""
 
-#: lib/extras.php:301
+#: lib/extras.php:303
 msgid "Type"
 msgstr ""
 
-#: lib/extras.php:307
+#: lib/extras.php:309
 msgid "Author"
 msgstr ""
 
-#: lib/extras.php:313 lib/extras.php:364
+#: lib/extras.php:315 lib/extras.php:366
 msgid "Permission"
 msgstr ""
 
-#: lib/extras.php:330
+#: lib/extras.php:332
 msgid "Delete Host"
 msgstr ""
 
-#: lib/extras.php:341
+#: lib/extras.php:343
 msgid "ID"
 msgstr ""
 
-#: lib/extras.php:347
+#: lib/extras.php:349
 msgid "Host Name"
 msgstr ""
 
-#: lib/extras.php:353
+#: lib/extras.php:355
 msgid "API Key"
 msgstr ""
 
-#: lib/extras.php:359 templates/admin/cdbt_web_apis.php:114
+#: lib/extras.php:361 templates/admin/cdbt_web_apis.php:114
 msgid "Description Host"
 msgstr ""
 
-#: lib/extras.php:369
+#: lib/extras.php:371
 msgid "Generated Date"
 msgstr ""
 
-#: lib/extras.php:375
+#: lib/extras.php:377
 msgid "Deletion"
 msgstr ""
 
-#: lib/main.php:636
+#: lib/main.php:637
 msgid ""
 "Could not multiple registration by the continuous transmission. So you "
 "reload this entry page, please try to refresh the token."
@@ -1449,27 +1461,33 @@ msgid ""
 "the author are greatly appreciated."
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:141
 #: templates/admin/cdbt_management_console.php:142
 msgid "The safer, easier way to pay online!"
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:153
-msgid "Please Donate To Bitcoin Address:"
+#: templates/admin/cdbt_management_console.php:154
+msgid "Amazon Gift Card"
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:176
+#: templates/admin/cdbt_management_console.php:159
+#, php-format
+msgid ""
+"If you use Amazon.com Gift Cards (E-mail Delivery), please enter \"%s\" to "
+"an email address of recipient."
+msgstr ""
+
+#: templates/admin/cdbt_management_console.php:167
 msgid "CustomDataBaseTables License Agreement"
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:179
+#: templates/admin/cdbt_management_console.php:170
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License, version 2, as published "
 "by the Free Software Foundation."
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:180
+#: templates/admin/cdbt_management_console.php:171
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -1477,7 +1495,7 @@ msgid ""
 "more details."
 msgstr ""
 
-#: templates/admin/cdbt_management_console.php:181
+#: templates/admin/cdbt_management_console.php:172
 msgid ""
 "You should have received a copy of the GNU General Public License along with "
 "this program; if not, write to the Free Software Foundation, Inc., 51 "

@@ -69,6 +69,7 @@ $(document).ready(function() {
   $.modalNotices = 'true' === cdbt_main_vars.notices_via_modal ? true : false;
   $.emitMessage = cdbt_main_vars.emit_message;
   $.emitType = cdbt_main_vars.emit_type;
+  $.localErrMsg = decodeURIComponent(cdbt_main_vars.local_err_msg.replace(/\+/g, ' '));
   $.onTimer = true;
   if ($.isDebug) {
     // check debug mode
@@ -189,6 +190,13 @@ $(document).ready(function() {
       
     };
     
+    /**
+     * Set global var
+     */
+    this.set_global_var = function(){
+      // do nothing
+    };
+    
   };
   var Callback = new CallbackClass();
   
@@ -231,6 +239,80 @@ $(document).ready(function() {
     $('#welcome-wizard').wizard();
   }
   
+  // Check empty fields
+  // @since 2.0.7 Added new
+  // @since 2.0.9 Change to common function
+  var checkEmptyFields = function( formId ){
+    if ( $('form#' + formId).size() === 1 ) {
+      var required_fields = 0;
+      var empty_fields = 0;
+      $('form#' + formId).find('.form-group').each( function() {
+        if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
+          required_fields += 1;
+          var checked = 0;
+          var inputted = 0;
+          if ( $(this).find('.checkbox').size() > 0 ) {
+            $(this).find('.checkbox-custom').each( function() {
+              if ( $(this).checkbox('isChecked') ) {
+                checked++;
+              }
+            });
+            if ( checked === 0 ) {
+              empty_fields++;
+            }
+          } else
+          if ( $(this).find('.selectlist').size() > 0 ) {
+            if ( ! $(this).find('.selectlist').selectlist('selectedItem').selected ) {
+              empty_fields++;
+            }
+          } else
+          if ( $(this).find('input[type="text"]').size() > 0 ) {
+            $(this).find('input[type="text"]').each( function() {
+              if ( $(this).val() !== '' ) {
+                inputted++;
+              }
+            });
+            if ( inputted !== $(this).find('input[type="text"]').size() ) {
+              empty_fields++;
+            }
+          } else
+          if ( $(this).find('input[type="number"]').size() > 0 ) {
+            $(this).find('input[type="number"]').each( function() {
+              if ( $(this).val() !== '' ) {
+                inputted++;
+              }
+            });
+            if ( inputted !== $(this).find('input[type="number"]').size() ) {
+              empty_fields++;
+            }
+          } else
+          if ( $(this).find('textarea').size() > 0 ) {
+            $(this).find('textarea').each( function() {
+              if ( $(this).val() !== '' ) {
+                inputted++;
+              }
+            });
+            if ( inputted !== $(this).find('textarea').size() ) {
+              empty_fields++;
+            }
+          } else
+          if ( $(this).find('input[type="file"]').size() > 0 ) {
+            // do nothing
+          }
+        }
+        
+      });
+      if ( required_fields === 0 || empty_fields === 0 ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+  
+  
   /**
    * Repeater components of Fuel UX renderer
    */
@@ -255,7 +337,6 @@ $(document).ready(function() {
         tr_i++;
       });
     };
-    
     
     var is_view_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-view-') === 0;
     var is_edit_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-edit-') === 0;
@@ -310,81 +391,6 @@ $(document).ready(function() {
       /**
        * When edit via shortcode
        */
-      
-      // Check empty fields
-      // @since 2.0.7 Added new
-      // @since 2.0.8 Updated
-      var checkEmptyFields = function( formId ){
-        //if ( $('.cdbt-entry-data-form form').size() > 0 ) {
-        if ( $('form#' + formId).size() === 1 ) {
-          var required_fields = 0;
-          var empty_fields = 0;
-          $('form#' + formId).find('.form-group').each( function() {
-            if ( $(this).find('.required').size() > 0 || $(this).find('.cdbt-form-required').size() > 0 ) {
-              required_fields += 1;
-              var checked = 0;
-              var inputted = 0;
-              if ( $(this).find('.checkbox').size() > 0 ) {
-                $(this).find('.checkbox-custom').each( function() {
-                  if ( $(this).checkbox('isChecked') ) {
-                    checked++;
-                  }
-                });
-                if ( checked === 0 ) {
-                  empty_fields++;
-                }
-              } else
-              if ( $(this).find('.selectlist').size() > 0 ) {
-                if ( ! $(this).find('.selectlist').selectlist('selectedItem').selected ) {
-                  empty_fields++;
-                }
-              } else
-              if ( $(this).find('input[type="text"]').size() > 0 ) {
-                $(this).find('input[type="text"]').each( function() {
-                  if ( $(this).val() !== '' ) {
-                    inputted++;
-                  }
-                });
-                if ( inputted !== $(this).find('input[type="text"]').size() ) {
-                  empty_fields++;
-                }
-              } else
-              if ( $(this).find('input[type="number"]').size() > 0 ) {
-                $(this).find('input[type="number"]').each( function() {
-                  if ( $(this).val() !== '' ) {
-                    inputted++;
-                  }
-                });
-                if ( inputted !== $(this).find('input[type="number"]').size() ) {
-                  empty_fields++;
-                }
-              } else
-              if ( $(this).find('textarea').size() > 0 ) {
-                $(this).find('textarea').each( function() {
-                  if ( $(this).val() !== '' ) {
-                    inputted++;
-                  }
-                });
-                if ( inputted !== $(this).find('textarea').size() ) {
-                  empty_fields++;
-                }
-              } else
-              if ( $(this).find('input[type="file"]').size() > 0 ) {
-                // do nothing
-              }
-            }
-            
-          });
-          if ( required_fields === 0 || empty_fields === 0 ) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return true;
-        }
-      };
-      
       
       // Button effect
       var effect_buttons = function(){
@@ -530,7 +536,12 @@ $(document).ready(function() {
           setCookie( 'once_action', form.attr( 'id' ) );
           form.submit();
         } else {
-          return false;
+          // Added since 2.0.9
+          $(this).popover({ animation: true, content: $.localErrMsg, placement: 'top', trigger: 'hover' }).popover('show');
+          $(this).on('hidden.bs.popover', function(){
+            $(this).popover('destroy');
+          });
+          //return false;
         }
       });
       
@@ -597,12 +608,6 @@ $(document).ready(function() {
       }
     });
     
-    /*
-    $(document).on('submit', '.cdbt-entry-data-form form', function(){
-        $('.cdbt-entry-data-form form').off();
-    });
-    */
-    
     $(document).on('click', 'button[id^="btn-entry/"]', function(e){
       e.preventDefault();
       var tmp = $(this).attr('id').split('/');
@@ -624,7 +629,15 @@ $(document).ready(function() {
         setCookie( 'once_action', entry_form.attr( 'id' ) );
         entry_form.submit();
       } else {
-        return false;
+      	// Added since 2.0.9
+        post_data = {
+          id: 'cdbtModal', 
+          insertContent: true, 
+          modalTitle: 'empty_required_field', 
+          modalBody: '', 
+        };
+        init_modal( post_data );
+        //return false;
       }
     });
     
