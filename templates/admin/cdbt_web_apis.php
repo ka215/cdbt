@@ -20,6 +20,7 @@ $default_tab = 'hosts_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 
 $_allowed_hosts = $this->get_allowed_hosts();
+$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -104,9 +105,9 @@ $_allowed_hosts = $this->get_allowed_hosts();
       <h4 class="title"><?php _e('Allowing Hosts Registration', CDBT); ?></h4>
       
       <div class="form-group">
-        <label for="register-webapi-host_name" class="col-sm-2 control-label"><?php _e('Request Origin Host', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="register-webapi-host_name" class="col-sm-2 control-label"><?php _e('Request Origin Host', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-4">
-          <input id="register-webapi-host_name" name="<?php echo $this->domain_name; ?>[host_name]" type="text" value="<?php if (isset($this_tab_vars['host_name'])) echo $this_tab_vars['host_name']; ?>" class="form-control" placeholder="<?php _e('Enter the FQDN or IP address', CDBT); ?>" required>
+          <input id="register-webapi-host_name" name="<?php echo $this->domain_name; ?>[host_name]" type="text" value="<?php if (isset($this_tab_vars['host_name'])) echo $this_tab_vars['host_name']; ?>" class="form-control" placeholder="<?php _e('Please enter the FQDN or IP address', CDBT); ?>" required>
         </div>
         <p class="help-block col-sm-offset-2 col-sm-9"><?php printf(__('Please enter the FQDN (for example, the site name such as %s) or IP address of the requesting origin site.', CDBT), '<code>www.example.com</code>'); ?></p>
       </div><!-- /register-webapi-host_name -->
@@ -171,7 +172,7 @@ $_allowed_hosts = $this->get_allowed_hosts();
     <form class="form-horizontal">
       
       <div class="form-group">
-        <label for="edit-webapi-request-allowed_host" class="col-sm-2 control-label"><?php _e('Allowed Host Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="edit-webapi-request-allowed_host" class="col-sm-2 control-label"><?php _e('Allowed Host Name', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-allowed_host">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -191,7 +192,7 @@ $_allowed_hosts = $this->get_allowed_hosts();
         </div>
       </div><!-- /edit-webapi-request-allowed_host -->
       <div class="form-group">
-        <label for="edit-webapi-request-target_table" class="col-sm-2 control-label"><?php _e('Target Table', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="edit-webapi-request-target_table" class="col-sm-2 control-label"><?php _e('Target Table', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-target_table">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -211,7 +212,7 @@ $_allowed_hosts = $this->get_allowed_hosts();
         </div>
       </div><!-- /edit-webapi-request-target_table -->
       <div class="form-group">
-        <label for="edit-webapi-request-method" class="col-sm-2 control-label"><?php _e('Request Method', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="edit-webapi-request-method" class="col-sm-2 control-label"><?php _e('Request Method', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="edit-webapi-request-method">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">

@@ -81,40 +81,40 @@ class CdbtConfig extends CdbtCore {
     ];
     
     $this->override_messages = [
-      'Reporting Results', 
-      'Reporting Errors', 
-      'Your entry data has been successfully registered to "%s" table.', 
-      'Could not insert data to "%s" table.', 
-      'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', 
-      'Remove the selected %s of data', 
-      'You can not restore that data after deleted the data. Are you sure to delete the data?', 
-      'Delete', 
-      'Specified data have been removed successfully.', 
-      'Some of the data could not remove.', 
-      'Specified conditions for finding to delete data is invalid.', 
-      'Parameters required for data deletion is missing.', 
-      'Update of the data has been completed successfully.', 
-      'Could not update data of "%s" table.', 
-      'Not done updating of data if there is no change to the data in updating before and after.', 
-      'Or, it is possible that the record having the same data could not be updated in order that existed in the other.', 
-      'You do not have viewing permits of this content.', 
-      'Data in this table does not exist.', 
-      'Data is not selected', 
-      'Please retry to operate that after the data selection.', 
-      'Selected data is too many', 
-      'Please retry after selecting one data you want to edit.', 
-      'Required field is empty', 
-      'Please enter into the required field not entered.', 
-      'An empty required field is exists.', 
-      'View Data in "%s" Table', 
-      'Entry Data to "%s" Table', 
-      'Edit Data of "%s" Table', 
-      'Edit Data Form', 
-      'Update', 
-      'Preview Image', 
-      'Describe File Information', 
-      'Download', 
-      'Close', 
+      'Reporting Errors', // admin.php:1882
+      'Reporting Results', // admin.php:1882
+      'Your entry data has been successfully registered to "%s" table.', // admin.php:1601 main.php:625,637
+      'Failed to insert data to "%s" table.', // admin.php:1603 main.php:629,640
+      'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', // main.php:633
+      'Remove the selected %s of data', // admin.php:1945
+      'You can not restore that data after deleted the data. Are you sure to delete the data?', // admin.php:1946
+      'Delete', // admin.php:1918,1947,1984,1990
+      'Removed successfully the specified data.', // 
+      'Can not remove some of the data.', // ajax.php:479 main.php:581
+      'Specified conditions for finding to delete data is invalid.', // ajax.php:482 main.php:584
+      'Parameters required for data deletion is missing.', // ajax.php:444,487 main.php:589
+      'Data updating are completed successfully.', // admin.php:1622 main.php:534
+      'Failed to update data of of "%s" table.', // admin.php:1624 main.php:537
+      'In the case of no change of between before and after, data does not updated.', // admin.php:1625 main.php:538
+      'It might not have updated because there is the record which has same data.', // admin.php:1626 main.php:539
+      'You do not have permission to access to this page.', // admin.php:713,716
+      'No data in this table.', // shortcodes.php:492,1287
+      'Please select the data.', // admin.php:1926
+      'Please retry to operate that after you select the data.', // admin.php:1927
+      'You select too many data.', // admin.php:1931
+      'Please retry after selecting one data you want to edit.', // admin.php:1932
+      'Required field is empty', // admin.php:1935
+      'Please fill in the required fields of non-input.', // admin.php:1936
+      'An empty required field is exists.', // admin.php:487 main.php:443
+      'View Data in "%s" Table', // shortcodes.php:398 cdbt_tables.php:1337
+      'Entry Data to "%s" Table', // shortcodes.php:833 cdbt_tables.php:1338
+      'Edit Data of "%s" Table', // shortcodes.php:1210 cdbt_tables.php:1339
+      'Edit Data Form', // admin.php:1939
+      'Update', // admin.php:1941
+      'Preview Image', // admin.php:1951
+      'Describe File', // admin.php:1955
+      'Download', // admin.php:1975
+      'Close', // cdbt_modal.php:108,115
       // '', 
     ];
     
@@ -224,14 +224,12 @@ class CdbtConfig extends CdbtCore {
    * Check versions of current options
    *
    * @since 2.0.0
+   * @since 2.0.10 Modified
    */
   public function check_option_version() {
     $not_require_upgrade = true;
     
-    if (version_compare($this->version, $this->options['plugin_version']) > 0) 
-      $not_require_upgrade = false;
-    
-    if (version_compare($this->db_version, $this->options['db_version']) > 0) 
+    if ( version_compare( $this->version, $this->options['plugin_version'] ) > 0 || version_compare( $this->db_version, $this->options['db_version'] ) > 0 ) 
       $not_require_upgrade = false;
     
     return $not_require_upgrade;
@@ -258,33 +256,41 @@ class CdbtConfig extends CdbtCore {
    * Don't use to update normally options. In that case should use the `update_options()`.
    *
    * @since 2.0.0
+   * @since 2.0.10 Updated
    */
   public function upgrade_options() {
     $default_options = $this->set_option_template();
     $new_options = [];
     
-    if (preg_match('/^1\..*$/U', $this->options['plugin_version'])) {
+    if ( preg_match( '/^1\..*$/U', $this->options['plugin_version'] ) ) {
       // When upgrading from version 1.x do backup
-      add_option($this->domain_name . '/backup-v1', $this->options, '', 'no');
+      add_option( $this->domain_name . '/backup-v1', $this->options, '', 'no' );
     }
     
-    foreach ($default_options as $key => $value) {
-      if (!array_key_exists($key, $this->options)) {
+    foreach ( $default_options as $key => $value ) {
+      if ( ! array_key_exists( $key, $this->options ) ) {
+        
         $new_options[$key] = $value;
       } else {
         $new_options[$key] = $this->options[$key];
       }
     }
-    unset($key, $value);
+    unset( $key, $value );
+    if ( $this->version !== $new_options['plugin_version'] ) 
+      $new_options['plugin_version'] = $this->version;
+    if ( $this->db_version !== $new_options['db_version'] ) 
+      $new_options['db_version'] = $this->version;
+    if ( ! empty( $_diff_array = array_diff_key( $this->options, $new_options ) ) ) 
+      $new_options = array_merge( $new_options, $_diff_array );
     
     // 
     // Filter to clean up the option settings in depending with the setting of "cleaning_options"
     // 
     $new_options = apply_filters( 'cdbt_cleaning_options', $new_options );
     
-    update_option($this->domain_name, $new_options);
+    update_option( $this->domain_name, $new_options );
     
-    if (isset($this->debug) && $this->debug) 
+    if ( isset( $this->debug ) && $this->debug ) 
       $this->logger( __('Plugin options has upgraded.', CDBT) );
     
   }
@@ -352,7 +358,7 @@ class CdbtConfig extends CdbtCore {
     static $new_options;
     
     if (empty($new_data)) 
-      $message = sprintf( __('New options is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( __('New options is not specified regarding the method "%s" call.', CDBT), __FUNCTION__ );
     
     if (empty($action) || !in_array($action, [ 'override', 'delete' ])) 
       $message = sprintf( __('Illegal action is specified to the method "%s" call.', CDBT), __FUNCTION__ );
@@ -374,7 +380,7 @@ class CdbtConfig extends CdbtCore {
         if (!update_option( $this->domain_name, $new_options )) 
         	$mesage = __('Failed to save the option.', CDBT);
       } else {
-        $message = __('Options format is invalid.', CDBT);
+        $message = __('Invalid options format.', CDBT);
       }
     } else {
       if (!array_key_exists($option_key, $prev_options)) 
@@ -409,7 +415,7 @@ class CdbtConfig extends CdbtCore {
               }
             }
             if (!$executed) 
-              $message = __('Table settings for removing does not exist.', CDBT);
+              $message = __('No Table settings for removing.', CDBT);
           }
         }
         if ('api_key' === $option_key) {
@@ -424,7 +430,7 @@ class CdbtConfig extends CdbtCore {
               unset($new_options[$option_key][key($new_data)]);
               $executed = true;
             } else {
-              $message = __('Api key settings for removing does not exist.', CDBT);
+              $message = __('No Api key for removing.', CDBT);
             }
           }
         }
@@ -446,7 +452,7 @@ class CdbtConfig extends CdbtCore {
         if (!update_option( $this->domain_name, $new_options )) 
         	$mesage = __('Failed to save the option.', CDBT);
       } else {
-        $mesage = __('Update process of setting did not take place.', CDBT);
+        $mesage = __('Did not carry out the update process.', CDBT);
       }
     }
     

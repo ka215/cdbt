@@ -15,10 +15,9 @@ $tabs = [
   'debug' => __('Debug', CDBT), 
 ];
 $default_tab = 'general_setting';
-$current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
-if (!$options['debug_mode']) {
-  unset($tabs['debug']);
-  $current_tab = $default_tab;
+$current_tab = isset( $this->query['tab'] ) && ! empty( $this->query['tab'] ) ? $this->query['tab'] : $default_tab;
+if ( ! $options['debug_mode'] ) {
+  unset( $tabs['debug'] );
 }
 
 

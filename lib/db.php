@@ -385,7 +385,7 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
-      $message = __('Specified table does not exist.', CDBT);
+      $message = __('No specified table.', CDBT);
     
     $result = $this->array_flatten($this->wpdb->get_results( $this->wpdb->prepare( 'SHOW TABLE STATUS LIKE %s;', esc_sql($table_name) ), ARRAY_A ));
     $_values = array_values($result);
@@ -441,12 +441,12 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
-      $message = __('Specified table does not exist.', CDBT);
+      $message = __('No specified table.', CDBT);
     
     $result = $this->wpdb->query( sprintf( 'TRUNCATE TABLE `%s`;', esc_sql($table_name) ) );
     $retvar = $this->strtobool($result);
     if ($retvar) {
-      $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $table_name );
+      $message = sprintf( __('Truncated successfully the table of "%s".', CDBT), $table_name );
     } else {
       $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $table_name );
       $message .= $this->retrieve_db_error();
@@ -478,12 +478,12 @@ class CdbtDB extends CdbtConfig {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
-      $message = __('Specified table does not exist.', CDBT);
+      $message = __('No specified table.', CDBT);
     
     $result = $this->wpdb->query( sprintf( 'DROP TABLE `%s`;', esc_sql($table_name) ) );
     $retvar = $this->strtobool($result);
     if ($retvar) {
-      $message = sprintf( __('Table of "%s" has been removed successfully.', CDBT), $table_name );
+      $message = sprintf( __('Removed successfully the table of "%s".', CDBT), $table_name );
     } else {
       $message = sprintf( __('Failed to remove the table of "%s".', CDBT), $table_name );
       $message .= $this->retrieve_db_error();

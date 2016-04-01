@@ -34,7 +34,7 @@ $allow_file_types = [];
 foreach ($this->allow_file_types as $file_type) {
   $allow_file_types[$file_type] = __(strtoupper($file_type), CDBT);
 }
-
+$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -53,7 +53,7 @@ foreach ($this->allow_file_types as $file_type) {
   </div>
   
 <?php if ($current_tab == 'table_list') : ?>
-  <h4 class="tab-annotation"><?php _e('Enabled Table List', CDBT); ?></h4>
+  <h4 class="tab-annotation"><?php _e('Management table list', CDBT); ?></h4>
   <?php if ( 0 === count($enable_table) ) : ?>
     <p><?php _e('Currently, manageable table in the plugin does not exist.', CDBT); ?></p>
     <p><?php printf( __('If you want to create a new table, please %sclick here%s.', CDBT), '<a href="'. add_query_arg('tab', 'create_table') .'">', '</a>' ); ?></p>
@@ -129,7 +129,7 @@ foreach ($this->allow_file_types as $file_type) {
       </div>
       
       <div class="form-group">
-        <label for="create-table-table_name" class="col-sm-2 control-label"><?php _e('Table Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="create-table-table_name" class="col-sm-2 control-label"><?php _e('Table Name', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group col-sm-5" id="create-table-table_name">
             <div class="input-group-addon<?php if ('1' === $options['use_wp_prefix']) : ?> active<?php endif; ?>"><?php echo $this->wpdb->prefix; ?></div>
@@ -223,7 +223,7 @@ foreach ($this->allow_file_types as $file_type) {
         </div>
       </div><!-- /create-table-automatically-add-columns -->
       <div class="form-group">
-        <label for="create-table-create_table_sql" class="col-sm-2 control-label"><?php _e('Create Table SQL', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="create-table-create_table_sql" class="col-sm-2 control-label"><?php _e('Create Table SQL', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-9">
           <div role="tabpanel">
             <ul class="nav nav-tabs" role="tablist">
@@ -235,7 +235,7 @@ foreach ($this->allow_file_types as $file_type) {
               <div role="tabpanel" class="tab-pane" id="table_creator"><textarea id="instance_create_table_sql" class="form-control" rows="10" disabled="disabled"><?php if (isset($session_vars)) echo esc_textarea(stripslashes_deep($session_vars[$this->domain_name]['create_table_sql'])); ?></textarea></div>
             </div>
             <div class="sql-support-button pull-right">
-              <button type="button" id="create-sql-support" class="btn btn-default btn-xs"><?php _e('Make Template', CDBT); ?></button>
+              <button type="button" id="create-sql-support" class="btn btn-default btn-xs"><?php _e('Generate Base SQL', CDBT); ?></button>
             </div>
           </div>
           <p class="help-block">
@@ -370,11 +370,11 @@ foreach ($this->allow_file_types as $file_type) {
       <input type="hidden" name="action" value="resume_table">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
-      <h4 class="title" id="resume-table"><i class="fa fa-reply text-muted"></i> <?php _e('Incorporate an existing table', CDBT); ?></h4>
+      <h4 class="title" id="resume-table"><i class="fa fa-reply text-muted"></i> <?php _e('Import an already exist table', CDBT); ?></h4>
       
       <div class="well-sm">
         <p class="text-info">
-          <?php _e('You can incorporate a table that already exists, as be able to manage by this plugin.', CDBT); ?>
+          <?php _e('You can import a table that already exists, as be able to manage on this plugin.', CDBT); ?>
         </p>
       </div>
       
@@ -382,12 +382,12 @@ foreach ($this->allow_file_types as $file_type) {
     if ( 0 === count($resume_table_list = array_diff($unreserved_table, $enable_table)) ) : ?>
       
       <div class="form-group">
-        <p class="well-sm col-sm-offset-2 col-sm-8"><?php _e('Currently, incorporatable table to the plugin is not exist.', CDBT); ?></p>
+        <p class="well-sm col-sm-offset-2 col-sm-8"><?php _e('Currently, an importable table to this plugin does not exist.', CDBT); ?></p>
       </div>
       
     <?php else : ?>
       <div class="form-group">
-        <label for="resume-table-resume_table" class="col-sm-2 control-label"><?php _e('Incorporatable tables', CDBT); ?></label>
+        <label for="resume-table-resume_table" class="col-sm-2 control-label"><?php _e('Importable Tables', CDBT); ?></label>
         <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="resume-table-resume_table">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
             <span class="selected-label"></span>
@@ -405,7 +405,7 @@ foreach ($this->allow_file_types as $file_type) {
       
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><?php _e('Incorporate Table', CDBT); ?></button>
+          <button type="submit" class="btn btn-primary"><?php _e('Import Table', CDBT); ?></button>
         </div>
       </div>
     <?php endif; ?>
@@ -831,11 +831,11 @@ foreach ($this->allow_file_types as $file_type) {
   // Definition of operatable console buttons
   if ($current_tab === 'operate_table') {
     $operatable_buttons = [
-      'detail'      => [ 'label' => __( 'Detail View', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
+      'detail'      => [ 'label' => __( 'View Detail', CDBT),      'icon' => 'fa fa-list-alt',                         'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
       'import'    => [ 'label' => __( 'Import Data', CDBT),      'icon' => 'glyphicon glyphicon-import',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
       'export'    => [ 'label' => __( 'Export Data', CDBT),      'icon' => 'glyphicon glyphicon-export',       'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
       'duplicate' => [ 'label' => __( 'Duplicate Table', CDBT), 'icon' => 'glyphicon glyphicon-duplicate',   'allow_type' => [ 'regular', 'wordpress', 'other' ] ], 
-      'truncate'  => [ 'label' => __( 'Truncate Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
+      'truncate'  => [ 'label' => __( 'Initialize Table', CDBT),  'icon' => 'glyphicon glyphicon-certificate', 'allow_type' => [ 'regular', 'other' ] ], 
       'modify'    => [ 'label' => __( 'Modify Table', CDBT),     'icon' => 'fa fa-wrench',                        'allow_type' => [ 'regular', 'other' ] ], 
       'backup'    => [ 'label' => __( 'Backup Table', CDBT),   'icon' => 'glyphicon glyphicon-save-file',   'allow_type' => [  ] ], // Release in near future
       'drop'       => [ 'label' => __( 'Delete Table', CDBT),     'icon' => 'fa fa-trash-o',                        'allow_type' => [ 'regular', 'other' ] ], 
@@ -986,7 +986,7 @@ foreach ($this->allow_file_types as $file_type) {
   
 <section id="import" class="<?php if ('import' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php esc_html_e('Import Data Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['import']['icon']; ?> text-muted"></i> <?php _e('"Import Data" Options', CDBT); ?></h4> <?php $this->during_trial( 'import_table' ); ?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -1033,9 +1033,9 @@ foreach ($this->allow_file_types as $file_type) {
 //var_dump($session_var);
 ?>
   <div class="step-pane bg-default active alert" data-step="1">
-    <h4><?php _e('Upload import file', CDBT); ?></h4>
+    <h4><?php _e('Upload file for importing', CDBT); ?></h4>
     <div class="form-group">
-      <label for="import-table-upload_filetype" class="col-sm-2 control-label"><?php _e('Upload File Type', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="import-table-upload_filetype" class="col-sm-2 control-label"><?php _e('Upload File Type', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-10">
         <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="import-table-upload_filetype">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -1053,7 +1053,7 @@ foreach ($this->allow_file_types as $file_type) {
       </div>
     </div><!-- /import-table-upload_filetype -->
     <div class="form-group" id="switching-item-add_first_line">
-      <label for="import-table-add_first_line" class="col-sm-2 control-label"><?php _e('Add first line of file', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="import-table-add_first_line" class="col-sm-2 control-label"><?php _e('Add first line into file', CDBT); ?><?php echo $label_required; ?></label>
 <!--
       <div class="col-sm-9">
         <textarea id="import-table-add_first_line" name="<?php echo $this->domain_name; ?>[add_first_line]" class="form-control" rows="2"><?php echo '"' . implode('","', array_keys($columns_schema)) . '"'; ?></textarea>
@@ -1090,7 +1090,7 @@ foreach ($this->allow_file_types as $file_type) {
       </div>
     </div><!-- /import-table-add_first_line -->
     <div class="form-group">
-      <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Insert Upload File', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Insert Upload File', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-10">
         <input type="file" name="<?php echo $this->domain_name; ?>[upfile]" id="import-table-upfile">
         <p class="help-block"><?php _e('Please upload a file of the specified format in the previous item.', CDBT); ?></p>
@@ -1156,14 +1156,14 @@ foreach ($this->allow_file_types as $file_type) {
   
 <section id="export" class="<?php if ('export' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['export']['icon']; ?> text-muted"></i> <?php esc_html_e('Export Table Options', CDBT); ?></h4> <?php $this->during_trial( 'export_table' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['export']['icon']; ?> text-muted"></i> <?php _e('"Export Table" Options', CDBT); ?></h4> <?php $this->during_trial( 'export_table' ); ?>
   
   <div class="well-sm">
     <p class="text-info"><?php
     if ( isset( $table_status ) && intval( $table_status['Rows'] ) > 0 ) {
       _e('We will do the export of data stored in the table currently. Please choice of the download file format, and specify the exportation columns that you want.', CDBT);
     } else {
-      _e('There is no data to be exported to this table.', CDBT);
+      _e('No data to export in this table.', CDBT);
     } ?>
     </p>
   </div>
@@ -1176,7 +1176,7 @@ foreach ($this->allow_file_types as $file_type) {
     <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
     
     <div class="form-group">
-      <label for="export-table-download_filetype" class="col-sm-2 control-label"><?php _e('Download File Type', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="export-table-download_filetype" class="col-sm-2 control-label"><?php _e('Download File Type', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-10">
         <div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="export-table-download_filetype">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -1227,7 +1227,7 @@ foreach ($this->allow_file_types as $file_type) {
     </div><!-- /export-table-output_encoding -->
   <?php endif; ?>
     <div class="form-group">
-      <label for="export-table-target_columns" class="col-sm-2 control-label"><?php _e('Export Columns', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="export-table-target_columns" class="col-sm-2 control-label"><?php _e('Export Columns', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-10" id="export-table-target_columns">
       <?php foreach(array_keys($columns_schema) as $i => $column) : ?>
         <?php 
@@ -1262,7 +1262,7 @@ foreach ($this->allow_file_types as $file_type) {
   
 <section id="duplicate" class="<?php if ('duplicate' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['duplicate']['icon']; ?> text-muted"></i> <?php esc_html_e('Duplicate Table Options', CDBT); ?></h4> <?php $this->during_trial( 'duplicate_table' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['duplicate']['icon']; ?> text-muted"></i> <?php _e('"Duplicate Table" Options', CDBT); ?></h4> <?php $this->during_trial( 'duplicate_table' ); ?>
   
   <div class="well-sm">
     <p class="text-info">
@@ -1277,14 +1277,14 @@ foreach ($this->allow_file_types as $file_type) {
     <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
     
     <div class="form-group">
-      <label for="duplicate-table-table_name" class="col-sm-2 control-label"><?php _e('Duplicate Table Name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="duplicate-table-table_name" class="col-sm-2 control-label"><?php _e('Duplicate Table Name', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-5">
         <input id="duplicate-table-table_name" name="<?php echo $this->domain_name; ?>[duplicate_table_name]" type="text" value="<?php if (isset($this->cdbt_sessions[$current_tab]['duplicate_table_name'])) echo $this->cdbt_sessions[$current_tab]['duplicate_table_name']; ?>" class="form-control" placeholder="Duplicate Table Name">
         <p class="help-block"><?php _e('Please enter the duplication table name.', CDBT); ?></p>
       </div>
     </div><!-- /create-table-duplicate_table_name -->
     <div class="form-group">
-      <label for="duplicate-table-with_data_true" class="col-sm-2 control-label"><?php _e('Duplicate With Data', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+      <label for="duplicate-table-with_data_true" class="col-sm-2 control-label"><?php _e('Duplicate With Data', CDBT); ?><?php echo $label_required; ?></label>
       <div class="col-sm-10">
         <div class="radio">
           <label class="radio-custom" data-initialize="radio" id="duplicate-table-with_data_true">
@@ -1312,7 +1312,7 @@ foreach ($this->allow_file_types as $file_type) {
   
 <section id="backup" class="<?php if ('backup' === $current_action) : ?>show<?php else : ?>hidden<?php endif; ?>">
   
-  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['backup']['icon']; ?> text-muted"></i> <?php esc_html_e('Backup Table Options', CDBT); ?></h4> <?php $this->during_trial( 'backup_table' ); ?>
+  <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons['backup']['icon']; ?> text-muted"></i> <?php _e('"Backup Table" Options', CDBT); ?></h4> <?php $this->during_trial( 'backup_table' ); ?>
   
 </section>
   

@@ -333,7 +333,7 @@ trait CdbtShortcodes {
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
     
     if (!$result_permit) 
-      return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+      return sprintf('<p>%s</p>', __('You can not see this content without permission.', CDBT));
     
     // Validation of the attributes, then sanitizing
     $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load', 'strip_tags' ];
@@ -489,7 +489,7 @@ trait CdbtShortcodes {
       }
     }
     if (empty($datasource))
-      return sprintf('<p>%s</p>', __('Data in this table does not exist.', CDBT));
+      return sprintf('<p>%s</p>', __('No data in this table.', CDBT));
     
     $custom_column_renderer = [];
     
@@ -658,7 +658,7 @@ trait CdbtShortcodes {
     // @since 2.0.0
     $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
     
-    $conponent_options = [
+    $component_options = [
       'id' => 'cdbt-repeater-view-' . $table, 
       'enableSearch' => $display_search, 
       'enableFilter' => $display_filter, 
@@ -686,32 +686,32 @@ trait CdbtShortcodes {
         'tfootClass' => '', 
       ];
     }
-    $conponent_options = array_merge($conponent_options, $add_options);
+    $component_options = array_merge($component_options, $add_options);
     
     if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
       $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
       $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
-      $conponent_options = array_merge($conponent_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
+      $component_options = array_merge($component_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
       if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
-        $conponent_options = array_merge($conponent_options, [ 'customRowScripts' => $custom_row_scripts ]);
+        $component_options = array_merge($component_options, [ 'customRowScripts' => $custom_row_scripts ]);
     }
     
-    // Filter the conponent definition of the list content that is output by this shortcode
+    // Filter the component definition of the list content that is output by this shortcode
     //
     // @since 2.0.0
-    $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
+    $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
     
     if ( is_admin() ) {
       if (isset($title)) 
         echo $title;
       
-      return $this->component_render( $component_name, $conponent_options );
+      return $this->component_render( $component_name, $component_options );
     } else {
       ob_start();
       if (isset($title)) 
         echo $title;
       
-      echo $this->component_render( $component_name, $conponent_options );
+      echo $this->component_render( $component_name, $component_options );
       
       $render_content = ob_get_contents();
       ob_end_clean();
@@ -796,7 +796,7 @@ trait CdbtShortcodes {
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
     
     if (!$result_permit) 
-      return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+      return sprintf('<p>%s</p>', __('You can not see this content without permission.', CDBT));
     
     
     // Validation of the attributes, then sanitizing
@@ -994,7 +994,7 @@ trait CdbtShortcodes {
     // @since 2.0.0
     $elements_options = apply_filters( 'cdbt_shortcode_custom_forms', $elements_options, $shortcode_name, $table );
     
-    $conponent_options = [
+    $component_options = [
       'id' => 'cdbt-entry-data-to-' . $table, 
       'entryTable' => $table, 
       'useBootstrap' => true, 
@@ -1003,27 +1003,27 @@ trait CdbtShortcodes {
       'formElements' => $elements_options, 
     ];
     if (!empty($action_url)) 
-      $conponent_options['actionUrl'] = $action_url;
+      $component_options['actionUrl'] = $action_url;
     if (!empty($form_action)) 
-      $conponent_options['formAction'] = $form_action;
+      $component_options['formAction'] = $form_action;
     if (!$display_submit) 
-      $conponent_options['displaySubmit'] = $display_submit;
+      $component_options['displaySubmit'] = $display_submit;
     if (!empty($where_clause) && is_array($where_clause)) 
-      $conponent_options['whereClause'] = $where_clause;
+      $component_options['whereClause'] = $where_clause;
     if ( ! empty( $redirect_url ) ) 
-      $conponent_options['redirectUrl'] = rawurldecode( $redirect_url );
+      $component_options['redirectUrl'] = rawurldecode( $redirect_url );
     
-    // Filter the conponent definition of the list content that is output by this shortcode
+    // Filter the component definition of the list content that is output by this shortcode
     //
     // @since 2.0.0
-    $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
+    $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
     
     if ( is_admin() ) {
-      return $this->component_render('forms', $conponent_options);
+      return $this->component_render('forms', $component_options);
     } else {
       ob_start();
       
-      echo $this->component_render( 'forms', $conponent_options );
+      echo $this->component_render( 'forms', $component_options );
       
       $render_content = ob_get_contents();
       
@@ -1167,7 +1167,7 @@ trait CdbtShortcodes {
     $result_permit = apply_filters( 'cdbt_after_shortcode_permit', $result_permit, $shortcode_name, $table );
     
     if (!$result_permit) 
-      return sprintf('<p>%s</p>', __('You do not have viewing permits of this content.', CDBT));
+      return sprintf('<p>%s</p>', __('You can not see this content without permission.', CDBT));
     
     
     // Validation of the attributes, then sanitizing
@@ -1284,7 +1284,7 @@ trait CdbtShortcodes {
       }
     }
     if ( empty( $datasource ) ) 
-      return sprintf( '<p>%s</p>', __('Data in this table does not exist.', CDBT ) );
+      return sprintf( '<p>%s</p>', __('No data in this table.', CDBT ) );
     
     $custom_column_renderer = [];
     
@@ -1498,7 +1498,7 @@ trait CdbtShortcodes {
       // @since 2.0.0
       $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
       
-      $conponent_options = [
+      $component_options = [
         'id' => 'cdbt-repeater-edit-' . $table, 
         'enableSearch' => true, 
         'enableFilter' => $display_filter, 
@@ -1517,22 +1517,22 @@ trait CdbtShortcodes {
         'addClass' => $add_class, 
       ];
       
-      // Filter the conponent definition of the list content that is output by this shortcode
+      // Filter the component definition of the list content that is output by this shortcode
       //
       // @since 2.0.0
-      $conponent_options = apply_filters( 'cdbt_shortcode_custom_conponent_options', $conponent_options, $shortcode_name, $table );
+      $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
       
       if ( is_admin() ) {
         if (isset($title)) 
           echo $title;
         
-        return $this->component_render('repeater', $conponent_options);
+        return $this->component_render('repeater', $component_options);
       } else {
         ob_start();
         if (isset($title)) 
           echo $title;
         
-        echo $this->component_render('repeater', $conponent_options);
+        echo $this->component_render('repeater', $component_options);
         
         $render_content = ob_get_contents();
         ob_end_clean();

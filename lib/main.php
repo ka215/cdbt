@@ -64,7 +64,7 @@ final class CdbtFrontend extends CdbtDB {
     } elseif ( is_callable($this->$name) ) {
       return call_user_func($this->$name, $args);
     } else {
-      throw new \RuntimeException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
+      throw new \RuntimeException( sprintf( __('No method error "%s".', CDBT), $name ) );
     }
   }
 
@@ -74,7 +74,7 @@ final class CdbtFrontend extends CdbtDB {
     } elseif ( property_exists($this, $name) ) {
       return $this->$name;
     } else {
-      throw new \RuntimeException( sprintf( __('Property "%s" does not exist.', CDBT), $name ) );
+      throw new \RuntimeException( sprintf( __('No property error "%s".', CDBT), $name ) );
     }
   }
 
@@ -460,28 +460,24 @@ final class CdbtFrontend extends CdbtDB {
     if (wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
       $worker_method = sprintf('do_%s', $_POST['action']);
       if ( method_exists( $this, $worker_method ) ) {
-//ob_start();
         $_session_key = str_replace('_', '-', $worker_method .'-'. $_POST['table']);
         $_SESSION = array_merge( $_SESSION, array_map( 'stripslashes_deep', $_POST ) );
         $this->update_session( $_session_key );
-//var_dump([ $_COOKIE['once_action'], $this->prev_action_cache, $this->prev_action_cache === $_COOKIE['once_action'] ]);
         if ( isset( $this->prev_action_cache ) && $this->prev_action_cache !== $_COOKIE['once_action'] ) {
           $this->$worker_method();
         } else {
           return;
         }
         $this->prev_action_cache = $_COOKIE['once_action'];
-//$this->logger( ob_get_contents() );
-//ob_end_clean();
       } else {
         // invalid access
         $this->destroy_session( $worker_method );
-        $this->emit_message = __('Invalid access this page.', CDBT);
+        $this->emit_message = __('Unauthorized Access to this page.', CDBT);
       }
     } else {
       // invalid access
       $this->destroy_session();
-      $this->emit_message = __('Invalid access this page.', CDBT);
+      $this->emit_message = __('Unauthorized Access to this page.', CDBT);
     }
     
   }
@@ -506,7 +502,7 @@ final class CdbtFrontend extends CdbtDB {
     static $message = null;
     
     if (!in_array($_POST['action'], $allow_actions) || empty($_POST[$this->domain_name]) ) {
-      $message = __('Illegal access is.', CDBT);
+      $message = __('Unauthorized Access.', CDBT);
     }
     
     return $message;
@@ -535,12 +531,12 @@ final class CdbtFrontend extends CdbtDB {
     $register_data = $this->cleanup_data( $table_name, $post_data );
     $where_clause = unserialize(stripslashes_deep($_POST['where_clause']));
     if ($this->update_data( $table_name, $register_data, $where_clause )) {
-      $message = __('Update of the data has been completed successfully.', CDBT);
+      $message = __('Data updating are completed successfully.', CDBT);
       $this->emit_type = 'notice';
     } else {
-      $message = sprintf(__('Could not update data of "%s" table.', CDBT), $table_name);
-      $message .= "\n". __('Not done updating of data if there is no change to the data in updating before and after.', CDBT);
-      $message .= "\n". __('Or, it is possible that the record having the same data could not be updated in order that existed in the other.', CDBT);
+      $message = sprintf(__('Failed to update data of of "%s" table.', CDBT), $table_name);
+      $message .= "\n". __('In the case of no change of between before and after, data does not updated.', CDBT);
+      $message .= "\n". __('It might not have updated because there is the record which has same data.', CDBT);
     }
     
     if (!empty($message)) {
@@ -579,10 +575,10 @@ final class CdbtFrontend extends CdbtDB {
           }
         }
         if ($deleted_data === count($_where_conditions)) {
-          $message = __('Specified data have been removed successfully.', CDBT);
+          $message = __('Removed successfully the specified data.', CDBT);
           $this->emit_type = 'notice';
         } else {
-          $message = __('Some of the data could not remove.', CDBT);
+          $message = __('Can not remove some of the data.', CDBT);
         }
       } else {
         $message = __('Specified conditions for finding to delete data is invalid.', CDBT);
@@ -630,7 +626,7 @@ final class CdbtFrontend extends CdbtDB {
           $this->emit_type = 'notice';
           setcookie( '_cdbt_token', '' );
         } else {
-          $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
+          $message = sprintf( __( 'Failed to insert data to "%s" table.', CDBT ), $table_name );
           $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
         }
       } else {
@@ -641,7 +637,7 @@ final class CdbtFrontend extends CdbtDB {
         $message = sprintf( __( 'Your entry data has been successfully registered to "%s" table.', CDBT ), $table_name );
         $this->emit_type = 'notice';
       } else {
-        $message = sprintf( __( 'Could not insert data to "%s" table.', CDBT ), $table_name );
+        $message = sprintf( __( 'Failed to insert data to "%s" table.', CDBT ), $table_name );
         $this->cdbt_sessions[__FUNCTION__][$this->domain_name] = $post_data;
       }
     }

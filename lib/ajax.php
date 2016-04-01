@@ -56,7 +56,7 @@ trait CdbtAjax {
    **/
   public function ajax_handler() {
     if (!isset($GLOBALS['_REQUEST']['_wpnonce'])) 
-      $this->ajax_error( __('Parameters for calling Ajax is not enough.', CDBT) );
+      $this->ajax_error( __('Parameters for calling Ajax is missing.', CDBT) );
     
     if (!wp_verify_nonce( $GLOBALS['_REQUEST']['_wpnonce'], $this->domain_name . '_' . $this->plugin_ajax_action )) {
       if (isset($_REQUEST['api_key']) && !empty($_REQUEST['api_key'])) {
@@ -86,7 +86,7 @@ trait CdbtAjax {
     $event_method = 'ajax_event_' . $_event;
     
     if ( ! method_exists( $this, $event_method ) ) {
-      $this->ajax_error( __('Method handling of an Ajax event does not exist.', CDBT) );
+      $this->ajax_error( __('No methods that handle ajax events.', CDBT) );
     }
     
     $this->$event_method( $_params );
@@ -103,7 +103,7 @@ trait CdbtAjax {
   public function ajax_error( $error_message=null ) {
     
     if (empty($error_message)) 
-      $error_message = __('Error of Ajax.', CDBT);
+      $error_message = __('Ajax error.', CDBT);
     
     die( $error_message );
     
@@ -242,7 +242,7 @@ trait CdbtAjax {
       $columns_schema = $this->get_table_schema( $args['table_name'] );
       $columns_schema_index = is_array( $columns_schema ) ? array_keys( reset( $columns_schema ) ) : [];
       if ( empty( $columns_schema ) || empty( $columns_schema_index ) ) {
-        wp_die( '<p class="col-sm-offset-2 text-warning">'. __('Specified table does not exist.', CDBT) .'</p>' );
+        wp_die( '<p class="col-sm-offset-2 text-warning">'. __('No specified table.', CDBT) .'</p>' );
       }
       foreach ( $columns_schema_index as $_i => $_val ) {
         if ( in_array( $_val, [ 'logical_name', 'octet_length', 'type' ] ) ) 
@@ -336,7 +336,7 @@ EOH;
       
       if ($this->truncate_table( $args['table_name'] )) {
         $notices_class = CDBT . '-notice';
-        $message = sprintf( __('Table of "%s" has been truncated successfully.', CDBT), $args['table_name'] );
+        $message = sprintf( __('Truncated successfully the table of "%s".', CDBT), $args['table_name'] );
       } else {
         $message = sprintf( __('Failed to truncate the table of "%s".', CDBT), $args['table_name'] );
       }
@@ -371,7 +371,7 @@ EOH;
         // Update of the plugin option
         if ($this->update_options( [ 'table_name' => $args['table_name'] ], 'delete', 'tables' )) {
           $notices_class = CDBT . '-notice';
-          $message = sprintf( __('Table of "%s" has been removed successfully.', CDBT), $args['table_name'] );
+          $message = sprintf( __('Removed successfully the table of "%s".', CDBT), $args['table_name'] );
         } else {
         	$message = __('Removing table was success, but failed to update options.', CDBT);
         }
@@ -474,9 +474,9 @@ EOH;
         }
         if ($deleted_data === count($args['where_conditions'])) {
           $notices_class = CDBT . '-notice';
-          $message = __('Specified data have been removed successfully.', CDBT);
+          $message = __('Removed successfully the specified data.', CDBT);
         } else {
-          $message = __('Some of the data could not remove.', CDBT);
+          $message = __('Can not remove some of the data.', CDBT);
         }
       } else {
         $message = __('Specified conditions for finding to delete data is invalid.', CDBT);
@@ -537,12 +537,12 @@ EOH;
       if (count($stored_shortcodes) < $base_items) {
         if (update_option($this->domain_name . '-shortcodes', $stored_shortcodes, 'no')) {
           $notices_class = CDBT . '-notice';
-          $message = sprintf(__('Have deleted a custom shortcode, that ID is follow: %d.', CDBT), intval($args['csid']));
+          $message = sprintf(__('Complete to delete a custom shortcode "%d".', CDBT), intval($args['csid']));
         } else {
         	$message = __('Failed to delete the custom shortcode.', CDBT);
         }
       } else {
-        $message = __('Specified custom shortcode does not exist.', CDBT);
+        $message = __('No specified custom shortcode.', CDBT);
       }
     }
     
@@ -579,12 +579,12 @@ EOH;
         $this->options['api_hosts'] = $current_hosts;
         if (update_option($this->domain_name, $this->options)) {
           $notices_class = CDBT . '-notice';
-          $message = __('Have deleted the specific allowed host.', CDBT);
+          $message = __('Complete to delete the specified host.', CDBT);
         } else {
         	$message = __('Failed to delete the specified host.', CDBT);
         }
       } else {
-        $message = __('Specified host does not exist.', CDBT);
+        $message = __('No specified host.', CDBT);
       }
     }
     

@@ -521,7 +521,7 @@ endif; ?>
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
     list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
-    list_noItemsHTML: "<?php _e( 'nothing to see here... move along', CDBT); ?>",
+    list_noItemsHTML: "<?php _e( 'No result.', CDBT); ?>",
     
     // <?php /* カスタムレンダラを介して列出力をオーバーライドする - */ ?> override the column output via a custom renderer.
     // <?php /* これにより各列の出力のカスタムマークアップが可能になる - */ ?> this will allow you to output custom markup for each column.

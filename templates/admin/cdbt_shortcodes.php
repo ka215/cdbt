@@ -23,6 +23,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
   if ($current_tab !== $_session_key) 
     $this->destroy_session($_session_key);
 }
+$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -122,7 +123,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
       <div class="form-group">
-        <label for="register-shortcode-base_name" class="col-sm-2 control-label"><?php _e('Base shortcode name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="register-shortcode-base_name" class="col-sm-2 control-label"><?php _e('Base shortcode name', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="register-shortcode-base_name">
             <input type="text" name="<?php echo $this->domain_name; ?>[base_name]" value="<?php echo $base_shortcode; ?>" class="form-control" pattern=".{1,}" required>
@@ -139,7 +140,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         </div>
       </div><!-- /register-shortcode-base_name -->
       <div class="form-group">
-        <label for="register-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="register-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="register-shortcode-target_table">
             <input type="text" name="<?php echo $this->domain_name; ?>[target_table]" value="<?php if (isset($this_tab_vars['target_table'])) echo $this_tab_vars['target_table']; ?>" class="form-control" pattern=".{1,}" required>
@@ -192,13 +193,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <div class="checkbox switching-item on-v" id="register-shortcode-look_feel4"><!-- display_search [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_search']) && $this_tab_vars['display_search'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether displaying search box.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether display search box or not.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel5"><!-- display_title [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_title']) && $this_tab_vars['display_title'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether displaying title.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether display title or not.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v on-e" id="register-shortcode-look_feel6"><!-- enable_sort [v,e] -->
@@ -487,7 +488,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
         <p class="help-block sr-only"></p>
       </div><!-- /edit-shortcode-base_name -->
       <div class="form-group">
-        <label for="edit-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><h6><span class="label label-danger"><?php _e('require', CDBT); ?></span></h6></label>
+        <label for="edit-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="edit-shortcode-target_table">
             <input type="text" name="<?php echo $this->domain_name; ?>[target_table]" value="<?php if (isset($this_tab_vars['target_table'])) echo $this_tab_vars['target_table']; ?>" class="form-control" pattern=".{1,}" required>
@@ -540,13 +541,13 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
           <div class="checkbox switching-item on-v" id="edit-shortcode-look_feel4"><!-- display_search [v] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_search]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_search']) && $this_tab_vars['display_search'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether displaying search box.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether display search box or not.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v on-i on-e" id="edit-shortcode-look_feel5"><!-- display_title [v,i,e] -->
             <label class="checkbox-custom" data-initialize="checkbox">
               <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][display_title]" type="checkbox" value="1"<?php checked(isset($this_tab_vars['display_title']) && $this_tab_vars['display_title'], true, true); ?>>
-              <span class="checkbox-label"><?php _e('Whether displaying title.', CDBT); ?></span>
+              <span class="checkbox-label"><?php _e('Whether display title or not.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v on-e" id="edit-shortcode-look_feel6"><!-- enable_sort [v,e] -->

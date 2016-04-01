@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.9
+Stable tag: 2.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,10 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.0.10 =
+* Revised some of the source text (translation original text).
+* Fixed a bug that could not open "Messages" option when the debug mode is OFF.
 
 = 2.0.9 =
 * Added new feature of option that can overwrite notification messages.

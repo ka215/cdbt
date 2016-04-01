@@ -31,7 +31,7 @@ unset($library_dir_name, $library_dir, $files, $file);
 
 foreach ($lib_includes as $file) {
   if (!file_exists($file)) {
-    trigger_error(sprintf(__('Error locating %s for inclusion', CDBT), $file), E_USER_ERROR);
+    trigger_error(sprintf(__('Include path error "%s"', CDBT), $file), E_USER_ERROR);
   }
 
   require_once $file;

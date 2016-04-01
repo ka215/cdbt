@@ -169,7 +169,7 @@ class CdbtCore extends CdbtUtility {
     $this->errors = new \WP_Error();
     
     if (version_compare( $php_min_version, $php_current_version, '>=' )) 
-      $this->errors->add('php_version_error', sprintf(__('Your server is running PHP version %s but this plugin requires at least PHP %s. Please run an upgrade.', $this->domain_name), $php_current_version, $php_min_version));
+      $this->errors->add('php_version_error', sprintf(__('PHP version is %s. Required the up to %s PHP version for this Plugin.', $this->domain_name), $php_current_version, $php_min_version));
     
     foreach ($extensions as $extension) {
       if (!extension_loaded($extension)) 
@@ -186,7 +186,7 @@ class CdbtCore extends CdbtUtility {
     
     $this->logger( $message );
     
-    printf( '<div class="error"><p>%s</p><p>%s</p></div>', $message, sprintf(__('The %s has been deactivated.', $this->domain_name), __('Custom DataBase Tables', $this->domain_name)) );
+    printf( '<div class="error"><p>%s</p><p>%s</p></div>', $message, sprintf(__('%s is deactivated.', $this->domain_name), __('Custom DataBase Tables', $this->domain_name)) );
     
     $this->plugin_enabled = false;
     deactivate_plugins( $this->plugin_main_file );
@@ -221,7 +221,7 @@ class CdbtCore extends CdbtUtility {
     $this->prepend_rewrite_rules();
     flush_rewrite_rules();
     
-    $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has activated.', CDBT));
+    $message = sprintf(__('Called function: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has activated.', CDBT));
     $this->logger( $message );
     
     // as you fun

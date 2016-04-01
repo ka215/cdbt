@@ -77,7 +77,7 @@ class CdbtUtility {
     
     if (false === error_log( $log_message, $logging_type, $this->log_distination_path )) {
       $this->errors = new \WP_Error();
-      $this->errors->add( 'logging_error', __('Failed to logging.', $this->domain_name) );
+      $this->errors->add( 'logging_error', __('Failed to export the log.', $this->domain_name) );
       return false;
     } else {
       return true;
@@ -338,12 +338,12 @@ class CdbtUtility {
       } catch(Exception $e) {
         
         $download_result = false;
-        $message = __('Failed in the export of table data.', CDBT);
+        $message = __('Failed to export the data.', CDBT);
         
       }
     } else {
       $download_result = false;
-      $message = __('Failed to export, because could not generate the download file.', CDBT);
+      $message = __('Failed to export owing not to generate the download file.', CDBT);
     }
     
     $this->logger( $message );
@@ -388,15 +388,15 @@ class CdbtUtility {
         //echo str_replace(["\r", "\n"], '', $binary_data['bin_data']);
 //        wp_die($binary_data['bin_data']);
         $download_result = true;
-        $message = __( 'Download OK', CDBT );
+        $message = __( 'Download Now', CDBT );
         
       } catch( Exception $e ) {
         $download_result = false;
-        $message = __( 'Download Fail', CDBT );
+        $message = __( 'Failed to download', CDBT );
       }
     } else {
       $download_result = false;
-      $message = __( 'Download NG', CDBT );
+      $message = __( 'Not Download', CDBT );
     }
     
     $this->logger( $message );

@@ -174,7 +174,7 @@ if ( array_key_exists( 'prevent_duplicate_sending', $this->options ) && $this->o
 }
 
 $form_hash = sha1( microtime() );
-
+$label_required = '<div class="pull-right cdbt-form-required"><span class="label label-danger">'. __('Required', CDBT) .'</span></div>';
 /**
  * Render the Form common header
  * ---------------------------------------------------------------------------
@@ -225,7 +225,7 @@ search, datetime, date, month, week, time, color
       case 'range': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="<?php echo $element_size; ?>">
         <input id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" type="<?php echo esc_attr($element['elementType']); ?>" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
       </div>
@@ -238,7 +238,7 @@ search, datetime, date, month, week, time, color
       case 'spinbox': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
         <div class="spinbox disits-3 <?php echo esc_attr($element['addClass']); ?>" data-initialize="spinbox" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
           <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control input-mini spinbox-input" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
@@ -255,7 +255,7 @@ search, datetime, date, month, week, time, color
       case 'textarea': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-9">
         <textarea id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $element['defaultValue']; ?></textarea>
       </div>
@@ -283,7 +283,7 @@ search, datetime, date, month, week, time, color
       case 'select': 
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
         <div class="btn-group selectlist <?php echo esc_attr($element['addClass']); ?>" data-resize="auto" data-initialize="selectlist" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
           <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
@@ -311,7 +311,7 @@ search, datetime, date, month, week, time, color
         $add_classes = $is_required ? $element['addClass'] . ' required' : $element['addClass'];
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
         <?php if (!$is_horizontal) : ?><div class="checkbox<?php /* echo esc_attr($add_classes); */ ?>"><?php endif; ?>
@@ -334,7 +334,7 @@ search, datetime, date, month, week, time, color
         $default_values= $this->strtoarray($element['defaultValue']);
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
       <?php foreach ($selectable_list as $list_label => $list_value) : $index_num++; ?>
         <?php if (!$is_horizontal) : ?><div class="radio <?php echo esc_attr($element['addClass']); ?>"><?php endif; ?>
@@ -354,7 +354,7 @@ search, datetime, date, month, week, time, color
         $checked = ($this->strtobool($element['defaultValue'])) ? ' checked="checked"' : '';
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
         <div class="checkbox <?php echo esc_attr($element['addClass']); ?>" id="entry-data-<?php echo esc_attr($element['elementName']); ?>">
           <label class="checkbox-custom" data-initialize="checkbox">
@@ -386,7 +386,7 @@ search, datetime, date, month, week, time, color
         }
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-9">
         <input class="<?php echo esc_attr($element['addClass']); ?>" type="file" id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]"<?php if ($is_required) : ?> required<?php endif; ?>>
         <?php if ($is_fileupsize) : ?><p class="help-block"><?php printf(__('Notice: Maximum upload file size is %s.', CDBT), '<strong>'. $element['elementExtras']['maxlength'] .'</strong>'); ?></p><?php endif; ?>
@@ -451,7 +451,7 @@ search, datetime, date, month, week, time, color
         }
 ?>
     <div class="form-group">
-      <label for="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-date" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ($is_required) : ?><div class="pull-right cdbt-form-required"><span class="label label-danger"><?php _e('require', CDBT); ?></span></div><?php endif; ?></label>
+      <label for="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-date" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
       <div class="col-sm-10">
         <div class="datepicker cdbt-datepicker" data-initialize="datepicker" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-date" <?php if (isset($default_date) && !empty($default_date)) : ?>data-date="<?php echo $default_date; ?>"<?php endif; ?> data-allow-past-dates="allowPastDates" <?php echo $add_attributes; ?>>
           <div class="input-group col-sm-3 pull-left">

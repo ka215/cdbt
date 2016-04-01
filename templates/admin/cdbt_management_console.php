@@ -99,10 +99,10 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
     'displayMaxStep' => 5, 
     'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), __('Step4', CDBT), __('Step5', CDBT) ], 
     'stepContents' => [ 
-      [ 'title' => __('Custom DataBase Tables version 2 arrival now!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step1_content ], 
+      [ 'title' => __('Custom DataBase Tables version 2 out now!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step1_content ], 
       [ 'title' => __('Version 2 has powered up all feature!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step2_content ], 
       [ 'title' => __('Let&#39;s create a new table!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step3_content ], 
-      [ 'title' => __('Let&#39;s use the shortcode!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step4_content ], 
+      [ 'title' => __('Let&#39;s try the shortcode!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step4_content ], 
       [ 'title' => __('Cooperation with external site by API', CDBT), 'bgcolor' => 'bg-default', 'content' => $step5_content ], 
     ], 
     'disablePreviousStep' => false, 

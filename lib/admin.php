@@ -60,7 +60,7 @@ final class CdbtAdmin extends CdbtDB {
     } elseif ( is_callable($this->$name) ) {
       return call_user_func($this->$name, $args);
     } else {
-      throw new \RuntimeException( sprintf( __('Method "%s" does not exist.', CDBT), $name ) );
+      throw new \RuntimeException( sprintf( __('No method error "%s".', CDBT), $name ) );
     }
   }
 
@@ -70,7 +70,7 @@ final class CdbtAdmin extends CdbtDB {
     } elseif ( property_exists($this, $name) ) {
       return $this->$name;
     } else {
-      throw new \RuntimeException( sprintf( __('Property "%s" does not exist.', CDBT), $name ) );
+      throw new \RuntimeException( sprintf( __('No property error "%s".', CDBT), $name ) );
     }
   }
 
@@ -676,12 +676,12 @@ final class CdbtAdmin extends CdbtDB {
       } else {
         // invalid access
         $this->destroy_session( $worker_method );
-        $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
+        $this->register_admin_notices( CDBT . '-error', __('Unauthorized Access to this page.', CDBT), 3, true );
       }
     } else {
       // invalid access
       $this->destroy_session();
-      $this->register_admin_notices( CDBT . '-error', __('Invalid access this page.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-error', __('Unauthorized Access to this page.', CDBT), 3, true );
     }
     $this->admin_notices();
     
@@ -707,13 +707,13 @@ final class CdbtAdmin extends CdbtDB {
     static $message = null;
     
     if (!in_array($_POST['action'], $allow_actions) || empty($_POST[$this->domain_name]) ) {
-      $message = __('Illegal access is.', CDBT);
+      $message = __('Unauthorized Access.', CDBT);
     } else
     if (!isset($_POST['_wpnonce'])) {
-      $message = __('You do not have access privileges on this page.', CDBT);
+      $message = __('You do not have permission to access to this page.', CDBT);
     } else
     if (!wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_management_console-' . $this->query['page'] ) && !wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
-      $message = __('You do not have access privileges on this page.', CDBT);
+      $message = __('You do not have permission to access to this page.', CDBT);
     }
     
     return $message;
@@ -818,9 +818,9 @@ final class CdbtAdmin extends CdbtDB {
     $updated_options = apply_filters( 'before_update_options_general_setting', $updated_options );
     
     if ($this->update_options( $updated_options ) ) {
-      $this->register_admin_notices( CDBT . '-notice', __('Plugin options saved.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-notice', __('Saved plugin options.', CDBT), 3, true );
     } else {
-      $this->register_admin_notices( CDBT . '-error', __('Could not save options.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-error', __('Failed to save options.', CDBT), 3, true );
     }
     
   }
@@ -884,10 +884,10 @@ final class CdbtAdmin extends CdbtDB {
     $updated_options = apply_filters( 'before_update_options_messages', $updated_options );
     
     if ( $this->update_options( $updated_options ) ) {
-      $message = 'override' === $_POST['action'] ? __('Message definitions has been saved.', CDBT) : __('Message definitions has initialized.', CDBT);
+      $message = 'override' === $_POST['action'] ? __('Saved the messages.', CDBT) : __('Initialized the messages.', CDBT);
       $msg_type = CDBT . '-notice';
     } else {
-      $message = 'override' === $_POST['action'] ? __('Could not save the messages.', CDBT) : __('Failed to initialize the messages.', CDBT);
+      $message = 'override' === $_POST['action'] ? __('Failed to save the messages.', CDBT) : __('Failed to initialize the messages.', CDBT);
       $msg_type = CDBT . '-error';
     }
     $this->register_admin_notices( $msg_type, $message, 3, true );
@@ -921,7 +921,7 @@ final class CdbtAdmin extends CdbtDB {
     
     $_source = $this->plugin_dir . 'debug.log';
     if (!file_exists($_source)) {
-      $this->register_admin_notices( CDBT . '-error', __('Log file does not exist.', CDBT), 3, true );
+      $this->register_admin_notices( CDBT . '-error', __('No log files.', CDBT), 3, true );
       return;
     }
     
@@ -931,14 +931,14 @@ final class CdbtAdmin extends CdbtDB {
       $_dist = $this->plugin_dir . 'backup/debug-' . date('Ymd', time()) . '.log';
       if (!@opendir($this->plugin_dir . 'backup')) {
         if (!wp_mkdir_p($this->plugin_dir . 'backup')) {
-          $this->register_admin_notices( CDBT . '-error', __('Could not make a directory for backup. Then, it was interrupted of log deletion.', CDBT), 3, true );
+          $this->register_admin_notices( CDBT . '-error', __('Log deletion was interrupted owing to failure to create the directory for backup.', CDBT), 3, true );
           return;
         }
       }
       if (!@copy($_source, $_dist)) {
         system(sprintf('mv %s %s', $_source, $_dist), $result);
         if (1 === $result) {
-          $this->register_admin_notices( CDBT . '-error', __('Could not copy of the log file.', CDBT), 3, true );
+          $this->register_admin_notices( CDBT . '-error', __('Failed to copy the log file.', CDBT), 3, true );
           return;
         }
       }
@@ -947,13 +947,13 @@ final class CdbtAdmin extends CdbtDB {
     // Remove log contents
     if ($_fp = @fopen($_source, 'w')) {
       if (false === @fwrite($_fp, '')) {
-        $this->register_admin_notices( CDBT . '-error', __('Could not clear the log.', CDBT), 3, true );
+        $this->register_admin_notices( CDBT . '-error', __('Failed to clear the logs.', CDBT), 3, true );
         return;
       }
     }
     fclose($_fp);
     
-    $this->register_admin_notices( CDBT . '-notice', __('Have cleared the log.', CDBT), 3, true );
+    $this->register_admin_notices( CDBT . '-notice', __('The log file was removed.', CDBT), 3, true );
   }
 
 
@@ -987,7 +987,7 @@ final class CdbtAdmin extends CdbtDB {
       $check_items = [ 'table_name', 'table_charset', 'table_db_engine', 'create_table_sql' ];
       foreach ($check_items as $item_key) {
         if (!isset($source_data[$item_key]) || empty($source_data[$item_key])) 
-          $errors[] = sprintf( __('%s does not exist.', CDBT), __($item_key, CDBT) );
+          $errors[] = sprintf( __('No %s.', CDBT), __($item_key, CDBT) );
       }
       if (!empty($errors)) {
         $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
@@ -998,10 +998,13 @@ final class CdbtAdmin extends CdbtDB {
       $check_items = [ 'table_name', 'table_charset', 'table_db_engine' ];
       foreach ($check_items as $item_key) {
         if (!$this->validate->checkSingleByte( $source_data[$item_key] )) 
-          $errors[] = sprintf(__('Contains characters which cannot be used in %s.', CDBT), __($item_key, CDBT) );
+          // $errors[] = sprintf(__('Contains characters which cannot be used in %s.', CDBT), __($item_key, CDBT) );
+          $errors[] = $item_key;
       }
-      if (!empty($errors)) {
-        $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
+      if ( ! empty( $errors ) ) {
+        // $_error_str = implode("\n", $errors);
+        $_error_str = __('Contains unavailable characters.', CDBT);
+        $this->register_admin_notices( CDBT . '-error', $_error_str, 3, true );
         return;
       }
       
@@ -1040,7 +1043,7 @@ final class CdbtAdmin extends CdbtDB {
       $resume_table_list = array_diff($unreserved_tables, $enable_tables);
       
       if (empty($resume_table_list) || !in_array($_POST[$this->domain_name]['resume_table'], $resume_table_list)) {
-        $message = __('Incorporatable table does not exist.', CDBT);
+        $message = __('No fetchable table.', CDBT);
         $this->register_admin_notices( CDBT . '-error', $message, 3, true );
         $this->destroy_session();
         return;
@@ -1058,10 +1061,10 @@ final class CdbtAdmin extends CdbtDB {
       $resume_table_options = apply_filters( 'cdbt_resume_table_options', $resume_table_options, $resume_table_name );
       
       if ($this->add_new_table( $resume_table_name, 'regular', $resume_table_options )) {
-        $message = __( 'Table incorporation has been completed successfully.', CDBT );
+        $message = __( 'Table import is completed successfully.', CDBT );
         $notice_class = CDBT . '-notice';
       } else {
-        $message = __( 'Failed the table incorporation.', CDBT );
+        $message = __( 'Failed to import the table.', CDBT );
         $notice_class = CDBT . '-error';
       }
       
@@ -1108,8 +1111,8 @@ final class CdbtAdmin extends CdbtDB {
         ];
         $modification_db = [];
         $process_msg = [
-          __('Invalid sql statement of `ALTER TABLE`.', CDBT), 
-          __('Failed to run the query of `ALTER TABLE`.', CDBT), 
+          __('Invalid sql statement "ALTER TABLE".', CDBT), 
+          __('Failed to run the query "ALTER TABLE".', CDBT), 
         ];
         $modify_done = 0;
         if ($post_data['table_name'] !== $current_options['table_name']) {
@@ -1206,7 +1209,7 @@ final class CdbtAdmin extends CdbtDB {
             $current_options['table_collation'] = $new_table_status['Collation'];
             $current_options['db_engine'] = $new_table_status['Engine'];
             if ($this->update_options( $current_options, 'override', 'tables' )) {
-              $message = __('Modification was successful.', CDBT); 
+              $message = __('Succeeded to change.', CDBT); 
               $notice_class = CDBT . '-notice';
               $this->destroy_session(__FUNCTION__);
               $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
@@ -1217,7 +1220,7 @@ final class CdbtAdmin extends CdbtDB {
             }
           }
         } else {
-          $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
+          $message = __('There are no items to be modified. Please run again after you correct the items you want to modify.', CDBT);
         }
         
         break;
@@ -1273,7 +1276,7 @@ final class CdbtAdmin extends CdbtDB {
           }
           if ( $this->update_options( $current_options, 'override', 'tables' ) ) {
             // If modification succeeds
-            $message = __('Modification was successful.', CDBT); 
+            $message = __('Succeeded to change.', CDBT); 
             $notice_class = CDBT . '-notice';
             $this->cdbt_sessions[$_POST['active_tab']]['is_modified'] = true;
             unset( $modification_option, $current_options, $key, $value, $_key, $_value );
@@ -1281,12 +1284,12 @@ final class CdbtAdmin extends CdbtDB {
             $message = __('Failed to update of the plugin options.', CDBT);
           }
         } else {
-          $message = __('There was no item to be modify. Please run again after you correct the item you want to modify.', CDBT);
+          $message = __('There are no items to be modified. Please run again after you correct the items you want to modify.', CDBT);
         }
         
         break;
       default:
-        $message = __('Illegal operation was called.', CDBT);
+        $message = __('Called invalid operation.', CDBT);
         break;
     }
     
@@ -1323,7 +1326,7 @@ final class CdbtAdmin extends CdbtDB {
         
         $post_data = $_POST[$this->domain_name];
         if (empty($post_data['operate_target_table'])) {
-          $message = __('Could not change the operate table.', CDBT);
+          $message = __('Faied to modify the operation table.', CDBT);
         } else {
           $this->cdbt_sessions[$_POST['active_tab']] = [
             'target_table' => $post_data['operate_target_table'], 
@@ -1343,7 +1346,7 @@ final class CdbtAdmin extends CdbtDB {
           'import_current_step' => 1, 
         ];
         if (!isset($post_data['import_current_step']) || empty($post_data['import_current_step'])) {
-          $message = __('Invalid step transition.', CDBT);
+          $message = __('Unauthorized step.', CDBT);
         } else
         if (intval($post_data['import_current_step']) === 1) {
 //var_dump($post_data);
@@ -1370,10 +1373,10 @@ final class CdbtAdmin extends CdbtDB {
                   case 'tsv': 
                     $_raw_array = $this->xsvtoarray( $_FILES[$this->domain_name]['tmp_name']['upfile'], $post_data['import_filetype'] );
                     if (empty($_raw_array)) {
-                      $message = __('The uploaded file could not be parsed. It likely has deficiencies in the file.', CDBT);
+                      $message = __('Failed to parse the uploaded file. It may be due to incorrect in the file.', CDBT);
                     } else
                     if (count(end($_raw_array)) !== count($add_first_row)) {
-                      $message = __('The number of data to be imported is not consistent with the number of the specified column. Please specify the column to match the import data again.', CDBT);
+                      $message = __('The number of importing data does not match the number of the specified column. Please specify the column to match the import data again.', CDBT);
                     } else {
                       $_diff_result = array_diff($add_first_row, stripslashes_deep(end($_raw_array)));
                       if ( empty($_diff_result) ) 
@@ -1431,7 +1434,7 @@ final class CdbtAdmin extends CdbtDB {
               $message = __('Import file has not been uploaded.', CDBT);
             }
           } else {
-            $message = __('Uploaded file format is invalid, or parameter is not enough.', CDBT);
+            $message = __('Invalid format or Prameter is not enough.', CDBT);
           }
           if (empty($message)) {
             $this->cdbt_sessions[$_POST['active_tab']]['import_current_step'] = 2;
@@ -1446,7 +1449,7 @@ final class CdbtAdmin extends CdbtDB {
           if ($result) {
             // Row number of execution results if successful insertion
             $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = true;
-            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = sprintf( __('%d of the data has been successfully imported.', CDBT), intval($result) );
+            $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = sprintf( __('%d data is imported successfully.', CDBT), intval($result) );
           } else {
             $this->cdbt_sessions[$_POST['active_tab']]['import_result'] = false;
             $this->cdbt_sessions[$_POST['active_tab']]['result_message'] = __('Failed to import the data.', CDBT);
@@ -1483,13 +1486,13 @@ final class CdbtAdmin extends CdbtDB {
           $message = __('Duplicate table name is not specified.', CDBT);
         } else
         if (!isset($post_data['duplicate_with_data']) || empty($post_data['duplicate_with_data']) || !in_array($post_data['duplicate_with_data'], [ 'true', 'false' ])) {
-        	$message = __('Parameter for duplicating the table is incomplete.', CDBT);
+        	$message = __('Parameter for duplicating the table has incomplete type.', CDBT);
         } else
         if (!isset($post_data['duplicate_origin_table']) || empty($post_data['duplicate_origin_table'])) {
         	$message = __('Original table for duplicating is not specified.', CDBT);
         } else
         if ($this->check_table_exists($post_data['duplicate_table_name'])) {
-          $message = __('Duplicate table name already exists. Please specify a different table name.', CDBT);
+          $message = __('Same duplicate table name already exists. Please specify a different table name.', CDBT);
         }
         
         if (empty($message)) {
@@ -1502,7 +1505,7 @@ final class CdbtAdmin extends CdbtDB {
               $message = __('Duplication of table has been completed, but have failed to register as a manageable table of plugin. Please retry from resuming the table.', CDBT);
             }
           } else {
-            $message = __('Failed to replication of the table.', CDBT);
+            $message = __('Failed to duplication of the table.', CDBT);
           }
         }
         // Set sessions
@@ -1526,7 +1529,7 @@ final class CdbtAdmin extends CdbtDB {
         
         break;
       default:
-        $message = __('Illegal operation was called.', CDBT);
+        $message = __('Called invalid operation.', CDBT);
         break;
     }
     
@@ -1563,7 +1566,7 @@ final class CdbtAdmin extends CdbtDB {
         
         $post_data = $_POST[$this->domain_name];
         if (empty($post_data['operate_target_table'])) {
-          $message = __('Could not change the operate table.', CDBT);
+          $message = __('Faied to modify the operation table.', CDBT);
         } else {
           $this->cdbt_sessions[$_POST['active_tab']] = [
             'target_table' => $post_data['operate_target_table'], 
@@ -1597,7 +1600,7 @@ final class CdbtAdmin extends CdbtDB {
           $notice_class = CDBT . '-notice';
           $message = sprintf(__('Your entry data has been successfully registered to "%s" table.', CDBT), $table_name);
         } else {
-          $message = sprintf(__('Could not insert data to "%s" table.', CDBT), $table_name);
+          $message = sprintf(__('Failed to insert data to "%s" table.', CDBT), $table_name);
           $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
         }
         
@@ -1616,11 +1619,11 @@ final class CdbtAdmin extends CdbtDB {
         $where_clause = unserialize(stripslashes_deep($_POST['where_clause']));
         if ($this->update_data( $table_name, $register_data, $where_clause )) {
           $notice_class = CDBT . '-notice';
-          $message = __('Update of the data has been completed successfully.', CDBT);
+          $message = __('Data updating are completed successfully.', CDBT);
         } else {
-          $message = sprintf(__('Could not update data of "%s" table.', CDBT), $table_name);
-          $message .= "\n". __('Not done updating of data if there is no change to the data in updating before and after.', CDBT);
-          $message .= "\n". __('Or, it is possible that the record having the same data could not be updated in order that existed in the other.', CDBT);
+          $message = sprintf(__('Failed to update data of of "%s" table.', CDBT), $table_name);
+          $message .= "\n". __('In the case of no change of between before and after, data does not updated.', CDBT);
+          $message .= "\n". __('It might not have updated because there is the record which has same data.', CDBT);
         }
         
         break;
@@ -1633,7 +1636,7 @@ final class CdbtAdmin extends CdbtDB {
       	
       	break;
       default:
-        $message = __('Illegal operation was called.', CDBT);
+        $message = __('Called invalid operation.', CDBT);
         break;
     }
     
@@ -1677,7 +1680,7 @@ final class CdbtAdmin extends CdbtDB {
     $check_items = [ 'base_name', 'target_table', 'csid' ];
     foreach ($check_items as $item_key) {
       if (!isset($post_data[$item_key]) || empty($post_data[$item_key])) 
-        $errors[] = sprintf( __('%s does not exist.', CDBT), __($item_key, CDBT) );
+        $errors[] = sprintf( __('No %s.', CDBT), __($item_key, CDBT) );
     }
     if (!empty($errors)) {
       $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
@@ -1695,12 +1698,12 @@ final class CdbtAdmin extends CdbtDB {
       $all_shortcodes = array_merge($this->get_shortcode_option(), [ $post_data ]);
       if (update_option($this->domain_name . '-shortcodes', $all_shortcodes, 'no')) {
         $notice_class = CDBT . '-notice';
-        $message = sprintf(__('Have been saved successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
+        $message = sprintf(__('Saved successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
       } else {
-        $message = __('Could not save the custom shortcode.', CDBT);
+        $message = __('Failed to save the custom shortcode.', CDBT);
       }
     } else {
-      $message = __('Could not save because the specific custom shortcode id already exists.', CDBT);
+      $message = __('Failed to save because the specific custom shortcode id already exists.', CDBT);
     }
     
     if (!empty($message)) {
@@ -1744,7 +1747,7 @@ final class CdbtAdmin extends CdbtDB {
     $check_items = [ 'base_name', 'target_table', 'csid' ];
     foreach ($check_items as $item_key) {
       if (!isset($post_data[$item_key]) || empty($post_data[$item_key])) 
-        $errors[] = sprintf( __('%s does not exist.', CDBT), __($item_key, CDBT) );
+        $errors[] = sprintf( __('No %s.', CDBT), __($item_key, CDBT) );
     }
     if (!empty($errors)) {
       $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
@@ -1768,12 +1771,12 @@ final class CdbtAdmin extends CdbtDB {
       }
       if (update_option($this->domain_name . '-shortcodes', $all_shortcodes, 'no')) {
         $notice_class = CDBT . '-notice';
-        $message = sprintf(__('Have been updated successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
+        $message = sprintf(__('Updated successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
       } else {
-        $message = __('Could not update the custom shortcode.', CDBT);
+        $message = __('Failed to update the custom shortcode.', CDBT);
       }
     } else {
-      $message = __('Could not update because the specified custom shortcode does not exist.', CDBT);
+      $message = __('Failed to update because there is not  the specified custom shortcode.', CDBT);
     }
     
     if (!empty($message)) {
@@ -1819,7 +1822,7 @@ final class CdbtAdmin extends CdbtDB {
       }
     }
     if (empty($message) && (!isset($_post_data['permission']) || empty($_post_data['permission']))) {
-      $message = __('Hosts that do not allow all of the request methods can not be registered.', CDBT);
+      $message = __('You can not registered the hosts which do not allow all of the request methods.', CDBT);
     }
     if (!empty($message)) {
       $this->register_admin_notices( $notice_class, $message, 3, true );
@@ -1889,7 +1892,7 @@ final class CdbtAdmin extends CdbtDB {
           }
           break;
         case 'changing_item_none': 
-          $args['modalTitle'] = __('Modification item none', CDBT);
+          $args['modalTitle'] = __('No modification item', CDBT);
           $args['modalBody'] = __('Please run again after you correct the item you want to modify.', CDBT);
           break;
         case 'export_table': 
@@ -1897,7 +1900,7 @@ final class CdbtAdmin extends CdbtDB {
           $post_data['export_columns'] = empty($post_data['export_columns']) ? [] : $post_data['export_columns'];
           $error = $this->export_table( $post_data['export_table'], $post_data['export_columns'], $post_data['export_filetype'] );
           $args['modalTitle'] = sprintf(__('Export data from "%s" table', CDBT), $post_data['export_table']);
-          $args['modalBody'] = empty($error) ? __('If specified table has a lot of data for exporting, it may take long time until the download is complete.<br>Please start the export if it is good.', CDBT) : $error;
+          $args['modalBody'] = empty($error) ? __('If specified export table has a lot of data, it might take a long time to complete the download. Please start the export if it is convinient for you.', CDBT) : $error;
           if (empty($error)) {
             $args['modalFooter'] = [ sprintf('<button type="button" id="run_export_table" class="btn btn-primary">%s</button>', __('Export', CDBT)), ];
             $args['modalShowEvent'] = "$('#run_export_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
@@ -1905,32 +1908,32 @@ final class CdbtAdmin extends CdbtDB {
           break;
         case 'truncate_table': 
           $args['modalTitle'] = sprintf(__('Truncate data in "%s" table', CDBT), $args['modalExtras']['table_name']);
-          $args['modalBody'] = __('When you truncate a table, all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to truncate this table really?', CDBT);
+          $args['modalBody'] = __('If you truncate the table, all currently stored data will be lost. In addition, you can not resume this prosess.<br>Are you sure to truncate this table?', CDBT);
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_truncate_table" class="btn btn-primary">%s</button>', __('Truncate', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_truncate_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'drop_table': 
           $args['modalTitle'] = sprintf(__('Remove the "%s" table', CDBT), $args['modalExtras']['table_name']);
-          $args['modalBody'] = __('If you have removed a table, at same time all data that currently stored will be lost. Then, you can not resume this process.<br>Do you want to remove the table really?', CDBT);
+          $args['modalBody'] = __('If you removed the table, all currently stored data will be lost. In addition, you can not resume this prosess.<br>Are you sure to remove this table?', CDBT);
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'table_unknown': 
-          $args['modalTitle'] = __('Table is not selected', CDBT);
-          $args['modalBody'] = __('Please retry to operate that after the table selection.', CDBT);
+          $args['modalTitle'] = __('Please select the table', CDBT);
+          $args['modalBody'] = __('Please retry to operate that after you select the table.', CDBT);
           break;
         case 'no_selected_item': 
-          $args['modalTitle'] = __('Data is not selected', CDBT);
-          $args['modalBody'] = __('Please retry to operate that after the data selection.', CDBT);
+          $args['modalTitle'] = __('Please select the data', CDBT);
+          $args['modalBody'] = __('Please retry to operate that after you select the data.', CDBT);
           $args['modalShowEvent'] = "return false;";
           break;
         case 'too_many_selected_item': 
-          $args['modalTitle'] = __('Selected data is too many', CDBT);
+          $args['modalTitle'] = __('You select too many data', CDBT);
           $args['modalBody'] = __('Please retry after selecting one data you want to edit.', CDBT);
           break;
         case 'empty_required_field': 
           $args['modalTitle'] = __('Required field is empty', CDBT);
-          $args['modalBody'] = __('Please enter into the required field not entered.', CDBT);
+          $args['modalBody'] = __('Please fill in the required fields of non-input.', CDBT);
           break;
         case 'edit_data_form': 
           $args['modalTitle'] = __('Edit Data Form', CDBT);
@@ -1949,7 +1952,7 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
           break;
         case 'binary_downloader': 
-          $args['modalTitle'] = __( 'Describe File Information', CDBT );
+          $args['modalTitle'] = __( 'Describe File', CDBT );
           $_table_name = trim( $args['modalExtras']['table_name'] );
           $_target_column = trim( $args['modalExtras']['target_column'] );
           $_where_clause = $this->strtohash( $args['modalExtras']['where_clause'] );
