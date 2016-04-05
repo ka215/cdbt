@@ -70,7 +70,10 @@ There is no particular restriction on the amount of data that is stored in a tab
 
 = 2.0.10 =
 * Revised some of the source text (translation original text).
+* Added new feature that can truncate the value of the string type column by the specified number of characters.
 * Fixed a bug that could not open "Messages" option when the debug mode is OFF.
+* Fixed a bug that can edit only data of the first shortcode if you have multiple shortcodes of "cdbt-edit" in one page.
+* Fixed a bug of loading process by the setting of "include assets".
 
 = 2.0.9 =
 * Added new feature of option that can overwrite notification messages.
