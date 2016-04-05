@@ -2146,7 +2146,7 @@ class CdbtDB extends CdbtConfig {
    * @since 2.0.10
    */
   protected function lowercase_table_name( $table_name ) {
-    if ( ! empty( $table_name ) ) {
+    if ( ! empty( $table_name ) && isset( $this->db_lower_case ) ) {
       if ( is_string( $table_name ) ) {
         $table_name = $this->db_lower_case == 1 ? strtolower( $table_name ) : $table_name;
       } else 

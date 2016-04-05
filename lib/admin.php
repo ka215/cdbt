@@ -389,10 +389,15 @@ final class CdbtAdmin extends CdbtDB {
       return;
     
     // For conflict scripts avoidance
-    if ( ! isset( $this->options['include_assets']['admin_jquery'] ) ) 
+    if ( isset( $this->options['include_assets'] ) ) {
+      if ( isset( $this->options['include_assets']['admin_jquery'] ) && $this->options['include_assets']['admin_jquery'] ) 
+        wp_deregister_script( 'jquery' );
+      if ( isset( $this->options['include_assets']['admin_underscore_js'] ) && $this->options['include_assets']['admin_underscore_js'] ) 
+        wp_deregister_script( 'underscore' );
+    } else {
       wp_deregister_script( 'jquery' );
-    if ( ! isset( $this->options['include_assets']['admin_underscore_js'] ) ) 
       wp_deregister_script( 'underscore' );
+    }
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 

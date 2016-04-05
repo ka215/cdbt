@@ -493,9 +493,10 @@ trait CdbtExtras {
       $table_schema = $this->get_table_schema( $table_name );
       foreach ( $columns as $_i => $_data ) {
         if ( ! $_data['dataNumric'] && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
-          if ( $_data['truncateStrings'] > 0 ) {
+          $_truncate = is_admin() ? 100 : $_data['truncateStrings'];
+          if ( $_truncate > 0 ) {
             if ( ! isset( $columns[$_i]['customColumnRenderer'] ) ) {
-              $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData.'. $_data['property'] .', '. $_data['truncateStrings'] .' )';
+              $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData.'. $_data['property'] .', '. $_truncate .' )';
             }
           }
         }

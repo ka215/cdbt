@@ -363,10 +363,15 @@ final class CdbtFrontend extends CdbtDB {
     // Fire this hook when register CSS and JavaScript at using shortcode page
     
     // For conflict scripts avoidance
-    if ( ! isset( $this->options['include_assets']['main_jquery'] ) ) 
+    if ( isset( $this->options['include_assets'] ) ) {
+      if ( isset( $this->options['include_assets']['main_jquery'] ) && $this->options['include_assets']['main_jquery'] ) 
+        wp_deregister_script( 'jquery' );
+      if ( isset( $this->options['include_assets']['main_underscore_js'] ) && $this->options['include_assets']['main_underscore_js'] ) 
+        wp_deregister_script( 'underscore' );
+    } else {
       wp_deregister_script( 'jquery' );
-    if ( ! isset( $this->options['include_assets']['main_underscore_js'] ) ) 
       wp_deregister_script( 'underscore' );
+    }
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 
@@ -387,7 +392,7 @@ final class CdbtFrontend extends CdbtDB {
         $assets['scripts']['jquery'] = null;
         $assets['scripts']['cdbt-underscore'][1] = [ 'jquery' ];
         $assets['scripts']['cdbt-bootstrap'][1] = [ 'jquery' ];
-        $assets['scripts']['cdbt-fuelux-script'][3] = false;
+        //$assets['scripts']['cdbt-fuelux-script'][3] = false;
       }
       if ( isset( $this->options['include_assets']['main_underscore_js'] ) && ! $this->options['include_assets']['main_underscore_js'] ) {
         unset( $assets['scripts']['cdbt-underscore'] );
