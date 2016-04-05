@@ -183,6 +183,7 @@ final class CdbtAdmin extends CdbtDB {
     add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
     add_filter( 'admin_body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
+    add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
     
   }
 
@@ -388,8 +389,10 @@ final class CdbtAdmin extends CdbtDB {
       return;
     
     // For conflict scripts avoidance
-    wp_deregister_script( 'jquery' );
-    wp_deregister_script( 'underscore' );
+    if ( ! isset( $this->options['include_assets']['admin_jquery'] ) ) 
+      wp_deregister_script( 'jquery' );
+    if ( ! isset( $this->options['include_assets']['admin_underscore_js'] ) ) 
+      wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 
@@ -397,7 +400,6 @@ final class CdbtAdmin extends CdbtDB {
       ], 
       'scripts' => [
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
-        // 'cdbt-blockchain' => [ 'https://blockchain.info/Resources/wallet/pay-now-button.js', [ 'cdbt-jquery' ], null, false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
         'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
         'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
@@ -411,6 +413,7 @@ final class CdbtAdmin extends CdbtDB {
         $assets['scripts']['jquery'] = null;
         $assets['scripts']['cdbt-underscore'][1] = [ 'jquery' ];
         $assets['scripts']['cdbt-bootstrap'][1] = [ 'jquery' ];
+        //$assets['scripts']['cdbt-fuelux-script'][3] = false;
       }
       if ( isset( $this->options['include_assets']['admin_underscore_js'] ) && ! $this->options['include_assets']['admin_underscore_js'] ) {
         unset( $assets['scripts']['cdbt-underscore'] );
@@ -462,8 +465,9 @@ final class CdbtAdmin extends CdbtDB {
         'cdbt-table-creator-style' => [ $this->plugin_url . 'assets/styles/cdbt-table-creator.css', true, $this->version, 'all' ],
       ];
       $assets['styles'] = array_merge($assets['styles'], $add_styles);
+      $_inherit_script = array_key_exists( 'cdbt-jquery', $assets['scripts'] ) ? 'cdbt-jquery' : 'jquery';
       $add_scripts = [
-        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', [ 'cdbt-jquery' ], null, true ],
+        'cdbt-table-creator-script' => [ $this->plugin_url . 'assets/scripts/cdbt-table-creator.js', [ $_inherit_script ], null, true ],
       ];
       $assets['scripts'] = array_merge($assets['scripts'], $add_scripts);
     }
@@ -502,6 +506,10 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_header() {
+    if ( ! $this->options['include_assets']['admin_jquery'] ) {
+      echo "<script>if (typeof jQuery !== 'undefined' ) { var $ = jQuery; }</script>\n";
+    }
+    
     // Added action hook for using `add_action('cdbt_admin_header')`
     // 
     // @since 2.0.0
@@ -519,7 +527,8 @@ final class CdbtAdmin extends CdbtDB {
     if (array_key_exists('page', $this->query) && preg_match('/^cdbt_.*$/iU', $this->query['page'])) 
       printf( '<div class="plugin-meta"><span class="label label-info">Ver. %s</span></div>', $this->version );
     
-    printf( "<script>$(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
+    //printf( "<script>jQuery(document).ready(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');});</script>", __('Custom DB Tables', CDBT) );
+    printf( "<script>(function(\$){\$('li#toplevel_page_cdbt_management_console>ul.wp-submenu a.wp-first-item').text('%s');})(jQuery);</script>", __('Custom DB Tables', CDBT) );
     
     // Added action hook for using `add_action('cdbt_admin_footer')`
     // 
@@ -2019,6 +2028,9 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = '<p class="text-info">' . __('Do you want to hide the display of the tutorial? If so, please click the "Hide" below.', CDBT) . '</p>';
           $args['modalFooter'] = [ sprintf('<button type="button" id="hide_tutorial" class="btn btn-primary">%s</button>', __('Hide', CDBT)) ];
           $args['modalShowEvent'] = "$('#hide_tutorial').on('click', function(){ $('#cdbtModal').modal('hide'); });";
+          break;
+        case 'view_item_full': 
+          $args['modalTitle'] = __('Show Full Content', CDBT);
           break;
         default:
           break;

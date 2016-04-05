@@ -16,7 +16,26 @@
 .time-separater {
   position: relative;
   top: -4px;
+  left: 10px;
   margin: 0 0;
   font-size: 20px;
   font-weight: 700;
+}
+
+.cdbt-entry-data-form {
+  .input-group {
+    
+    .input-group-btn .btn {
+      padding: 5px 10px;
+      min-width: 34px;
+      min-height: 34px;
+      margin-left: -1px;
+    }
+  }
+  
+  .dropdown-menu {
+    a {
+      box-shadow: none;
+    }
+  }
 }

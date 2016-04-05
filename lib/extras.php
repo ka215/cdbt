@@ -75,9 +75,10 @@ trait CdbtExtras {
       'plugin_menu_position' => 'done', 
       'sanitaization' => 'done', 
       'notices_via_modal' => 'done', 
-      'override_messages' => 'new', 
-      'changelog_panel' => 'new', 
-      'reference_columns' => 'new', 
+      'override_messages' => 'try-yet', 
+      'changelog_panel' => 'try-yet', 
+      'reference_columns' => 'try-yet', 
+      'truncate_strings' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {
@@ -117,17 +118,20 @@ trait CdbtExtras {
       
       $index = 0;
       foreach ($data as $key => $value) {
-        $current_data = $this->array_flatten($this->get_data($value, 'count(*)', 'ARRAY_N'));
+        // Fiter table name
+        // @since 2.0.10
+        $value = apply_filters( 'cdbt_lower_case_table_name', $value );
+        $current_data = $this->array_flatten( $this->get_data( $value, 'count(*)', 'ARRAY_N' ) );
         $table_info = $this->get_table_option($value);
         if (!$table_info) {
-        	$table_info = $this->get_table_status($value);
+        	$table_info = $this->get_table_status( $value );
         	$table_info['primary_key'] = [];
-        	foreach ($this->get_table_schema($value) as $column => $scheme) {
+        	foreach ($this->get_table_schema( $value ) as $column => $scheme) {
         	  if ($scheme['primary_key']) 
         	    $table_info['primary_key'][] = $column;
         	}
         } else {
-          $table_info = array_merge($table_info, $this->get_table_status($value));
+          $table_info = array_merge( $table_info, $this->get_table_status( $value ) );
         }
         $datasource[$index] = [
           'cdbt_index_id' => $is_assoc ? ($index + 1) : $key, 
@@ -471,6 +475,33 @@ trait CdbtExtras {
       }
     }
     return $changelogs;
+  }
+  
+  
+  /**
+   * Filter of custom column renderer for a string type column
+   *
+   * @since 2.0.10
+   *
+   * @param array $columns [required]
+   * @param string $shortcode_name [optional]
+   * @param string $table_name [optional]
+   * @return array $columns
+   */
+  public function string_type_custom_column_renderer( $columns, $shortcode_name, $table_name ) {
+    if ( in_array( $shortcode_name, [ 'cdbt-view', 'cdbt-edit' ] ) ) {
+      $table_schema = $this->get_table_schema( $table_name );
+      foreach ( $columns as $_i => $_data ) {
+        if ( ! $_data['dataNumric'] && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
+          if ( $_data['truncateStrings'] > 0 ) {
+            if ( ! isset( $columns[$_i]['customColumnRenderer'] ) ) {
+              $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData.'. $_data['property'] .', '. $_data['truncateStrings'] .' )';
+            }
+          }
+        }
+      }
+    }
+    return $columns;
   }
 
 

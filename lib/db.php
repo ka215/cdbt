@@ -43,8 +43,12 @@ class CdbtDB extends CdbtConfig {
     }
     
     // Database currently default charset (value of `character_set_database`)
-    $tmp = $this->array_flatten(@$this->wpdb->get_results("show variables like 'character_set_database';", 'ARRAY_A'));
+    $tmp = $this->array_flatten( @$this->wpdb->get_results( "SHOW VARIABLES LIKE 'character_set_database';", 'ARRAY_A' ) );
     $this->db_default_charset = $tmp['Value'];
+    
+    // Database currently lower case (value of `lower_case_table_names`) @since 2.0.10
+    $tmp = $this->array_flatten( @$this->wpdb->get_results( "SHOW VARIABLES WHERE variable_name = 'lower_case_table_names';", 'ARRAY_A' ) );
+    $this->db_lower_case = intval( $tmp['Value'] );
     
     // Currently charset of WordPress
     $this->charset = $this->wpdb->charset;
@@ -71,7 +75,9 @@ class CdbtDB extends CdbtConfig {
     $this->wpdb->suppress_errors = $this->suppress_errors;
     
     // Added Filter
+    add_filter( 'cdbt_lower_case_table_name', array( $this, 'lowercase_table_name' ) );
     add_filter( 'cdbt_select_clause_optimaize', array( $this, 'select_clause_optimaize' ), 10, 3 );
+    
   }
   
   
@@ -139,7 +145,8 @@ class CdbtDB extends CdbtConfig {
    * @return boolean
    */
   public function check_table_exists( $table_name=null ) {
-    if (empty($table_name)) {
+    $table_name = $this->lowercase_table_name( $table_name );
+    if ( empty( $table_name ) ) {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
       $this->logger( $message );
       return false;
@@ -162,7 +169,7 @@ class CdbtDB extends CdbtConfig {
    * @return boolean
    */
   public function create_table( $table_data=null, $sql=null ) {
-    static $message = '';
+    $message = '';
     
     if (is_array($table_data)) {
       $table_name = isset($table_data['table_name']) ? $table_data['table_name'] : null;
@@ -174,22 +181,23 @@ class CdbtDB extends CdbtConfig {
     if (empty($table_name)) 
       $message = sprintf( __('Table name does not exist at the time of "%s" call.', CDBT), __FUNCTION );
     
-    if (empty($sql)) 
+    if ( empty( $sql ) ) 
       $message = sprintf( __('SQL to create table does not exist at the time of "%s" call.', CDBT), __FUNCTION );
     
     // Check whether a table that trying to create does not already exist
-    if ($this->check_table_exists( $table_name )) 
+    if ( $this->check_table_exists( $table_name ) ) 
       $message = __('Can not create a table because the table already exists.', CDBT);
     
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->logger( $message );
       return false;
     }
     
     // Table creation process
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta($sql);
-    if (!empty($this->wpdb->last_error) && !$this->check_table_exists($table_name)) {
+    dbDelta( $sql );
+    $table_name = $this->lowercase_table_name( $table_name );
+    if ( ! empty( $this->wpdb->last_error ) && ! $this->check_table_exists( $table_name ) ) {
       $message = __('Failed to create table.', CDBT);
       $message .= $this->retrieve_db_error();
       $this->logger( $message );
@@ -224,7 +232,8 @@ class CdbtDB extends CdbtConfig {
     if (empty($db_name)) 
       $db_name = DB_NAME; // WordPress defined
     
-    if (!$this->check_table_exists($table_name)) {
+    $table_name = $this->lowercase_table_name( $table_name );
+    if ( ! $this->check_table_exists( $table_name ) ) {
       $message = sprintf( __('Specified table "%1$s" did not exist when called method "%2$s".', CDBT), $table_name, __FUNCTION__ );
       $this->logger( $message );
       return false;
@@ -301,15 +310,16 @@ class CdbtDB extends CdbtConfig {
   public function get_create_table_sql( $table_name=null ) {
     static $message = '';
     
-    if (empty($table_name)) {
+    $table_name = $this->lowercase_table_name( $table_name );
+    if ( empty( $table_name ) ) {
       $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
     
-    if ($this->check_table_exists($table_name)) {
-      $result = $this->array_flatten($this->wpdb->get_results( sprintf( 'SHOW CREATE TABLE `%s`;', esc_sql($table_name) ), ARRAY_A));
-      if (isset($result['Create Table'])) 
+    if ( $this->check_table_exists( $table_name ) ) {
+      $result = $this->array_flatten( $this->wpdb->get_results( sprintf( 'SHOW CREATE TABLE `%s`;', $table_name ), ARRAY_A ) );
+      if ( isset( $result['Create Table'] ) ) 
         return $result['Create Table'];
     }
     
@@ -2129,6 +2139,24 @@ class CdbtDB extends CdbtConfig {
 */
   }
   
+  
+  /**
+   * Filter the table name by "lower_case_table_names" of database
+   *
+   * @since 2.0.10
+   */
+  protected function lowercase_table_name( $table_name ) {
+    if ( ! empty( $table_name ) ) {
+      if ( is_string( $table_name ) ) {
+        $table_name = $this->db_lower_case == 1 ? strtolower( $table_name ) : $table_name;
+      } else 
+      if ( is_array( $table_name ) && ! empty( $table_name ) ) {
+        if ( count( $table_name ) == 1 ) 
+          $table_name = $this->db_lower_case == 1 ? strtolower( $table_name[0] ) : $table_name[0];
+      }
+    }
+    return $table_name;
+  }
   
   
 }

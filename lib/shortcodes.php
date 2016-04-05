@@ -235,6 +235,8 @@ trait CdbtShortcodes {
       /* Added new attributes from 2.0.7 is follows: */
       'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
       // 'strip_tags' => true, // Whether to strip the tags in the string type data.
+      /* Added new attributes from 2.0.10 is follows: */
+      'truncate_strings' => 0, 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -252,6 +254,7 @@ trait CdbtShortcodes {
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
+      $truncate_strings = empty( $truncate_strings ) || intval( $truncate_strings ) < 0 ? 0 : intval( $truncate_strings );
       $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : true;
       foreach ($table_schema as $column => $scheme) {
       	if ($this->validate->check_column_type($scheme['type'], 'char'))
@@ -631,6 +634,7 @@ trait CdbtShortcodes {
           'sortable' => $enable_sort, 
           'sortDirection' => array_key_exists($column, $sort_order) ? $sort_order[$column] : 'asc', 
           'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
+          'truncateStrings' => $truncate_strings, 
           'className' => $enable_sort ? '' : 'disable-sort', 
         ];
       }
@@ -1069,6 +1073,8 @@ trait CdbtShortcodes {
       /* Added new attributes from 2.0.7 is follows: */
       'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
       // 'strip_tags' => true, // Whether to strip the tags in the string type data.
+      /* Added new attributes from 2.0.10 is follows: */
+      'truncate_strings' => 0, 
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -1086,6 +1092,7 @@ trait CdbtShortcodes {
       $has_pk = !empty($table_option['primary_key']) ? true : false;
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
+      $truncate_strings = empty( $truncate_strings ) || intval( $truncate_strings ) < 0 ? 0 : intval( $truncate_strings );
       $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : true;
       foreach ($table_schema as $column => $scheme) {
       	if ($this->validate->check_column_type($scheme['type'], 'char'))
@@ -1421,6 +1428,7 @@ trait CdbtShortcodes {
           'sortable' => $enable_sort, 
           'sortDirection' => 'asc', 
           'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
+          'truncateStrings' => $truncate_strings, 
           'className' => implode(' ', $_classes), 
         ];
       }

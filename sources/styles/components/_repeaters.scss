@@ -186,6 +186,40 @@
     text-align: center;
   }
   
+  a {
+    box-shadow: none;
+    
+    &.collapse-col-data {
+      margin-left: .5em;
+      padding: 0 8px;
+      box-shadow: 0 1px 0 0 #ccc;
+    }
+  }
+  
+  .btn.disabled, .btn[disabled], .btn[disabled=disabled], fieldset[disabled] .btn {
+    min-height: 32px;
+    margin: auto 0;
+    padding: 5px 10px;
+    
+    &:hover, &:focus, &:active {
+      min-height: 32px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      color: #333;
+      opacity: .65;
+    }
+  }
+  
+  .input-group {
+    
+    .input-group-btn .btn {
+      min-width: 29px;
+      min-height: 34px;
+      margin-left: -1px;
+    }
+  }
+  
 }
 
 .repeater .frozen-enabled {

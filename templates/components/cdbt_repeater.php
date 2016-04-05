@@ -142,8 +142,8 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
     if (isset($setting['width']) && intval($setting['width']) > 0) 
       $columns[$i]['width'] = intval($setting['width']);
     
-    if (isset($setting['customColumnRenderer']) && !empty($setting['customColumnRenderer'])) {
-      if (is_array($setting['customColumnRenderer']) && array_key_exists($columns[$i]['property'], $setting['customColumnRenderer'])) {
+    if ( isset( $setting['customColumnRenderer'] ) && ! empty( $setting['customColumnRenderer'] ) ) {
+      if ( is_array( $setting['customColumnRenderer'] ) && array_key_exists( $columns[$i]['property'], $setting['customColumnRenderer'] ) ) {
         $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'][$columns[$i]['property']];
       } else {
         $custom_columns[$columns[$i]['property']] = $setting['customColumnRenderer'];
@@ -315,7 +315,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
       </div>
     </div>
   </div>
-<script>
+<script><!--//
 if (typeof repeater === 'undefined') {
   var repeater = {};
 }
@@ -516,7 +516,6 @@ endif; ?>
 
   }
   
-  
   // <?php /* 初期化処理 - */ ?> initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
@@ -577,5 +576,4 @@ convert_list = function() {
   return _.reduce(list_data, function(memo, data){ return memo + '<li><small>' + data + '</small></li>'; }, '');
   
 };
-
-</script>
+//--></script>

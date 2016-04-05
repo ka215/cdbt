@@ -281,6 +281,20 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         </div>
       </div><!-- /register-shortcode-limit_items [v] -->
       
+      <div class="form-group switching-item on-v on-e">
+        <label for="register-shortcode-truncate_strings" class="col-sm-2 control-label"><?php _e('Truncate Strings', CDBT); ?> <?php $this->during_trial( 'truncate_strings' ); ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3" data-initialize="spinbox" id="register-shortcode-limit_items">
+            <input type="text" name="<?php echo $this->domain_name; ?>[truncate_strings]" value="<?php if (isset($this_tab_vars['truncate_strings'])) echo intval($this_tab_vars['truncate_strings']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('Number of characters in the string type column truncates the display to the case more than the specified value.', CDBT); ?></p>
+        </div>
+      </div><!-- /register-shortcode-truncate_strings [v,e] -->
+      
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-image_render" class="col-sm-2 control-label"><?php _e('Rendering Image Type', CDBT); ?></label>
         <div class="col-sm-10">
@@ -628,6 +642,20 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('The default value is overwritten by the value of the max_show_records of the specified table.', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-limit_items [v] -->
+      
+      <div class="form-group switching-item on-v on-e">
+        <label for="edit-shortcode-truncate_strings" class="col-sm-2 control-label"><?php _e('Truncate Strings', CDBT); ?> <?php $this->during_trial( 'truncate_strings' ); ?></label>
+        <div class="col-sm-10">
+          <div class="spinbox disits-3" data-initialize="spinbox" id="edit-shortcode-limit_items">
+            <input type="text" name="<?php echo $this->domain_name; ?>[truncate_strings]" value="<?php if (isset($this_tab_vars['truncate_strings'])) echo intval($this_tab_vars['truncate_strings']); ?>" class="form-control input-mini spinbox-input">
+            <div class="spinbox-buttons btn-group btn-group-vertical">
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+            </div>
+          </div>
+          <p class="help-block"><?php _e('Number of characters in the string type column truncates the display to the case more than the specified value.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-shortcode-truncate_strings [v,e] -->
       
       <div class="form-group switching-item on-v">
         <label for="edit-shortcode-image_render" class="col-sm-2 control-label"><?php _e('Rendering Image Type', CDBT); ?></label>

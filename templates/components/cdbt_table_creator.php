@@ -248,7 +248,6 @@ $body_row = sprintf($body_row_base, $body_row_cols);
   </div>
 </div>
 <script>
-$(function(){
   
   // Set to localize scripts
   <?php $json_code = json_encode($preset_col_types); ?>
@@ -257,5 +256,4 @@ $(function(){
     popoverSetValues: "<?php _e('Set Values', CDBT); ?>", 
   };
   
-});
 </script>

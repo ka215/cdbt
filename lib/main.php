@@ -341,11 +341,13 @@ final class CdbtFrontend extends CdbtDB {
     
     // Actions
     add_action( 'wp_enqueue_scripts', array($this, 'cdbt_assets'), 99 ); // Note: priority = 99 is after the multibyte-patch plugin.
+    add_action( 'wp_head', array($this, 'cdbt_header') );
     add_action( 'cdbt_frontend_localize_script', array($this, 'cdbt_localize_script') );
     
     // Filters
     add_filter( 'body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
+    add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
     
     $this->action_controller();
   }
@@ -361,8 +363,10 @@ final class CdbtFrontend extends CdbtDB {
     // Fire this hook when register CSS and JavaScript at using shortcode page
     
     // For conflict scripts avoidance
-    wp_deregister_script( 'jquery' );
-    wp_deregister_script( 'underscore' );
+    if ( ! isset( $this->options['include_assets']['main_jquery'] ) ) 
+      wp_deregister_script( 'jquery' );
+    if ( ! isset( $this->options['include_assets']['main_underscore_js'] ) ) 
+      wp_deregister_script( 'underscore' );
     $assets = [
       'styles' => [
         'cdbt-fuelux-style' => [ $this->plugin_url . 'assets/styles/fuelux.css', true, $this->contribute_extends['Fuel UX']['version'], 'all' ], 
@@ -383,6 +387,7 @@ final class CdbtFrontend extends CdbtDB {
         $assets['scripts']['jquery'] = null;
         $assets['scripts']['cdbt-underscore'][1] = [ 'jquery' ];
         $assets['scripts']['cdbt-bootstrap'][1] = [ 'jquery' ];
+        $assets['scripts']['cdbt-fuelux-script'][3] = false;
       }
       if ( isset( $this->options['include_assets']['main_underscore_js'] ) && ! $this->options['include_assets']['main_underscore_js'] ) {
         unset( $assets['scripts']['cdbt-underscore'] );
@@ -445,6 +450,22 @@ final class CdbtFrontend extends CdbtDB {
     }
   }
   
+  
+  /**
+   * Fire this hook when append into <head> tag on the front-end for this plugin
+   *
+   * @since 2.0.10
+   */
+  public function cdbt_header(){
+    if ( ! $this->options['include_assets']['main_jquery'] ) {
+      echo "<script>if (typeof jQuery !== 'undefined' ) { var $ = jQuery; }</script>\n";
+    }
+    
+    // Added action hook for using `add_action('cdbt_header')`
+    // 
+    // @since 2.0.10
+    do_action( 'cdbt_header' );
+  }
   
   /**
    * Controllers of frontend actions for this plugin

@@ -1,7 +1,7 @@
 /*!
- * Custom DataBase Tables v2.0.0 (http://ka2.org)
- * Table Creator v2.0.0
- * Copyright 2014-2015 ka2@ka2.org
+ * Custom DataBase Tables v2.0.10 (http://ka2.org)
+ * Table Creator v2.0.1
+ * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
 if (typeof doTableCreator !== 'undefined') {
