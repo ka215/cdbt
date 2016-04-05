@@ -280,7 +280,8 @@ class CdbtConfig extends CdbtCore {
       $new_options['plugin_version'] = $this->version;
     if ( $this->db_version !== $new_options['db_version'] ) 
       $new_options['db_version'] = $this->version;
-    if ( ! empty( $_diff_array = array_diff_key( $this->options, $new_options ) ) ) 
+    $_diff_array = array_diff_key( $this->options, $new_options );
+    if ( ! empty( $_diff_array ) ) 
       $new_options = array_merge( $new_options, $_diff_array );
     
     // 
