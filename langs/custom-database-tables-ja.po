@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.0.10\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-04-05 09:52+0900\n"
+"POT-Creation-Date: 2016-04-05 10:12+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -988,129 +988,129 @@ msgstr "エクスポートする対象カラムが指定されていません。
 msgid "Export target column \"%s\" does not exist."
 msgstr "エクスポート対象の「%s」カラムがありません。"
 
-#: lib/extras.php:84
+#: lib/extras.php:85
 msgid "Try yet"
 msgstr "試験実装"
 
-#: lib/extras.php:88
+#: lib/extras.php:89
 msgid "New added"
 msgstr "新規追加"
 
-#: lib/extras.php:92
+#: lib/extras.php:93
 msgid "Future releases"
 msgstr "実装予定"
 
-#: lib/extras.php:190
+#: lib/extras.php:191
 msgid "Oparate Table"
 msgstr "テーブル操作"
 
-#: lib/extras.php:192 templates/admin/cdbt_tables.php:846
+#: lib/extras.php:193 templates/admin/cdbt_tables.php:846
 msgid "View Data"
 msgstr "データ閲覧"
 
-#: lib/extras.php:193 templates/admin/cdbt_tables.php:847
+#: lib/extras.php:194 templates/admin/cdbt_tables.php:847
 msgid "Entry Data"
 msgstr "データ登録"
 
-#: lib/extras.php:194 templates/admin/cdbt_tables.php:848
+#: lib/extras.php:195 templates/admin/cdbt_tables.php:848
 #: templates/components/cdbt_repeater.php:248
 msgid "Edit Data"
 msgstr "データ編集"
 
-#: lib/extras.php:207
+#: lib/extras.php:208
 msgid "TableName"
 msgstr "テーブル名"
 
-#: lib/extras.php:214
+#: lib/extras.php:215
 msgid "Records"
 msgstr "データ数"
 
-#: lib/extras.php:221
+#: lib/extras.php:222
 msgid "PrimaryKey"
 msgstr "主キー"
 
-#: lib/extras.php:226
+#: lib/extras.php:227
 msgid "Charset"
 msgstr "文字コード"
 
-#: lib/extras.php:231
+#: lib/extras.php:232
 msgid "Collation"
 msgstr "照合順序"
 
-#: lib/extras.php:236
+#: lib/extras.php:237
 msgid "Engine"
 msgstr "DBエンジン"
 
-#: lib/extras.php:241
+#: lib/extras.php:242
 msgid "PerPageRecords"
 msgstr "ページ毎データ数"
 
-#: lib/extras.php:261 lib/extras.php:323
+#: lib/extras.php:262 lib/extras.php:324
 msgid "Operation"
 msgstr "オペレーション"
 
-#: lib/extras.php:272
+#: lib/extras.php:273
 msgid "Register Shortcode"
 msgstr "ショートコードの登録"
 
-#: lib/extras.php:274 templates/admin/cdbt_shortcodes.php:17
+#: lib/extras.php:275 templates/admin/cdbt_shortcodes.php:17
 msgid "Edit Shortcode"
 msgstr "ショートコード編集"
 
-#: lib/extras.php:275 lib/extras.php:335
+#: lib/extras.php:276 lib/extras.php:336
 msgid "Delete Shortcode"
 msgstr "ショートコード削除"
 
-#: lib/extras.php:288
+#: lib/extras.php:289
 msgid "CSID"
 msgstr "CSID"
 
-#: lib/extras.php:294
+#: lib/extras.php:295
 msgid "Shortcode Name / Alias Shortcode"
 msgstr "ショートコード名／エイリアスコード"
 
-#: lib/extras.php:301 templates/admin/cdbt_shortcodes.php:407
+#: lib/extras.php:302 templates/admin/cdbt_shortcodes.php:407
 #: templates/admin/cdbt_shortcodes.php:769
 msgid "Description"
 msgstr "備考"
 
-#: lib/extras.php:306
+#: lib/extras.php:307
 msgid "Type"
 msgstr "タイプ"
 
-#: lib/extras.php:312
+#: lib/extras.php:313
 msgid "Author"
 msgstr "作成者"
 
-#: lib/extras.php:318 lib/extras.php:369
+#: lib/extras.php:319 lib/extras.php:370
 msgid "Permission"
 msgstr "利用権限"
 
-#: lib/extras.php:335
+#: lib/extras.php:336
 msgid "Delete Host"
 msgstr "ホスト削除"
 
-#: lib/extras.php:346
+#: lib/extras.php:347
 msgid "ID"
 msgstr "ID"
 
-#: lib/extras.php:352
+#: lib/extras.php:353
 msgid "Host Name"
 msgstr "ホスト名"
 
-#: lib/extras.php:358
+#: lib/extras.php:359
 msgid "API Key"
 msgstr "APIキー"
 
-#: lib/extras.php:364 templates/admin/cdbt_web_apis.php:115
+#: lib/extras.php:365 templates/admin/cdbt_web_apis.php:115
 msgid "Description Host"
 msgstr "ホストの説明"
 
-#: lib/extras.php:374
+#: lib/extras.php:375
 msgid "Generated Date"
 msgstr "作成日時"
 
-#: lib/extras.php:380
+#: lib/extras.php:381
 msgid "Deletion"
 msgstr "削除"
 
@@ -3608,395 +3608,3 @@ msgstr "前へ"
 #: templates/components/cdbt_wizard.php:103
 msgid "Complete"
 msgstr "終了"
-
-#~ msgid "There is no data to be exported to this table."
-#~ msgstr "このテーブルにはエクスポートするデータがありません。"
-
-#~ msgid "Error locating %s for inclusion"
-#~ msgstr "インクルードパス「%s」のエラー"
-
-#~ msgid "Method \"%s\" does not exist."
-#~ msgstr "メソッド \"%s\" がありません。"
-
-#~ msgid "Property \"%s\" does not exist."
-#~ msgstr "プロパティ \"%s\" がありません。"
-
-#~ msgid "Invalid access this page."
-#~ msgstr "このページへのアクセスが不正です。"
-
-#~ msgid "Illegal access is."
-#~ msgstr "不正なアクセスです。"
-
-#~ msgid "You do not have access privileges on this page."
-#~ msgstr "このページにアクセスする権限がありません。"
-
-#~ msgid "Plugin options saved."
-#~ msgstr "プラグイン設定を保存しました。"
-
-#~ msgid "Could not save options."
-#~ msgstr "設定を保存できませんでした。"
-
-#~ msgid "Message definitions has been saved."
-#~ msgstr "メッセージの設定を保存しました。"
-
-#~ msgid "Message definitions has initialized."
-#~ msgstr "メッセージの設定を初期化しました。"
-
-#~ msgid "Could not save the messages."
-#~ msgstr "メッセージの保存ができませんでした。"
-
-#~ msgid "Log file does not exist."
-#~ msgstr "ログファイルがありません。"
-
-#~ msgid ""
-#~ "Could not make a directory for backup. Then, it was interrupted of log "
-#~ "deletion."
-#~ msgstr ""
-#~ "バックアップ用のディレクトリを作成できませんでした。そのためログ削除を中断"
-#~ "しました。"
-
-#~ msgid "Could not copy of the log file."
-#~ msgstr "ログファイルをコピーできませんでした。"
-
-#~ msgid "Could not clear the log."
-#~ msgstr "ログを消去できませんでした。"
-
-#~ msgid "Have cleared the log."
-#~ msgstr "ログを消去しました。"
-
-#~ msgid "%s does not exist."
-#~ msgstr "%sがありません。"
-
-#~ msgid "Contains characters which cannot be used in %s."
-#~ msgstr "%s中に使用できない文字が含まれています。"
-
-#~ msgid "Incorporatable table does not exist."
-#~ msgstr "取り込み可能なテーブルがありません。"
-
-#~ msgid "Table incorporation has been completed successfully."
-#~ msgstr "テーブルの取り込みが正常に完了しました。"
-
-#~ msgid "Failed the table incorporation."
-#~ msgstr "テーブルの取り込みに失敗しました。"
-
-#~ msgid "Invalid sql statement of `ALTER TABLE`."
-#~ msgstr "\"ALTER TABLE\"のSQL文が無効です。"
-
-#~ msgid "Failed to run the query of `ALTER TABLE`."
-#~ msgstr "\"ALTER TABLE\"のクエリ実行に失敗しました。"
-
-#~ msgid "Modification was successful."
-#~ msgstr "変更に成功しました。"
-
-#~ msgid ""
-#~ "There was no item to be modify. Please run again after you correct the "
-#~ "item you want to modify."
-#~ msgstr ""
-#~ "修正すべき項目がありませんでした。変更したい項目を修正後に再度実行してくだ"
-#~ "さい。"
-
-#~ msgid "Illegal operation was called."
-#~ msgstr "無効な操作が呼び出されました。"
-
-#~ msgid "Could not change the operate table."
-#~ msgstr "操作テーブルを変更できませんでした。"
-
-#~ msgid "Invalid step transition."
-#~ msgstr "不正なステップ遷移です。"
-
-#~ msgid ""
-#~ "The uploaded file could not be parsed. It likely has deficiencies in the "
-#~ "file."
-#~ msgstr ""
-#~ "アップロードされたファイルをパースできませんでした。ファイルに不備がある可"
-#~ "能性があります。"
-
-#~ msgid ""
-#~ "The number of data to be imported is not consistent with the number of "
-#~ "the specified column. Please specify the column to match the import data "
-#~ "again."
-#~ msgstr ""
-#~ "インポートするデータ数が指定されたカラムの数と一致しません。インポートデー"
-#~ "タに合わせてカラムの指定を行ってください。"
-
-#~ msgid "Uploaded file format is invalid, or parameter is not enough."
-#~ msgstr "ファイル形式に不備があるか、もしくはパラメータが足りません。"
-
-#~ msgid "%d of the data has been successfully imported."
-#~ msgstr "%d件のデータが正常にインポートされました。"
-
-#~ msgid "Parameter for duplicating the table is incomplete."
-#~ msgstr "テーブル複製を行うためのパラーメータが不完全です。"
-
-#~ msgid ""
-#~ "Duplicate table name already exists. Please specify a different table "
-#~ "name."
-#~ msgstr ""
-#~ "重複するテーブル名がすでに存在しています。別のテーブル名を指定してくださ"
-#~ "い。"
-
-#~ msgid "Failed to replication of the table."
-#~ msgstr "テーブルの複製に失敗しました。"
-
-#~ msgid "Could not insert data to \"%s\" table."
-#~ msgstr "「%s」テーブルへデータの登録ができませんでした。"
-
-#~ msgid "Update of the data has been completed successfully."
-#~ msgstr "データの更新が正常に完了しました。"
-
-#~ msgid "Could not update data of \"%s\" table."
-#~ msgstr "「%s」テーブルのデータを更新できませんでした。"
-
-#~ msgid ""
-#~ "Not done updating of data if there is no change to the data in updating "
-#~ "before and after."
-#~ msgstr "更新前後でデータに変更がない場合、データの更新は行われません。"
-
-#~ msgid ""
-#~ "Or, it is possible that the record having the same data could not be "
-#~ "updated in order that existed in the other."
-#~ msgstr ""
-#~ "もしくは、同じデータを持つレコードが他に存在していたために更新されなかった"
-#~ "可能性もあります。"
-
-#~ msgid "Have been saved successfully as a custom shortcode ID: %d."
-#~ msgstr "カスタムショートコードID: %d として正常に保存されました。"
-
-#~ msgid "Could not save the custom shortcode."
-#~ msgstr "カスタムショートコードを保存できませんでした。"
-
-#~ msgid ""
-#~ "Could not save because the specific custom shortcode id already exists."
-#~ msgstr ""
-#~ "指定のカスタムショートコードIDが既に存在しているため保存できませんでした。"
-
-#~ msgid "Have been updated successfully as a custom shortcode ID: %d."
-#~ msgstr "カスタムショートコードID: %d の更新に成功しました。"
-
-#~ msgid "Could not update the custom shortcode."
-#~ msgstr "カスタムショートコードを更新できませんでした。"
-
-#~ msgid ""
-#~ "Could not update because the specified custom shortcode does not exist."
-#~ msgstr "指定されたショートコードが存在しないため、更新できませんでした。"
-
-#~ msgid ""
-#~ "Hosts that do not allow all of the request methods can not be registered."
-#~ msgstr "すべてのリクエストメソッドを許可しないホストは登録できません。"
-
-#~ msgid "Modification item none"
-#~ msgstr "変更項目なし"
-
-#~ msgid ""
-#~ "If specified table has a lot of data for exporting, it may take long time "
-#~ "until the download is complete.<br>Please start the export if it is good."
-#~ msgstr ""
-#~ "もし指定されたエクスポートテーブルに大量のデータが含まれていると、ダウン"
-#~ "ロードが完了するまで長い時間がかかる場合があります。<br>よろしければ、エク"
-#~ "スポートを開始してください。"
-
-#~ msgid ""
-#~ "When you truncate a table, all data that currently stored will be lost. "
-#~ "Then, you can not resume this process.<br>Do you want to truncate this "
-#~ "table really?"
-#~ msgstr ""
-#~ "テーブルを初期化すると、そのテーブルに現在保存されているすべてのデータが失"
-#~ "われます。さらに、このプロセスはやり直すことができません。<br>本当にテーブ"
-#~ "ル初期化を行ってもよろしいですか？"
-
-#~ msgid ""
-#~ "If you have removed a table, at same time all data that currently stored "
-#~ "will be lost. Then, you can not resume this process.<br>Do you want to "
-#~ "remove the table really?"
-#~ msgstr ""
-#~ "テーブルを削除すると、同時に現在そのテーブルに保存されているすべてのデータ"
-#~ "が失われます。さらに、削除後はこのプロセスをやり直すことができません。<br>"
-#~ "本当にテーブルを削除しますか？"
-
-#~ msgid "Table is not selected"
-#~ msgstr "テーブルが選択されていません"
-
-#~ msgid "Please retry to operate that after the table selection."
-#~ msgstr "テーブル選択後に再試行してください。"
-
-#~ msgid "Data is not selected"
-#~ msgstr "データが選択されていません"
-
-#~ msgid "Please retry to operate that after the data selection."
-#~ msgstr "データ選択後に再試行してください。"
-
-#~ msgid "Selected data is too many"
-#~ msgstr "選択されたデータが多すぎます"
-
-#~ msgid "Please enter into the required field not entered."
-#~ msgstr "未入力の必須フィールドへ入力してください。"
-
-#~ msgid "Describe File Information"
-#~ msgstr "ファイル詳細"
-
-#~ msgid "Parameters for calling Ajax is not enough."
-#~ msgstr "AJAXを呼び出すためのパラメータに不足があります。"
-
-#~ msgid "Method handling of an Ajax event does not exist."
-#~ msgstr "AJAXイベントをハンドリングするメソッドがありません。"
-
-#~ msgid "Error of Ajax."
-#~ msgstr "AJAXのエラーです。"
-
-#~ msgid "Specified table does not exist."
-#~ msgstr "指定のテーブルがありません。"
-
-#~ msgid "Table of \"%s\" has been truncated successfully."
-#~ msgstr "「%s」テーブルの初期化に成功しました。"
-
-#~ msgid "Table of \"%s\" has been removed successfully."
-#~ msgstr "「%s」テーブルの削除に成功しました。"
-
-#~ msgid "Specified data have been removed successfully."
-#~ msgstr "指定されたデータの削除に成功しました。"
-
-#~ msgid "Some of the data could not remove."
-#~ msgstr "いくつかのデータが削除できませんでした。"
-
-#~ msgid "Have deleted a custom shortcode, that ID is follow: %d."
-#~ msgstr "カスタムショートコードID: %d のショートコードを削除しました。"
-
-#~ msgid "Specified custom shortcode does not exist."
-#~ msgstr "指定のカスタムショートコードがありません。"
-
-#~ msgid "Have deleted the specific allowed host."
-#~ msgstr "指定のホストを削除しました。"
-
-#~ msgid "Specified host does not exist."
-#~ msgstr "指定のホストがありません。"
-
-#~ msgid "New options is not specified when the method \"%s\" call."
-#~ msgstr ""
-#~ "メソッド「%s」呼び出しにおいて新しいオプション設定が指定されていません。"
-
-#~ msgid "Options format is invalid."
-#~ msgstr "オプション設定のフォーマットが不正です。"
-
-#~ msgid "Table settings for removing does not exist."
-#~ msgstr "削除するテーブル設定がありません。"
-
-#~ msgid "Api key settings for removing does not exist."
-#~ msgstr "削除するAPIキー設定がありません。"
-
-#~ msgid "Update process of setting did not take place."
-#~ msgstr "設定の更新処理は行われませんでした。"
-
-#~ msgid ""
-#~ "Your server is running PHP version %s but this plugin requires at least "
-#~ "PHP %s. Please run an upgrade."
-#~ msgstr ""
-#~ "サーバのPHPバージョンが %s です。このプラグインの実行にはPHPバージョン %s "
-#~ "以上が必要です。アップグレードを実行してください。"
-
-#~ msgid "The %s has been deactivated."
-#~ msgstr "%sは無効化されました。"
-
-#~ msgid "You do not have viewing permits of this content."
-#~ msgstr "あなたはこのコンテンツを閲覧する権限がありません。"
-
-#~ msgid "Data in this table does not exist."
-#~ msgstr "このテーブルにはデータがありません。"
-
-#~ msgid "Failed to logging."
-#~ msgstr "ログ出力に失敗しました。"
-
-#~ msgid "Failed in the export of table data."
-#~ msgstr "データのエクスポートに失敗しました。"
-
-#~ msgid "Failed to export, because could not generate the download file."
-#~ msgstr ""
-#~ "ダウンロードファイルを生成できなかったため、エクスポートに失敗しました。"
-
-#~ msgid "Download OK"
-#~ msgstr "ダウンロード可能"
-
-#~ msgid "Download Fail"
-#~ msgstr "ダウンロード失敗"
-
-#~ msgid "Download NG"
-#~ msgstr "ダウンロード不可"
-
-#~ msgid "Custom DataBase Tables version 2 arrival now!"
-#~ msgstr "カスタムDBテーブルプラグインのバージョン２が登場！"
-
-#~ msgid "Let&#39;s use the shortcode!"
-#~ msgstr "ショートコードを使ってみよう！"
-
-#~ msgid "require"
-#~ msgstr "必須"
-
-#~ msgid "Whether displaying search box."
-#~ msgstr "検索ボックスを表示するかどうか。"
-
-#~ msgid "Whether displaying title."
-#~ msgstr "タイトルを表示するかどうか。"
-
-#~ msgid "Enabled Table List"
-#~ msgstr "管理テーブル一覧"
-
-#~ msgid "Make Template"
-#~ msgstr "設定値からSQL作成"
-
-#~ msgid "Incorporate an existing table"
-#~ msgstr "既存のテーブルを取り込む"
-
-#~ msgid ""
-#~ "You can incorporate a table that already exists, as be able to manage by "
-#~ "this plugin."
-#~ msgstr ""
-#~ "既に存在しているテーブルを、プラグインで管理できるように取り込みます。"
-
-#~ msgid "Currently, incorporatable table to the plugin is not exist."
-#~ msgstr "現在プラグインに取り込み可能なテーブルはありません。"
-
-#~ msgid "Incorporatable tables"
-#~ msgstr "取り込み可能なテーブル"
-
-#~ msgid "Incorporate Table"
-#~ msgstr "テーブル取り込み"
-
-#~ msgid "Detail View"
-#~ msgstr "詳細表示"
-
-#~ msgid "Truncate Table"
-#~ msgstr "テーブルデータ初期化"
-
-#~ msgid "Import Data Options"
-#~ msgstr "データインポート設定"
-
-#~ msgid "Upload import file"
-#~ msgstr "インポートファイルをアップロード"
-
-#~ msgid "Add first line of file"
-#~ msgstr "ファイルの先頭に追加"
-
-#~ msgid "Export Table Options"
-#~ msgstr "テーブルエクスポート設定"
-
-#~ msgid "Duplicate Table Options"
-#~ msgstr "複製テーブル設定"
-
-#~ msgid "Backup Table Options"
-#~ msgstr "テーブル設定のバックアップ"
-
-#~ msgid "Enter the FQDN or IP address"
-#~ msgstr "FQDNかIPアドレスを入力してください"
-
-#~ msgid "nothing to see here... move along"
-#~ msgstr "見つかりませんでした"
-
-#~ msgid "Please Donate To Bitcoin Address:"
-#~ msgstr "Bitcoinアドレスへ寄付:"
-
-#~ msgid ""
-#~ "Welcome to the \"Custom DataBase Tables\" plugin! In this page is "
-#~ "introductions about feature of plugin, and be able to go short trip as "
-#~ "the tutorial."
-#~ msgstr ""
-#~ "「カスタムDBテーブル」プラグインへようこそ！ このページではプラグインの機"
-#~ "能の紹介と、簡単なチュートリアルを体験できます。"
