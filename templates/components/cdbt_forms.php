@@ -259,7 +259,7 @@ search, datetime, date, month, week, time, color
       <div class="col-sm-9">
         <textarea id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $element['defaultValue']; ?></textarea>
       </div>
-      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
+      <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block col-sm-offset-2"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
     </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->
 <?php
         break;
@@ -526,7 +526,7 @@ search, datetime, date, month, week, time, color
             </div>
           </div><!-- /hour-combobox -->
         </div>
-        <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
+        <p class="time-separater-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left datepicker-combobox-minute"<?php if ( $_on_timer ) : ?> data-on-timer="true"<?php endif; ?><?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][minute]" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-minute" value="<?php echo $_minute; ?>" class="form-control text-center" pattern="^[0-9]+$">
@@ -540,7 +540,7 @@ search, datetime, date, month, week, time, color
             </div>
           </div><!-- /minute-combobox -->
         </div>
-        <p class="help-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
+        <p class="time-separater-block pull-left"<?php echo $toggle_datetime; ?>><b class="time-separater text-muted">:</b></p>
         <div class="col-sm-2 pull-left datepicker-combobox-second"<?php if ( $_on_timer ) : ?> data-on-timer="true"<?php endif; ?><?php echo $toggle_datetime; ?>>
           <div class="input-group input-append dropdown combobox" data-initialize="combobox">
             <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $element['elementName'] ); ?>][second]" id="entry-data-<?php echo esc_attr( $element['elementName'] ); ?>-second" value="<?php echo $_second; ?>" class="form-control text-center" pattern="^[0-9]+$">
