@@ -752,6 +752,7 @@ trait CdbtShortcodes {
       'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
       'redirect_url' => '', // String of the url to redirect after data insertion (since version 2.0.5)
       'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
+      'submit_button_label' => '', // String as submit button label (since version 2.0.11)
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -1016,6 +1017,8 @@ trait CdbtShortcodes {
       $component_options['whereClause'] = $where_clause;
     if ( ! empty( $redirect_url ) ) 
       $component_options['redirectUrl'] = rawurldecode( $redirect_url );
+    if ( ! empty( $submit_button_label ) ) 
+      $component_options['submitLabel'] = $submit_button_label;
     
     // Filter the component definition of the list content that is output by this shortcode
     //

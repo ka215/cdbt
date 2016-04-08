@@ -314,6 +314,15 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       </div><!-- /register-shortcode-image_render [v] -->
 
       <div class="form-group switching-item on-i">
+        <label for="register-shortcode-submit_button_label" class="col-sm-2 control-label"><?php _e('Submit Button Label', CDBT); ?></label>
+        <div class="col-sm-3">
+          <input id="register-shortcode-submit_button_label" name="<?php echo $this->domain_name; ?>[submit_button_label]" type="text" value="<?php if (isset($this_tab_vars['submit_button_label'])) echo $this_tab_vars['submit_button_label']; ?>" class="form-control" placeholder="<?php _e('Enter strings', CDBT); ?>">
+        </div>
+        <div class="col-sm-offset-2" style="clear: left; padding-top: 3px;">
+          <p class="help-block" style="margin-left: 1em;"><?php _e('Please enter strings that you want to display on the submit button.', CDBT); ?></p>
+        </div>
+      </div><!-- /register-shortcode-submit_button_label [i] -->
+      <div class="form-group switching-item on-i">
         <label for="register-shortcode-redirect_url" class="col-sm-2 control-label"><?php _e('Redirect URL', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="register-shortcode-redirect_url" name="<?php echo $this->domain_name; ?>[redirect_url]" type="text" value="<?php if (isset($this_tab_vars['redirect_url'])) echo $this_tab_vars['redirect_url']; ?>" class="form-control" placeholder="Absolute URI">
@@ -675,6 +684,15 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         </div>
       </div><!-- /edit-shortcode-image_render [v] -->
 
+      <div class="form-group switching-item on-i">
+        <label for="edit-shortcode-submit_button_label" class="col-sm-2 control-label"><?php _e('Submit Button Label', CDBT); ?></label>
+        <div class="col-sm-3">
+          <input id="edit-shortcode-submit_button_label" name="<?php echo $this->domain_name; ?>[submit_button_label]" type="text" value="<?php if (isset($this_tab_vars['submit_button_label'])) echo $this_tab_vars['submit_button_label']; ?>" class="form-control" placeholder="<?php _e('Enter strings', CDBT); ?>">
+        </div>
+        <div class="col-sm-offset-2" style="clear: left; padding-top: 3px;">
+          <p class="help-block" style="margin-left: 1em;"><?php _e('Please enter strings that you want to display on the submit button.', CDBT); ?></p>
+        </div>
+      </div><!-- /edit-shortcode-submit_button_label [i] -->
       <div class="form-group switching-item on-i">
         <label for="edit-shortcode-redirect_url" class="col-sm-2 control-label"><?php _e('Redirect URL', CDBT); ?></label>
         <div class="col-sm-9">

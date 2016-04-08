@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.4.2
-Stable tag: 2.0.10
+Stable tag: 2.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,13 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.0.11 =
+* Added the "cdbt_admin_truncate_strings" filter for the number of character truncation for the table management.
+* Added new option for changing the label name of registration button on the "cdbt-entry".
+* Modified compatible with the column name that contains a space.
+* Fixed a bug in the takeover process of the API host settings and the table permission settings at the time of upgrade to v2.x from v1.x.
+* Fixed a bug that occur an error if the table contain column of "set" type without values.
 
 = 2.0.10 =
 * Revised some of the source text (translation original text).
