@@ -9,6 +9,7 @@
  * 'fileUpload' => @boolean [optional] For default is false
  * 'actionUrl' => @string [optional] For default is null
  * 'formAction' => @string [optional] For default is `entry_data`
+ * 'submitLabel' => @string [optional] For default is null; Since version 2.0.11
  * 'displaySubmit' => @boolean [optional] For default is true; Is false only if called from `cdbt-edit`.
  * 'whereClause' => @array [optional] For default is null; Only if called from `cdbt-edit`.
  * 'redirectUrl' => @string [optional] For default is null;
@@ -134,6 +135,13 @@ if (isset($this->component_options['formAction']) && !empty($this->component_opt
   $form_action = $this->component_options['formAction'];
 } else {
   $form_action = 'entry_data';
+}
+
+// `submitLabel` section
+if ( isset( $this->component_options['submitLabel'] ) && ! empty( $this->component_options['submitLabel'] ) ) {
+  $button_label = $this->component_options['submitLabel'];
+} else {
+  $button_label = __('Register Data', CDBT);
 }
 
 // `displaySubmit` section
@@ -309,6 +317,7 @@ search, datetime, date, month, week, time, color
         $default_values = $this->strtoarray($element['defaultValue']);
         $is_multiple = count($selectable_list) > 1 ? true : false;
         $add_classes = $is_required ? $element['addClass'] . ' required' : $element['addClass'];
+        $selectable_list = empty( $selectable_list ) ? [ __('Undefined', CDBT) => '' ] : $selectable_list;
 ?>
     <div class="form-group">
       <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
@@ -609,7 +618,7 @@ search, datetime, date, month, week, time, color
   <?php if ($display_submit_button) : ?>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="button" class="btn btn-primary" id="btn-entry/<?php echo $form_hash; ?>"><?php _e('Register Data', CDBT); ?></button>
+        <button type="button" class="btn btn-primary" id="btn-entry/<?php echo $form_hash; ?>"><?php echo $button_label; ?></button>
       </div>
     </div>
   <?php endif; ?>

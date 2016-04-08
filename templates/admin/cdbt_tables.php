@@ -536,7 +536,7 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       <div class="form-group">
         <label for="modify-table-table_comment" class="col-sm-2 control-label"><?php _e('Table Comment', CDBT); ?></label>
         <div class="col-sm-5">
-          <input id="modify-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="<?php echo isset($session_vars) && isset($session_vars['table_comment']) ? esc_attr($session_vars['table_comment']) : esc_attr($table_options['table_comment']); ?>" class="form-control" placeholder="Table Comment">
+          <input id="modify-table-table_comment" name="<?php echo $this->domain_name; ?>[table_comment]" type="text" value="<?php echo isset($session_vars) && isset($session_vars['table_comment']) ? esc_attr($session_vars['table_comment']) : isset( $table_options['table_comment'] ) ? esc_attr($table_options['table_comment']) : ''; ?>" class="form-control" placeholder="Table Comment">
           <p class="help-block"><?php _e('Table Comments are used to display name as a logical name.', CDBT); ?></p>
         </div>
         <div class="col-sm-5">
@@ -704,7 +704,8 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         <label for="modify-table-user_permission_view" class="col-sm-2 control-label"><?php _e('Who is allowed to view table data', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_view">
-            <input type="text" id="modify-table-user_permission_view_input" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_view']) ? esc_attr($session_vars['user_permission_view']) : esc_attr(implode(',', $table_options['permission']['view_global'])); ?>" class="form-control">
+          <?php if ( isset( $session_vars ) && isset( $session_vars['user_permission_view'] ) ) { $_current_value = $session_vars['user_permission_view']; } elseif ( isset( $table_options['permission'] ) ) { $_current_value = implode( ',', $table_options['permission']['view_global'] ); } else { $_current_value = implode( ',', $this->convert_cap_level( intval( $table_options['roles']['view_role'] ) - 1 ) ); } ?>
+            <input type="text" id="modify-table-user_permission_view_input" name="<?php echo $this->domain_name; ?>[user_permission_view]" value="<?php echo $_current_value; ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -725,7 +726,8 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         <label for="modify-table-user_permission_entry" class="col-sm-2 control-label"><?php _e('Who is allowed to register table data', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_entry">
-            <input type="text" id="modify-table-user_permission_entry_input" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_entry']) ? esc_attr($session_vars['user_permission_entry']) : esc_attr(implode(',', $table_options['permission']['entry_global'])); ?>" class="form-control">
+          <?php if ( isset( $session_vars ) && isset( $session_vars['user_permission_entry'] ) ) { $_current_value = $session_vars['user_permission_entry']; } elseif ( isset( $table_options['permission'] ) ) { $_current_value = implode( ',', $table_options['permission']['entry_global'] ); } else { $_current_value = implode( ',', $this->convert_cap_level( intval( $table_options['roles']['input_role'] ) - 1 ) ); } ?>
+            <input type="text" id="modify-table-user_permission_entry_input" name="<?php echo $this->domain_name; ?>[user_permission_entry]" value="<?php echo $_current_value; ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -746,7 +748,8 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         <label for="modify-table-user_permission_edit" class="col-sm-2 control-label"><?php _e('Who is allowed to edit table data', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3 pull-left" data-initialize="combobox" id="modify-table-user_permission_edit">
-            <input type="text" id="modify-table-user_permission_edit_input" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="<?php echo isset($session_vars) && isset($session_vars['user_permission_edit']) ? esc_attr($session_vars['user_permission_edit']) : esc_attr(implode(',', $table_options['permission']['edit_global'])); ?>" class="form-control">
+          <?php if ( isset( $session_vars ) && isset( $session_vars['user_permission_edit'] ) ) { $_current_value = $session_vars['user_permission_edit']; } elseif ( isset( $table_options['permission'] ) ) { $_current_value = implode( ',', $table_options['permission']['edit_global'] ); } else { $_current_value = implode( ',', $this->convert_cap_level( intval( $table_options['roles']['edit_role'] ) - 1 ) ); } ?>
+            <input type="text" id="modify-table-user_permission_edit_input" name="<?php echo $this->domain_name; ?>[user_permission_edit]" value="<?php echo $_current_value; ?>" class="form-control">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">

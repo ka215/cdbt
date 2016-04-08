@@ -665,6 +665,7 @@ class CdbtUtility {
    * Filter the gettext function
    *
    * @since 2.0.9
+   * @since 2.0.11 Fixed for hash is false
    *
    * @param string $translated_text
    * @param string $text
@@ -674,7 +675,7 @@ class CdbtUtility {
   public function cdbt_gettext_messages( $translated_text, $text, $domain ) {
     if ( $domain === $this->domain_name ) {
       $msg_hash = $this->create_hash( $text );
-      if ( array_key_exists( $msg_hash, $this->options['override_messages'] ) ) {
+      if ( $msg_hash && array_key_exists( $msg_hash, $this->options['override_messages'] ) ) {
         $translated_text = $this->cdbt_strarc( $this->options['override_messages'][$msg_hash], 'decode' );
       }
     }

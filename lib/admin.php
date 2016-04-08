@@ -511,7 +511,7 @@ final class CdbtAdmin extends CdbtDB {
    * @since 2.0.0
    */
   public function admin_header() {
-    if ( ! $this->options['include_assets']['admin_jquery'] ) {
+    if ( isset( $this->options['include_assets']['admin_jquery'] ) && ! $this->options['include_assets']['admin_jquery'] ) {
       echo "<script>if (typeof jQuery !== 'undefined' ) { var $ = jQuery; }</script>\n";
     }
     

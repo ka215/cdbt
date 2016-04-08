@@ -29,7 +29,7 @@ trait CdbtApis {
     
     if ( isset( $this->options['api_key'] ) && is_array( $this->options['api_key'] ) && ! empty( $this->options['api_key'] ) ) {
       // Convert the option setting of version 1.x
-      $_max_host_id = max( array_keys( $_api_hosts ) );
+      $_max_host_id = ! empty( $_api_hosts ) ? max( array_keys( $_api_hosts ) ) : 0;
       foreach ( $this->options['api_key'] as $_host_name => $_api_key ) {
         $_max_host_id++;
         $_api_hosts[$_max_host_id] = [
@@ -40,6 +40,7 @@ trait CdbtApis {
           'generated' => date( 'Y-m-d H:i:s' ), 
         ];
       }
+      $this->options['api_hosts'] = $_api_hosts;
       unset( $this->options['api_key'] );
     }
     

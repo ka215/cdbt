@@ -55,7 +55,7 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
   $datasource = [];
   $_index = 0;
   foreach ($_allowed_hosts as $_host_id => $_host) {
-    $_valid_methods = $this->check_method_permission($_host_id);
+    $_valid_methods = $this->check_method_permission( $_host_id );
     $datasource[] = [
       'cdbt_index_id' => $_index++, 
       'host_id' => $_host_id, 

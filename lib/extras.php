@@ -492,8 +492,11 @@ trait CdbtExtras {
     if ( in_array( $shortcode_name, [ 'cdbt-view', 'cdbt-edit' ] ) ) {
       $table_schema = $this->get_table_schema( $table_name );
       foreach ( $columns as $_i => $_data ) {
-        if ( ! $_data['dataNumric'] && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
-          $_truncate = is_admin() ? 100 : $_data['truncateStrings'];
+        if ( ! $_data['dataNumric'] && isset( $table_schema[$_data['property']] ) && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
+          // Filter the number of character truncation at the admin panel
+          // 
+          // @since 2.0.11
+          $_truncate = is_admin() ? apply_filters( 'cdbt_admin_truncate_strings', 100, $shortcode_name, $table_name ) : $_data['truncateStrings'];
           if ( $_truncate > 0 ) {
             if ( ! isset( $columns[$_i]['customColumnRenderer'] ) ) {
               $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData.'. $_data['property'] .', '. $_truncate .' )';

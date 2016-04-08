@@ -541,7 +541,7 @@ trait CdbtShortcodes {
                 $display_view = true;
                 $thumbnail_column = $col_name;
               }
-              $custom_row_scripts[] = sprintf( 'helpers.rowData.%s = !helpers.rowData.%s ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData.%s;', $col_name, $col_name, $col_name );
+              $custom_row_scripts[] = sprintf( 'helpers.rowData[\'%s\'] = !helpers.rowData[\'%s\'] ? \'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\' : helpers.rowData[\'%s\'];', $col_name, $col_name, $col_name );
             } else {
               $row_data[$col_name] = $this->esc_binary_data( $row_data[$col_name], 'origin_file' );
             }
@@ -549,7 +549,7 @@ trait CdbtShortcodes {
             if ( $has_pk ) {
               $_where_conditions = $pk_columns;
             }
-            $_render_script_base = 'rowData.%s !== false ? \'<a href="javascript:;" class="binary-data modal-preview" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData.%s + \'" data-class="img-%s"></a>\' : \'\'';
+            $_render_script_base = 'rowData[\'%s\'] !== false ? \'<a href="javascript:;" class="binary-data modal-preview" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData[\'%s\'] + \'" data-class="img-%s"></a>\' : \'\'';
             $custom_column_renderer[$col_name] = sprintf( $_render_script_base, $col_name, $col_name, implode( ',', $_where_conditions ), $col_name, $image_render );
             $datasource[$i] = $row_data;
           } else {
@@ -568,7 +568,7 @@ trait CdbtShortcodes {
             $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
           }
           if ('set' === $table_schema[$column]['type']) {
-            $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
+            $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData[\''. $column .'\']) + \'</ul>\'';
           }
         }
       }
@@ -601,9 +601,9 @@ trait CdbtShortcodes {
           $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
           
           if ( $bool_data_with_icon ) {
-            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData[\''. $column .'\'] === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData[\''. $column .'\'] + \'</span></small></div>\'';
           } else {
-            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData[\''. $column .'\'] === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
           }
         }
       }
@@ -618,7 +618,7 @@ trait CdbtShortcodes {
           } else {
             $_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
           }
-          $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
+          $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData[\''. $column .'\'], '. $_datetime_format .') + \'</div>\'';
         }
       }
       unset($_datetime_format);
@@ -1341,7 +1341,7 @@ trait CdbtShortcodes {
             if ($has_pk) {
               $_where_conditions = $pk_columns;
             }
-            $_render_script_base = 'rowData.%s !== false ? \'<div class="binary-data" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData.%s + \'" data-class="img-%s"></div>\' : \'\'';
+            $_render_script_base = 'rowData[\'%s\'] !== false ? \'<div class="binary-data" data-column-name="%s" data-where-conditions="%s"><input type="hidden" data="\' + rowData[\'%s\'] + \'" data-class="img-%s"></div>\' : \'\'';
             $custom_column_renderer[$col_name] = sprintf($_render_script_base, $col_name, $col_name, implode(',', $_where_conditions), $col_name, $image_render);
             $datasource[$i] = $row_data;
           } else {
@@ -1359,7 +1359,7 @@ trait CdbtShortcodes {
           $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
         }
         if ('set' === $table_schema[$column]['type']) {
-          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData.'. $column .') + \'</ul>\'';
+          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData[\''. $column .'\']) + \'</ul>\'';
         }
       }
       if ($display_filter && empty($filters)) {
@@ -1391,9 +1391,9 @@ trait CdbtShortcodes {
           $bool_data_with_icon = apply_filters( 'cdbt_boolean_data_with_icon', true, $shortcode_name, $table );
           
           if ( $bool_data_with_icon ) {
-            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData.'. $column .' === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData.'. $column .' + \'</span></small></div>\'';
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center"><small><i class="\' + (rowData[\''. $column .'\'] === \'1\' ? \'fa fa-circle-o\' : \'fa fa-time\' ) + \'"></i><span class="sr-only">\' + rowData[\''. $column .'\'] + \'</span></small></div>\'';
           } else {
-            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData.'. $column .' === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
+            $custom_column_renderer[$column] = '\'<div class="center-block text-center">\' + (rowData[\''. $column .'\'] === \'1\' ? \'true\' : \'false\' ) + \'</div>\'';
           }
         }
       }
@@ -1407,7 +1407,7 @@ trait CdbtShortcodes {
         } else {
         	$_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
         }
-        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData.'. $column .', '. $_datetime_format .') + \'</div>\'';
+        $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData[\''. $column .'\'], '. $_datetime_format .') + \'</div>\'';
       }
       unset($_datetime_format);
     }
@@ -1481,7 +1481,7 @@ trait CdbtShortcodes {
       } else {
         $_temp = [];
         foreach ($condition_keys as $column) {
-          $_temp[] = sprintf('%s:\' + encodeURIComponent(rowData.%s) + \'', $column, $column);
+          $_temp[] = sprintf('%s:\' + encodeURIComponent(rowData[\'%s\']) + \'', $column, $column);
         }
         $where_condition = sprintf( '<input type="hidden" class="row_where_condition" value="%s">', implode(',', $_temp) );
       }
@@ -1489,7 +1489,7 @@ trait CdbtShortcodes {
         $_temp = is_array($columns[0]['customColumnRenderer']) ? implode("\n", $columns[0]['customColumnRenderer']) : $columns[0]['customColumnRenderer'];
         $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + %s + \'</div>%s\'', $_temp, $where_condition );
       } else {
-        $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + rowData.%s + \'</div>%s\'', $columns[0]['property'], $where_condition );
+        $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + rowData[\'%s\'] + \'</div>%s\'', $columns[0]['property'], $where_condition );
       }
       
       
