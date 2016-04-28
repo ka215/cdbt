@@ -283,7 +283,7 @@ trait CdbtExtras {
           "item.attr('class', 'cdbt-repeater-row');"
         ];
         // For after rendered
-        $repeater_custom_methods['afterRender'] = "function(){ console.info('rendered'); }";
+        $repeater_custom_methods['afterRender'] = "";
         
         $columns = [
           [ 'label' => __('CSID', CDBT), 

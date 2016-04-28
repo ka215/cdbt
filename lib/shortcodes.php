@@ -1221,11 +1221,15 @@ trait CdbtShortcodes {
     }
     
     $all_columns = array_keys($table_schema);
-    if ($exclude_cols = $this->strtoarray($exclude_cols)) {
+    if ( $exclude_cols = $this->strtoarray( $exclude_cols ) ) {
       $output_columns = [];
-      foreach ($all_columns as $_col) {
-        if (!in_array($_col, $exclude_cols)) 
+      foreach ( $all_columns as $_col ) {
+        if ( $has_pk && in_array( $_col, $pk_columns ) ) {
           $output_columns[] = $_col;
+        } else
+        if ( ! in_array( $_col, $exclude_cols ) ) {
+          $output_columns[] = $_col;
+        }
       }
     }
     if (!isset($output_columns)) 
@@ -1421,10 +1425,13 @@ trait CdbtShortcodes {
       $columns = [];
       foreach ($table_schema as $column => $scheme) {
         $_classes = [];
-        if (!in_array($column, $output_columns)) 
+        if ( ! in_array( $column, $output_columns ) ) 
           $_classes[] = 'hide';
-        if (!$enable_sort) 
+        if ( isset( $exclude_cols ) && is_array( $exclude_cols ) && in_array( $column, $exclude_cols ) ) 
+          $_classes[] = 'hide';
+        if ( ! $enable_sort ) 
           $_classes[] = 'disable-sort';
+        
         $columns[] = [
           'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
           'property' => $column, 

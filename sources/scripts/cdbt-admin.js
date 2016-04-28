@@ -261,7 +261,6 @@ $(document).ready(function() {
    * Repeater components of Fuel UX renderer
    */
   if (typeof repeater !== 'undefined') {
-    // repeater();
     _.each(repeater, function(k,v){ return repeater[v](); });
     
     var adjustCellSize = function() {
@@ -276,6 +275,7 @@ $(document).ready(function() {
     };
     
     var locationToOperation = function( post_raw_data ) {
+      docCookies.setItem( 'cdbtOperatingTable', post_raw_data.targetTable );
       var post_data = {
         'session_key': post_raw_data.sessionKey, 
         'default_action': post_raw_data.operateAction, 
@@ -298,7 +298,65 @@ $(document).ready(function() {
         locationToOperation( _.extend($(this).data(), { sessionKey: 'operate_data' }) );
       });
       
+      $(document).on('rendered.fu.repeater', '.repeater', function(e){
+        $(this).find('.sorted').removeClass('sorted');
+        var cols = $(this).data('cols').split(',');
+        var currentSortCol, currentSortDirection;
+        var sortCache = docCookies.getItem('cdbtSortCache');
+        var sortCookie = JSON.parse(sortCache);
+        if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[$(this).attr('id')] !== 'undefined') {
+          currentSortCol = cols[sortCookie[$(this).attr('id')][0]];
+          currentSortDirection = sortCookie[$(this).attr('id')][1];
+        } else {
+          currentSortCol = $(this).data().currentSortCol;
+          currentSortDirection = $(this).data().currentSortDirection;
+        }
+        if (_.contains(cols, currentSortCol)) {
+          $(this).find('thead th.sortable').each(function(){
+            var indexNum = _.indexOf(cols, currentSortCol);
+            if ($(this).index() === indexNum) {
+              $(this).addClass('sorted').find('.sortable').addClass('sorted');
+              var up_down = currentSortDirection === 'asc' ? 'up' : 'down';
+              $(this).find('.rlc').attr('class', 'glyphicon rlc glyphicon-chevron-' + up_down);
+            } else {
+              $(this).find('.rlc').attr('class', 'glyphicon rlc');
+            }
+          });
+        }
+      });
+      
       $(document).on('click', 'th.sortable', function(){
+        var parentRepeater = $(this).parents('.repeater');
+        var sortCache = docCookies.getItem('cdbtSortCache');
+        var indexNum, cols = parentRepeater.data('cols').split(','), currentSortDirection, newSortDirection;
+        var clickIndex = $(this).index();
+        if (sortCache !== null) {
+          var sortCookie = JSON.parse(sortCache);
+          if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[parentRepeater.attr('id')] !== 'undefined') {
+            indexNum = sortCookie[parentRepeater.attr('id')][0];
+            currentSortDirection = sortCookie[parentRepeater.attr('id')][1];
+            if (indexNum !== clickIndex) {
+              indexNum = clickIndex;
+            } else {
+              parentRepeater.data().currentSortDirection = currentSortDirection;
+            }
+            parentRepeater.data().currentSortCol = cols[indexNum];
+          } else {
+            indexNum = clickIndex;
+            parentRepeater.data().currentSortCol = cols[indexNum];
+            currentSortDirection = parentRepeater.data().currentSortDirection;
+          }
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        } else {
+          indexNum = clickIndex;
+          parentRepeater.data().currentSortCol = cols[indexNum];
+          currentSortDirection = parentRepeater.data().currentSortDirection;
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        }
+        sortCache = {};
+        sortCache[parentRepeater.attr('id')] = new Array( indexNum, newSortDirection, String(e.timeStamp) );
+        docCookies.getItem('cdbtSortCache', JSON.stringify(sortCache));
+        parentRepeater.repeater('render');
         adjustCellSize();
       });
       
@@ -358,7 +416,67 @@ $(document).ready(function() {
       });
       renderRepeater();
       
-      $(document).on('click', 'th.sortable', function(){
+      var is_edit_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-edit-') === 0;
+      
+      $(document).on('rendered.fu.repeater', '#cdbtShortcodes', function(e){
+        $(this).find('.sorted').removeClass('sorted');
+        var cols = $(this).data('cols').split(',');
+        var currentSortCol, currentSortDirection;
+        var sortCache = docCookies.getItem('cdbtSortCache');
+        var sortCookie = JSON.parse(sortCache);
+        if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[$(this).attr('id')] !== 'undefined') {
+          currentSortCol = cols[sortCookie[$(this).attr('id')][0]];
+          currentSortDirection = sortCookie[$(this).attr('id')][1];
+        } else {
+          currentSortCol = $(this).data().currentSortCol;
+          currentSortDirection = $(this).data().currentSortDirection;
+        }
+        if (_.contains(cols, currentSortCol)) {
+          $(this).find('thead th.sortable').each(function(){
+            var indexNum = _.indexOf(cols, currentSortCol);
+            if ($(this).index() === indexNum) {
+              $(this).addClass('sorted').find('.sortable').addClass('sorted');
+              var up_down = currentSortDirection === 'asc' ? 'up' : 'down';
+              $(this).find('.rlc').attr('class', 'glyphicon rlc glyphicon-chevron-' + up_down);
+            } else {
+              $(this).find('.rlc').attr('class', 'glyphicon rlc');
+            }
+          });
+        }
+      });
+      
+      $(document).on('click', 'th.sortable', function(e){
+        var parentRepeater = $(this).parents('.repeater');
+        var sortCache = docCookies.getItem('cdbtSortCache');
+        var indexNum, cols = parentRepeater.data('cols').split(','), currentSortDirection, newSortDirection;
+        var clickIndex = $(this).index();
+        if (sortCache !== null) {
+          var sortCookie = JSON.parse(sortCache);
+          if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[parentRepeater.attr('id')] !== 'undefined') {
+            indexNum = sortCookie[parentRepeater.attr('id')][0];
+            currentSortDirection = sortCookie[parentRepeater.attr('id')][1];
+            if (indexNum !== clickIndex) {
+              indexNum = clickIndex;
+            } else {
+              parentRepeater.data().currentSortDirection = currentSortDirection;
+            }
+            parentRepeater.data().currentSortCol = cols[indexNum];
+          } else {
+            indexNum = clickIndex;
+            parentRepeater.data().currentSortCol = cols[indexNum];
+            currentSortDirection = parentRepeater.data().currentSortDirection;
+          }
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        } else {
+          indexNum = clickIndex;
+          parentRepeater.data().currentSortCol = cols[indexNum];
+          currentSortDirection = parentRepeater.data().currentSortDirection;
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        }
+        sortCache = {};
+        sortCache[parentRepeater.attr('id')] = new Array( indexNum, newSortDirection, String(e.timeStamp) );
+        docCookies.getItem('cdbtSortCache', JSON.stringify(sortCache));
+        parentRepeater.repeater('render');
         adjustCellSize();
       });
       
@@ -824,20 +942,21 @@ $(document).ready(function() {
   if ('cdbt_tables' === $.QueryString.page && 'operate_table' === $.QueryString.tab) {
     
     $('button[id^="operate-table-action-"]').on('click', function(e) {
-//      if ('' === $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value')) {
       if ('' === $('#operate-table-target_table').selectlist('selectedItem').value) {
         e.preventDefault();
         return false;
       }
       var new_action = _.last($(this).attr('id').split('-'));
+      var cookie_value;
       if ('change_table' === new_action) {
         new_action = 'detail';
+        cookie_value = $('#operate-table-target_table').selectlist('selectedItem').value;
+        docCookies.setItem( 'cdbtOperatingTable', cookie_value );
       }
       $('input[name="custom-database-tables[operate_action]"]').val(new_action);
       $('button[id^="operate-table-action-"]').removeClass('active');
       $(this).addClass('active');
       
-//      $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('button[id^=\"operate-table-action-\"]').removeClass('active'); $('button[id^=\"operate-table-action-detail\"]').addClass('active');";
       $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('detail'); $('form.navbar-form').trigger('submit');";
       
       var post_data = {};
@@ -852,10 +971,10 @@ $(document).ready(function() {
         init_modal( post_data );
       } else {
         switch(new_action) {
-        	case 'detail': 
-        	case 'import': 
-        	case 'export': 
-        	case 'duplicate': 
+          case 'detail': 
+          case 'import': 
+          case 'export': 
+          case 'duplicate': 
             $('section').each(function() {
               if (new_action === $(this).attr('id')) {
                 $(this).attr('class', 'show');
@@ -1054,8 +1173,11 @@ $(document).ready(function() {
         return false;
       }
       var new_action = _.last($(this).attr('id').split('-'));
+      var cookie_value;
       if ('change_table' === new_action) {
         new_action = 'view';
+        cookie_value = $('#operate-table-target_table>ul.dropdown-menu').find('li[data-selected="true"]').attr('data-value');
+        docCookies.setItem( 'cdbtOperatingTable', cookie_value );
       }
       $('input[name="custom-database-tables[operate_action]"]').val(new_action);
       $('button[id^="operate-table-action-"]').removeClass('active');
@@ -1066,7 +1188,7 @@ $(document).ready(function() {
       var post_data = {};
       if ('' === $('input[name="custom-database-tables[operate_current_table]"]').val()) {
         post_data = {
-        	id: 'cdbtModal', 
+          id: 'cdbtModal', 
           insertContent: true, 
           modalTitle: 'table_unknown', 
           modalBody: '', 
@@ -1075,9 +1197,9 @@ $(document).ready(function() {
         init_modal( post_data );
       } else {
         switch(new_action) {
-        	case 'view': 
-        	case 'entry': 
-        	case 'edit': 
+          case 'view': 
+          case 'entry': 
+          case 'edit': 
             
             post_data = {
               'session_key': $.QueryString.tab, 
@@ -1791,7 +1913,12 @@ $(document).ready(function() {
       cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
     });
     
-    
+    if (docCookies.hasItem('cdbtOperatingTable')) {
+      docCookies.removeItem('cdbtOperatingTable');
+    }
+    if (docCookies.hasItem('cdbtSortCache')) {
+      docCookies.removeItem('cdbtSortCache');
+    }
   }
   
   /**
@@ -1889,41 +2016,151 @@ var convert_datetime = function() {
   var datetime_string = arguments[0].replace(/\-/g, '/');
   var datetime = new Date(datetime_string);
   var format = arguments[1].join(' ');
-  // year
-  format = format.replace(/Y/g, datetime.getFullYear());
-  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
-  // month
-  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
-  format = format.replace(/n/g, (datetime.getMonth() + 1));
-  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
-  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
-  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
-  // day
-  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
-  format = format.replace(/j/g, datetime.getDate());
-  var suffix = [ 'st', 'nd', 'rd', 'th' ];
-  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
-  format = format.replace(/S/g, suffix[suffix_index()]);
-  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
-  format = format.replace(/l/g, _.find(day, datetime.getDay()));
-  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
-  // time
-  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
-  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
-  format = format.replace(/a/g, ampm());
-  format = format.replace(/A/g, ampm().toUpperCase());
-  format = format.replace(/g/g, half_hours());
-  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
-  format = format.replace(/G/g, datetime.getHours());
-  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
-  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
-  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
-  format = format.replace(/T/g, '');
-  // other
-  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
-  format = format.replace(/r/g, datetime);
-  
-  return format.indexOf('Na') !== -1 ? arguments[0] : format;
+  if ('' === format) {
+    return arguments[0];
+  }
+  var formatStrings = format.split('');
+  var converted = '';
+  var lastDayOfMonth = function(dateObj) {
+    var tmp = new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 1);
+    tmp.setTime(tmp.getTime() - 1);
+    return tmp.getDate();
+  };
+  var isLeapYear = function() {
+    var tmp = new Date(datetime.getFullYear(), 0, 1);
+    var sum = 0;
+    for (var i = 0; i < 12; i++) {
+      tmp.setMonth(i);
+      sum += lastDayOfMonth(tmp);
+    }
+    return (sum === 365) ? 0 : 1;
+  };
+  var dateCount = function() {
+    var tmp = new Date(datetime.getFullYear(), 0, 1);
+    var sum = -1;
+    for (var i=0; i<datetime.getMonth(); i++) {
+      tmp.setMonth(i);
+      sum += lastDayOfMonth(tmp);
+    }
+    return sum + datetime.getDate();
+  };
+  _.each(formatStrings, function(str){
+    var res, tmp, sum;
+    var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+    var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
+    var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
+    var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
+    switch(str){
+      case 'Y': // Full year
+      case 'o': // Full year (ISO-8601)
+        res = datetime.getFullYear();
+        break;
+      case 'y': // Two digits year
+        res = ('' + datetime.getFullYear()).slice(-2);
+        break;
+      case 'm': // Zerofill month
+        res = ('0' + (datetime.getMonth() + 1)).slice(-2);
+        break;
+      case 'n': // Month
+        res = datetime.getMonth() + 1;
+        break;
+      case 'F': // Full month name
+        res = _.values(month)[datetime.getMonth()];
+        break;
+      case 'M': // Short month name
+        res = _.keys(month)[datetime.getMonth()];
+        break;
+      case 'd': // Zerofill day
+        res = ('0' + datetime.getDate()).slice(-2);
+        break;
+      case 'j': // Day
+        res = datetime.getDate();
+        break;
+      case 'S': // Day with suffix
+        var suffix = [ 'st', 'nd', 'rd', 'th' ];
+        var suffix_index = function(){
+          var d = datetime.getDate();
+          if ( d === 1 || d === 2 || d === 3 || d === 21 || d === 22 || d === 23 || d === 31 ) {
+            return Number(('' + d).slice(-1) - 1);
+          } else {
+            return 3;
+          }
+        };
+        res = suffix[suffix_index()];
+        break;
+      case 'w': // Day of the week (number)
+      case 'W': // Day of the week (ISO-8601 number)
+        res = datetime.getDay();
+        break;
+      case 'l': // Day of the week (full)
+        res = _.values(day)[datetime.getDay()];
+        break;
+      case 'D': // Day of the week (short)
+        res = _.keys(day)[datetime.getDay()];
+        break;
+      case 'N': // Day of the week (ISO-8601 number)
+        res = datetime.getDay() === 0 ? 7 : datetime.getDay();
+        break;
+      case 'a': // am or pm
+        res = ampm();
+        break;
+      case 'A': // AM or PM
+        res = ampm().toUpperCase();
+        break;
+      case 'g': // Half hours
+        res = half_hours();
+        break;
+      case 'h': // Zerofill half hours
+        res = ('0' + half_hours()).slice(-2);
+        break;
+      case 'G': // Full hours
+        res = datetime.getHours();
+        break;
+      case 'H': // Zerofill full hours
+        res = ('0' + datetime.getHours()).slice(-2);
+        break;
+      case 'i': // Zerofill minutes
+        res = ('0' + datetime.getMinutes()).slice(-2);
+        break;
+      case 's': // Zerofill seconds
+        res = ('0' + datetime.getSeconds()).slice(-2);
+        break;
+      case 'z': // Day of the year
+        res = dateCount();
+      	break;
+      case 't': // Days of specific month
+        res = lastDayOfMonth(datetime);
+      	break;
+      case 'L': // Whether a leap year
+      	res = isLeapYear();
+      	break;
+      case 'c': // Date of ISO-8601
+        res = arguments[0].replace(' ', 'T') + '+00:00';
+        break;
+      case 'r': // Date of RFC-2822
+        res = datetime;
+        break;
+      case 'u': // Micro second
+      	res = '000000';
+        break;
+      case 'e': // Timezone extention
+      case 'T': // Timezone
+      case 'B': // Swatch time
+      case 'I': // Whether a summer time
+      case 'O': // Diff from GMT
+      case 'P': // Diff from GMT
+      case 'Z': // Offset second of timezone
+      case 'U': // Unix Epoch seconds
+        res = '';
+        break;
+      default:
+        res = str;
+        break;
+    }
+    
+    converted += res;
+  });
+  return converted;
 };
 /**
  * Utility: Multibyte string functions

@@ -36,10 +36,10 @@ if (isset($this->component_options['id']) && !empty($this->component_options['id
 }
 
 // `search` section
-$enable_search = isset($this->component_options['enableSearch']) && false === $this->component_options['enableSearch'] ? false : true;
+$enable_search = isset($this->component_options['enableSearch']) ? $this->strtobool( $this->component_options['enableSearch'] ) : false;
 
 // `filter` section
-$enable_filter = isset($this->component_options['enableFilter']) && false === $this->component_options['enableFilter'] ? false : true;
+$enable_filter = isset($this->component_options['enableFilter']) ? $this->strtobool( $this->component_options['enableFilter'] ) : false;
 
 if (empty($this->component_options['filter_column']) || empty($this->component_options['filters'])) {
   $enable_filter = false;
@@ -52,7 +52,7 @@ if (empty($this->component_options['filter_column']) || empty($this->component_o
 }
 
 // `view` section
-$enable_view = isset($this->component_options['enableView']) && false === $this->component_options['enableView'] ? false : true;
+$enable_view = isset($this->component_options['enableView']) ? $this->strtobool( $this->component_options['enableView'] ) : false;
 
 if (isset($this->component_options['defaultView']) && in_array($this->component_options['defaultView'], [ 'list', 'thumbnail' ])) {
   $default_view = $this->component_options['defaultView'];
@@ -61,10 +61,10 @@ if (isset($this->component_options['defaultView']) && in_array($this->component_
 }
 
 // `enableEditor` section
-$enable_editor = isset($this->component_options['enableEditor']) && true === $this->component_options['enableEditor'] ? true : false;
+$enable_editor = isset($this->component_options['enableEditor']) ? $this->strtobool( $this->component_options['enableEditor'] ) : false;
 
 // `disableEdit` section
-$disable_edit = isset($this->component_options['disableEdit']) && true === $this->component_options['disableEdit'] ? true : false;
+$disable_edit = isset($this->component_options['disableEdit']) ? $this->strtobool( $this->component_options['disableEdit'] ) : false;
 
 // `listSelectable` section
 if (isset($this->component_options['listSelectable']) && in_array($this->component_options['listSelectable'], [ 'single', 'multi' ])) {
@@ -124,6 +124,7 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
   $columns = [];
   $numric_properties = [];
   $custom_columns = [];
+  $display_columns = [];
   foreach ($this->component_options['columns'] as $i => $setting) {
     $columns[$i] = [
       'label' => $setting['label'], 
@@ -153,10 +154,9 @@ if (!isset($this->component_options['columns']) || empty($this->component_option
     if (isset($setting['customRowRenderer']) && !empty($setting['customRowRenderer'])) 
       $custom_rows = isset($custom_rows) ? array_merge($custom_rows, $setting['customRowRenderer']) : $setting['customRowRenderer'];
     
+    $display_columns[] = $setting['property']; // .':'. $setting['label'];
   }
 }
-
-//var_dump($columns);
 
 // `data` section
 if (!isset($this->component_options['data']) || empty($this->component_options['data'])) {
@@ -191,7 +191,7 @@ if (!isset($this->component_options['thumbnailTemplate']) || empty($this->compon
  * ---------------------------------------------------------------------------
  */
 ?>
-  <div class="repeater<?php echo ' ' . $add_class; ?>" id="<?php echo $repeater_id; ?>">
+  <div class="repeater<?php echo ' ' . $add_class; ?>" id="<?php echo $repeater_id; ?>" data-cols="<?php echo implode( ',', $display_columns ); ?>">
   <?php if ($enable_search || $enable_filter || $enable_view || $enable_editor) : ?>
     <div class="repeater-header">
       <div class="repeater-header-left">
@@ -449,15 +449,45 @@ endif; ?>
       if (<?php echo implode(' || ', $conditions); ?>) {
         return parseFloat(item[options.sortProperty]);
       } else {
+        if (typeof options.sortProperty === 'undefined') {
+          var sortCache = <?php if ( is_admin() ) : ?>docCookies.getItem('cdbtSortCache');<?php else : ?>typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';<?php endif; ?>
+          if (<?php if ( is_admin() ) : ?>null<?php else : ?>''<?php endif; ?> !== sortCache) {
+            var sortCookie = JSON.parse(sortCache);
+            if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie['<?php echo $repeater_id; ?>'] !== 'undefined') {
+              var indexNum = sortCookie['<?php echo $repeater_id; ?>'][0]<?php if ( strpos( $repeater_id, 'cdbt-repeater-edit-' ) === 0 ) : ?> - 1<?php endif; ?>;
+              options.sortProperty = _.keys(item)[indexNum];
+              options.sortDirection = sortCookie['<?php echo $repeater_id; ?>'][1];
+            }
+          } else {
+            options.sortProperty = _.last(_.keys(item));
+          }
+        }
+        $('#<?php echo $repeater_id; ?>').attr( 'data-current-sort-col', options.sortProperty );
         return item[options.sortProperty];
       }
 <?php else : ?>
+      if (typeof options.sortProperty === 'undefined') {
+        var sortCache = <?php if ( is_admin() ) : ?>docCookies.getItem('cdbtSortCache');<?php else : ?>typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';<?php endif; ?>
+        if (<?php if ( is_admin() ) : ?>null<?php else : ?>''<?php endif; ?> !== sortCache) {
+          var sortCookie = JSON.parse(sortCache);
+          if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie['<?php echo $repeater_id; ?>'] !== 'undefined') {
+            var indexNum = sortCookie['<?php echo $repeater_id; ?>'][0]<?php if ( strpos( $repeater_id, 'cdbt-repeater-edit-' ) === 0 ) : ?> - 1<?php endif; ?>;
+            options.sortProperty = _.keys(item)[indexNum];
+            options.sortDirection = sortCookie['<?php echo $repeater_id; ?>'][1];
+          }
+        } else {
+          options.sortProperty = _.last(_.keys(item));
+        }
+      }
+      $('#<?php echo $repeater_id; ?>').attr( 'data-current-sort-col', options.sortProperty );
       return item[options.sortProperty];
 <?php endif; ?>
     });
     
     // sort direction
-    if (options.sortDirection === 'desc') {
+    options.sortDirection = typeof options.sortDirection !== 'undefined' ? options.sortDirection : 'asc';
+    $('#<?php echo $repeater_id; ?>').attr( 'data-current-sort-direction', options.sortDirection );
+    if (typeof options.sortDirection !== 'undefined' && options.sortDirection === 'desc') {
       data = data.reverse();
     }
     
@@ -516,11 +546,35 @@ endif; ?>
 
   }
   
+  function customAfterRender(){
+    $('#<?php echo $repeater_id; ?>').find('.sorted').removeClass('sorted');
+    $('#<?php echo $repeater_id; ?>').find('thead th.sortable').each(function(){
+      $(this).find('.rlc').attr('class', 'glyphicon rlc');
+      var sortCache = <?php if ( is_admin() ) : ?>docCookies.getItem('cdbtSortCache');<?php else : ?>typeof getCookie == 'function' ? getCookie('cdbtSortCache') : '';<?php endif; ?>
+      if (<?php if ( is_admin() ) : ?>null<?php else : ?>''<?php endif; ?> !== sortCache) {
+        var sortCookie = JSON.parse(sortCache);
+        if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie['<?php echo $repeater_id; ?>'] !== 'undefined') {
+          var indexNum = sortCookie['<?php echo $repeater_id; ?>'][0]<?php if ( strpos( $repeater_id, 'cdbt-repeater-edit-' ) === 0 ) : ?> + 1<?php endif; ?>;
+          if ( $(this).index() === indexNum ) {
+            $(this).addClass('sorted').find('.sortable').addClass('sorted');
+            var up_down = $('#<?php echo $repeater_id; ?>').data().currentSortDirection === 'asc' ? 'up' : 'down';
+            $(this).find('.rlc').attr('class', 'glyphicon rlc glyphicon-chevron-' + up_down);
+          }
+        }
+      }
+    });
+<?php if ( ! empty( $after_render ) ) :
+  echo $after_render . '()';
+endif; ?>
+  }
+  
   // <?php /* 初期化処理 - */ ?> initialize the repeater
   var repeater = $('#<?php echo $repeater_id; ?>');
   repeater.repeater({
     list_selectable: <?php echo $list_selectable; ?>, // (single | multi)
     list_noItemsHTML: "<?php _e( 'No result.', CDBT); ?>",
+    list_highlightSortedColumn: false,
+    list_sortClearing: true,
     
     // <?php /* カスタムレンダラを介して列出力をオーバーライドする - */ ?> override the column output via a custom renderer.
     // <?php /* これにより各列の出力のカスタムマークアップが可能になる - */ ?> this will allow you to output custom markup for each column.
@@ -543,7 +597,7 @@ endif; ?>
     
     thumbnail_template: <?php echo $thumbnail_template; ?>,
     
-  });
+  }).after(customAfterRender);
   
   $('#repeater-check-switch').on('click', function(){
     if (repeater.repeater('list_getSelectedItems').length > 0) {
@@ -557,7 +611,7 @@ endif; ?>
       });
     }
   });
-
+  
 };
 
 if (typeof convert_list !== 'undefined') {

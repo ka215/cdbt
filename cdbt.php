@@ -3,7 +3,7 @@
   Plugin Name: Custom DataBase Tables
   Plugin URI: https://ka2.org/
   Description: <strong>C</strong>ustom <strong>D</strong>ata<strong>B</strong>ase <strong>T</strong>ables is unleash the potential force of WordPress as the strongest CMS. It will dominate the MySQL database of WordPress, to create a freely table, and can be turning data thoroughly tinker.
-  Version: 2.0.11
+  Version: 2.0.12
   Author: ka2
   Author URI: https://ka2.org/
   Copyright: 2016 Monaural Sound (email : ka2@ka2.org)
@@ -30,7 +30,7 @@
 */
 ?>
 <?php
-define('CDBT_PLUGIN_VERSION', '2.0.11');
+define('CDBT_PLUGIN_VERSION', '2.0.12');
 define('CDBT_DB_VERSION', '2.1');
 define('CDBT', 'custom-database-tables'); // This plugin domain name
 

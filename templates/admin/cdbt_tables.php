@@ -819,6 +819,14 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       $current_action = $this->cdbt_sessions[$current_tab]['default_action'];
     }
     
+  } else {
+    if ( isset( $_COOKIE['cdbtOperatingTable'] ) && ! empty( $_COOKIE['cdbtOperatingTable'] ) ) {
+      $target_table = $_COOKIE['cdbtOperatingTable'];
+    }
+    
+    if ( ! empty( $target_table ) && empty( $current_action ) ) 
+      $current_action = 'operate_table' === $current_tab ? 'detail' : 'view';
+    
   }
   
   // Definition of belong table type

@@ -3,8 +3,8 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
-Tested up to: 4.4.2
-Stable tag: 2.0.11
+Tested up to: 4.5.1
+Stable tag: 2.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,13 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.0.12 =
+* Fixed a bug in when converting the datetime format of the data outputted.
+* Adjusted the behavior of the data sorting of repeater components that are output in "cdbt-view" and "cdbt-edit".
+* Fixed a bug that did not retrieve data in the specified row on the popped out editing form if had hidden the column of primary key at the "cdbt-edit".
+* Fixed a bug that session continuation of the specified table in the table management was unstable.
+* Corresponded for WordPress 4.5.x.
 
 = 2.0.11 =
 * Added the "cdbt_admin_truncate_strings" filter for the number of character truncation for the table management.

@@ -346,12 +346,72 @@ jQuery(document).ready(function($){
       
       $('.dropdown-toggle').dropdown();
       
-      $(document).on('click', '.repeater-views', function(){
-        //adjustCellSize();
+      $(document).on('rendered.fu.repeater', '.repeater', function(e){
+        $(this).find('.sorted').removeClass('sorted');
+        var cols = $(this).data('cols').split(',');
+        var currentSortCol, currentSortDirection;
+        var sortCache = typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';
+        var sortCookie = JSON.parse(sortCache);
+        if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[$(this).attr('id')] !== 'undefined') {
+          currentSortCol = is_edit_via_shortcode ? cols[sortCookie[$(this).attr('id')][0]] : cols[sortCookie[$(this).attr('id')][0]];
+          currentSortDirection = sortCookie[$(this).attr('id')][1];
+        } else {
+          currentSortCol = $(this).data().currentSortCol;
+          currentSortDirection = $(this).data().currentSortDirection;
+        }
+        if (_.contains(cols, currentSortCol)) {
+          $(this).find('thead th.sortable').each(function(){
+            var indexNum = _.indexOf(cols, currentSortCol);
+            indexNum = is_edit_via_shortcode ? indexNum + 1 : indexNum;
+            if ($(this).index() === indexNum) {
+              $(this).addClass('sorted').find('.sortable').addClass('sorted');
+              var up_down = currentSortDirection === 'asc' ? 'up' : 'down';
+              $(this).find('.rlc').attr('class', 'glyphicon rlc glyphicon-chevron-' + up_down);
+            } else {
+              $(this).find('.rlc').attr('class', 'glyphicon rlc');
+            }
+          });
+        }
       });
       
-      $(document).on('click', 'th.sortable', function(){
-        //adjustCellSize();
+      $(document).on('click', '.repeater-views', function(){
+        adjustCellSize();
+      });
+      
+      $(document).on('click', 'th.sortable', function(e){
+        var parentRepeater = $(this).parents('.repeater');
+        var sortCache = typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';
+        var indexNum, cols = parentRepeater.data('cols').split(','), currentSortDirection, newSortDirection;
+        var clickIndex = is_edit_via_shortcode ? $(this).index() - 1 : $(this).index();
+        if ('' !== sortCache) {
+          var sortCookie = JSON.parse(sortCache);
+          if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[parentRepeater.attr('id')] !== 'undefined') {
+            indexNum = sortCookie[parentRepeater.attr('id')][0];
+            currentSortDirection = sortCookie[parentRepeater.attr('id')][1];
+            if (indexNum !== clickIndex) {
+              indexNum = clickIndex;
+            } else {
+              parentRepeater.data().currentSortDirection = currentSortDirection;
+            }
+            parentRepeater.data().currentSortCol = cols[indexNum];
+          } else {
+            indexNum = clickIndex;
+            parentRepeater.data().currentSortCol = cols[indexNum];
+            currentSortDirection = parentRepeater.data().currentSortDirection;
+          }
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        } else {
+          indexNum = clickIndex;
+          parentRepeater.data().currentSortCol = cols[indexNum];
+          currentSortDirection = parentRepeater.data().currentSortDirection;
+          newSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
+        }
+        sortCache = {};
+        sortCache[parentRepeater.attr('id')] = new Array( indexNum, newSortDirection, String(e.timeStamp) );
+//console.info(sortCache);
+        setCookie('cdbtSortCache', JSON.stringify(sortCache));
+        parentRepeater.repeater('render');
+        adjustCellSize();
       });
       
       $(document).on('click', '.modal-preview', function(){
@@ -779,41 +839,151 @@ var convert_datetime = function() {
   var datetime_string = arguments[0].replace(/\-/g, '/');
   var datetime = new Date(datetime_string);
   var format = arguments[1].join(' ');
-  // year
-  format = format.replace(/Y/g, datetime.getFullYear());
-  format = format.replace(/y/g, ('' + datetime.getFullYear()).slice(-2));
-  // month
-  format = format.replace(/m/g, ('0' + (datetime.getMonth() + 1)).slice(-2));
-  format = format.replace(/n/g, (datetime.getMonth() + 1));
-  var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
-  format = format.replace(/F/g, _.find(month, datetime.getMonth()));
-  format = format.replace(/F/g, _.findKey(month, datetime.getMonth()));
-  // day
-  format = format.replace(/d/g, ('0' + datetime.getDate()).slice(-2));
-  format = format.replace(/j/g, datetime.getDate());
-  var suffix = [ 'st', 'nd', 'rd', 'th' ];
-  var suffix_index = function(){ var d = datetime.getDate(); return d > 3 ? 3 : d - 1; };
-  format = format.replace(/S/g, suffix[suffix_index()]);
-  var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
-  format = format.replace(/l/g, _.find(day, datetime.getDay()));
-  format = format.replace(/D/g, _.findKey(day, datetime.getDay()));
-  // time
-  var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
-  var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
-  format = format.replace(/a/g, ampm());
-  format = format.replace(/A/g, ampm().toUpperCase());
-  format = format.replace(/g/g, half_hours());
-  format = format.replace(/h/g, ('0' + half_hours()).slice(-2));
-  format = format.replace(/G/g, datetime.getHours());
-  format = format.replace(/H/g, ('0' + datetime.getHours()).slice(-2));
-  format = format.replace(/i/g, ('0' + datetime.getMinutes()).slice(-2));
-  format = format.replace(/s/g, ('0' + datetime.getSeconds()).slice(-2));
-  format = format.replace(/T/g, '');
-  // other
-  format = format.replace(/c/g, (arguments[0].replace(' ', 'T') + '+00:00'));
-  format = format.replace(/r/g, datetime);
-  
-  return format.indexOf('Na') !== -1 ? arguments[0] : format;
+  if ('' === format) {
+    return arguments[0];
+  }
+  var formatStrings = format.split('');
+  var converted = '';
+  var lastDayOfMonth = function(dateObj) {
+    var tmp = new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 1);
+    tmp.setTime(tmp.getTime() - 1);
+    return tmp.getDate();
+  };
+  var isLeapYear = function() {
+    var tmp = new Date(datetime.getFullYear(), 0, 1);
+    var sum = 0;
+    for (var i = 0; i < 12; i++) {
+      tmp.setMonth(i);
+      sum += lastDayOfMonth(tmp);
+    }
+    return (sum === 365) ? 0 : 1;
+  };
+  var dateCount = function() {
+    var tmp = new Date(datetime.getFullYear(), 0, 1);
+    var sum = -1;
+    for (var i=0; i<datetime.getMonth(); i++) {
+      tmp.setMonth(i);
+      sum += lastDayOfMonth(tmp);
+    }
+    return sum + datetime.getDate();
+  };
+  _.each(formatStrings, function(str){
+    var res, tmp, sum;
+    var month = { Jan: 'January', Feb: 'February', Mar: 'March', Apr: 'April', May: 'May', Jun: 'June', Jul: 'July', Aug: 'August', Sep: 'September', Oct: 'October', Nov: 'November', Dec: 'December' };
+    var day = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thurseday', Fri: 'Friday', Sat: 'Saturday' };
+    var half_hours = function(){ var h = datetime.getHours(); return h > 12 ? h - 12 : h; };
+    var ampm = function(){ var h = datetime.getHours(); return h > 12 ? 'pm' : 'am'; };
+    switch(str){
+      case 'Y': // Full year
+      case 'o': // Full year (ISO-8601)
+        res = datetime.getFullYear();
+        break;
+      case 'y': // Two digits year
+        res = ('' + datetime.getFullYear()).slice(-2);
+        break;
+      case 'm': // Zerofill month
+        res = ('0' + (datetime.getMonth() + 1)).slice(-2);
+        break;
+      case 'n': // Month
+        res = datetime.getMonth() + 1;
+        break;
+      case 'F': // Full month name
+        res = _.values(month)[datetime.getMonth()];
+        break;
+      case 'M': // Short month name
+        res = _.keys(month)[datetime.getMonth()];
+        break;
+      case 'd': // Zerofill day
+        res = ('0' + datetime.getDate()).slice(-2);
+        break;
+      case 'j': // Day
+        res = datetime.getDate();
+        break;
+      case 'S': // Day with suffix
+        var suffix = [ 'st', 'nd', 'rd', 'th' ];
+        var suffix_index = function(){
+          var d = datetime.getDate();
+          if ( d === 1 || d === 2 || d === 3 || d === 21 || d === 22 || d === 23 || d === 31 ) {
+            return Number(('' + d).slice(-1) - 1);
+          } else {
+            return 3;
+          }
+        };
+        res = suffix[suffix_index()];
+        break;
+      case 'w': // Day of the week (number)
+      case 'W': // Day of the week (ISO-8601 number)
+        res = datetime.getDay();
+        break;
+      case 'l': // Day of the week (full)
+        res = _.values(day)[datetime.getDay()];
+        break;
+      case 'D': // Day of the week (short)
+        res = _.keys(day)[datetime.getDay()];
+        break;
+      case 'N': // Day of the week (ISO-8601 number)
+        res = datetime.getDay() === 0 ? 7 : datetime.getDay();
+        break;
+      case 'a': // am or pm
+        res = ampm();
+        break;
+      case 'A': // AM or PM
+        res = ampm().toUpperCase();
+        break;
+      case 'g': // Half hours
+        res = half_hours();
+        break;
+      case 'h': // Zerofill half hours
+        res = ('0' + half_hours()).slice(-2);
+        break;
+      case 'G': // Full hours
+        res = datetime.getHours();
+        break;
+      case 'H': // Zerofill full hours
+        res = ('0' + datetime.getHours()).slice(-2);
+        break;
+      case 'i': // Zerofill minutes
+        res = ('0' + datetime.getMinutes()).slice(-2);
+        break;
+      case 's': // Zerofill seconds
+        res = ('0' + datetime.getSeconds()).slice(-2);
+        break;
+      case 'z': // Day of the year
+        res = dateCount();
+      	break;
+      case 't': // Days of specific month
+        res = lastDayOfMonth(datetime);
+      	break;
+      case 'L': // Whether a leap year
+      	res = isLeapYear();
+      	break;
+      case 'c': // Date of ISO-8601
+        res = arguments[0].replace(' ', 'T') + '+00:00';
+        break;
+      case 'r': // Date of RFC-2822
+        res = datetime;
+        break;
+      case 'u': // Micro second
+      	res = '000000';
+        break;
+      case 'e': // Timezone extention
+      case 'T': // Timezone
+      case 'B': // Swatch time
+      case 'I': // Whether a summer time
+      case 'O': // Diff from GMT
+      case 'P': // Diff from GMT
+      case 'Z': // Offset second of timezone
+      case 'U': // Unix Epoch seconds
+        res = '';
+        break;
+      default:
+        res = str;
+        break;
+    }
+    
+    converted += res;
+  });
+  return converted;
 };
 /**
  * Utility: Multibyte string functions
