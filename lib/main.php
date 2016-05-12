@@ -347,7 +347,9 @@ final class CdbtFrontend extends CdbtDB {
     // Filters
     add_filter( 'body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
-    add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
+    if ( $this->strtobool( $attributes['enable_repeater'] ) ) {
+      add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
+    }
     
     $this->action_controller();
   }
@@ -381,6 +383,8 @@ final class CdbtFrontend extends CdbtDB {
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
         'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
+        'cdbt-kinetic' => [ $this->plugin_url . 'assets/scripts/jquery.kinetic.js', [ 'cdbt-jquery' ], $this->contribute_extends['Kinetic']['version'], true ], 
+        'cdbt-clipboard' => [ $this->plugin_url . 'assets/scripts/clipboard.js', [ 'cdbt-jquery' ], $this->contribute_extends['Clipboard']['version'], true ], 
         'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
         'cdbt-main-script' => [ $this->plugin_url . 'assets/scripts/cdbt-main.js', [ 'cdbt-underscore' ], $this->version, true ], 
       ]
@@ -402,6 +406,12 @@ final class CdbtFrontend extends CdbtDB {
       if ( isset( $this->options['include_assets']['main_bootstrap'] ) && ! $this->options['include_assets']['main_bootstrap'] ) {
         unset( $assets['scripts']['cdbt-bootstrap'] );
         $assets['scripts']['cdbt-fuelux-script'][1] = [];
+      }
+      if ( isset( $this->options['include_assets']['main_kinetic'] ) && ! $this->options['include_assets']['main_kinetic'] ) {
+        unset( $assets['scripts']['cdbt-kinetic'] );
+      }
+      if ( isset( $this->options['include_assets']['main_clipboard'] ) && ! $this->options['include_assets']['main_clipboard'] ) {
+        unset( $assets['scripts']['cdbt-clipboard'] );
       }
       if ( isset( $this->options['include_assets']['main_fuel_ux'] ) && ! $this->options['include_assets']['main_fuel_ux'] ) {
         unset( $assets['styles']['cdbt-fuelux-style'] );

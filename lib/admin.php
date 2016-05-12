@@ -183,7 +183,8 @@ final class CdbtAdmin extends CdbtDB {
     add_filter( 'plugin_action_links', array($this, 'modify_plugin_action_links'), 10, 2 );
     add_filter( 'admin_body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
-    add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
+    
+    add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 ); // Future deprecated
     
   }
 
@@ -407,6 +408,8 @@ final class CdbtAdmin extends CdbtDB {
         'cdbt-jquery' => [ $this->plugin_url . 'assets/scripts/jquery.js', [], $this->contribute_extends['jQuery']['version'], false ], 
         'cdbt-underscore' => [ $this->plugin_url . 'assets/scripts/underscore.js', [ 'cdbt-jquery' ], $this->contribute_extends['Underscore.js']['version'], true ], 
         'cdbt-bootstrap' => [ $this->plugin_url . 'assets/scripts/bootstrap.js', [ 'cdbt-jquery' ], $this->contribute_extends['Bootstrap']['version'], true ], 
+        'cdbt-kinetic' => [ $this->plugin_url . 'assets/scripts/jquery.kinetic.js', [ 'cdbt-jquery' ], $this->contribute_extends['Kinetic']['version'], true ], 
+        'cdbt-clipboard' => [ $this->plugin_url . 'assets/scripts/clipboard.js', [ 'cdbt-jquery' ], $this->contribute_extends['Clipboard']['version'], true ], 
         'cdbt-fuelux-script' => [ $this->plugin_url . 'assets/scripts/fuelux.js', [ 'cdbt-bootstrap' ], $this->contribute_extends['Fuel UX']['version'], true ], 
         'cdbt-admin-script' => [ $this->plugin_url . 'assets/scripts/cdbt-admin.js', [ 'cdbt-underscore' ], $this->version, true ], 
       ]
@@ -428,6 +431,12 @@ final class CdbtAdmin extends CdbtDB {
       if ( isset( $this->options['include_assets']['admin_bootstrap'] ) && ! $this->options['include_assets']['admin_bootstrap'] ) {
         unset( $assets['scripts']['cdbt-bootstrap'] );
         $assets['scripts']['cdbt-fuelux-script'][1] = [];
+      }
+      if ( isset( $this->options['include_assets']['admin_kinetic'] ) && ! $this->options['include_assets']['admin_kinetic'] ) {
+        unset( $assets['scripts']['cdbt-kinetic'] );
+      }
+      if ( isset( $this->options['include_assets']['admin_clipboard'] ) && ! $this->options['include_assets']['admin_clipboard'] ) {
+        unset( $assets['scripts']['cdbt-clipboard'] );
       }
       if ( isset( $this->options['include_assets']['admin_fuel_ux'] ) && ! $this->options['include_assets']['admin_fuel_ux'] ) {
         unset( $assets['styles']['cdbt-fuelux-style'] );
@@ -812,7 +821,7 @@ final class CdbtAdmin extends CdbtDB {
     $submit_options['plugin_menu_position'] = $_fixed_pos;
     
     // for values of `include_assets`
-    $_chk_include_assets = [ 'admin_jquery', 'admin_underscore_js', 'admin_bootstrap', 'admin_fuel_ux', 'main_jquery', 'main_underscore_js', 'main_bootstrap', 'main_fuel_ux' ];
+    $_chk_include_assets = [ 'admin_jquery', 'admin_underscore_js', 'admin_bootstrap', 'admin_fuel_ux', 'admin_kinetic', 'admin_clipboard', 'main_jquery', 'main_underscore_js', 'main_bootstrap', 'main_fuel_ux', 'main_kinetic', 'main_clipboard' ];
     if ( array_key_exists( 'include_assets', $submit_options ) ) {
       foreach ( $_chk_include_assets as $_asset_name ) {
         if ( ! array_key_exists( $_asset_name, $submit_options['include_assets'] ) ) {
@@ -1431,11 +1440,9 @@ final class CdbtAdmin extends CdbtDB {
                       $escaped_sql = addslashes_gpc($importation_sql);
                     break;
                   case 'sql': 
-                    $bin_context = $this->get_binary_context( $_FILES[$this->domain_name]['tmp_name']['upfile'], $_FILES[$this->domain_name]['name']['upfile'], $_FILES[$this->domain_name]['type']['upfile'], $_FILES[$this->domain_name]['size']['upfile'] );
-                    $_context = unserialize($bin_context);
-                    // Still remains is a bug in this process
-                    $escaped_sql = addslashes_gpc($_context['bin_data']);
-                    // $escaped_sql = $this->esc_binary_data($bin_context, 'bin_data');
+                    $_base_sql = @file_get_contents( $_FILES[$this->domain_name]['tmp_name']['upfile'] );
+                    $_base_sql = 'INSERT INTO `'. $_POST['import_to'] .'` '. strstr( $_base_sql, '(' );
+                    $escaped_sql = addslashes_gpc( $_base_sql );
                     break;
                 }
                 if (isset($escaped_sql) && !empty($escaped_sql)) {
@@ -2025,7 +2032,7 @@ final class CdbtAdmin extends CdbtDB {
           $_component = ob_get_contents();
           ob_end_clean();
           $args['modalTitle'] = __('Table Creator', CDBT);
-          $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings when you click of "Apply SQL". Then it is never lost if you close this modal window.', CDBT) . '</p>' . $_component;
+          $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings after you click of "Apply SQL". Then it is never lost even if you close this modal window.', CDBT) . '</p>' . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];
           break;
         case 'hide_tutorial': 
@@ -2036,6 +2043,7 @@ final class CdbtAdmin extends CdbtDB {
           break;
         case 'view_item_full': 
           $args['modalTitle'] = __('Show Full Content', CDBT);
+          $args['modalShowEvent'] = "$('#cdbtModal').find('.modal-body>textarea').addClass('view-full-content').css({ overflow: 'hidden', height:$('#cdbtModal').find('.modal-body>textarea')[0].scrollHeight+'px', resize: 'none' });";
           break;
         default:
           break;

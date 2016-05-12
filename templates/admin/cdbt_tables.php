@@ -1122,10 +1122,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       <?php if (in_array($session_var[$this->domain_name]['import_filetype'], ['csv', 'tsv', 'json', 'sql'])) : ?>
         <label for="import-table-upfile" class="col-sm-2 control-label"><?php _e('Import SQL Statement', CDBT); ?></label>
         <div class="col-sm-9">
-          <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo stripslashes_deep($session_var[$this->domain_name]['upfile']); ?></textarea>
+        <?php $import_data = is_array( $session_var[$this->domain_name]['upfile'] ) ? array_shift( $session_var[$this->domain_name]['upfile'] ) : $session_var[$this->domain_name]['upfile']; ?>
+          <textarea name="confirm_sql" id="confirm_sql" class="form-control" rows="15" readonly="readonly"><?php echo stripslashes_deep( $import_data ); ?></textarea>
           <p class="help-block"><?php _e('SQL that contains the binary data may not be successfully imported.', CDBT); ?></p>
         </div>
-        <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr($session_var[$this->domain_name]['upfile']); ?>">
+        <input type="hidden" name="<?php echo $this->domain_name; ?>[import_sql]" value="<?php echo esc_attr( $import_data ); ?>">
       <?php endif; ?>
     <?php endif; ?>
       </div>

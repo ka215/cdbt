@@ -336,7 +336,7 @@ class CdbtValidator extends CommonValidator {
         $valid_columns++;
     }
     if (0 === $valid_columns) 
-      return __('Valid column definition does not exist.', CDBT);
+      return __('No valid column definition.', CDBT);
     
     // Whether or not there is an automatic additional columns
     if (!empty($compare_vars) && !empty($compare_vars['automatically_add_columns'])) {

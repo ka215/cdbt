@@ -6,7 +6,7 @@
       
       img {
         width: auto;
-        max-width: 100%;
+        height: auto;
       }
       
     }
@@ -17,6 +17,18 @@
         background-color: #f4f4f4;
       }
       
+    }
+    
+    .view-full-content {
+      padding: 8px;
+      background-color: #f7f7f7;
+      border-color: #d1d1d1;
+      
+      &:hover, &:active, &:focus {
+        background-color: #f7f7f7;
+        border-color: #d1d1d1;
+        box-shadow: 0 0 0 transparent;
+      }
     }
     
   }

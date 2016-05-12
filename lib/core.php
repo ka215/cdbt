@@ -241,7 +241,7 @@ class CdbtCore extends CdbtUtility {
     //$role = get_role( 'administrator' );
     //$role->remove_cap( 'cdbt_operate_plugin' );
     
-    $message = sprintf(__('Function called: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has been deactivation.', CDBT));
+    $message = sprintf(__('Called function: %s; %s', CDBT), __FUNCTION__, __('Custom DataBase Tables plugin has been deactivation.', CDBT));
     $this->logger( $message );
     
     // Delete rewrite rules

@@ -49,6 +49,12 @@
     "underscore.js": {
       "bower": ["underscore"]
     },
+    "jquery.kinetic.js": {
+      "bower": ["jquery.kinetic"]
+    },
+      "clipboard.js": {
+      "bower": ["clipboard"]
+    },
     "fuelux.css": {
       "bower": ["fuelux"]
     }

@@ -17,6 +17,9 @@ $files = [
   'db.php',            // Database class with wrapping wpdb
   'ajax.php',          // Trait for using ajax
   'tmpl.php',          // Trait for dynamic rendering templates
+  'shortcodes/cdbt-view.php', 	// Trait of shortcode for "cdbt-view"
+  'shortcodes/cdbt-entry.php', 	// Trait of shortcode for "cdbt-entry"
+  'shortcodes/cdbt-edit.php', 	// Trait of shortcode for "cdbt-edit"
   'shortcodes.php', // Trait for shortcodes definitions
   'webapis.php',     // Trait for web apis definitions
   'extras.php',       // Trait for enhancements (for customization)

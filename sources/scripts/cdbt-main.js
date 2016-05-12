@@ -48,7 +48,7 @@ jQuery(document).ready(function($){
   
   /**
    * Utility functions
-   * Return as an object by parsing the query string of the current URL
+   * 1. Return as an object by parsing the query string of the current URL
    */
   $.QueryString = (function(queries) {
     if ('' === queries) { return {}; }
@@ -60,6 +60,17 @@ jQuery(document).ready(function($){
     }
     return results;
   })(window.location.search.substr(1).split('&'));
+  
+  /**
+   * 2. 1em to pixels
+   */
+  $.em2pxl = function(em) {
+    if ('' === em) { em = 1; }
+    var div = $('<div style="width:'+em+'em;"></div>').appendTo('body');
+    var pixel = div.width();
+    div.remove();
+    return pixel;
+  };
   
   /**
    * Localize the variables passed from wordpress
@@ -157,7 +168,6 @@ jQuery(document).ready(function($){
           $.onTimer = false;
         });
         // Initialize other
-        //dynamicTableRender();
         $('div.modal-body').find('input,textarea,select').each(function(){
           if (typeof $(this).attr('required') !== 'undefined') {
             $(this).prop('required', true);
@@ -315,6 +325,53 @@ jQuery(document).ready(function($){
   
   
   /**
+   * Dynamic table components renderer
+   */
+  if (typeof DynamicTables !== 'undefined') {
+    _.each($('.cdbt-table-wrapper').find('table').map(function(){return this.id; }).get(), function(v){
+      var table = new DynamicTables[v]();
+      return table.render();
+    });
+    
+    $(document).on('click', '.modal-preview', function(){
+      var bin_data = $(this).children('img').attr('src');
+      var raw_data = '';
+      var post_data = {
+        id: 'cdbtModal', 
+        insertContent: true, 
+        modalTitle: '', 
+        modalBody: '', 
+      };
+      if (typeof bin_data !== 'undefined') {
+        if (bin_data.indexOf('data:') === 0) {
+        /*
+          bin_data = bin_data.split(',');
+          raw_data = bin_data.length > 1 ? bin_data[1] : '';
+        } else {
+        */
+          raw_data = bin_data;
+        }
+        var maxImageHeight = $(window).height() - 200 - ($('#wpadminbar').size() ? $('#wpadminbar').outerHeight() : 0);
+        post_data.modalTitle = 'image_preview';
+        post_data.modalSize = 'large';
+        post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block" style="max-height:'+maxImageHeight+'px"></div>';
+      } else {
+        var repeater_id = $(this).parents('.repeater').attr('id');
+        raw_data = $(this).text();
+        post_data.modalTitle = 'binary_downloader';
+        post_data.modalExtras = { 
+          'table_name': repeater_id.substr(repeater_id.lastIndexOf('-') + 1), 
+          'target_column': $(this).attr('data-column-name'), 
+          'where_clause': $(this).attr('data-where-conditions'), 
+        };
+      }
+      init_modal( post_data );
+      
+    });
+    
+  }
+  
+  /**
    * Repeater components of Fuel UX renderer
    */
   if (typeof repeater !== 'undefined') {
@@ -381,7 +438,11 @@ jQuery(document).ready(function($){
       $(document).on('click', 'th.sortable', function(e){
         var parentRepeater = $(this).parents('.repeater');
         var sortCache = typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';
-        var indexNum, cols = parentRepeater.data('cols').split(','), currentSortDirection, newSortDirection;
+        if (parentRepeater.data('cols') === undefined) {
+          return false;
+        }
+        var cols = parentRepeater.data('cols').split(',');
+        var indexNum, currentSortDirection, newSortDirection;
         var clickIndex = is_edit_via_shortcode ? $(this).index() - 1 : $(this).index();
         if ('' !== sortCache) {
           var sortCookie = JSON.parse(sortCache);
@@ -432,9 +493,10 @@ jQuery(document).ready(function($){
           */
             raw_data = bin_data;
           }
+          var maxImageHeight = $(window).height() - 200 - ($('#wpadminbar').size() ? $('#wpadminbar').outerHeight() : 0);
           post_data.modalTitle = 'image_preview';
           post_data.modalSize = 'large';
-          post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block"></div>';
+          post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block" style="max-height:'+maxImageHeight+'px"></div>';
         } else {
           var repeater_id = $(this).parents('.repeater').attr('id');
         	raw_data = $(this).text();
@@ -706,14 +768,6 @@ jQuery(document).ready(function($){
   
   
   /**
-   * Dynamic table components renderer
-   */
-  if (typeof dynamicTable !== 'undefined') {
-    _.each(dynamicTable, function(k,v){ return dynamicTable[v](); });
-  }
-  
-  
-  /**
    * Common ajax closure
    */
   var cdbtCallAjax = function(){
@@ -819,7 +873,7 @@ jQuery(document).ready(function($){
       id: 'cdbtModal', 
       insertContent: true, 
       modalTitle: 'view_item_full', 
-      modalBody: $(this).data('raw'), 
+      modalBody: "<textarea readonly>"+$(this).data('raw')+'</textarea>', 
     };
     init_modal( post_data );
   });
@@ -827,7 +881,7 @@ jQuery(document).ready(function($){
   
 });
 /**
- * Convert datetime format as common utility function for repeater
+ * Convert datetime format as common utility function for repeater and dynamicTable
  */
 var convert_datetime = function() {
   if (arguments.length < 2) {
@@ -1032,10 +1086,11 @@ var cdbtCustomColumnFilter = function( value, truncate ){
   var raw_str = $('<div/>').html( strip_tags( _.unescape( value ), '<a><b><strong><em><i>' ) ).text();
   if ( mb_strlen( raw_str ) > truncate ) {
     var truncate_str = mb_substr( raw_str, 0, truncate - 1 );
-    value = truncate_str + '<a href="javascript:;" class="btn btn-default btn-sm collapse-col-data" data-raw="'+ value +'">...<span class="caret"></span></a>';
+    value = truncate_str + '<a href="javascript:;" class="btn btn-default btn-sm collapse-col-data" data-raw="'+ value +'"><i class="fa fa-ellipsis-h" aria-hidden="true"></i> <i class="fa fa-level-up" aria-hidden="true"></i></a>';
   } else {
     value = raw_str;
   }
   
   return value;
 };
+

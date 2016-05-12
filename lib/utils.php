@@ -333,7 +333,7 @@ class CdbtUtility {
         
         $download_result = true;
         $notice_class = CDBT . '-notice';
-        $message = __('Export of table data has been completed successfully.', CDBT);
+        $message = __('Exported successfully the data of table.', CDBT);
         
       } catch(Exception $e) {
         

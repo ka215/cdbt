@@ -70,19 +70,19 @@ trait CdbtExtras {
       'apikey_requests' => 'try-yet', 
       'allow_rendering_shortcodes' => 'done', 
       'ajax_loading' => 'unreleased', 
-      'include_assets' => 'try-yet', 
-      'prevent_duplicate_sending' => 'try-yet', 
+      'include_assets' => 'done', 
+      'prevent_duplicate_sending' => 'done', 
       'plugin_menu_position' => 'done', 
       'sanitaization' => 'done', 
       'notices_via_modal' => 'done', 
-      'override_messages' => 'try-yet', 
-      'changelog_panel' => 'try-yet', 
-      'reference_columns' => 'try-yet', 
-      'truncate_strings' => 'new', 
+      'override_messages' => 'done', 
+      'changelog_panel' => 'done', 
+      'reference_columns' => 'done', 
+      'truncate_strings' => 'try-yet', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {
-        $_label = __('Try yet', CDBT);
+        $_label = __('Under test', CDBT);
         $_class = 'warning';
       }
       if ( 'new' === $new_features[$feature_name] ) {
@@ -479,9 +479,11 @@ trait CdbtExtras {
   
   
   /**
-   * Filter of custom column renderer for a string type column
+   * Filter of custom column renderer for a string type column for repeater only
+   * If there is placed both repeater and table on the same page, it will enable this fileter. That is currentry trouble.
    *
    * @since 2.0.10
+   * @since 2.1.x Future deprecated
    *
    * @param array $columns [required]
    * @param string $shortcode_name [optional]
@@ -499,7 +501,7 @@ trait CdbtExtras {
           $_truncate = is_admin() ? apply_filters( 'cdbt_admin_truncate_strings', 100, $shortcode_name, $table_name ) : $_data['truncateStrings'];
           if ( $_truncate > 0 ) {
             if ( ! isset( $columns[$_i]['customColumnRenderer'] ) ) {
-              $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData.'. $_data['property'] .', '. $_truncate .' )';
+              $columns[$_i]['customColumnRenderer'] = 'cdbtCustomColumnFilter(rowData[\''. $_data['property'] .'\'], '. $_truncate .' )';
             }
           }
         }

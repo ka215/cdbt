@@ -45,12 +45,11 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
   $_p_fin = '</p>';
   // Step1 section
   $step1_content = '<section class="cdbt-wizard-content"><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>';
-  $step1_content .= $_p_begin. __('Sorry I made you wait! Just barely plug-major upgrade version of "CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, referred to as V2)" had released.', CDBT) .$_p_fin;
-  $step1_content .= $_p_begin. __('The CDBT is a database management plugin that you can create your own tables in the MySQL database for WordPress, you can directly input and output of data in, and be related data to themes and external sites.', CDBT) .'<br>';
-  $step1_content .= __('For using this plugin, you never need detailed knowledge of the database. Then you  can intuitively handle tables and data in database.', CDBT);
-  $step1_content .= __('Your website that will be able to store own extended data by this plugin, it will give you some phenomenal extension idea to your envisioning project.', CDBT) .$_p_fin;
-  $step1_content .= $_p_begin. __('Also at the CDBT V2, finally ability to manage the core table of WordPress has been added. In this feature, you should be able to using the WordPress as likely CMS.', CDBT) .$_p_fin;
-  $step1_content .= $_p_begin. __('However, in order to utilize the CDBT V2, please be aware that it is necessary to <strong class="text-danger">PHP5.4 or higher</strong> environment. In addition, in this plugin it is using the external library below.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('Thank you for waiting! We released plugin-major upgrade version of "CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, referred to as V2)" at last.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('The "CDBT" plugin is a database management tool. Using this plugin, you can create freely own table in  MySQL database of WordPress, and you can do input and output of data in an intuitive operation. Moreover you will be able to provide the data to as like themes and external sites easily.', CDBT) .'<br>';
+  $step1_content .= __('Your website will be able to store own extended data by this plugin, it causes give you some phenomenal extension idea to your project.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('From the "CDBT V2", it has been added the feature to manage the core tables built in the WordPress. Using this feature, you would be able to operating the WordPress as with CMS.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('However, in order to utilize the "CDBT V2", please be aware that it is necessary environment of <strong class="text-danger">PHP 5.4 or higher</strong>. In addition, in this plugin it is using the external library below.', CDBT) .$_p_fin;
   $step1_content .= '<ul class="contribute-extends list-inline">'. implode('', $_contribute_list) .'</ul>';
   $step1_content .= '</section>';
   // Step2 section

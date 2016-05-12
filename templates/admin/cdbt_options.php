@@ -284,7 +284,7 @@ $default_action = 'update';
             </thead>
             <tbody>
               <td><ul>
-              <?php $_admin_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX' ]; ?>
+              <?php $_admin_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
               <?php foreach ( $_admin_assets as $_asset_name ) : 
                 $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
                 $_checked_cond = isset( $options['include_assets']['admin_'. $_asset_slug ] ) ? $options['include_assets']['admin_'. $_asset_slug ] : '1'; ?>
@@ -297,7 +297,7 @@ $default_action = 'update';
               <?php endforeach; ?>
               </ul></td>
               <td><ul>
-              <?php $_main_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX' ]; ?>
+              <?php $_main_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
               <?php foreach ( $_main_assets as $_asset_name ) : 
                 $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
                 $_checked_cond = isset( $options['include_assets']['main_'. $_asset_slug ] ) ? $options['include_assets']['main_'. $_asset_slug ] : '1'; ?>
@@ -407,16 +407,14 @@ $default_action = 'update';
       </div>
       
       <div class="form-group">
-        <div class="col-sm-1">
+        <div class="checkbox highlight col-sm-11" id="debug-log-option">
           <input type="submit" name="submit" id="debug-submit" class="btn btn-primary pull-left" value="<?php _e('Clear Logs', $this->domain_name); ?>">
-        </div>
-        <div class="checkbox highlight col-sm-10" id="debug-log-option">
           <label class="checkbox-custom highlight" data-initialize="checkbox">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_log_option]" type="checkbox" value="1">
             <span class="checkbox-label"><?php _e('Remove the current log after backup of the log file.', $this->domain_name); ?></span>
           </label>
         </div>
-        <p class="help-block col-sm-offset-1 col-sm-10">
+        <p class="help-block col-sm-offset-1 col-sm-11">
           <?php printf( __('Note: Backup files stores to the directory of %s.', $this->domain_name), '<code>'. $this->plugin_dir .'backup/</code>' ); ?>
         </p>
       </div>

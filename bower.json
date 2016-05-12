@@ -10,9 +10,11 @@
   "dependencies": {
     "jquery": "~2.2.1",
     "bootstrap-sass": "~3.3.6",
-    "font-awesome-sass": "~4.5.0",
+    "font-awesome-sass": "~4.6.2",
     "underscore": "~1.8.3",
-    "fuelux": "~3.13.0"
+    "fuelux": "~3.13.0",
+    "jquery.kinetic": "~2.1.0",
+    "clipboard": "~1.5.10"
   },
   "overrides": {
     "bootstrap-sass": {
@@ -28,7 +30,7 @@
     },
     "font-awesome-sass": {
       "main": [
-        "./assets/stylesheets/font-awesome.scss",
+        "./assets/stylesheets/_font-awesome.scss",
         "./assets/fonts/font-awesome/fontawesome-webfont.eot",
         "./assets/fonts/font-awesome/fontawesome-webfont.svg",
         "./assets/fonts/font-awesome/fontawesome-webfont.ttf",

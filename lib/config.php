@@ -77,7 +77,9 @@ class CdbtConfig extends CdbtCore {
       'Underscore.js' => [ 'url' => 'http://underscorejs.org/', 'version' => '1.8.3' ], 
       'Fuel UX' => [ 'url' => 'http://getfuelux.com/', 'version' => '3.13.1' ], 
       'moment.js' => [ 'url' => 'http://momentjs.com/', 'version' => '2.11.2' ], 
-      'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.5.0' ], 
+      'Font Awesome' => [ 'url' => 'http://fortawesome.github.io/Font-Awesome/', 'version' => '4.6.2' ], 
+      'Kinetic' => [ 'url' => 'https://github.com/davetayls/jquery.kinetic', 'version' => '2.1.0' ], 
+      'Clipboard' => [ 'url' => 'https://github.com/zenorocha/clipboard.js', 'version' => '1.5.10' ], 
     ];
     
     $this->override_messages = [
@@ -647,7 +649,7 @@ class CdbtConfig extends CdbtCore {
     
     if ( ! is_writable( $this->log_distination_path ) ) {
       if ( ! chmod( $this->log_distination_path, 0666 ) ) {
-        $this->logger( __( 'Debug log file does not have permission of writable.', CDBT ) );
+        $this->logger( __( 'Debug log file does not have writable permission.', CDBT ) );
       }
     }
     

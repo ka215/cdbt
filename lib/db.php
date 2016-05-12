@@ -21,6 +21,7 @@ class CdbtDB extends CdbtConfig {
   
   var $db_errors = [];
   
+  var $common_error_messages = [];
   
   /**
    * Initialize settings of database and tables for this plugin (non-save to database)
@@ -73,6 +74,11 @@ class CdbtDB extends CdbtConfig {
       $this->wpdb->hide_errors();
     }
     $this->wpdb->suppress_errors = $this->suppress_errors;
+    
+    $this->common_error_messages = [
+      __( 'Table name is not specified when calling the "%s" method.', CDBT ), 
+      __( 'The "%s" does not supported on your environment.', CDBT ), 
+    ];
     
     // Added Filter
     add_filter( 'cdbt_lower_case_table_name', array( $this, 'lowercase_table_name' ) );
@@ -147,7 +153,7 @@ class CdbtDB extends CdbtConfig {
   public function check_table_exists( $table_name=null ) {
     $table_name = $this->lowercase_table_name( $table_name );
     if ( empty( $table_name ) ) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -179,10 +185,10 @@ class CdbtDB extends CdbtConfig {
     }
     
     if (empty($table_name)) 
-      $message = sprintf( __('Table name does not exist at the time of "%s" call.', CDBT), __FUNCTION );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION );
     
     if ( empty( $sql ) ) 
-      $message = sprintf( __('SQL to create table does not exist at the time of "%s" call.', CDBT), __FUNCTION );
+      $message = sprintf( __('SQL for table creation is not specified when calling the "%s" method.', CDBT), __FUNCTION );
     
     // Check whether a table that trying to create does not already exist
     if ( $this->check_table_exists( $table_name ) ) 
@@ -224,7 +230,7 @@ class CdbtDB extends CdbtConfig {
    */
   public function get_table_schema( $table_name=null, $db_name=null ) {
     if (empty($table_name)) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -234,7 +240,7 @@ class CdbtDB extends CdbtConfig {
     
     $table_name = $this->lowercase_table_name( $table_name );
     if ( ! $this->check_table_exists( $table_name ) ) {
-      $message = sprintf( __('Specified table "%1$s" did not exist when called method "%2$s".', CDBT), $table_name, __FUNCTION__ );
+      $message = sprintf( __('Specified table "%1$s" did not exist when called the "%2$s" method.', CDBT), $table_name, __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -312,7 +318,7 @@ class CdbtDB extends CdbtConfig {
     
     $table_name = $this->lowercase_table_name( $table_name );
     if ( empty( $table_name ) ) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -323,7 +329,7 @@ class CdbtDB extends CdbtConfig {
         return $result['Create Table'];
     }
     
-    $message = __('Getting a SQL statement to create table has failed.', CDBT);
+    $message = __('Failed to get a SQL statement to create table.', CDBT);
     $this->logger( $message );
     return false;
     
@@ -359,7 +365,7 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if ( empty( $table_name ) ) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       return false;
     }
     
@@ -392,7 +398,7 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if (empty($table_name)) 
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
       $message = __('No specified table.', CDBT);
@@ -400,7 +406,7 @@ class CdbtDB extends CdbtConfig {
     $result = $this->array_flatten($this->wpdb->get_results( $this->wpdb->prepare( 'SHOW TABLE STATUS LIKE %s;', esc_sql($table_name) ), ARRAY_A ));
     $_values = array_values($result);
     if (!is_array($result) || empty($result) || empty($_values)) 
-      $message = __('Table status does not exist.', CDBT);
+      $message = __('No table status.', CDBT);
     
     if (!empty($message)) {
       $this->logger( $message );
@@ -428,7 +434,7 @@ class CdbtDB extends CdbtConfig {
         return $custom_result;
     }
     
-    $message = __('Specified table state name does not exist.', CDBT);
+    $message = __('No specified table state name.', CDBT);
     $this->logger( $message );
     return false;
     
@@ -448,7 +454,7 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if (empty($table_name)) 
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
       $message = __('No specified table.', CDBT);
@@ -485,7 +491,7 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if (empty($table_name)) 
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
       $message = __('No specified table.', CDBT);
@@ -523,29 +529,29 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if (empty($replicate_table) || empty($origin_table)) 
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
     
     if (!$this->check_table_exists($origin_table)) 
-      $message = __('Replication origin table does not exist.', CDBT);
+      $message = __('No origin table for duplication.', CDBT);
     
     $result = $this->wpdb->query( sprintf( 'CREATE TABLE `%s` LIKE `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) );
     $retvar = $this->strtobool($result);
     if ($retvar) {
-      $message = sprintf( __('Created a table "%1$s" replicated of the table "%2$s".', CDBT), $replicate_table, $origin_table );
+      $message = sprintf( __('Created the table of "%1$s" as duplicate of the "%2$s".', CDBT), $replicate_table, $origin_table );
       $this->logger( $message );
       if ($duplicate_with_data) {
         $check_data = $this->array_flatten($this->get_data( $origin_table, 'COUNT(*)', 'ARRAY_A'));
         if (is_array($check_data) && intval(reset($check_data)) > 0) {
           if ($this->wpdb->query( sprintf( 'INSERT INTO `%s` SELECT * FROM `%s`;', esc_sql($replicate_table), esc_sql($origin_table) ) )) {
-            $message = sprintf( __('Then copied the data to replication table "%s".', CDBT), $replicate_table );
+            $message = sprintf( __('Then copied the data into the duplicated table "%s".', CDBT), $replicate_table );
           } else {
-            $message = __('Table replication has been completed, but have failed to copy the data.', CDBT);
+            $message = __('The table duplication completed, but failed to copy the data.', CDBT);
             $message .= $this->retrieve_db_error();
           }
         }
       }
     } else {
-      $message = sprintf( __('Failed to replicated table "%s" creation.', CDBT), $replicate_table );
+      $message = sprintf( __('Failed to duplicate of the "%s" table.', CDBT), $replicate_table );
       $message .= $this->retrieve_db_error();
     }
     
@@ -604,7 +610,7 @@ class CdbtDB extends CdbtConfig {
     
     // Check Table
     if ( false === ( $table_schema = $this->get_table_schema( $table_name ) ) ) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -718,7 +724,7 @@ class CdbtDB extends CdbtConfig {
     
     // Check Table
     if (false === ($table_schema = $this->get_table_schema($table_name))) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -895,14 +901,14 @@ class CdbtDB extends CdbtConfig {
     
     // Check Table
     if (false === ($table_schema = $this->get_table_schema($table_name))) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
     
     // Check Data
     if (empty($data)) {
-      $message = __('Insertion data does not exists.', CDBT);
+      $message = __('No insert data.', CDBT);
       $this->logger( $message );
       return false;
     }
@@ -1027,7 +1033,7 @@ class CdbtDB extends CdbtConfig {
     
     // Check Table
     if (false === ($table_schema = $this->get_table_schema($table_name))) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
@@ -1052,7 +1058,7 @@ class CdbtDB extends CdbtConfig {
     
     // Check update data
     if (empty($data)) {
-      $message = __('Update data does not exist.', CDBT);
+      $message = __('No update data.', CDBT);
     } else
     if (!is_array($data)) {
       if (false === ($_update_data = $this->strtohash($data))) {
@@ -1073,11 +1079,11 @@ class CdbtDB extends CdbtConfig {
     
     // Check condition to specify data
     if (empty($where_clause)) {
-      $message = __('Condition to find the update data is not specified.', CDBT);
+      $message = __('Condition to find the updating data is not specified.', CDBT);
     } else
     if (!is_array($where_clause)) {
       if (false === ($_update_where = $this->strtohash($where_clause))) {
-        $message = __('Condition for finding the update data is invalid.', CDBT);
+        $message = __('Condition to find the updating data is invalid.', CDBT);
       }
     } else {
       $_update_where = $where_clause;
@@ -1139,7 +1145,7 @@ class CdbtDB extends CdbtConfig {
     if (empty($primary_keys) && empty($foreign_keys) && empty($unique_keys) && empty($surrogate_key) && !$is_exists_updated) {
       $same_rows = $this->array_flatten($this->get_data( $table_name, 'COUNT(*)', $where_data, 'ARRAY_N' ));
       if (intval($same_rows[0]) > 1) {
-        $message = __('The record having the same data could not be updated in order that existed in the other.', CDBT);
+        $message = __('Failed to update data because the record having the same data exist in the other.', CDBT);
         $this->logger( $message );
         return false;
       }
@@ -1302,18 +1308,18 @@ class CdbtDB extends CdbtConfig {
     
     // Check Table
     if (false === ($table_schema = $this->get_table_schema($table_name))) {
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
       $this->logger( $message );
       return false;
     }
     
     // Check condition to specify data
     if ( empty( $where_clause ) ) {
-      $message = __('Condition to find the deletion data is not specified.', CDBT);
+      $message = __('Condition to find the deleting data is not specified.', CDBT);
     } else {
       $_deletion_where = is_string( $where_clause ) ? $this->strtohash( $where_clause ) : $where_clause;
       if ( false === $_deletion_where || ! $this->is_assoc( $_deletion_where ) ) 
-        $message = __('Condition for finding the deletion data is invalid.', CDBT);
+        $message = __('Condition to find the deleting data is invalid.', CDBT);
     }
     if ( ! empty( $message ) ) {
       $this->logger( $message );
@@ -1399,7 +1405,7 @@ class CdbtDB extends CdbtConfig {
           $retvar = $result;
         }
       } else {
-        $message = sprintf( __( 'The %s does not supported on your environment.', CDBT ), 'mysqli' );
+        $message = sprintf( $this->common_error_messages[1], 'mysqli' );
       }
     } elseif ( 'pdo' === strtolower( $api ) && class_exists( '\PDO' ) ) {
       $db_handler = new \PDO( 'mysql:host='. DB_HOST .';dbname='. DB_NAME, DB_USER, DB_PASSWORD );
@@ -1415,7 +1421,7 @@ class CdbtDB extends CdbtConfig {
           $retvar = $result;
         }
       } else {
-        $message = sprintf( __( 'The %s does not supported on your environment.', CDBT ), 'PDO' );
+        $message = sprintf( $this->common_error_messages[1], 'PDO' );
       }
     }
     
@@ -1608,13 +1614,13 @@ class CdbtDB extends CdbtConfig {
     static $message = '';
     
     if (empty($table_name)) 
-      $message = sprintf( __('Table name is not specified when the method "%s" call.', CDBT), __FUNCTION__ );
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
     
     if (!$this->check_table_exists($table_name)) 
-      $message = __('Original table to export does not exist.', CDBT);
+      $message = __('No origin table for exporting.', CDBT);
     
     if (empty($export_file_type) || !in_array($export_file_type, $this->allow_file_types)) 
-      $message = sprintf( __('Specified "%s" format of download file does not correspond.', CDBT), $export_file_type );
+      $message = sprintf( __('The "%s" of specified download file format does not supported.', CDBT), $export_file_type );
     
     if (empty($message)) {
       if (empty($export_columns)) {
@@ -1629,7 +1635,7 @@ class CdbtDB extends CdbtConfig {
           }
         }
         if (!$check_columns) {
-          $message = sprintf( __('Export target column "%s" does not exist.', CDBT), $column );
+          $message = sprintf( __('The "%s" column for exporting does not exist.', CDBT), $column );
         }
       }
     }
