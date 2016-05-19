@@ -42,6 +42,19 @@ function removeCookie(ck_name) {
   if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
   document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
 }
+function htmlEntities( str, proc ) {
+  if ( 'encode' === proc ) {
+    var buffer = [];
+    for ( var i=str.length-1; i>=0; i-- ) {
+      buffer.unshift( ['&#', str[i].charCodeAt(), ';'].join('') );
+    }
+    return buffer.join('');
+  } else {
+    return str.replace( /&#(\d+);/g, function( match, dec ) {
+      return String.fromCharCode( dec );
+    });
+  }
+}
 /* jQuery main */
 //$(document).ready(function() {
 jQuery(document).ready(function($){
@@ -63,6 +76,8 @@ jQuery(document).ready(function($){
   
   /**
    * 2. 1em to pixels
+   *
+   * @param int em [optional]
    */
   $.em2pxl = function(em) {
     if ('' === em) { em = 1; }
@@ -70,6 +85,38 @@ jQuery(document).ready(function($){
     var pixel = div.width();
     div.remove();
     return pixel;
+  };
+  
+  /**
+   * 3. Survey the width of strings
+   *
+   * @param string str
+   * @param bool stripTags [optional]
+   */
+  $.strWidth = function(str) {
+    if ('' === arguments[0]) { return 0; }
+    var ruler = $('<span style="visibility:hidden;position:absolute;white-space:nowrap;"></span>').appendTo('body');
+    var width;
+    if (arguments[1] !== undefined && arguments[1]) {
+      str = $('<div/>').html(str).text();
+    }
+    width = ruler.text(str).get(0).offsetWidth;
+    ruler.remove();
+    return width;
+  };
+  
+  /**
+   * 4. Survey the size of image
+   *
+   * @param string src [optional]
+   */
+  $.imageSize = function(src) {
+    var imgSize = { w: 0, h: 0 };
+    var img = new Image();
+    img.src = src;
+    imgSize.w = img.width;
+    imgSize.h = img.height;
+    return imgSize;
   };
   
   /**
@@ -235,7 +282,7 @@ jQuery(document).ready(function($){
         if ( $('#cdbt-entry-redirection').val() !== '' ) {
           location.replace( $('#cdbt-entry-redirection').val() );
         } else {
-        	// This do not take over the session for multiple transmission prevention.
+          // This do not take over the session for multiple transmission prevention.
           location.replace( location.href );
         }
       }
@@ -333,7 +380,7 @@ jQuery(document).ready(function($){
       return table.render();
     });
     
-    $(document).on('click', '.modal-preview', function(){
+    $(document).on('click', '.cdbt-table-wrapper .modal-preview', function(){
       var bin_data = $(this).children('img').attr('src');
       var raw_data = '';
       var post_data = {
@@ -343,26 +390,18 @@ jQuery(document).ready(function($){
         modalBody: '', 
       };
       if (typeof bin_data !== 'undefined') {
-        if (bin_data.indexOf('data:') === 0) {
-        /*
-          bin_data = bin_data.split(',');
-          raw_data = bin_data.length > 1 ? bin_data[1] : '';
-        } else {
-        */
-          raw_data = bin_data;
-        }
+        raw_data = bin_data;
         var maxImageHeight = $(window).height() - 200 - ($('#wpadminbar').size() ? $('#wpadminbar').outerHeight() : 0);
         post_data.modalTitle = 'image_preview';
         post_data.modalSize = 'large';
         post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block" style="max-height:'+maxImageHeight+'px"></div>';
       } else {
-        var repeater_id = $(this).parents('.repeater').attr('id');
         raw_data = $(this).text();
         post_data.modalTitle = 'binary_downloader';
         post_data.modalExtras = { 
-          'table_name': repeater_id.substr(repeater_id.lastIndexOf('-') + 1), 
-          'target_column': $(this).attr('data-column-name'), 
-          'where_clause': $(this).attr('data-where-conditions'), 
+          'table_name': $(this).data().targetTable, 
+          'target_column': $(this).data().columnName, 
+          'where_clause': $(this).data().whereConditions, 
         };
       }
       init_modal( post_data );
@@ -475,7 +514,7 @@ jQuery(document).ready(function($){
         adjustCellSize();
       });
       
-      $(document).on('click', '.modal-preview', function(){
+      $(document).on('click', '.repeater .modal-preview', function(){
         var bin_data = $(this).children('img').attr('src');
         var raw_data = '';
         var post_data = {
@@ -485,26 +524,19 @@ jQuery(document).ready(function($){
           modalBody: '', 
         };
         if (typeof bin_data !== 'undefined') {
-          if (bin_data.indexOf('data:') === 0) {
-          /*
-            bin_data = bin_data.split(',');
-            raw_data = bin_data.length > 1 ? bin_data[1] : '';
-          } else {
-          */
-            raw_data = bin_data;
-          }
+          raw_data = bin_data;
           var maxImageHeight = $(window).height() - 200 - ($('#wpadminbar').size() ? $('#wpadminbar').outerHeight() : 0);
           post_data.modalTitle = 'image_preview';
           post_data.modalSize = 'large';
           post_data.modalBody = '<div class="preview-image-body"><img src="'+ raw_data +'" class="center-block" style="max-height:'+maxImageHeight+'px"></div>';
         } else {
           var repeater_id = $(this).parents('.repeater').attr('id');
-        	raw_data = $(this).text();
+          raw_data = $(this).text();
           post_data.modalTitle = 'binary_downloader';
           post_data.modalExtras = { 
-            'table_name': repeater_id.substr(repeater_id.lastIndexOf('-') + 1), 
-            'target_column': $(this).attr('data-column-name'), 
-            'where_clause': $(this).attr('data-where-conditions'), 
+            'table_name': repeater_id.replace(/^cdbt\-repeater\-(view|edit)\-/, ''), 
+            'target_column': $(this).data().columnName, 
+            'where_clause': $(this).data().whereConditions, 
           };
         }
         init_modal( post_data );
@@ -513,37 +545,79 @@ jQuery(document).ready(function($){
       
       /**
        * When edit via shortcode
+       * @since 2.1.0 Updated for static table format
        */
       
       // Button effect
       var effect_buttons = function( id ){
-        var selectedItem = $('#'+id).repeater('list_getSelectedItems');
-        var edit_button = $('#'+id+' button#repeater-editor-edit');
-        var delete_button = $('#'+id+' button#repeater-editor-delete');
-        if (selectedItem.length === 1) {
-          edit_button.attr('class', 'btn btn-primary').removeAttr('disabled');
-          delete_button.attr('class', 'btn btn-default');
-        } else if (selectedItem.length > 1) {
-          edit_button.attr('class', 'btn btn-default').attr('disabled', 'disabled');
-          delete_button.attr('class', 'btn btn-primary');
+        var selectedItem, edit_button, delete_button;
+        if (id.indexOf('cdbt-repeater-edit-') > -1) {
+          // For repeater
+          selectedItem = $('#'+id).repeater('list_getSelectedItems');
+          edit_button = $('#'+id+' button#repeater-editor-edit');
+          delete_button = $('#'+id+' button#repeater-editor-delete');
         } else {
-          edit_button.attr('class', 'btn btn-default').removeAttr('disabled');
-          delete_button.attr('class', 'btn btn-default');
+          // For table
+          selectedItem = $('#'+id).find('tbody>tr.selected');
+          edit_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-edit');
+          delete_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-delete');
+        }
+        if (selectedItem.length === 1) {
+          edit_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+          delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+        } else
+        if (selectedItem.length > 1) {
+          edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
+          delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+        } else {
+          edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
+          delete_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
         }
       };
+      
+      // Event handler (for repeater and static table format)
       $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(e){
         effect_buttons( $(e.target).attr('id') );
       });
       $(document).on('click', '#repeater-check-switch', function(e){
         effect_buttons( $(e.target).attr('id') );
       });
+      $(document).on('click', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] tr.selectable', function(e){
+        if ($(e.target).parents('tbody').size() === 1) {
+          $(e.target).parents('tr.selectable').toggleClass('selected').find('.checkbox label').checkbox('toggle');
+          effect_buttons( $(e.target).parents('table').attr('id') );
+        } else
+        if ($(e.target).parents('th.editable-checkbox').size() === 1 || 'editable-checkbox' === e.target.className) {
+          $(e.target).parents('tr').find('.checkbox label').checkbox('toggle');
+          if ($(e.target).parents('tr').find('.checkbox label').checkbox('isChecked')){
+            $(e.target).parents('table').find('tr.selectable').addClass('selected').find('.checkbox label').checkbox('check');
+          } else {
+            $(e.target).parents('table').find('tr.selectable').removeClass('selected').find('.checkbox label').checkbox('uncheck');
+          }
+          effect_buttons( $(e.target).parents('table').attr('id') );
+        } else {
+          return false;
+        }
+      });
+      $(document).on('change', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] .checkbox input', function(e){
+        if ($(e.target).parents('tbody').size() === 1) {
+          $(e.target).parents('tr.selectable').toggleClass('selected');
+          effect_buttons( $(e.target).parents('table').attr('id') );
+        }
+      });
       
-      // Event handler
-      $(document).on('click', 'button[id^="repeater-editor-"]', function(){
+      $('button[id^="repeater-editor-"],button[id^="table-editor-"]').on('click', function(){
         var dataAction = _.last( $(this).attr('id').split('-') );
-        var targetTable = _.last( $(this).parents('.repeater').attr('id').split('-') );
-        var selectedItem = $(this).parents('.repeater').repeater('list_getSelectedItems');
-        var post_data = {};
+        var isRepeater = $(this).attr('id').indexOf('repeater-editor') > -1 ? true : false;
+        var targetTable, selectedItem, post_data = {};
+        if (isRepeater) {
+          targetTable = $(this).parents('.repeater').attr('id').replace('cdbt-repeater-edit-', '');
+          selectedItem = $(this).parents('.repeater').repeater('list_getSelectedItems');
+        } else {
+          var __tmp = $(this).parents('.cdbt-table-wrapper').find('table').attr('id').replace('cdbt-table-edit-', '');
+          targetTable = _.initial(__tmp.split('-')).join('-');
+          selectedItem = $(this).parents('.cdbt-table-wrapper').find('tbody>tr.selected');
+        }
         $.sessionKey = 'cdbt-edit-' + targetTable;
         
         $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
@@ -873,7 +947,7 @@ jQuery(document).ready(function($){
       id: 'cdbtModal', 
       insertContent: true, 
       modalTitle: 'view_item_full', 
-      modalBody: "<textarea readonly>"+$(this).data('raw')+'</textarea>', 
+      modalBody: $(this).data('raw'), 
     };
     init_modal( post_data );
   });

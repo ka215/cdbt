@@ -1140,7 +1140,7 @@ final class CdbtAdmin extends CdbtDB {
         $modify_done = 0;
         if ($post_data['table_name'] !== $current_options['table_name']) {
           // Rename table
-          $_sql = sprintf( 'ALTER TABLE %s RENAME TO %s;', esc_sql($table_name), esc_sql($post_data['table_name']) );
+          $_sql = sprintf( 'ALTER TABLE `%s` RENAME TO `%s`;', esc_sql($table_name), esc_sql($post_data['table_name']) );
           if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
             $message = $process_msg[0];
           } else {
@@ -1155,7 +1155,7 @@ final class CdbtAdmin extends CdbtDB {
         }
         if (empty($message) && $post_data['table_comment'] !== $current_options['table_name']) {
           // Modify table comment
-          $_sql = sprintf( "ALTER TABLE %s COMMENT '%s';", esc_sql($table_name), esc_sql($post_data['table_comment']) );
+          $_sql = sprintf( "ALTER TABLE `%s` COMMENT '%s';", esc_sql($table_name), esc_sql($post_data['table_comment']) );
           if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
             $message = $process_msg[0];
           } else {
@@ -1169,7 +1169,7 @@ final class CdbtAdmin extends CdbtDB {
         }
         if (empty($message) && $post_data['table_charset'] !== $current_options['table_charset']) {
           // Change table charset
-          $_sql = sprintf( 'ALTER TABLE %s CHARSET=%s;', esc_sql($table_name), esc_sql($post_data['table_charset']) );
+          $_sql = sprintf( 'ALTER TABLE `%s` CHARSET=%s;', esc_sql($table_name), esc_sql($post_data['table_charset']) );
           if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
             $message = $process_msg[0];
           } else {
@@ -1183,7 +1183,7 @@ final class CdbtAdmin extends CdbtDB {
         }
         if (empty($message) && $post_data['table_db_engine'] !== $current_options['db_engine']) {
           // Change database engine
-          $_sql = sprintf( 'ALTER TABLE %s ENGINE=%s;', esc_sql($table_name), esc_sql($post_data['table_db_engine']) );
+          $_sql = sprintf( 'ALTER TABLE `%s` ENGINE=%s;', esc_sql($table_name), esc_sql($post_data['table_db_engine']) );
           if (!$this->validate->validate_alter_sql( $table_name, $_sql )) {
             $message = $process_msg[0];
           } else {
@@ -1971,6 +1971,7 @@ final class CdbtAdmin extends CdbtDB {
         case 'image_preview': 
           $args['modalTitle'] = __('Preview Image', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalBody']);
+          $args['modalShowEvent'] = "if($('.preview-image-body').width() < $('.preview-image-body img').width() && $.fn['kinetic'] !== undefined){ $('.preview-image-body').css({overflowX:'hidden'}).kinetic(); }";
           break;
         case 'binary_downloader': 
           $args['modalTitle'] = __( 'Describe File', CDBT );
@@ -2043,7 +2044,8 @@ final class CdbtAdmin extends CdbtDB {
           break;
         case 'view_item_full': 
           $args['modalTitle'] = __('Show Full Content', CDBT);
-          $args['modalShowEvent'] = "$('#cdbtModal').find('.modal-body>textarea').addClass('view-full-content').css({ overflow: 'hidden', height:$('#cdbtModal').find('.modal-body>textarea')[0].scrollHeight+'px', resize: 'none' });";
+          $args['modalBody'] = '<textarea style="overflow: hidden; resize: none;" readonly>'. mb_encode_numericentity( stripslashes_deep( $args['modalBody'] ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) .'</textarea>';
+          $args['modalShowEvent'] = "$('#cdbtModal').find('.modal-body>textarea').addClass('view-full-content').css({ height:$('#cdbtModal').find('.modal-body>textarea')[0].scrollHeight+'px' });";
           break;
         default:
           break;

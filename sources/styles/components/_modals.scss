@@ -3,6 +3,8 @@
   .modal-body {
     
     .preview-image-body {
+      overflow: hidden;
+      overflow-x: auto;
       
       img {
         width: auto;
@@ -20,6 +22,7 @@
     }
     
     .view-full-content {
+      width: 100%;
       padding: 8px;
       background-color: #f7f7f7;
       border-color: #d1d1d1;

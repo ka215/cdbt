@@ -47,7 +47,14 @@ trait CdbtEdit {
       // 'strip_tags' => true, // Whether to strip the tags in the string type data.
       /* Added new attributes from 2.0.10 is follows: */
       'truncate_strings' => 0, 
-    ], $attributes) );
+      /* Added new attribute from 2.1.0 is follows: */
+      'enable_repeater' => true, // Rendering by using repeater component at Fuel UX.
+      'display_index_row' => true, // Became to mixed value; It had added of "head-only" besides boolean value since v2.1.x. (for static table format)
+      'display_view' => false, //  Is enabled only if "enable_repeater" is true.
+      'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
+      'thumbnail_title_column' => '', // Column name to be used as a thumbnail title
+      'thumbnail_width' => 100, // Integer of thumbnail block size
+      ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
     
@@ -150,7 +157,7 @@ trait CdbtEdit {
     
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags', 'enable_repeater' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
@@ -169,7 +176,13 @@ trait CdbtEdit {
       }
       $add_class = implode( ' ', $add_classes );
     }
+    if ( $enable_repeater ) {
+      $display_index_row = $this->strtobool( $display_index_row );
+    } else {
+      $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
+    }
     $image_render = 'responsive';
+    
     if ($csid > 0 && $this->validate->checkInt($csid)) {
       // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
       $loaded_settings = $this->get_shortcode_option($csid);
@@ -183,6 +196,13 @@ trait CdbtEdit {
     } else {
       $csid = 0;
     }
+    
+    if ($bootstrap_style && $enable_repeater) {
+      $component_name = 'repeater';
+    } else {
+      $component_name = 'table';
+    }
+    
     if ($display_title) {
       $disp_title = $this->get_table_comment($table);
       $disp_title = !empty($disp_title) ? $disp_title : $table;
@@ -406,7 +426,7 @@ trait CdbtEdit {
           'property' => $column, 
           'sortable' => $enable_sort, 
           'sortDirection' => 'asc', 
-          'dataType' => $schema['type'], // Added since 2.1.0
+          'dataType' => $scheme['type'], // Added since 2.1.0
           'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
           'truncateStrings' => $truncate_strings, 
           'className' => implode(' ', $_classes), 
@@ -477,7 +497,11 @@ trait CdbtEdit {
         foreach ($datasource as $i => $datum) {
           $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
         }
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        if ( 'repeater' === $component_name ) {
+          $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        } else {
+          $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true ];
+        }
         array_unshift($columns, $add_column);
       }
       
@@ -487,7 +511,7 @@ trait CdbtEdit {
       $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
       
       $component_options = [
-        'id' => 'cdbt-repeater-edit-' . $table, 
+        'id' => 'cdbt-'. $component_name .'-edit-' . $table, 
         'enableSearch' => true, 
         'enableFilter' => $display_filter, 
         'filter_column' => $filter_column, 
@@ -502,8 +526,37 @@ trait CdbtEdit {
         'pageSize' => $limit_items, 
         'columns' => $columns, 
         'data' => $datasource, 
-        'addClass' => $add_class, 
+        'customRowScripts' => [], 
       ];
+      
+      if ('repeater' === $component_name) {
+        $add_options = [ 
+          'addClass' => $add_class, 
+        ];
+      } else {
+        // For static table format
+        $add_options = [
+          'displayIndexRow' => $display_index_row, 
+          'customBeforeRender' => '', 
+          'customAfterRender' => '', 
+          'thumbnailOptions' => [ 'title' => $thumbnail_title_column, 'column' => $thumbnail_column, 'width' => intval( $thumbnail_width ) ], 
+          'tableClass' => $add_class, 
+          'theadClass' => '', 
+          'tbodyClass' => '', 
+          'tfootClass' => '', 
+        ];
+      }
+      $component_options = array_merge($component_options, $add_options);
+      
+      if ( $display_view && ! empty( $thumbnail_column ) && array_key_exists( $thumbnail_column, $table_schema ) ) {
+        if ('repeater' === $component_name) {
+          $thumbnail_title = ! empty( $thumbnail_title_column ) ? sprintf( '<span>{{%s}}</span>', esc_html( $thumbnail_title_column ) ) : '';
+          $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval( $thumbnail_width ) .'">'. $thumbnail_title .'</div>\'';
+          $component_options = array_merge( $component_options, [ 'thumbnailTemplate' => $thumbnail_template ] );
+          if ( isset( $custom_row_scripts ) && ! empty( $custom_row_scripts ) ) 
+            $component_options = array_merge( $component_options, [ 'customRowScripts' => $custom_row_scripts ] );
+        }
+      }
       
       // Filter the component definition of the list content that is output by this shortcode
       //
@@ -514,13 +567,13 @@ trait CdbtEdit {
         if (isset($title)) 
           echo $title;
         
-        return $this->component_render('repeater', $component_options);
+        return $this->component_render( $component_name, $component_options );
       } else {
         ob_start();
         if (isset($title)) 
           echo $title;
         
-        echo $this->component_render('repeater', $component_options);
+        echo $this->component_render( $component_name, $component_options );
         
         $render_content = ob_get_contents();
         ob_end_clean();

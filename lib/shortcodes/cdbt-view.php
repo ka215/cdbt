@@ -16,7 +16,7 @@ trait CdbtView {
    *
    * @since 1.0.0
    * @since 2.0.0 Refactored logic.
-   * @since 2.1.0 Greatly enhanced
+   * @since 2.1.31 Greatly enhanced
    *
    * @param array $attributes [require] Array of attributes in shortcode
    * @param string $content [optional] For default is empty
@@ -26,7 +26,7 @@ trait CdbtView {
     list($attributes, $content) = func_get_args();
     extract( shortcode_atts([
       'table' => '', // Required attribute
-      'bootstrap_style' => true, // Change from v2.0.0 disabled.
+      'bootstrap_style' => true, // Changed since v2.1.31. Render data of the json format if false.
       'display_list_num' => false, // The default value has changed to false from v2.0.0
       'display_search' => true, // 
       'display_title' => true, 
@@ -34,13 +34,13 @@ trait CdbtView {
       'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
       'add_class' => '', // Separator is a single-byte space character
       /* As legacy of `cdbt-extract` is follows: */
-      'display_index_row' => true, 
+      'display_index_row' => true, // Became to mixed value; It had added of "head-only" besides boolean value since v2.1.31. (for static table format)
       'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
       'display_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...` If overlapped with `exclude_cols`, set to override the `exclude_cols`.
       'order_cols' => '', // String as array (not assoc); For example `col3,col2,col1,...` If overlapped with `display_cols`, set to override the `display_cols`.
       'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
       'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
-      'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' )
+      'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' ) for repeater only since v2.1.31.
       /* Added new attribute from 2.0.0 is follows: */
       'enable_repeater' => true, // Rendering by using repeater component at Fuel UX.
       'display_filter' => false, // Is enabled only if "enable_repeater" is true.
@@ -159,7 +159,7 @@ trait CdbtView {
       return sprintf('<p>%s</p>', __('You can not see this content without permission.', CDBT));
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'enable_repeater', 'display_filter', 'ajax_load', 'strip_tags' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'enable_repeater', 'display_filter', 'ajax_load', 'strip_tags' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
@@ -176,6 +176,11 @@ trait CdbtView {
       foreach ( explode( ' ', rawurldecode( $add_class ) ) as $_class ) {
         $add_classes[] = esc_attr( trim( $_class ) );
       }
+    }
+    if ( $enable_repeater ) {
+      $display_index_row = $this->strtobool( $display_index_row );
+    } else {
+      $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
     }
     
     if ($csid > 0 && $this->validate->checkInt($csid)) {
@@ -204,10 +209,14 @@ trait CdbtView {
     }
 */
     
-    if ($bootstrap_style && $enable_repeater) {
-      $component_name = 'repeater';
+    if ( $bootstrap_style ) {
+      if ( $enable_repeater ) {
+        $component_name = 'repeater';
+      } else {
+        $component_name = 'table';
+      }
     } else {
-      $component_name = 'table';
+      $component_name = 'json';
     }
     
     if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
@@ -313,6 +322,9 @@ trait CdbtView {
     }
     if (empty($datasource))
       return sprintf('<p>%s</p>', __('No data in this table.', CDBT));
+    
+    if ( 'json' === $component_name ) 
+      return json_encode( $datasource );
     
     $custom_column_renderer = [];
     
@@ -474,7 +486,11 @@ trait CdbtView {
       foreach ($datasource as $i => $datum) {
         $datasource[$i] = array_merge([ 'data_index_number' => $i + 1 ], $datum);
       }
-      $add_column = [ 'label' => '#', 'property' => 'data_index_number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+      if ( 'repeater' === $component_name ) {
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+      } else {
+        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true ];
+      }
       array_unshift($columns, $add_column);
     }
     
@@ -484,7 +500,7 @@ trait CdbtView {
     $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
     
     $component_options = [
-      'id' => 'cdbt-repeater-view-' . $table, 
+      'id' => 'cdbt-'. $component_name .'-view-' . $table, 
       'enableSearch' => $display_search, 
       'enableFilter' => $display_filter, 
       'filter_column' => $filter_column, 
@@ -497,6 +513,7 @@ trait CdbtView {
       'pageSize' => $limit_items, 
       'columns' => $columns, 
       'data' => $datasource, 
+      'customRowScripts' => [], 
     ];
     
     if ('repeater' === $component_name) {
@@ -504,21 +521,28 @@ trait CdbtView {
         'addClass' => $add_class, 
       ];
     } else {
+      // For static table format
       $add_options = [
+        'displayIndexRow' => $display_index_row, 
+        'customBeforeRender' => '', 
+        'customAfterRender' => '', 
+        'thumbnailOptions' => [ 'title' => $thumbnail_title_column, 'column' => $thumbnail_column, 'width' => intval( $thumbnail_width ) ], 
         'tableClass' => $add_class, 
         'theadClass' => '', 
         'tbodyClass' => '', 
         'tfootClass' => '', 
       ];
     }
-    $component_options = array_merge($component_options, $add_options);
+    $component_options = array_merge( $component_options, $add_options );
     
-    if ($display_view && !empty($thumbnail_column) && array_key_exists($thumbnail_column, $table_schema)) {
-      $thumbnail_title = !empty($thumbnail_title_column) ? sprintf('<span>{{%s}}</span>', esc_html($thumbnail_title_column)) : '';
-      $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval($thumbnail_width) .'">'. $thumbnail_title .'</div>\'';
-      $component_options = array_merge($component_options, [ 'thumbnailTemplate' => $thumbnail_template ]);
-      if (isset($custom_row_scripts) && !empty($custom_row_scripts)) 
-        $component_options = array_merge($component_options, [ 'customRowScripts' => $custom_row_scripts ]);
+    if ( $display_view && ! empty( $thumbnail_column ) && array_key_exists( $thumbnail_column, $table_schema ) ) {
+      if ('repeater' === $component_name) {
+        $thumbnail_title = ! empty( $thumbnail_title_column ) ? sprintf( '<span>{{%s}}</span>', esc_html( $thumbnail_title_column ) ) : '';
+        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval( $thumbnail_width ) .'">'. $thumbnail_title .'</div>\'';
+        $component_options = array_merge( $component_options, [ 'thumbnailTemplate' => $thumbnail_template ] );
+        if ( isset( $custom_row_scripts ) && ! empty( $custom_row_scripts ) ) 
+          $component_options = array_merge( $component_options, [ 'customRowScripts' => $custom_row_scripts ] );
+      }
     }
     
     // Filter the component definition of the list content that is output by this shortcode

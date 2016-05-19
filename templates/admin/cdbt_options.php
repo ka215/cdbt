@@ -326,6 +326,20 @@ $default_action = 'update';
           </div>
         </div>
       </div><!-- /option-item-34 -->
+      <div class="form-group">
+        <label class="col-sm-2 control-label" for="option-item-36"><?php _e('Display format of list', $this->domain_name); ?></label>
+        <div class="col-sm-10">
+          <div class="checkbox" id="option-item-36">
+            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-36-repeater">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="repeater"<?php checked( 'repeater', $options['display_list_format'] ); ?>> Repeater (Traditional Fuel UX)
+            </label>
+            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-36-table">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="table"<?php checked( 'table', $options['display_list_format'] ); ?>> Table (Recommended) <?php $this->during_trial( 'display_list_format' ); ?>
+            </label>
+            <p class="help-block"><?php _e('You can choose the display format at the time of listing data at the table management.', $this->domain_name); ?></p>
+          </div>
+        </div>
+      </div><!-- /option-item-36 -->
       
       
       <div class="clearfix"><br></div>

@@ -347,7 +347,7 @@ final class CdbtFrontend extends CdbtDB {
     // Filters
     add_filter( 'body_class', array($this, 'add_body_classes'), 99 );
     add_filter( 'cdbt_dynamic_modal_options', array($this, 'insert_content_to_modal') ); // The content insertion via filter hook
-    if ( $this->strtobool( $attributes['enable_repeater'] ) ) {
+    if ( ! isset( $attributes['enable_repeater'] ) || $this->strtobool( $attributes['enable_repeater'] ) ) {
       add_filter( 'cdbt_shortcode_custom_columns', array($this, 'string_type_custom_column_renderer'), 10, 3 );
     }
     

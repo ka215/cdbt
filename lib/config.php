@@ -158,6 +158,7 @@ class CdbtConfig extends CdbtCore {
       'allow_rendering_shortcodes' => true, // add new from ver.2
       'include_assets' => [], // add new from ver. 2.0.7
       'prevent_duplicate_sending' => false, // add new from ver. 2.0.7
+      'display_list_format' => 'repeater', // add new from ver. 2.1.0
       'tables' => [
         [
           'table_name' => '', // table name

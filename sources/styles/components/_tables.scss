@@ -1,13 +1,54 @@
 .cdbt-table-wrapper {
   
+  .panel-body {
+    
+    .loading {
+      margin: 20px auto;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  
+  .btn.disabled, .btn[disabled], .btn[disabled=disabled], fieldset[disabled] .btn {
+    min-height: 32px;
+    margin: auto 0;
+    padding: 6px 12px;
+    
+    &:hover, &:focus, &:active {
+      min-height: 32px;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      color: #333;
+      opacity: .65;
+    }
+  }
+  
+  .input-group {
+    
+    .input-group-btn .btn {
+      min-width: 29px;
+      min-height: 34px;
+      margin-left: -1px;
+    }
+  }
+  
   .panel-table-wrapper {
     position: relative;
+    width: calc(100% + 1px);
     overflow: hidden;
     overflow-x: auto;
     
+    &.kinetic-active {
+      table {
+        box-shadow: 0 1px 1px 0 #ddd;
+      }
+    }
+    
     table {
       margin: 0;
-      table-layout: auto;
+      table-layout: fixed;
+      color: #333;
       
       thead>tr>th, tfoot>tr>th {
         position: relative;
@@ -25,6 +66,21 @@
           
           label {
             max-width: calc( 100% - 2em );
+          }
+        }
+        
+        &.editable-checkbox {
+          background-color: #fff;
+          
+          .checkbox {
+            text-align: center;
+            vertical-align: middle;
+            
+            label {
+              display: inline-block;
+              margin: 0 auto;
+              min-width: inherit;
+            }
           }
         }
       }
@@ -68,7 +124,22 @@
           color: #b9b9b9;
         }
         
+        &.editable-checkbox {
+          background-color: #f0f0f0;
+          
+          .checkbox {
+            margin: 0 auto;
+            padding-top: 2px;
+            padding-left: 2px;
+            text-align: center;
+            vertical-align: middle;
+          }
+          
+        }
+        
         span {
+          word-wrap: break-word;
+          
           &.data-numric {
             display: inline-block;
             width: 100%;
@@ -91,6 +162,7 @@
           padding: 0;
           border: 0;
           background-color: transparent;
+          box-shadow: 0 0 0 transparent;
           user-select: all;
           
           &:hover, &:active, &:focus {
@@ -106,11 +178,62 @@
         }
         
       }
+      
+      tbody>tr.selectable {
+        
+        &.selected td {
+          background-color: $selected;
+          color: $selected-text;
+        }
+      }
       a, a:hover {
       box-shadow: none;
       }
       .btn {
         border-bottom: solid 1px #ccc!important;
+      }
+    }
+  }
+  
+  .thumbnail-view {
+    margin: 0;
+    padding: 10px 0 0 10px;
+    
+    .cdbt-thumbnail {
+      float: left;
+      position: relative;
+      margin: 0 10px 10px 0;
+      
+      .crop-image {
+        position: relative;
+        display: inline-block;
+        padding: 0;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        max-width: 100%;
+        overflow: hidden;
+        transition: all .2s ease-in-out;
+        
+        img {
+          position: relative;
+        }
+        
+      }
+      
+      a:hover, a:active, a:focus {
+        border: 0;
+        box-shadow: 0 0 0 transparent;
+      }
+      
+      figcaption {
+        position: relative;
+        max-width: 100%;
+        max-height: 2em;
+        overflow: hidden;
+        text-align: center;
+        line-height: 2em;
+        word-wrap: break-word;
       }
     }
   }
@@ -142,6 +265,30 @@
       
       &:hover, &:active, &:focus {
         background-color: #fff;
+      }
+    }
+  }
+}
+/* For firefox only hack */
+@-moz-document url-prefix() {
+  .cdbt-table-wrapper {
+    .panel-table-wrapper {
+      table {
+        
+        thead>tr>th, tfoot>tr>th {
+          
+          &.editable-checkbox {
+            background-color: transparent;
+          }
+        }
+        
+        tbody>tr>td {
+          
+          &.editable-checkbox {
+            background-color: transparent;
+          }
+        }
+        
       }
     }
   }

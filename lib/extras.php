@@ -79,6 +79,7 @@ trait CdbtExtras {
       'changelog_panel' => 'done', 
       'reference_columns' => 'done', 
       'truncate_strings' => 'try-yet', 
+      'display_list_format' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {

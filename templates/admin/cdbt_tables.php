@@ -1353,13 +1353,17 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
     
     $current_action = empty($current_action) ? 'view' : $current_action;
     
+    $shortcode_options = [];
+    if ( in_array( $current_action, [ 'view', 'edit' ] ) ) {
+      $shortcode_options = 'table' === $options['display_list_format'] ? [ 'enable_repeater="false"' ] : [ 'enable_repeater="true"' ];
+    }
 ?>
 <section id="<?php echo $current_action; ?>" data-target_table="<?php echo $target_table; ?>">
   
   <h4 class="tab-annotation sub-description-title"><i class="<?php echo $operatable_buttons[$current_action]['icon']; ?> text-muted"></i> <?php echo $title_labels[$current_action]; ?></h4> <?php $this->during_trial( $current_action . '_data' ); ?>
   <div class="clearfix"></div>
   
-  <?php echo do_shortcode( sprintf('[cdbt-%s table="%s" display_title="false"]', $current_action, $target_table) ); ?>
+  <?php echo do_shortcode( sprintf('[cdbt-%s table="%s" display_title="false" %s]', $current_action, $target_table, implode( ' ', $shortcode_options ) ) ); ?>
   
 </section>
 
