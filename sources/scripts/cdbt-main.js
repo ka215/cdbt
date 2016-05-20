@@ -5,7 +5,7 @@
  */
 /**
  * Common processing that does not depend on jQuery
- */
+ * /
 function setCookie(ck_name, ck_value, expiredays) {
   // SetCookie
   var path = '/';
@@ -42,19 +42,60 @@ function removeCookie(ck_name) {
   if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
   document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
 }
-function htmlEntities( str, proc ) {
-  if ( 'encode' === proc ) {
-    var buffer = [];
-    for ( var i=str.length-1; i>=0; i-- ) {
-      buffer.unshift( ['&#', str[i].charCodeAt(), ';'].join('') );
+*/
+/*
+ * :: cookies.js ::
+ *
+ * A complete cookies reader/writer framework with full unicode support.
+ *
+ * source:  https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+ * localize: https://developer.mozilla.org/ja/docs/Web/API/Document/cookie
+ *
+ * Syntaxes:
+ *
+ * - docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+ * - docCookies.getItem(name)
+ * - docCookies.removeItem(name[, path])
+ * - docCookies.hasItem(name)
+ * - docCookies.keys()
+ *
+ */
+var docCookies = {
+  getItem: function (sKey) {
+    if (!sKey || !this.hasItem(sKey)) { return null; }
+    return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+  },
+  setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+    if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return; }
+    var sExpires = "";
+    if (vEnd) {
+      switch (vEnd.constructor) {
+        case Number:
+          sExpires = vEnd === Infinity ? "; expires=Tue, 19 Jan 2038 03:14:07 GMT" : "; max-age=" + vEnd;
+          break;
+        case String:
+          sExpires = "; expires=" + vEnd;
+          break;
+        case Date:
+          sExpires = "; expires=" + vEnd.toGMTString();
+          break;
+      }
     }
-    return buffer.join('');
-  } else {
-    return str.replace( /&#(\d+);/g, function( match, dec ) {
-      return String.fromCharCode( dec );
-    });
+    document.cookie = escape(sKey) + "=" + escape(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+  },
+  removeItem: function (sKey, sPath) {
+    if (!sKey || !this.hasItem(sKey)) { return; }
+    document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sPath ? "; path=" + sPath : "");
+  },
+  hasItem: function (sKey) {
+    return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+  },
+  keys: /* optional method: you can safely remove it! */ function () {
+    var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+    for (var nIdx = 0; nIdx < aKeys.length; nIdx++) { aKeys[nIdx] = unescape(aKeys[nIdx]); }
+    return aKeys;
   }
-}
+};
 /* jQuery main */
 //$(document).ready(function() {
 jQuery(document).ready(function($){
@@ -118,6 +159,27 @@ jQuery(document).ready(function($){
     imgSize.h = img.height;
     return imgSize;
   };
+  
+  /**
+   * 5. Perform mutual conversion between the actual strings and the html entity
+   * 
+   * @param string str [required]
+   * @param string proc [optional] "decode" (is default) or "encode"
+   */
+  $.htmlEntities = function(str, proc) {
+    if ( 'encode' === proc ) {
+      var buffer = [];
+      for ( var i=str.length-1; i>=0; i-- ) {
+        buffer.unshift( ['&#', str[i].charCodeAt(), ';'].join('') );
+      }
+      return buffer.join('');
+    } else {
+      return str.replace( /&#(\d+);/g, function( match, dec ) {
+        return String.fromCharCode( dec );
+      });
+    }
+  };
+  
   
   /**
    * Localize the variables passed from wordpress
@@ -243,7 +305,7 @@ jQuery(document).ready(function($){
       generate_form += '</form>';
       $('#cdbtDeleteData .modal-body').append(generate_form);
       var delete_form = $('#cdbtDeleteData .modal-body').find('#data-deletion-' + nonce);
-      setCookie( 'once_action', delete_form.attr( 'id' ) );
+      docCookies.setItem( 'once_action', delete_form.attr( 'id' ) );
       delete_form.submit();
       
     };
@@ -277,8 +339,10 @@ jQuery(document).ready(function($){
     // Whether correspond of redirection after data registration
     // 
     // @since 2.0.5
-    $(document).on('hide.bs.modal', 'div.cdbt-modal, #append-dynamic-modal', function(){
-      if ( $('.cdbt-entry-data-form').size() > 0 ) {
+    // @since 2.1.31 Modified
+    $(document).on('hidden.bs.modal', 'div.cdbt-modal, #append-dynamic-modal', function(e){
+      //if ( $('.cdbt-entry-data-form').size() > 0 ) {
+      if ( $(e.target).attr('id') === 'cdbtEditData' ) {
         if ( $('#cdbt-entry-redirection').val() !== '' ) {
           location.replace( $('#cdbt-entry-redirection').val() );
         } else {
@@ -446,7 +510,7 @@ jQuery(document).ready(function($){
         $(this).find('.sorted').removeClass('sorted');
         var cols = $(this).data('cols').split(',');
         var currentSortCol, currentSortDirection;
-        var sortCache = typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';
+        var sortCache = typeof docCookies.getItem === 'function' ? docCookies.getItem('cdbtSortCache') : '';
         var sortCookie = JSON.parse(sortCache);
         if (typeof sortCookie === 'object' && _.size(sortCookie) > 0 && typeof sortCookie[$(this).attr('id')] !== 'undefined') {
           currentSortCol = is_edit_via_shortcode ? cols[sortCookie[$(this).attr('id')][0]] : cols[sortCookie[$(this).attr('id')][0]];
@@ -476,7 +540,7 @@ jQuery(document).ready(function($){
       
       $(document).on('click', 'th.sortable', function(e){
         var parentRepeater = $(this).parents('.repeater');
-        var sortCache = typeof getCookie === 'function' ? getCookie('cdbtSortCache') : '';
+        var sortCache = typeof docCookies.getItem === 'function' ? docCookies.getItem('cdbtSortCache') : '';
         if (parentRepeater.data('cols') === undefined) {
           return false;
         }
@@ -508,8 +572,7 @@ jQuery(document).ready(function($){
         }
         sortCache = {};
         sortCache[parentRepeater.attr('id')] = new Array( indexNum, newSortDirection, String(e.timeStamp) );
-//console.info(sortCache);
-        setCookie('cdbtSortCache', JSON.stringify(sortCache));
+        docCookies.setItem('cdbtSortCache', JSON.stringify(sortCache));
         parentRepeater.repeater('render');
         adjustCellSize();
       });
@@ -730,7 +793,7 @@ jQuery(document).ready(function($){
         var formId = form.attr( 'id' );
         form.children('input[name="_wp_http_referer"]').val(location.href);
         if ( checkEmptyFields( formId ) ) {
-          setCookie( 'once_action', form.attr( 'id' ) );
+          docCookies.setItem( 'once_action', form.attr( 'id' ) );
           form.submit();
         } else {
           // Added since 2.0.9
@@ -823,7 +886,7 @@ jQuery(document).ready(function($){
         }
       });
       if ( check_result ) {
-        setCookie( 'once_action', entry_form.attr( 'id' ) );
+        docCookies.setItem( 'once_action', entry_form.attr( 'id' ) );
         entry_form.submit();
       } else {
       	// Added since 2.0.9

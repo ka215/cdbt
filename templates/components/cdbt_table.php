@@ -42,18 +42,21 @@ if ( isset( $this->component_options['id'] ) && ! empty( $this->component_option
 }
 
 // `search` section
-$enable_search = isset($this->component_options['enableSearch']) ? $this->strtobool( $this->component_options['enableSearch'] ) : false;
+$enable_search = isset( $this->component_options['enableSearch'] ) ? $this->strtobool( $this->component_options['enableSearch'] ) : false;
 
 // `filter` section
-$enable_filter = isset($this->component_options['enableFilter']) ? $this->strtobool( $this->component_options['enableFilter'] ) : false;
+$enable_filter = isset( $this->component_options['enableFilter'] ) ? $this->strtobool( $this->component_options['enableFilter'] ) : false;
 
-if (empty($this->component_options['filter_column']) || empty($this->component_options['filters'])) {
+if ( empty( $this->component_options['filter_column'] ) || empty( $this->component_options['filters'] ) ) {
   $enable_filter = false;
 } else {
   $filter_column = $this->component_options['filter_column'];
   $filters_list = [];
-  foreach ($this->component_options['filters'] as $value => $label) {
-    $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $value, $label );
+  foreach ( $this->component_options['filters'] as $val ) {
+    $_value = $this->strtohash( $val );
+    $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
+    $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
+    $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
   }
 }
 
@@ -199,24 +202,23 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
           <span class="input-group-btn">
             <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only"><?php _e( 'Search', CDBT ); ?></span></button>
           </span>
-        </div><!-- /input-group -->
-<?php endif; ?>
-      </div><!-- /.col-md-4 -->
-      <div class="col-xs-12 col-sm-6 col-md-8 align-right">
-<?php if ( $enable_filter ) : ?>
-        <div class="btn-group selectlist cdbt-table-filters pull-right" data-resize="auto">
+        </div><!-- /.input-group[role=search] -->
+<?php elseif ( $enable_filter ) : ?>
+        <div class="btn-group selectlist cdbt-table-filters" data-resize="auto" id="<?php echo $table_id; ?>-filters">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="selected-label">&nbsp;</span>
             <span class="caret"></span>
             <span class="sr-only"><?php _e( 'Toggle Filters', CDBT ); ?></span>
           </button>
           <ul class="dropdown-menu" role="menu">
-            <li data-value="all" data-selected="true"><a href="#"><?php _e( 'all', CDBT ); ?></a></li>
+            <li data-value="" data-selected="true"><a href="#"><?php _e( 'all', CDBT ); ?></a></li>
             <?php echo implode( "\n", $filters_list ); ?>
           </ul>
           <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
-        </div><!-- /.repeater-filters -->
+        </div><!-- /.cdbt-table-filters -->
 <?php endif; ?>
+      </div><!-- /.col-md-4 -->
+      <div class="col-xs-12 col-sm-6 col-md-8 align-right">
 <?php if ( $enable_view ) : ?>
         <div class="btn-group cdbt-table-views pull-right" data-toggle="buttons" data-current-view="<?php echo $default_view; ?>" for="<?php echo $table_id; ?>">
           <label class="btn btn-default<?php if ( 'list' === $default_view ) : ?> active<?php endif; ?>">
@@ -225,27 +227,41 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
           <label class="btn btn-default<?php if ( 'thumbnail' === $default_view ) : ?> active<?php endif; ?>">
             <input name="tableViews" type="radio" value="thumbnail"><i class="fa fa-th"></i>
           </label>
-        </div><!-- /.repeater-views -->
+        </div><!-- /.cdbt-table-views -->
 <?php endif; ?>
-<?php if ( $enable_editor ) : ?>
+<?php if ( $enable_search && $enable_filter ) : ?>
+        <div class="btn-group selectlist cdbt-table-filters pull-right" data-resize="auto" id="<?php echo $table_id; ?>-filters">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="selected-label">&nbsp;</span>
+            <span class="caret"></span>
+            <span class="sr-only"><?php _e( 'Toggle Filters', CDBT ); ?></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li data-value="" data-selected="true"><a href="#"><?php _e( 'all', CDBT ); ?></a></li>
+            <?php echo implode( "\n", $filters_list ); ?>
+          </ul>
+          <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
+        </div><!-- /.cdbt-table-filters -->
+<?php endif; ?>
+<?php if ( $enable_editor && ! $disable_edit ) : ?>
         <div class="cdbt-table-editor pull-right" for="<?php echo $table_id; ?>">
-        <?php if ( $disable_edit ) : ?>
-          <p class="text-danger" style="margin-top: 6px;"><?php _e( 'Disable the data editing because it can not identify a single data.', CDBT ); ?></p>
-        <?php else : ?>
           <button type="button" class="btn btn-default" id="table-editor-edit" title="<?php _e( 'Edit Data', CDBT ); ?>" disabled><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e( 'Edit Data', CDBT ); ?></span></button>
           <button type="button" class="btn btn-default" id="table-editor-refresh" title="<?php _e( 'Refresh List', CDBT ); ?>"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e( 'Refresh List', CDBT ); ?></span></button>
           <button type="button" class="btn btn-default" id="table-editor-delete" title="<?php _e( 'Delete Data', CDBT ); ?>" disabled><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e( 'Delete Data', CDBT ); ?></span></button>
-        <?php endif; ?>
-        </div><!-- /.repeater-editor -->
+        </div><!-- /.cdbt-table-editor -->
 <?php endif; ?>
       </div><!-- /.col-md-8 -->
     </div><!-- /.row -->
   </div><!-- /.panel-heading -->
 <?php endif; ?>
   <div class="panel-body" for="<?php echo $table_id; ?>">
+  <?php if ( $disable_edit ) : ?>
+    <p class="text-danger" style="margin-top: 6px;"><?php _e( 'Disable the data editing because it can not identify a single data.', CDBT ); ?></p>
+  <?php else : ?>
     <div class="loading">
       <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom text-muted"></i><span class="sr-only"><?php _e('Loading...', CDBT); ?></span>
     </div>
+  <?php endif; ?>
   </div><!-- /.panel-body -->
   <div class="panel-table-wrapper">
     <table class="table<?php echo empty($table_class) ? ' table-striped table-bordered table-hover' : $table_class; ?> hide" id="<?php echo $table_id; ?>">
@@ -253,7 +269,6 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
         <?php echo $index_row; ?>
       </thead>
       <tbody class="<?php echo $tbody_class; ?>">
-        <?php /* echo $data_rows; */ ?>
       </tbody>
       <tfoot class="<?php echo $tfoot_class; ?>">
         <?php echo $index_row; ?>
@@ -284,12 +299,20 @@ DynamicTables['<?php echo $table_id; ?>'] = function() {
 DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php $json_code = json_encode($items); ?>
   items: new Array(<?php echo substr($json_code, 1, -1); ?>),
+  filteredItems: new Array(),
   init: function() {
     var items = this.items;
     
     var templateRow = '<?php echo $template_row; ?>';
     var perPageLimit = <?php echo intval($this->component_options['pageSize']); ?>;
     var currentPage = <?php echo intval($this->component_options['pageIndex']); ?>;
+    
+    var optCookie = docCookies.getItem('<?php echo $table_name; ?>');
+    if ( ! _.isNull(optCookie) ) {
+      optCookie = JSON.parse(optCookie);
+      docCookies.removeItem('<?php echo $table_name; ?>');
+      currentPage = optCookie.currentPage;
+    }
     
     var startIndex = ((currentPage - 1) * perPageLimit) + 1;
     var endIndex = (startIndex + perPageLimit) - 1;
@@ -303,17 +326,32 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       totalPages: Math.ceil(items.length / perPageLimit), 
       startIndex: startIndex, 
       endIndex: endIndex > items.length ? items.length : endIndex, 
-      searchedData: [], 
+      searchKeyword: _.isNull(optCookie) ? '' : optCookie.searchKeyword, 
+      searchedData: [], // _.isNull(optCookie) ? [] : optCookie.searchedData, 
+      isFiltering: false, //_.isNull(optCookie) ? false : optCookie.isFiltering, 
       showTh: <?php echo is_bool( $display_index_row ) ? ( $display_index_row ? 'true' : 'false' ) : "'". $display_index_row ."'"; ?>, 
+      sortedProperty: _.isNull(optCookie) ? '' : optCookie.sortedProperty, 
+      currentSortDir: _.isNull(optCookie) ? '' : optCookie.currentSortDir, 
     };
     
+//console.info(optCookie);
+	
     // Add Event Listener
     var _self = this;
+<?php if ( $enable_search ) : ?>
+    $('#<?php echo $table_id; ?>-search button').on('click', function(e){ _self.searchFor(e,$(this)); }); // search button
+    $('#<?php echo $table_id; ?>-search input').on('keypress', function(e){ if (e.which === 13) { _self.searchFor(e,$(this)); } }); // search enter key
+    if ( ! _.isNull(optCookie) && '' !== optCookie.searchKeyword ) {
+      $('#<?php echo $table_id; ?>-search input').val(optCookie.searchKeyword);
+      $('#<?php echo $table_id; ?>-search button').trigger('click');
+    }
+<?php endif; ?>
 <?php if ( $_sortable_cols > 0 ) : ?>
     $('#<?php echo $table_id; ?> thead th.sortable').on('click', function(e){ _self.sortBy(e,$(this)); }); // sort
-<?php endif; ?>
-<?php if ( $enable_search ) : ?>
-    $('#<?php echo $table_id; ?>-search button').on('click', function(e){ _self.searchFor(e,$(this)); }); // search
+    if ( ! _.isNull(optCookie) && '' !== optCookie.sortedProperty ) {
+      $('#<?php echo $table_id; ?> thead th.sortable[data-property="'+optCookie.sortedProperty+'"]').addClass('sortdir-'+optCookie.currentSortDir).trigger('click');
+      //_self.sortBy();
+    }
 <?php endif; ?>
 <?php if ( $_must_paging ) : ?>
     $(document).on('click', 'nav.cdbt-pagination[for="<?php echo $table_id; ?>"] a', function(e){ _self.pageFeed(e,$(this)); }); // paging
@@ -321,14 +359,26 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $enable_view ) : ?>
     $(document).on('click', '.cdbt-table-views[for="<?php echo $table_id; ?>"]', function(e){ _self.changeView(e,$(this)); }); // view
 <?php endif; ?>
+<?php if ( $enable_filter ) : ?>
+	$('#<?php echo $table_id; ?>-filters').on('changed.fu.selectlist', function(e){ _self.filterAt(e,$(this)); }); // filter
+<?php endif; ?>
+<?php if ( $enable_editor ) : ?>
+    $('.cdbt-table-editor[for="<?php echo $table_id; ?>"]').find('#table-editor-edit,#table-editor-delete').on('click', function(e){ _self.cacheOpt(e,$(this)); }); // cache
+<?php endif; ?>
     
   }, 
   deepCopy: function(object) {
     return JSON.parse(JSON.stringify(Array.prototype.slice.call(object,0)));
   },
-  render: function(filtereditems) {
-  	var data = typeof filtereditems === 'undefined' || filtereditems.length === 0 ? this.deepCopy(this.items) : filtereditems;
+//-  render: function(filtereditems) {
+  render: function() {
     var options = this.options;
+//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+    if (typeof filtereditems !== 'undefined') {
+      data = filtereditems;
+    }
+  	//var data = typeof filtereditems === 'undefined' ? this.deepCopy(this.items) : filtereditems;
     
     options.totalItems = data.length;
     options.totalPages = Math.ceil( data.length / options.perPageLimit );
@@ -342,6 +392,10 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     // customBeforeRenderer
     this.beforeRender();
+    
+<?php if ( $enable_filter ) : ?>
+    $('#'+options.tableId+'-filters').selectlist();
+<?php endif; ?>
     
     $('#'+options.tableId+' tbody').empty();
     _.each(data, function(rowData){
@@ -362,7 +416,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       
       // var rowMarkup = template(rowData); // for underscore.js
       var rowMarkup = _.reduce(options.templateRow.match(/<%+\s(.|\s)*?\s+%>/gi),function(tmpl,placeholder){
-        return tmpl.replace(placeholder, rowData[placeholder.replace(/<%+\s(\'|\")?/, '').replace(/(\'|\")?\s+%>$/, '')]);
+        var __property = placeholder.replace(/<%+\s(\'|\")?/, '').replace(/(\'|\")?\s+%>$/, '');
+        return tmpl.replace(placeholder, rowData[__property]);
       },options.templateRow);
       var helpers = { rowData: rowData }; // For compatibility with repeater
       // customRowRenderer
@@ -370,32 +425,55 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       <?php echo implode("\n", $custom_rows); ?>
     <?php endif; ?>
       var customRowMarkup = $('<div/>').html(rowMarkup);
-      customRowMarkup.find('.binary-data input[type=hidden]').each(function(){
-        if ('data:image' === $(this).attr('data').substr(0, 10)) {
-          $(this).parents('span[class^="data-"]').css({position:'relative',display:'inline-block',maxWidth:'100%',maxHight:'<?php echo $_thumb_width; ?>px',overflow:'hidden',trasition:'all .2s ease-in-out'});
-          $(this).replaceWith('<img src="'+ $(this).attr('data') +'" style="position:relative;" class="'+ $(this).attr('data-class') +'">');
-        } else {
-          if ('' !== $(this).attr('data')) {
-            if ('' !== $(this).parent().data().whereConditions) {
-              var where_conditions = [];
-              _.each($(this).parent().attr('data-where-conditions').split(','), function(v){ where_conditions.push(v + ':' + helpers.rowData[v]); });
-              $(this).parent().attr('data-where-conditions', where_conditions.join(','));
-              $(this).parent().attr('data-target-table', '<?php echo $table_name; ?>');
-              $(this).replaceWith('<i class="fa fa-file-o"></i> ' + decodeURIComponent($(this).attr('data')));
-            } else {
-              $(this).parents('span[class^="data-"]').css({position:'relative',display:'inline-block',maxWidth:'100%',maxHight:'<?php echo $_thumb_width; ?>px',overflow:'hidden',trasition:'all .2s ease-in-out'});
-              $(this).replaceWith('<img src="'+ $(this).attr('data') +'" style="position:relative;" class="'+ $(this).attr('data-class') +'">');
+//console.info(customRowMarkup.find('.binary-data input[type=hidden]').length);
+//-      if ( customRowMarkup.find('.binary-data input[type=hidden]').length === 1) {
+        customRowMarkup.find('.binary-data input[type=hidden]').each(function(){
+          if ('data:image' === $(this).attr('data').substr(0, 10)) {
+            $(this).parents('span[class^="data-"]').css({position:'relative',display:'inline-block',maxWidth:'100%',maxHeight:'<?php echo $_thumb_width; ?>px',overflow:'hidden',transition:'all .2s ease-in-out'});
+            $(this).replaceWith('<img src="'+ $(this).attr('data') +'" style="position:relative;" class="'+ $(this).attr('data-class') +'">');
+          } else {
+            if ('' !== $(this).attr('data')) {
+              if ('' !== $(this).parent().data().whereConditions) {
+                var where_conditions = [];
+                _.each($(this).parent().attr('data-where-conditions').split(','), function(v){ where_conditions.push(v + ':' + helpers.rowData[v]); });
+                $(this).parent().attr('data-where-conditions', where_conditions.join(','));
+                $(this).parent().attr('data-target-table', '<?php echo $table_name; ?>');
+                $(this).replaceWith('<i class="fa fa-file-o"></i> ' + decodeURIComponent($(this).attr('data')));
+              } else {
+                var __source = $(this).attr('data');
+                $(this).parents('span[class^="data-"]').css({position:'relative',display:'inline-block',maxWidth:'100%',maxHeight:'<?php echo $_thumb_width; ?>px',overflow:'hidden',transition:'all .2s ease-in-out'});
+                $(this).replaceWith('<img src="'+ __source +'" style="position:relative;" class="'+ $(this).attr('data-class') +'">');
+              }
             }
           }
-        }
-      });
+        });
+/*
+      } else {
+        customRowMarkup.find('.binary-data input[type=hidden]').last().queue(function(){
+          if ('' !== $(this).attr('data')) {
+            if ( options.isFiltering ){
+              var __source = $(this).attr('data');
+              var __spanClass = $(this).parents('span[class^="data-"]').attr('class');
+              var __content = '<span class="'+__spanClass+'" style="position:relative;display:inline-block;max-width:100%;max-height:<?php echo $_thumb_width; ?>px;overflow:hidden;transition:all .2s ease-in-out">';
+              __content += '<a href="javascript:;" class="binary-data modal-preview" data-column-name="<?php echo $_thumb_column; ?>" data-where-conditions="">'
+              __content += '<img src="'+ __source +'" style="position:relative;max-width:none;max-height:none;" class="'+ $(this).attr('data-class') +'" width="<?php echo $_thumb_width; ?>"></a></span>';
+              $(this).parents('span[class^="data-"]').replaceWith(__content);
+            }
+          }
+        });
+      }
+*/
       
       $('#'+options.tableId+' tbody').append( customRowMarkup.html() );
     });
     
     var cols = $('#'+options.tableId+' thead').find('th').size() > 0 ? $('#'+options.tableId+' thead').find('th').size() : 1;
     if ('' === $('#'+options.tableId+' tbody').text()) {
-      $('#'+options.tableId+' tbody').html('<tr><td colspan="'+cols+'" class="no-item"><?php _e( 'No result.', CDBT); ?></td></tr>');
+      // If no data
+      $('#'+options.tableId+' tbody').html('<tr><td colspan="'+cols+'" class="no-item"><div class="abs-text"><?php _e( "No result.", CDBT); ?></div></td></tr>');
+      var __left = ($('#'+options.tableId).parent('.panel-table-wrapper').width() - $('#'+options.tableId+' .abs-text').outerWidth()) / 2;
+      var __scrollX = $.fn['kinetic'] !== undefined ? $('#'+options.tableId).parent('.panel-table-wrapper').kinetic().get(0).scrollLeft : 0;
+      $('#'+options.tableId+' .abs-text').css({ left: __left + __scrollX +'px' });
     }
     
     // Adjust and survey the size of cells
@@ -477,6 +555,11 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
             if (!/down|start/.test(e.type)){
               return !(/span|area|a|input/i.test(target.tagName));
             }
+          },
+          moved: function(e){
+            $('.panel-table-wrapper[for="'+options.tableId+'"]').css({width:'calc(100%+1px)'});
+            var __defaultLeft = ($('#'+options.tableId).parent('.panel-table-wrapper').width() - $('#'+options.tableId+' .abs-text').outerWidth()) / 2;
+            $('#'+options.tableId+' .abs-text').css({ left: (__defaultLeft + Math.floor(e.scrollLeft)) +'px'});
           }
         });
       }
@@ -567,14 +650,16 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     return order !== 'asc' ? data.reverse() : data;
   },
   sortBy: function(e,target) {
-    e.preventDefault();
+    //e.preventDefault();
     var options = this.options;
-  	var data = options.searchedData.length === 0 ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
-  	if (data.length === 1) {
+//-  	var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+  	if (data.length <= 1) {
   	  return false;
   	}
     var sortedProperty = target.data('property');
-    if (!target.hasClass('sorted')) {
+    options.sortedProperty = sortedProperty;
+    if ( ! target.hasClass('sorted')) {
       target.parent('tr').find('th').removeClass('sorted');
       target.addClass('sorted');
       $('#'+options.tableId+' tfoot').find('th').removeClass('sorted');
@@ -587,54 +672,100 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       }
     }
     var currentSortDir = target.hasClass('sortdir-desc') ? 'desc' : 'asc';
-    if (options.searchedData.length > 0) {
-      this.render(this.objArraySort(data,sortedProperty,currentSortDir));
+    options.currentSortDir = currentSortDir;
+    if ( options.isFiltering ) {
+//-      this.render(this.objArraySort(data,sortedProperty,currentSortDir));
+      this.filteredItems = this.objArraySort(data,sortedProperty,currentSortDir);
     } else {
       this.items = this.objArraySort(data,sortedProperty,currentSortDir);
-      this.render();
+      //this.render();
+//-      this.render(this.objArraySort(data,sortedProperty,currentSortDir));
     }
+    return this.render();
     
   }, 
 <?php endif; ?>
 <?php if ( $enable_search ) : ?>
   searchFor: function(e,target) {
-    e.preventDefault();
-    var data = this.deepCopy(this.items);
+    //e.preventDefault();
     var options = this.options;
+//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     var keyword = $('#'+options.tableId+'-search input').val().toLowerCase();
     var searchedData = [];
     if ('' === keyword) {
-      target.find('i').attr('class', 'fa fa-search');
+      $('#'+options.tableId+'-search').find('i').attr('class', 'fa fa-search');
       return false;
     }
     if (target.find('i').hasClass('fa-close')) {
       $('#'+options.tableId+'-search').find('input').val('').prop('disabled', false);
-      target.find('i').attr('class', 'fa fa-search');
+      $('#'+options.tableId+'-search').find('i').attr('class', 'fa fa-search');
+      options.isFiltering = false;
+    <?php if ( $enable_filter ) : ?>
+      var __selectlist = $('#'+options.tableId+'-filters');
+      __selectlist.selectlist('enable');
+      if ('' !== __selectlist.selectlist('selectedItem').value) {
+        return this.filterAt();
+      }
+    <?php endif; ?>
+      return this.render();
     } else {
       _.each(data, function(item){
         var values = _.values(item);
         var found = _.find(values, function(v) {
-          if (null === v) v = false;
+          if (null === v || (_.isString(v) && 'data:image' === v.substr(0, 10)) ) v = false;
           if (v.toString().toLowerCase().indexOf(keyword) > -1) {
             searchedData.push(item);
             return true;
           }
         });
       });
-      target.find('i').attr('class', 'fa fa-close');
+      $('#'+options.tableId+'-search').find('i').attr('class', 'fa fa-close');
       $('#'+options.tableId+'-search').find('input').prop('disabled', true);
     }
     if (searchedData.length > 0) {
       options.currentPage = 1;
+      options.searchKeyword = $('#'+options.tableId+'-search input').val();
     }
-    options.searchedData = searchedData;
-    this.render(searchedData);
+//-    options.searchedData = searchedData;
+    this.filteredItems = searchedData;
+  <?php if ( $enable_filter ) : ?>
+    $('#'+options.tableId+'-filters').selectlist('disable');
+  <?php endif; ?>
+    options.isFiltering = true;
+//-    this.render(searchedData);
+    return this.render();
     
   }, 
 <?php endif; ?>
+<?php if ( $enable_filter ) : ?>
+  filterAt: function(e,target) {
+    var options = this.options;
+    var data = this.deepCopy(this.items);
+    var searchedData = [], searchObj = { column: '<?php echo $filter_column; ?>', keyword: $('#'+options.tableId+'-filters').selectlist('selectedItem').value };
+    if (searchObj.keyword === '') {
+      options.isFiltering = false;
+      return this.render();
+    }
+    _.each(data, function(item){
+      if (item[searchObj.column] === searchObj.keyword) {
+        searchedData.push(item);
+      }
+    });
+    if (searchedData.length > 0) {
+      options.currentPage = 1;
+    }
+//-    options.searchedData = searchedData;
+    this.filteredItems = searchedData;
+    options.isFiltering = true;
+//-    this.render(searchedData);
+    return this.render();
+    
+  },
+<?php endif; ?>
 <?php if ( $_must_paging ) : ?>
   pageFeed: function(e,target) {
-    e.preventDefault();
+    //e.preventDefault();
     var options = this.options;
     var ariaLabel = target.attr('aria-label');
     if ('Previous' === ariaLabel) {
@@ -649,7 +780,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         return false;
       }
     }
-    this.render();
+//-    this.render();
+    return this.render();
+    
   }, 
   pagination: function() {
     var options = this.options;
@@ -682,8 +815,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   }, 
 <?php endif; ?>
   beforeRender: function() {
-    var data = this.deepCopy(this.items);
     var options = this.options;
+//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     
   <?php if ( isset($before_render_scripts) ) : ?>
     <?php echo $before_render_scripts; ?>
@@ -692,6 +826,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   },
   afterRender: function() {
     var options = this.options;
+//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+    
 <?php if ( $enable_editor ) : ?>
     $('.cdbt-table-editor[for="'+options.tableId+'"] button#table-editor-edit').removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
     $('.cdbt-table-editor[for="'+options.tableId+'"] button#table-editor-delete').removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
@@ -733,6 +870,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       });
     });
 <?php if ( $enable_view ) : ?>}<?php endif; ?>
+    $('#'+options.tableId).find('img').error(function(){
+      $(this).attr('src', '<?php echo $this->plugin_url; ?>assets/images/cdbt-noimage.png').parent('a').prop('disabled', true);
+    });
     
   <?php if ( isset($after_render_scripts) ) : ?>
     <?php echo $after_render_scripts; ?>
@@ -742,8 +882,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $enable_view ) : ?>
   changeView: function(e,target) {
     var options = this.options;
-  	var data = options.searchedData.length === 0 ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
-  	//var data = this.deepCopy(this.items);
+//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
+    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     var toView = $('.cdbt-table-views[for="'+options.tableId+'"]>label.active>input').val();
     var currentView = $('.cdbt-table-views[for="'+options.tableId+'"]').data().currentView;
     if (currentView !== toView) {
@@ -786,12 +926,16 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
           }
         <?php if ( ! empty( $_thumb_column ) ) : ?>
           if ( thumb_data.src === undefined ) {
-            if ( options.searchedData.length === 0 ) {
+/*
+            if ( ! options.isFiltering ) {
               thumb_data['src'] = row['<?php echo $_thumb_column; ?>'];
             } else {
               var __tmp = $('<div/>').html(row['<?php echo $_thumb_column; ?>']);
+console.info([__tmp, row['<?php echo $_thumb_column; ?>']]);
               thumb_data['src'] = $(__tmp).find('input').attr('data');
             }
+*/
+            thumb_data['src'] = row['<?php echo $_thumb_column; ?>'];
           }
         <?php endif; ?>
           thumbnails.push(thumb_data);
@@ -802,6 +946,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       });
       
       $('#'+options.tableId+'-view').find('img').each(function(){
+        $(this).error(function(){
+          $(this).attr('src', '<?php echo $this->plugin_url; ?>assets/images/cdbt-noimage.png').parent('a').prop('disabled', true);
+        });
         var cropSize = $(this).parents('.crop-image').width();
         var imgSize = $.imageSize($(this).attr('src'));
         var adjust, longBoundary;
@@ -823,9 +970,24 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
   },
 <?php endif; ?>
+<?php if ( $enable_editor ) : ?>
+  cacheOpt: function(e,target){
+    var options = this.options;
+    var saveOpt = {};
+    //saveOpt['tableId'] = options.tableId;
+    saveOpt['currentPage'] = options.currentPage;
+    saveOpt['searchKeyword'] = options.searchKeyword;
+    //saveOpt['searchedData'] = options.searchedData;
+    //saveOpt['isFiltering'] = options.isFiltering;
+    saveOpt['sortedProperty'] = options.sortedProperty;
+    saveOpt['currentSortDir'] = options.currentSortDir;
+    docCookies.setItem( '<?php echo $table_name; ?>', JSON.stringify(saveOpt) );
+    return;
+  },
+<?php endif; ?>
   reload: function(){
     this.items = [];
-    this.render(this.items);
+    this.render();
   },
 };
 </script>

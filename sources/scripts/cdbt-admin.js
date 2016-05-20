@@ -56,19 +56,6 @@ var docCookies = {
     return aKeys;
   }
 };
-var htmlEntities = function( str, proc ) {
-  if ( 'encode' === proc ) {
-    var buffer = [];
-    for ( var i=str.length-1; i>=0; i-- ) {
-      buffer.unshift( ['&#', str[i].charCodeAt(), ';'].join('') );
-    }
-    return buffer.join('');
-  } else {
-    return str.replace( /&#(\d+);/g, function( match, dec ) {
-      return String.fromCharCode( dec );
-    });
-  }
-};
 $(document).ready(function() {
 //jQuery(document).ready(function($) {
   
@@ -131,6 +118,27 @@ $(document).ready(function() {
     imgSize.h = img.height;
     return imgSize;
   };
+  
+  /**
+   * 5. Perform mutual conversion between the actual strings and the html entity
+   * 
+   * @param string str [required]
+   * @param string proc [optional] "decode" (is default) or "encode"
+   */
+  $.htmlEntities = function(str, proc) {
+    if ( 'encode' === proc ) {
+      var buffer = [];
+      for ( var i=str.length-1; i>=0; i-- ) {
+        buffer.unshift( ['&#', str[i].charCodeAt(), ';'].join('') );
+      }
+      return buffer.join('');
+    } else {
+      return str.replace( /&#(\d+);/g, function( match, dec ) {
+        return String.fromCharCode( dec );
+      });
+    }
+  };
+  
   
   /**
    * Localize the variables passed from wordpress

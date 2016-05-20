@@ -1,5 +1,20 @@
 .cdbt-table-wrapper {
   
+  .cdbt-table-views, .cdbt-table-filters, .cdbt-table-editor {
+    margin-left: .75em;
+  }
+  
+  .align-left .cdbt-table-filters {
+    margin-left: 0;
+  }
+  
+  .dropdown-menu {
+    
+    a {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+  
   .panel-body {
     
     .loading {
@@ -35,14 +50,19 @@
   
   .panel-table-wrapper {
     position: relative;
-    width: calc(100% + 1px);
+    width: 100%;
     overflow: hidden;
     overflow-x: auto;
     
     &.kinetic-active {
+      width: 100%;
+      
       table {
-        box-shadow: 0 1px 1px 0 #ddd;
+        box-shadow: 0 2px 1px 1px #ddd;
       }
+    }
+    &.kinetic-moving-left, &.kinetic-moving-right {
+      width: calc( 100% + 1px );
     }
     
     table {
@@ -120,8 +140,17 @@
         
         &.no-item {
           padding: 20px 0;
+          height: 60px;
           text-align: center;
-          color: #b9b9b9;
+          
+          .abs-text {
+            display: inline-block;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            color: #b9b9b9;
+            
+          }
         }
         
         &.editable-checkbox {

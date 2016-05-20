@@ -499,7 +499,7 @@ final class CdbtFrontend extends CdbtDB {
         $_session_key = str_replace('_', '-', $worker_method .'-'. $_POST['table']);
         $_SESSION = array_merge( $_SESSION, array_map( 'stripslashes_deep', $_POST ) );
         $this->update_session( $_session_key );
-        if ( isset( $this->prev_action_cache ) && $this->prev_action_cache !== $_COOKIE['once_action'] ) {
+        if ( isset( $this->prev_action_cache ) && isset($_COOKIE['once_action']) && $this->prev_action_cache !== $_COOKIE['once_action'] ) {
           $this->$worker_method();
         } else {
           return;
