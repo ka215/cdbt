@@ -5,58 +5,58 @@ namespace CustomDataBaseTables\Lib;
 /**
  * Trait for shortcode of "cdbt-view"
  *
- * @since 2.1.0
+ * @since 2.1.31
  *
  */
 trait CdbtView {
   
   /**
    * for [cdbt-view] ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   * Retrieve a table data that match the specified conditions, then it outputs as list
+   * Retrieves all data that matches the specific conditions from the table, then it renders as list format.
    *
    * @since 1.0.0
    * @since 2.0.0 Refactored logic.
    * @since 2.1.31 Greatly enhanced
    *
-   * @param array $attributes [require] Array of attributes in shortcode
-   * @param string $content [optional] For default is empty
-   * @return string $html_content The formatted content as list
+   * @param  array  $attributes [require]  - Array in shortcode's attributes
+   * @param  string $content    [optional] - Should be actually nothing
+   * @return string $html_content          - The formatted content to the specific list
    **/
   public function view_data_list() {
     list($attributes, $content) = func_get_args();
     extract( shortcode_atts([
-      'table' => '', // Required attribute
-      'bootstrap_style' => true, // Changed since v2.1.31. Render data of the json format if false.
-      'display_list_num' => false, // The default value has changed to false from v2.0.0
-      'display_search' => true, // 
-      'display_title' => true, 
-      'enable_sort' => true, // 
-      'exclude_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
-      'add_class' => '', // Separator is a single-byte space character
-      /* As legacy of `cdbt-extract` is follows: */
-      'display_index_row' => true, // Became to mixed value; It had added of "head-only" besides boolean value since v2.1.31. (for static table format)
-      'narrow_keyword' => '', // String as array (not assoc) is `find_data()`; For example `keyword1,keyword2,...` Or String as hash is `get_data()`; For example `col1:keyword1,col2:keyword2,...`
-      'display_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...` If overlapped with `exclude_cols`, set to override the `exclude_cols`.
-      'order_cols' => '', // String as array (not assoc); For example `col3,col2,col1,...` If overlapped with `display_cols`, set to override the `display_cols`.
-      'sort_order' => 'created:desc', // String as hash for example `updated:desc,ID:asc,...`
-      'limit_items' => '', // The default value is overwritten by the value of the max_show_records of the specified table.
-      'image_render' => 'responsive', // class name for directly image render: 'rounded', 'circle', 'thumbnail', 'responsive', (until 'minimum', 'modal' ) for repeater only since v2.1.31.
-      /* Added new attribute from 2.0.0 is follows: */
-      'enable_repeater' => true, // Rendering by using repeater component at Fuel UX.
-      'display_filter' => false, // Is enabled only if "enable_repeater" is true.
-      'filter_column' => '', // Target column name to filter.
-      'filters' => '', // String as array (assoc); For example `filter1:label1,filter2:label2,...`
-      'display_view' => false, //  Is enabled only if "enable_repeater" is true.
-      'thumbnail_column' => '', // Column name to be used as a thumbnail image (image binary or a URL of image must be stored in this column)
-      'thumbnail_title_column' => '', // Column name to be used as a thumbnail title
-      'thumbnail_width' => 100, // Integer of thumbnail block size
-      'ajax_load' => false, //
-      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
-      /* Added new attributes from 2.0.7 is follows: */
-      'narrow_operator' => 'and', // String of either `and` or `or`; for method of `find_data()`
-      // 'strip_tags' => true, // Whether to strip the tags in the string type data.
-      /* Added new attributes from 2.0.10 is follows: */
-      'truncate_strings' => 0, 
+      'table' => '', 					// @attribute string [required] Specifies the table name you want to display the data.
+      'bootstrap_style' => true, 		// @attribute bool   [optional] Renders the data via the style of bootstrap if true; Render the data of the json format if false (since v2.1.x).
+      'display_list_num' => false, 		// @attribute bool   [optional] Adds an auto increment number column at the left edge of the data row if true.
+      'display_search' => true, 		// @attribute bool   [optional] Adds an input field for the data search if true.
+      'display_title' => true, 			// @attribute bool   [optional] Displays the heading of content as a title if true.
+      'enable_sort' => true, 			// @attribute bool   [optional] It'll be able to sort of data by clicking on the header row if true.
+      'exclude_cols' => '', 			// @attribute string [optional] Specifies the comma-delimited column names if you want to hide the column. e.g. "column1,column2,column3,..."
+      'add_class' => '', 				// @attribute string [optional] Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.
+      /* The attributes for a legacy shortcode "cdbt-extract" are followed: */
+      'display_index_row' => true, 		// @attribute mixed  [optional] Displays the index row around the data rows as the header of the data column, if true. Also it's added of "head-only" for the table format besides boolean value. (since v2.1.x)
+      'narrow_keyword' => '', 			// @attribute string [optional] Specifies the narrowing condition of the output data in a comma-delimited. If there are the multiple condition, it'll be evaluated at the "AND" condition. e.g. "keyword1,keyword2,..." or "column1:keyword1,column2:keyword2,..."
+      'display_cols' => '', 			// @attribute string [optional] Specifies the comma-delimited column names if you want to show the column. This overrides the value of the attribute "exclude_cols". e.g. "column1,column2,column3,..."
+      'order_cols' => '', 				// @attribute string [optional] Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the attribute "exclude_cols" and "display_cols". e.g. "col3,col2,col1,..."
+      'sort_order' => 'created:desc', 	// @attribute string [optional] Specifies in the pair of column name and the ascending(asc) or descending(desc) order, for the display order of the initial data. If there are multiple condition, please use the comma-delimited. e.g. "updated:desc,ID:asc,..."
+      'limit_items' => '', 				// @attribute int    [optional] If this attribute is specified, it overrides the "Maximum display data per page" of the table.
+      'image_render' => 'responsive', 	// @attribute string [optional] Specifies a CSS class name for styling the element of thumbnail image. This attribute is available only if the "enable_repeater" is true.
+      /* The Added new attributes since v2.0.x are followed: */
+      'enable_repeater' => true, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
+      'display_filter' => false, 		// @attribute bool   [optional] Adds a dropdown list box for filtering the data if true. Then there should be specified the column to filter if you want to enable this.
+      'filter_column' => '', 			// @attribute string [optional] Specifies a column name for filtering the data.
+      'filters' => '', 					// @attribute string [optional] Specifies the keyword lists for filtering the data. Also, a plurality of the pairs of the keyword and the display label can be defined by using the comma-delimited. e.g. "filter-keyword1:display-label1,filter-keyword2:display-label2,..."
+      'display_view' => false, 			// @attribute bool   [optional] You can switch to the thumbnail list view of the gallery format if there contained an image in the table data.
+      'thumbnail_column' => '', 		// @attribute string [optional] Specifies a column as the thumbnail image. In this column it should be stored the image binary or a URL of image.
+      'thumbnail_title_column' => '',   // @attribute string [optional] Specifies a column as displayed title on the thumbnail list view. it displays nothing if this is not fill.
+      'thumbnail_width' => 100, 		// @attribute int    [optional] Specifies a width of the thumbnail image, also the default size of thumbnail will be square equal to this width.
+      'ajax_load' => false, 			// @attribute bool   [optional] Use the Ajax to load the table data if true. If activated, you can improve performance when dealing with large tables of data size. (Not Implemented yet)
+      'csid' => 0, 						// @attribute int    [optional] This is the alias number to call a custom shortcode settings that are stored in this plugin.
+      /* The Added new attributes since v2.0.7 are followed: */
+      'narrow_operator' => 'and', 		// @attribute string [optional] You can specify the value of either "and" or "or", as evaluated condition of multiple narrowing keywords.
+      // 'strip_tags' => true, 			// @attribute bool   [optional] Whether to strip the tags in the string type data.
+      /* The Added new attribute since v2.0.10 is followed: */
+      'truncate_strings' => 0, 			// @attribute int    [optional] Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -122,7 +122,7 @@ trait CdbtView {
             $has_datetime[] = $column;
         }
       }
-      $limit_items = empty($limit_items) || intval($limit_items) < 1 ? intval($this->options['default_per_records']) : intval($limit_items);
+      $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $this->options['default_per_records'] ) : intval( $limit_items );
       $strip_tags = false;
     }
     $content = '';
@@ -510,7 +510,7 @@ trait CdbtView {
       'listSelectable' => 'false', 
       'staticHeight' => -1, 
       'pageIndex' => 1, 
-      'pageSize' => $limit_items, 
+      'pageSize' => intval( $limit_items ), 
       'columns' => $columns, 
       'data' => $datasource, 
       'customRowScripts' => [], 

@@ -1,11 +1,17 @@
 .cdbt-table-wrapper {
   
-  .cdbt-table-views, .cdbt-table-filters, .cdbt-table-editor {
-    margin-left: .75em;
-  }
-  
-  .align-left .cdbt-table-filters {
-    margin-left: 0;
+  .panel-heading {
+    .cdbt-table-views, .cdbt-table-filters, .cdbt-table-editor {
+      margin-left: .75em;
+    }
+    
+    .align-right .cdbt-table-views+.cdbt-table-filters {
+      margin-left: 0;
+    }
+    
+    .align-left .cdbt-table-filters {
+      margin-left: 0;
+    }
   }
   
   .dropdown-menu {
@@ -192,6 +198,8 @@
           border: 0;
           background-color: transparent;
           box-shadow: 0 0 0 transparent;
+          white-space: normal;
+          word-wrap: break-word;
           user-select: all;
           
           &:hover, &:active, &:focus {

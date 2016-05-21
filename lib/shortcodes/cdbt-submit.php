@@ -5,29 +5,31 @@ namespace CustomDataBaseTables\Lib;
 /**
  * Trait for shortcode of "cdbt-submit"
  *
- * @since 2.1.0
+ * @since 2.1.31
  *
  */
 trait CdbtSubmit {
   
   /**
-   * 
+   * for [cdbt-submit] ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   * This shortcode can executes any queries from front-end. (Currently it's deprecated; actually not working)
    *
-   * @since 2.1.0
+   * @since 2.0.x
    *
-   * @param string $table_name [require]
-   * @return 
+   * @param  array  $attributes [require]  - Array in shortcode's attributes
+   * @param  string $content    [optional] - Should be actually nothing
+   * @return string $html_content          - The formatted content to the specific list
    **/
   public function submit_custom_query() {
 	extract(shortcode_atts(array(
-		'table' => '', 
-		'query' => '', 
-		'type' => 'button', // or 'link'
-		'label' => 'Submit', 
-		'onclick' => '', // my custom onclick event name (when click on element)
-		'callback' => '', // my callback function name (when ajax complete event)
-		'final' => '', // my final process event name (when ending after ajax)
-		'add_class' => '', 
+      'table' => '', 					// @attribute string [required] Specifies the table name you want to display the data.
+      'query' => '', 					// @attribute string [required] Specifies the sql query to execute after submitted.
+      'type' => 'button', 				// @attribute string [optional] Specifies the component type for submitting a query, whether it's a "button" or a "link".
+      'label' => 'Submit', 				// @attribute string [optional] Specifies the label name of button or link.
+      'onclick' => '', 					// @attribute string [optional] Specifies the custom onclick event (as function name of javascript) to fire when this component will be clicked.
+      'callback' => '', 				// @attribute string [optional] Specifies the custom callback function name of javascript to fire after the submitted process has completed.
+      'final' => '', 					// @attribute string [optional] Specifies the custom final event name (as function name of javascript) to fire at last after the ajax process.
+      'add_class' => '', 				// @attribute string [optional] Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.
 	), $atts));
 	global $cdbt;
 	// verification for using shortcode

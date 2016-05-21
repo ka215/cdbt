@@ -5,39 +5,40 @@ namespace CustomDataBaseTables\Lib;
 /**
  * Trait for shortcode of "cdbt-entry"
  *
- * @since 2.1.0
+ * @since 2.1.31
  *
  */
 trait CdbtEntry {
   
   /**
    * for [cdbt-entry] ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   * Render the data registration form for the specified table
+   * Renders the data registration form for a specific table.
    *
    * @since 1.0.0
    * @since 2.0.0 Refactored logic.
-   * @since 2.1.0 Greatly enhanced
    *
-   * @param array $attributes [require] Array of attributes in shortcode
-   * @param string $content [optional] For default is empty
-   * @return string $html_content The created form contents
+   * @param  array  $attributes [require]  - Array in shortcode's attributes
+   * @param  string $content    [optional] - Should be actually nothing
+   * @return string $html_content          - The formatted content to the specific list
    **/
   public function entry_data_form() {
     list($attributes, $content) = func_get_args();
     extract( shortcode_atts([
-      'table' => '', // Required attribute
-      'bootstrap_style' => true, // 
-      'display_title' => true, 
-      'hidden_cols' => '', // String as array (not assoc); For example `col1,col2,col3,...`
-      'add_class' => '', // Separator is a single-byte space character
-      /* Added new attribute from 2.0.0 is follows: */
-      'action_url' => '', // String of url for form action [optional] For using shortcode of `cdbt-edit`
-      'form_action' => 'entry_data', // String of action name as method after submiting [optional] Is `edit_data` if edit data
-      'display_submit' => true, // Boolean [optional] For using shortcode of `cdbt-edit`
-      'where_clause' => '', // String as array (assoc); For example `col1:value1,col2:value2,...`, For using shortcode of `cdbt-edit`
-      'redirect_url' => '', // String of the url to redirect after data insertion (since version 2.0.5)
-      'csid' => 0, // Valid value of "Custom Shortcode ID" is 1 or more integer. 
-      'submit_button_label' => '', // String as submit button label (since version 2.0.11)
+      'table' => '', 					// @attribute string [required] Specifies the table name you want to display the data.
+      'bootstrap_style' => true, 		// @attribute bool   [optional] Renders the data via the style of bootstrap if true.
+      'display_title' => true, 			// @attribute bool   [optional] Displays the heading of content as a title if true.
+      'hidden_cols' => '', 				// @attribute string [optional] Specifies a comma delimited the column names if you want to hide any column. Then the hidden column will be rendered as field of "hidden" type. e.g. "column1,column2,column3,..."
+      'add_class' => '', 				// @attribute string [optional] Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.
+      /* The Added new attributes since v2.0.x are follows: */
+      'action_url' => '', 				// @attribute string [optional] ??? Specifies the form's action string. This attribute is for an internal processing on the "cdbt-edit" shortcode only.
+      'form_action' => 'entry_data', 	// @attribute string [optional] Specifies the form's action string. This attribute is for an internal processing on the "cdbt-edit" shortcode only. This attribute value is the fixed value.
+      'display_submit' => true, 		// @attribute bool   [optional] Specifies whether or not the submit button should be displayed. This attribute is for an internal processing on the "cdbt-edit" shortcode only.
+      'where_clause' => '', 			// @attribute string [optional] Specifies the condition to narrow down a single data as the default value of entry form. This attribute is for an internal processing on the "cdbt-edit" shortcode only. e.g. "column1:value1,column2:value2,..."
+      'csid' => 0, 						// @attribute int    [optional] This is the alias number to call a custom shortcode settings that are stored in this plugin.
+      /* The Added new attribute since v2.0.5 is followed: */
+      'redirect_url' => '', 			// @attribute string [optional] Specifies the url to redirect after the time of insertion and the update of the data. If not specified, self page is reloaded.
+      /* The Added new attribute since v2.0.11 is followed: */
+      'submit_button_label' => '', 		// @attribute string [optional] Specifies the label name of button for submitting in the entry form.
     ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
