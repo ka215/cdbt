@@ -38,11 +38,13 @@ trait CdbtExtras {
    *
    * @since 2.0.0
    * @since 2.0.7 For revision
+   * @since 2.1.31 Updated
    *
-   * @param string $feature_name
+   * @param string $feature_name [required]
+   * @param bool $echo [optional]
    * @return void
    */
-  public function during_trial( $feature_name ) {
+  public function during_trial( $feature_name, $echo=true ) {
     $new_features = [
       'enable_core_tables' => 'done', 
       'display_datetime_format' => 'done', 
@@ -69,7 +71,7 @@ trait CdbtExtras {
       'apikey_generator' => 'try-yet', 
       'apikey_requests' => 'try-yet', 
       'allow_rendering_shortcodes' => 'done', 
-      'ajax_loading' => 'unreleased', 
+      'ajax_load' => 'unreleased', 
       'include_assets' => 'done', 
       'prevent_duplicate_sending' => 'done', 
       'plugin_menu_position' => 'done', 
@@ -78,8 +80,9 @@ trait CdbtExtras {
       'override_messages' => 'done', 
       'changelog_panel' => 'done', 
       'reference_columns' => 'done', 
-      'truncate_strings' => 'try-yet', 
+      'truncate_strings' => 'done', 
       'display_list_format' => 'new', 
+      'display_index_row' => 'try-yet', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {
@@ -94,8 +97,14 @@ trait CdbtExtras {
         $_label = __('Future releases', CDBT);
         $_class = 'default';
       }
-      if ( isset( $_label ) && isset( $_class ) ) 
-        printf( '<span class="label label-%s">%s</span>', $_class, $_label );
+      if ( isset( $_label ) && isset( $_class ) ) {
+        $label_html = sprintf( '<span class="label label-%s">%s</span>', $_class, $_label );
+        if ( $echo ) {
+          echo $label_html;
+        } else {
+          return $label_html;
+        }
+      }
     }
   }
 

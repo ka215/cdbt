@@ -95,6 +95,12 @@ fieldset>label {
 .label-danger {
   background-color: $danger;
 }
+.label-required {
+  position: relative;
+  margin-left: .5em;
+  top: -1px;
+  background-color: #ce4844;
+}
 
 .nt {
   color: $nt;
@@ -407,4 +413,13 @@ nav#operation-navbar {
 #collapse-reference {
   cursor: pointer;
   
+}
+
+.form-group label {
+  text-align: left!important;
+  padding-left: 26px;
+  
+  span.label {
+    margin-left: .75em;
+  }
 }

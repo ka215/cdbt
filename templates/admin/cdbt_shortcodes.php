@@ -4,6 +4,7 @@
  * URL: `/wp-admin/admin.php?page=cdbt_shortcodes`
  *
  * @since 2.0.0
+ * @since 2.1.31 Emhanced
  *
  */
 
@@ -12,9 +13,9 @@
  */
 $options = get_option($this->domain_name);
 $tabs = [
-  'shortcode_list' => __('Shortcode List', CDBT), 
-  'shortcode_register' => __('Shortcode register', CDBT), 
-  'shortcode_edit' => __('Edit Shortcode', CDBT), 
+  'shortcode_list' => __('Shortcode Lists', CDBT), 
+  'shortcode_register' => __('Shortcode Register', CDBT), 
+  'shortcode_edit' => __('Shortcode Edit', CDBT), 
 ];
 $default_tab = 'shortcode_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
@@ -23,7 +24,7 @@ foreach ($this->cdbt_sessions as $_session_key => $_val) {
   if ($current_tab !== $_session_key) 
     $this->destroy_session($_session_key);
 }
-$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
+$label_required = '<span class="label label-required">'. __('Required', CDBT) .'</span>';
 /**
  * Render html
  * ---------------------------------------------------------------------------
@@ -111,7 +112,7 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
 ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('Here will create a new shortcode. Please enter the following item.', CDBT); ?> <?php $this->during_trial( 'shortcode_register' ); ?>
+      <?php _e('In this section you can create a new custom shortcode. Please enter the following your necessary items.', CDBT); ?> <?php $this->during_trial( 'shortcode_register' ); ?>
     </p>
   </div>
   
@@ -122,8 +123,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       <input type="hidden" name="action" value="register_shortcode">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
+<?php $this->dynamic_field( [ 'elementName'=>'base_name', 'elementId'=>'base_name', 'elementLabel'=>__('Base Shortcode', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'combobox', 'isRequired'=>true, 'labelSize'=>3, 'fieldSize'=>3, 'defaultValue'=>$base_shortcode, 'selectableList'=>array_keys( $_shortcodes ) ] ); ?>
+
+<?php /*
       <div class="form-group">
-        <label for="register-shortcode-base_name" class="col-sm-2 control-label"><?php _e('Base shortcode name', CDBT); ?><?php echo $label_required; ?></label>
+        <label for="register-shortcode-base_name" class="col-sm-2 control-label"><?php _e('Base Shortcode', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="register-shortcode-base_name">
             <input type="text" name="<?php echo $this->domain_name; ?>[base_name]" value="<?php echo $base_shortcode; ?>" class="form-control" pattern=".{1,}" required>
@@ -139,8 +143,12 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"></p>
         </div>
       </div><!-- /register-shortcode-base_name -->
+*/ ?>
+<?php $this->dynamic_field( [ 'elementName'=>'target_table', 'elementId'=>'target_table', 'elementLabel'=>__('Target Table', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'combobox', 'isRequired'=>true, 'labelSize'=>3, 'fieldSize'=>3, 'defaultValue'=>isset( $this_tab_vars['target_table'] ) ? $this_tab_vars['target_table'] : '', 'selectableList'=>$_tables ] ); ?>
+
+<?php /*
       <div class="form-group">
-        <label for="register-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target table name', CDBT); ?><?php echo $label_required; ?></label>
+        <label for="register-shortcode-target_table" class="col-sm-2 control-label"><?php _e('Target Table', CDBT); ?><?php echo $label_required; ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="register-shortcode-target_table">
             <input type="text" name="<?php echo $this->domain_name; ?>[target_table]" value="<?php if (isset($this_tab_vars['target_table'])) echo $this_tab_vars['target_table']; ?>" class="form-control" pattern=".{1,}" required>
@@ -156,26 +164,50 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"></p>
         </div>
       </div><!-- /register-shortcode-target_table -->
+*/ ?>
       <div class="form-group">
         <div class="col-sm-12" id="columns-information" style="padding: 0 2em;">
         </div>
       </div><!-- /colmuns-information -->
       
-      <div class="clearfix"><br></div>
-      <h4 class="title" id="advanced-settings"><i class="fa fa-cogs text-muted"></i> <?php _e('Advanced setting of shortcode', CDBT); ?></h4>
+      <div class="clearfix"></div>
+      <h4 class="title" id="advanced-settings"><i class="fa fa-cogs text-muted"></i> <?php _e('Advanced Shortcode Settings', CDBT); ?></h4>
+      
+<div class="overflow-block" style="margin: 0; padding: 1em 0; overflow-y: scroll; overflow-x: hidden; height: 400px;">
       
       <div class="sr-only switching-item on-e">
         <input type="hidden" name="<?php echo $this->domain_name; ?>[entry_page]" value=""><!-- entry_page [e] -->
       </div>
       
+<?php
+  $appearances = [ 'elementName' => 'look_feel', 'elementId' => 'look_feel', 'elementLabel' => __('Appearance and LookAndFeel', CDBT), 'idPrefix' => 'register-shortcode-', 'elementType' => 'checkbox', 'fieldSize' => 10, 
+    'defaultValue' => 'bootstrap_style,enable_repeater,display_search,display_title,enable_sort,display_index_row', 
+    'selectableList' => [
+      'bootstrap_style' => 		__( 'Renders the data via the style of bootstrap if checked. Render the data of the json format if unchecked.', CDBT ), 
+      'enable_repeater' => 		__( 'Renders the data of table by using repeater component of the "FuelUX" libraries if checked. <wbr/>Or if unchecked, renders by using the original dynamic table component of this plugin.', CDBT ), 
+      'display_list_num' => 	__( 'Adds an auto increment number column at the left edge of the data row if checked.', CDBT ), 
+      'display_search' => 		__( 'Displays an input field for the data search if checked.', CDBT ), 
+      'display_title' => 		__( 'Displays the heading of content as a title if checked.', CDBT ), 
+      'enable_sort' => 			__( 'It will be able to sort of data by clicking on the header row if checked.', CDBT ), 
+//    'display_index_row' => 	__( 'Displays the index row around the data rows as the header of the data column, if true. Also it&#39;s added of "head-only" for the table format besides boolean value.', CDBT ), 
+      'display_filter' => 		__( 'Adds a dropdown list box for filtering the data if checked. Then there should be specified the column to filter if you want to enable this.', CDBT ), 
+      'display_view' => 		__( 'You can switch to the thumbnail list view of the gallery format if there contained an image in the table data.', CDBT ), 
+    ], 'addWrapClass' => 'toggle-group', 'addClass' => 'switching-item', 
+    'elementExtras' => [
+      'child-class' => 'bootstrap_style:on-v on-i on-e,enable_repeater:on-v,display_list_num:on-v on-e,display_search:on-v on-e,display_title:on-v on-i on-e,enable_sort:on-v on-e,display_index_row:on-v,display_filter:on-v on-e,display_view:on-v'
+    ]
+  ];
+  $this->dynamic_field( $appearances );
+?>
+
+<?php /*
       <div class="form-group toggle-group">
-        <label for="register-shortcode-look_feel" class="col-sm-2 control-label"><?php _e('Toggle of look and feel', CDBT); ?></label>
+        <label for="register-shortcode-look_feel" class="col-sm-2 control-label"><?php _e('Appearance and LookAndFeel', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="checkbox switching-item on-v on-i on-e" id="register-shortcode-look_feel1"><!-- bootstrap_style [v,i,e] -->
-            <label class="checkbox-custom checked disabled" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1" checked="checked" disabled="disabled"<?php /* checked(isset($this_tab_vars['bootstrap_style']) && $this_tab_vars['bootstrap_style'], true, true); */ ?>>
-              <!-- <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; It is output by the static table tag layout in non the Repeater format, also does not have any pagination if disabled.', CDBT); ?></span> -->
-              <span class="checkbox-label"><?php _e('Whether of using Bootstrap style; This can not changed since v2.0.0.', CDBT); ?></span>
+            <label class="checkbox-custom checked" data-initialize="checkbox">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[look_feel][bootstrap_style]" type="checkbox" value="1" <?php checked( isset( $this_tab_vars['bootstrap_style'] ) && $this_tab_vars['bootstrap_style'], true, true ); ?>>
+              <span class="checkbox-label"><?php _e( 'Renders the data via the style of bootstrap if checked. Render the data of the json format if unchecked.', CDBT); ?></span>
             </label>
           </div>
           <div class="checkbox switching-item on-v" id="register-shortcode-look_feel2"><!-- enable_repeater [v] -->
@@ -216,7 +248,24 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           </div>
         </div>
       </div><!-- /register-shortcode-look_feel -->
+*/ ?>
       
+<?php
+  $dislay_index_row = [ 'elementName'=>'display_index_row', 'elementId'=>'display_index_row', 'elementLabel'=>__('Display Index Row', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'radio', 'horizontalList'=>true, 
+    'defaultValue'=>'true', 
+    'selectableList'=>[ 'false'=>__('Does not show', CDBT), 'true'=>__('Show all', CDBT), 'head-only'=>__('Show the header only', CDBT) ], 
+    'helperText'=>__( 'Displays the index row around the data rows as the header of the data column. Also  you can specify the "head-only" if uses the table layout.', CDBT ), 
+    'elementExtras' => [
+      'child-class' => 'false:for-rpt for-tbl,true:for-rpt for-tbl,head-only:for-tbl', 
+      'status' => 'under-test',
+    ], 'addWrapClass' => 'switching-item on-v on-e', 
+  ];
+  $this->dynamic_field( $dislay_index_row );
+?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'exclude_cols', 'elementId'=>'exclude_cols', 'elementLabel'=>__('Excludes Columns', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to hide the column. e.g. "column1,column2,column3,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-exclude_cols" class="col-sm-2 control-label"><?php _e('Exclude Columns', CDBT); ?></label>
         <div class="col-sm-9">
@@ -224,6 +273,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the column name that does not output at the specific string of comma-separated. For example, "col1,col2,..." so on.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-exclude_cols [v,e] -->
+*/?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'add_class', 'elementId'=>'add_class', 'elementLabel'=>__('Adds Classes', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'class1 class2 class3 ...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-i on-e', 'helperText'=>__('Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v on-i on-e">
         <label for="register-shortcode-add_class" class="col-sm-2 control-label"><?php _e('Add Classes', CDBT); ?></label>
         <div class="col-sm-7">
@@ -231,6 +285,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Separator is a single-byte space character', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-add_class [v,i,e] -->
+*/?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'narrow_keyword', 'elementId'=>'narrow_keyword', 'elementLabel'=>__('Narrow-down Keywords', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'keyword1,keyword2,... OR column1:keyword1,column2:keyword2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the narrowing condition of the output data in a comma-delimited. If there are the multiple condition, it will be evaluated at the "AND" condition. <wbr/>e.g. "keyword1,keyword2,..." or "column1:keyword1,column2:keyword2,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-narrow_keyword" class="col-sm-2 control-label"><?php _e('Narrow Keywords', CDBT); ?></label>
         <div class="col-sm-9">
@@ -238,6 +297,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the narrow keywords in a comma-separated. For example, "keyword1,keyword2,..." or "col1:keyword1,col2:keyword2,..." so on.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-narrow_keyword [v,e] -->
+*/?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'hidden_cols', 'elementId'=>'hidden_cols', 'elementLabel'=>__('Hides Columns', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies a comma delimited the column names if you want to hide any column. Then the hidden column will be rendered as field of "hidden" type. <wbr/>e.g. "column1,column2,column3,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-i">
         <label for="register-shortcode-hidden_cols" class="col-sm-2 control-label"><?php _e('Hidden Columns', CDBT); ?></label>
         <div class="col-sm-9">
@@ -245,6 +309,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the column name that does not output at the specific string of comma-separated. For example, "col1,col2,..." so on.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-hidden_cols [i] -->
+*/?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'display_cols', 'elementId'=>'display_cols', 'elementLabel'=>__('Displays Columns', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v', 'helperText'=>__('Specifies the comma-delimited column names if you want to show the column. This overrides the value of the option "Excludes columns". e.g. "column1,column2,column3,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-display_cols" class="col-sm-2 control-label"><?php _e('Display Columns', CDBT); ?></label>
         <div class="col-sm-9">
@@ -252,6 +321,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the displaying column name in comma-delimited. If it overlap with excluding column, this setting takes precedence..', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-display_cols [v] -->
+*/ ?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'order_cols', 'elementId'=>'order_cols', 'elementLabel'=>__('Columns Display Order', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column3,column1,column2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v', 'helperText'=>__('Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the option "Excludes Columns" and "Displays Columns". e.g. "column3,column1,column2,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-order_cols" class="col-sm-2 control-label"><?php _e('Column Order', CDBT); ?></label>
         <div class="col-sm-9">
@@ -259,6 +333,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the displaying column order in comma-delimited. If it overlap with display columns, this setting takes precedence.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-order_cols [v] -->
+*/?>
+	  
+<?php $this->dynamic_field( [ 'elementName'=>'sort_order', 'elementId'=>'sort_order', 'elementLabel'=>__('Initial Sort Order', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'created:desc', 'placeholder'=>'updated:desc,ID:asc,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies in the pair of column name and the ascending(asc) or descending(desc) order, for the display order of the initial data. If there are multiple condition, please use the comma-delimited. e.g. "updated:desc,ID:asc,..."', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-sort_order" class="col-sm-2 control-label"><?php _e('Column Sort Order', CDBT); ?></label>
         <div class="col-sm-9">
@@ -266,7 +345,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the default column sort order at comma-delimited. For example, "updated:desc,ID:asc,..." so on.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-sort_order [v,e] -->
-
+*/?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'limit_items', 'elementId'=>'limit_items', 'elementLabel'=>__('Max Rows Per Page', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'spinbox', 'defaultValue'=>'', 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('If this attribute is specified, it overrides the "Maximum display data per page" of the table.', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-limit_items" class="col-sm-2 control-label"><?php _e('Limit Records Per Page', CDBT); ?></label>
         <div class="col-sm-10">
@@ -280,7 +363,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('The default value is overwritten by the value of the max_show_records of the specified table.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-limit_items [v] -->
+*/?>
       
+<?php $this->dynamic_field( [ 'elementName'=>'truncate_strings', 'elementId'=>'truncate_strings', 'elementLabel'=>__('Truncates String', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'spinbox', 'defaultValue'=>40, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-truncate_strings" class="col-sm-2 control-label"><?php _e('Truncate Strings', CDBT); ?> <?php $this->during_trial( 'truncate_strings' ); ?></label>
         <div class="col-sm-10">
@@ -294,7 +381,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Number of characters in the string type column truncates the display to the case more than the specified value.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-truncate_strings [v,e] -->
+*/?>
       
+<?php $this->dynamic_field( [ 'elementName'=>'image_render', 'elementId'=>'image_render', 'elementLabel'=>__('Thumbnail Image Class', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'combobox', 'fieldSize'=>3, 'defaultValue'=>'responsive', 'selectableList'=>['rounded', 'circle', 'thumbnail', 'responsive'], 'addWrapClass'=>'switching-item on-v on-e', 'helperText'=>__('Specifies a CSS class name for styling the thumbnail images. This CSS class will be added to img tag of thumbnail image. It will enable only if renders the repeater layout.', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-image_render" class="col-sm-2 control-label"><?php _e('Rendering Image Type', CDBT); ?></label>
         <div class="col-sm-10">
@@ -312,7 +403,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please choose class name for rendering image tag.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-image_render [v] -->
+*/?>
 
+<?php $this->dynamic_field( [ 'elementName'=>'submit_button_label', 'elementId'=>'submit_button_label', 'elementLabel'=>__('Labeled Submit Button', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the label name of button for submitting in the entry form.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-i">
         <label for="register-shortcode-submit_button_label" class="col-sm-2 control-label"><?php _e('Submit Button Label', CDBT); ?></label>
         <div class="col-sm-3">
@@ -322,6 +417,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block" style="margin-left: 1em;"><?php _e('Please enter strings that you want to display on the submit button.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-submit_button_label [i] -->
+*/?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'redirect_url', 'elementId'=>'redirect_url', 'elementLabel'=>__('Redirect URL', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the url to redirect after the time of insertion and the update of the data. If not specified, self page is reloaded.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-i">
         <label for="register-shortcode-redirect_url" class="col-sm-2 control-label"><?php _e('Redirect URL', CDBT); ?></label>
         <div class="col-sm-9">
@@ -329,7 +429,9 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter URL (absolute URI) that you want to redirect after the completion of the data registration.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-redirect_url [i] -->
+*/?>
 
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-display_filter" class="col-sm-2 control-label"><?php _e('Display Filter Box', CDBT); ?></label>
         <div class="col-sm-10">
@@ -341,6 +443,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           </div>
         </div>
       </div><!-- register-shortcode-display_filter [v,e] -->
+*/?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'filter_column', 'elementId'=>'filter_column', 'elementLabel'=>__('Filtering Column Name', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a column name for filtering the data. If you specify a column of "enum" or "set" type, the filtering will be enabled by automatic without a filter definition below.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-filter_column" class="col-sm-2 control-label"><?php _e('Target Filter Column', CDBT); ?></label>
         <div class="col-sm-6">
@@ -348,6 +455,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the column name to filter.', CDBT); ?></p>
         </div>
       </div><!-- /edit-shortcode-filters_column [v,e] -->
+*/?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'filters', 'elementId'=>'filters', 'elementLabel'=>__('Filter Definition', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies the keyword lists for filtering the data. Also, a plurality of the pairs of the keyword and the display label can be defined by using the comma-delimited. e.g. "filter-keyword1:display-label1,filter-keyword2:display-label2,..."', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-filters" class="col-sm-2 control-label"><?php _e('Filters Definition', CDBT); ?></label>
         <div class="col-sm-9">
@@ -355,6 +467,8 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the pair of the filter value and displaying label at comma-separator. For example, "filter1:label1,filter2:label2,..." so on.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-filters [v,e] -->
+*/?>
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-display_view" class="col-sm-2 control-label"><?php _e('Enable Switching View', CDBT); ?></label>
         <div class="col-sm-10">
@@ -366,6 +480,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           </div>
         </div>
       </div><!-- register-shortcode-display_view [v] -->
+*/?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'thumbnail_column', 'elementId'=>'thumbnail_column', 'elementLabel'=>__('Thumbnail Image Column', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a column as the thumbnail image. In this column it should be stored the image binary or a URL of image.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-thumbnail_column" class="col-sm-2 control-label"><?php _e('Thumbnail Image Column', CDBT); ?></label>
         <div class="col-sm-3">
@@ -373,6 +492,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         </div>
         <p class="help-block col-sm-offset-2 col-sm-9"><?php _e('The data of this column used as a thumbnail image. In this column, it must be stored the image binary or a image URL.', CDBT); ?></p>
       </div><!-- /register-shortcode-thumbnail_column [v] -->
+*/?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'thumbnail_title_column', 'elementId'=>'thumbnail_title_column', 'elementLabel'=>__('Thumbnail Title column', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a column as displayed title on the thumbnail list view. it displays nothing if this is not fill.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-thumbnail_title_column" class="col-sm-2 control-label"><?php _e('Thumbnail Title column', CDBT); ?></label>
         <div class="col-sm-3">
@@ -380,6 +504,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         </div>
         <p class="help-block col-sm-offset-2 col-sm-9"><?php _e('This column name to use as the title of the thumbnail image.', CDBT); ?></p>
       </div><!-- /register-shortcode-thumbnail_title_column [v] -->
+*/ ?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'thumbnail_width', 'elementId'=>'thumbnail_width', 'elementLabel'=>__('Thumbnail Block Size', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'spinbox', 'defaultValue'=>100, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a width of the thumbnail image, also the default size of thumbnail will be square equal to this width.', CDBT) ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v">
         <label for="register-shortcode-thumbnail_width" class="col-sm-2 control-label"><?php _e('Thumbnail Block Size', CDBT); ?></label>
         <div class="col-sm-10">
@@ -393,6 +522,11 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter the integer for width of thumbnail block.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-thumbnail_width [v] -->
+*/ ?>
+
+<?php $this->dynamic_field( [ 'elementName'=>'ajax_load', 'elementId'=>'ajax_load', 'elementLabel'=>__('Adding Ajax Support', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'checkbox', 'defaultValue'=>'', 'selectableList'=>[ 'ajax_load'=>__('To Use the Ajax for loading the table data if checked.', CDBT) ], 'addWrapClass'=>'switching-item on-e on-v', 'helperText'=>__('If activated, you can improve performance when dealing with large tables of data size. (Not Implemented yet)', CDBT), 'elementExtras'=>[ 'child-class'=>'ajax_load:disabled', 'disabled'=>'disabled', 'status'=>'futrue' ] ] ); ?>
+
+<?php /*
       <div class="form-group switching-item on-v on-e">
         <label for="register-shortcode-ajax_load" class="col-sm-2 control-label"><?php _e('Loading Via Ajax', CDBT); ?></label>
         <div class="col-sm-10">
@@ -404,6 +538,7 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           </div>
         </div>
       </div><!-- register-shortcode-ajax_load [v,e] -->
+*/ ?>
       
       <div class="form-group switching-item on-i">
         <input type="hidden" name="<?php echo $this->domain_name; ?>[action_url]" value="<?php if (isset($this_tab_vars['action_url'])) echo $this_tab_vars['action_url']; ?>" disabled="disabled"><!-- URL for form action for using shortcode of "cdbt-edit". -->
@@ -412,6 +547,9 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
         <input type="hidden" name="<?php echo $this->domain_name; ?>[where_clause]" value="<?php if (isset($this_tab_vars['where_clause'])) echo $this_tab_vars['where_clause']; ?>" placeholder="col1:value1,col2:value2,..." disabled="disabled"><!-- for using shortcode of "cdbt-edit" -->
       </div>
       
+<?php $this->dynamic_field( [ 'elementName'=>'description', 'elementId'=>'description', 'elementLabel'=>__('Description', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'textarea', 'fieldSize' => 9, 'defaultValue'=>'', 'helperText'=>__('You can specify as like description that will be displayed in the shortcode lists screen.', CDBT) ] ); ?>
+      
+<?php /*
       <div class="form-group">
         <label for="register-shortcode-description" class="col-sm-2 control-label"><?php _e('Description', CDBT); ?></label>
         <div class="col-sm-9">
@@ -419,27 +557,39 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
           <p class="help-block"><?php _e('Please enter as like description of shortcode that will be displayed in the list screen.', CDBT); ?></p>
         </div>
       </div><!-- /register-shortcode-description -->
+*/ ?>
       
       <div class="form-group switching-item on-v on-i on-e">
         <input type="hidden" name="<?php echo $this->domain_name; ?>[csid]" value="<?php echo $current_csid; ?>"><!-- Valid value of "Custom Shortcode ID" is 1 or more integer. [v,i,e] -->
         <input type="hidden" name="<?php echo $this->domain_name; ?>[author]" value="<?php echo $user_ID; ?>"><!-- Current user ID -->
       </div>
       
-      <div class="clearfix"><br></div>
-      <h4 class="title" id="confirm-shortcode"><i class="fa fa-eye text-muted"></i> <?php _e('Generated shortcode confirmation', CDBT); ?></h4>
+</div><!-- /.overflow-block -->
       
+      <div class="clearfix"></div>
+      <h4 class="title" id="confirm-shortcode"><i class="fa fa-eye text-muted"></i> <?php _e('Confirm the Generated Shortcode', CDBT); ?></h4>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'generate_shortcode', 'elementId'=>'generate_shortcode', 'elementLabel'=>__('Generated Shortcode', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'textarea', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No generated shortcode yet.', CDBT), 'elementExtras'=>[ 'rows'=>4, 'readonly'=>'readonly' ] ] ); ?>
+      
+<?php /*
       <div class="form-group">
         <label for="register-shortcode-generate_shortcode" class="col-sm-2 control-label"><?php _e('Generated Shortcode', CDBT); ?></label>
         <div class="col-sm-9">
           <textarea id="register-shortcode-generate_shortcode" name="<?php echo $this->domain_name; ?>[generate_shortcode]" class="form-control" rows="5" readonly><?php if (isset($this_tab_vars['generate_shortcode'])) echo esc_textarea(stripslashes_deep($this_tab_vars['generate_shortcode'])); ?></textarea>
         </div>
       </div>
+*/ ?>
+      
+<?php $this->dynamic_field( [ 'elementName'=>'alias_code', 'elementId'=>'alias_code', 'elementLabel'=>__('Alias Shortcode', CDBT), 'idPrefix'=>'register-shortcode-', 'elementType'=>'text', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No alias shortcode yet.', CDBT), 'elementExtras'=>[ 'readonly'=>'readonly' ] ] ); ?>
+      
+<?php /*
       <div class="form-group">
         <label for="register-shortcode-alias_code" class="col-sm-2 control-label"><?php _e('Alias Shortcode', CDBT); ?></label>
         <div class="col-sm-9">
           <input id="register-shortcode-alias_code" name="<?php echo $this->domain_name; ?>[alias_code]" type="text" value="<?php if (isset($this_tab_vars['alias_code'])) echo esc_textarea(stripslashes_deep($this_tab_vars['alias_code'])); ?>" class="form-control" readonly>
         </div>
       </div>
+*/ ?>
       
       <div class="clearfix"><br></div>
       <div class="form-group">

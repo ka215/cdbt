@@ -110,12 +110,12 @@ trait CdbtEntry {
       }
       $add_class = implode( ' ', $add_classes );
     }
-    if ($csid > 0 && $this->validate->checkInt($csid)) {
-      // Checking whether the shortcode exists that has "csid (Custom Shortcode ID)".
-      $loaded_settings = $this->get_shortcode_option($csid);
-      if ($loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table) {
-        foreach ($loaded_settings as $_key => $_val) {
-          if (!in_array($_key, [ 'base_name', 'target_table', 'description', 'csid', 'author', 'generate_shortcode', 'alias_code' ])) {
+    if ( $csid > 0 && $this->validate->checkInt( $csid ) ) {
+      // Checks whether the shortcode has "csid (Custom Shortcode ID)" or not.
+      $loaded_settings = $this->get_shortcode_option( $csid );
+      if ( isset( $loaded_settings['base_name'] ) && $loaded_settings['base_name'] === $shortcode_name && $loaded_settings['target_table'] === $table ) {
+        foreach ( $loaded_settings as $_key => $_val ) {
+          if ( ! in_array( $_key, [ 'base_name', 'target_table', 'description', 'csid', 'author', 'generate_shortcode', 'alias_code' ] ) ) {
             ${$_key} = $_val;
           }
         }
@@ -123,6 +123,7 @@ trait CdbtEntry {
     } else {
       $csid = 0;
     }
+    
     if ($display_title) {
       $disp_title = $this->get_table_comment($table);
       $disp_title = !empty($disp_title) ? $disp_title : $table;
