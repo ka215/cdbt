@@ -62,7 +62,7 @@ trait DynamicTemplate {
    * 'elementName' => 		@value string [required] name as attribute of the field element
    * 'elementId' => 		@value string [optional] id as attribute of the field element
    * 'idPrefix' => 			@value string [optional] this prefix string is prepend of id
-   * 'elementLabel' => 		@value string [required] label name for field item
+   * 'elementLabel' => 		@value string [optional] label name for field item
    * 'elementType' => 		@value string [required] enable only if an element is "input".
    * 'isRequired' => 		@value bool   [optional] default is false (Enable if an element type is "text", "search", "url", "tel", "email", "password", "datetime", "date", "month", "week", "time", "number", "checkbox", "radio", "file")
    * 'defaultValue' => 		@value string [optional] initial value; This is initial selected item or checked item if an element is select list or multiple checkbox.
@@ -71,6 +71,7 @@ trait DynamicTemplate {
    * 'addClass' => 			@value string [optional] attribute of class if you want to add
    * 'selectableList' => 	@value string [optional/required] required only if an element is select list or multiple checkbox. e.g. "value1:label1,value2:label2,value3:label3,..."
    * 'horizontalList' => 	@value bool   [optional] default is false (enable only if an element is checkbox or radio)
+   * 'noWrap' => 			@value bool   [optional] default is false (enable only if an element is hidden field)
    * 'labelSize' => 		@value int    [optional] default is 2 (actually class is "col-sm-2")
    * 'fieldSize' => 		@value int    [optional] default is 9 (actually class is "col-sm-9")
    * 'helperText' => 		@value string [optional] Helper text is displayed at the bottom of the input form
@@ -250,13 +251,13 @@ trait DynamicTemplate {
         <?php if ( ! $is_horizontal ) : ?>
         <div class="checkbox <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
           <label class="checkbox-custom" data-initialize="checkbox">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][<?php echo esc_attr( $_key ); ?>]" type="checkbox" value="<?php echo esc_attr( $_key ); ?>"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][<?php echo esc_attr( $_key ); ?>]" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
             <span class="checkbox-label"><?php echo $_val; ?></span>
           </label>
         </div>
         <?php else : ?>
         <label class="checkbox-custom checkbox-inline<?php if ( $is_multiple ) : ?> multiple<?php endif; ?> <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" data-initialize="checkbox" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
-          <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="checkbox" value="<?php echo esc_attr( $_key ); ?>"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
+          <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
           <span class="checkbox-label"><?php echo $_val; ?></span>
         </label>
         <?php endif; ?>
@@ -271,7 +272,7 @@ trait DynamicTemplate {
       case 'radio': 
         $index_num = 0;
         $is_horizontal = isset( $field_option['horizontalList'] ) && ! empty( $field_option['horizontalList'] ) ? $this->strtobool( $field_option['horizontalList'] ) : false;
-        $default_values= $this->strtoarray( $field_option['defaultValue'] );
+        $default_value= $field_option['defaultValue'];
         $child_classes = isset( $field_option['elementExtras']['child-class'] ) && ! empty( $field_option['elementExtras']['child-class'] ) ? $this->strtohash( $field_option['elementExtras']['child-class'] ) : []; // for not horizontal
         $add_classes = $is_required ? $add_classes . ' required' : $add_classes;
         $selectable_list = empty( $selectable_list ) ? [ __('Undefined', CDBT) => '' ] : $selectable_list;
@@ -281,15 +282,15 @@ trait DynamicTemplate {
       <div class="col-sm-<?php echo $max_field_size; ?>">
       <?php foreach ( $selectable_list as $_key => $_val ) : $index_num++; ?>
         <?php if ( ! $is_horizontal ) : ?>
-        <div class="radio <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
+        <div class="radio<?php if ( $default_value === $_key ) echo ' checked'; ?><?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
           <label class="radio-custom" data-initialize="radio">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="radio" value="<?php echo esc_attr( $_key ); ?>"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?>>
+            <input class="sr-only"<?php if ( $default_value === $_key ) : ?> checked="checked"<?php endif; ?> name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="radio" value="<?php echo esc_attr( $_key ); ?>">
             <span class="radio-label"><?php echo $_val; ?></span>
           </label>
         </div>
         <?php else : ?>
-        <label class="radio-custom radio-inline <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" data-initialize="radio" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
-          <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="radio" value="<?php echo esc_attr( $_key ); ?>"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?>>
+        <label class="radio-custom radio-inline<?php if ( $default_value === $_key ) echo ' checked'; ?><?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" data-initialize="radio" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
+          <input class="sr-only"<?php if ( $default_value === $_key ) : ?> checked="checked"<?php endif; ?> name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="radio" value="<?php echo esc_attr( $_key ); ?>">
           <span class="radio-label"><?php echo $_val; ?></span>
         </label>
         <?php endif; ?>
@@ -298,7 +299,7 @@ trait DynamicTemplate {
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?>> -->
 <?php
-        unset($index_num, $is_horizontal, $default_values);
+        unset($index_num, $is_horizontal, $default_value);
         break;
       case 'boolean': 
         $checked = ($this->strtobool($field_option['defaultValue'])) ? ' checked="checked"' : '';
@@ -511,23 +512,15 @@ trait DynamicTemplate {
         unset($default_date, $_time, $_hour, $_minute, $_second);
         break;
       case 'hidden':
-        /*
-        if ( in_array( strtolower( esc_attr( $field_option['elementName'] ) ), [ 'created', 'updated' ] ) ) {
-          if ( '0000-00-00 00:00:00' === $field_option['defaultValue'] ) {
-            
-          }
-        }
-        */
-        if ( ! empty( $field_option['defaultValue'] ) ) {
+        $no_wrap = isset( $field_option['noWrap'] ) && ! empty( $field_option['noWrap'] ) ? $this->strtobool( $field_option['noWrap'] ) : false;
 ?>
-    <div class="hide <?php echo $wrapper_classes; ?>">
-      <input id="entry-data-<?php echo esc_attr( $field_option['elementName'] ); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]" type="hidden" value="<?php echo esc_attr( $field_option['defaultValue'] ); ?>">
-    </div><!-- /entry-data-<?php echo esc_attr( $field_option['elementName'] ); ?> -->
+    <?php if ( ! $no_wrap ) : ?><div class="from-group <?php echo $wrapper_classes; ?>"><?php endif; ?>
+      <input id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]" type="hidden" value="<?php echo esc_attr( $field_option['defaultValue'] ); ?>" class="form-control <?php echo esc_attr( $add_classes ); ?>" <?php echo $add_attributes; ?>><!-- /#<?php echo esc_attr( $field_id ); ?> -->
+    <?php if ( ! $no_wrap ) : ?></div><?php endif; ?>
 <?php
-        }
         break;
       default: 
-echo print_r( $field_option );
+//echo print_r( $field_option );
         break;
     }
     

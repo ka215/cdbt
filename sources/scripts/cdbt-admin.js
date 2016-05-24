@@ -229,7 +229,6 @@ $(document).ready(function() {
           $.onTimer = false;
         });
         // Initialize other
-        //dynamicTableRender();
         $('div.modal-body').find('input,textarea,select').each(function(){
           if (typeof $(this).attr('required') !== 'undefined') {
             $(this).prop('required', true);
@@ -1724,6 +1723,33 @@ $(document).ready(function() {
     var is_register = 'shortcode_register' === $.QueryString.tab ? true : false;
     var prefix = is_register ? 'register' : 'edit';
     
+    // Checking the enabled repeater (since v2.1.31)
+    var toggleRenderer = function() {
+      var targetClass = $('input[name="custom-database-tables[look_feel][enable_repeater]"]').parent('.checkbox-custom').checkbox('isChecked') ? 'for-rpt' : 'for-tbl';
+      var dispIdxRows = $('input[name="custom-database-tables[display_index_row][]"]').parent('.radio-custom');
+      dispIdxRows.each(function(){
+        if ( $(this).hasClass( targetClass ) ) {
+          $(this).css({ position: 'relative', display: 'inline-block' });
+          $(this).find('input').prop('disabled', false);
+        } else {
+          $(this).css({ position: 'absolute', display: 'none' });
+          $(this).find('input').prop('disabled', true);
+        }
+      });
+      $('.switching-item.for-rpt').each(function(){
+        if ( 'for-rpt' === targetClass ) {
+          $(this).css({ position: 'static', display: 'block' });
+          $(this).find('input').prop('disabled', false);
+        } else {
+          $(this).css({ position: 'absolute', display: 'none' });
+          $(this).find('input').prop('disabled', true);
+        }
+      });
+    };
+    $('input[name="custom-database-tables[look_feel][enable_repeater]"]').on('change', function(){
+      toggleRenderer();
+    });
+    
     var controllForms = function(){
       var base_shortcode = is_register ? $('#register-shortcode-base_name').combobox('selectedItem').text : $('#edit-shortcode-base_name').val();
       var target_class = '';
@@ -1749,11 +1775,12 @@ $(document).ready(function() {
         }
         if ($(this).hasClass(target_class)) {
           $(this).css({ position: 'static', display: 'block' });
-          //$(this).find('input').removeAttr('disabled');
           $(this).find('input').prop('disabled', false);
+          if ('on-v' === target_class || 'on-e' === target_class) {
+            toggleRenderer();
+          }
         } else {
           $(this).css({ position: 'absolute', display: 'none' });
-          //$(this).find('input').attr('disabled', 'disabled');
           $(this).find('input').prop('disabled', true);
         }
       });
@@ -1806,9 +1833,8 @@ $(document).ready(function() {
         return false;
       }
       items.each(function(){
-        //if ('disabled' !== $(this).attr('disabled')) {
         if (!$(this).prop('disabled')) {
-          var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)\])$/i, item_name;
+          var reg = /custom-database-tables\[(\w+)\]{1}(|\[(\w+)?\])$/i, item_name;
           if (_.contains([ 'text' ], $(this).attr('type')) && '' !== $(this).val()) {
             item_name = $(this).attr('name').replace(reg, "$1");
             if (_.contains([ 'base_name', 'target_table' ], item_name)) {
@@ -1827,6 +1853,12 @@ $(document).ready(function() {
               attributes += ' '+item_name+'="true"';
             } else {
               attributes += ' '+item_name+'="false"';
+            }
+          }
+          if (_.contains([ 'radio' ], $(this).attr('type'))) {
+            item_name = $(this).attr('name').replace(reg, "$1");
+            if ($(this).is(':checked')) {
+              attributes += ' '+item_name+'="'+$(this).val()+'"';
             }
           }
         }

@@ -1740,14 +1740,15 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_shortcodes | Tab: shortcode_edit
    *
    * @since 2.0.0
+   * @since 2.1.31 Updated
    */
   public function do_cdbt_shortcodes_shortcode_edit() {
     static $message = '';
     $notice_class = CDBT . '-error';
     
-    // Access authentication process to the page
+    // Verifies whether or not is a valid accessing to this process
     $message = $this->access_page_authentication( [ 'edit_shortcode' ] );
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->register_admin_notices( $notice_class, $message, 3, true );
       return;
     }
@@ -1756,51 +1757,56 @@ final class CdbtAdmin extends CdbtDB {
       $_POST = array_map( 'stripslashes_deep', $_POST );
     
     $post_data = [];
-    foreach($_POST[$this->domain_name] as $_key => $_val) {
-      if (is_array($_val)) {
-        $post_data = array_merge($post_data, $this->array_flatten($_val));
+    foreach( $_POST[$this->domain_name] as $_key => $_val ) {
+      if ( $this->is_assoc( $_val ) ) {
+        $post_data = array_merge( $post_data, $this->array_flatten( $_val ) );
       } else {
-        $post_data[$_key] = $_val;
+        $post_data[$_key] = $_val; //stripslashes_deep( $_val );
       }
     }
     
-    // Check the required item is whether it is empty
+    // Checks whether the required items is empty or not
     $check_items = [ 'base_name', 'target_table', 'csid' ];
-    foreach ($check_items as $item_key) {
-      if (!isset($post_data[$item_key]) || empty($post_data[$item_key])) 
+    foreach ( $check_items as $item_key ) {
+      if ( ! isset( $post_data[$item_key] ) || empty( $post_data[$item_key] ) ) 
         $errors[] = sprintf( __('No %s.', CDBT), __($item_key, CDBT) );
     }
-    if (!empty($errors)) {
-      $this->register_admin_notices( CDBT . '-error', implode("\n", $errors), 3, true );
+    if ( ! empty( $errors ) ) {
+      $this->register_admin_notices( CDBT . '-error', implode( "\n", $errors ), 3, true );
       return;
     }
     
-    // sanitaize checkbox values
-    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
-    foreach ($checkbox_options as $option_name) {
-      $post_data[$option_name] = array_key_exists($option_name, $post_data) ? $this->strtobool($post_data[$option_name]) : false;
+    // Optimize the checkbox's values
+    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    foreach ( $checkbox_options as $option_name ) {
+      $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
+    }
+    // Optimize the radio's values
+    $radio_options = [ 'display_index_row' ];
+    foreach ( $radio_options as $option_name ) {
+      $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
     }
     
-    $stored_shortcode = $this->get_shortcode_option(intval($post_data['csid']));
-    if (!empty($stored_shortcode)) {
+    $stored_shortcode = $this->get_shortcode_option( intval( $post_data['csid'] ) );
+    if ( ! empty( $stored_shortcode ) ) {
       $all_shortcodes = $this->get_shortcode_option();
-      foreach ($all_shortcodes as $_i => $shortcode_option) {
-        if (intval($post_data['csid']) === intval($shortcode_option['csid'])) {
+      foreach ( $all_shortcodes as $_i => $shortcode_option ) {
+        if ( intval( $post_data['csid'] ) === intval( $shortcode_option['csid'] ) ) {
           $all_shortcodes[$_i] = $post_data;
           break;
         }
       }
-      if (update_option($this->domain_name . '-shortcodes', $all_shortcodes, 'no')) {
+      if ( update_option( $this->domain_name . '-shortcodes', $all_shortcodes, 'no' ) ) {
         $notice_class = CDBT . '-notice';
-        $message = sprintf(__('Updated successfully as a custom shortcode ID: %d.', CDBT), intval($post_data['csid']));
+        $message = sprintf( __('Updated successfully as a custom shortcode ID: %d.', CDBT), intval( $post_data['csid'] ) );
       } else {
         $message = __('Failed to update the custom shortcode.', CDBT);
       }
     } else {
-      $message = __('Failed to update because there is not  the specified custom shortcode.', CDBT);
+      $message = __('Failed to update because there is not the specified custom shortcode.', CDBT);
     }
     
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->cdbt_sessions[$_POST['active_tab']][$this->domain_name] = $post_data;
       $this->register_admin_notices( $notice_class, $message, 3, true );
     }
@@ -2016,7 +2022,7 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalTitle'] = __('Preview shortcode', CDBT);
           $args['modalBody'] = stripslashes_deep($args['modalExtras']['shortcode']);
           //$args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { $('.datepicker').datepicker({ date: new Date($('input[name=\"custom-database-tables[created][prev_date]\"]').val()), allowPastDates: true, restrictDateSelection: true, momentConfig: { culture: $('.cdbt-datepicker').attr('data-moment-locale'), format: $('.cdbt-datepicker').attr('data-moment-format') } }); } else { for (var k in repeater) { repeater[k](); }; };";
-          $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { if (typeof repeater !== 'undefined') { for (var k in repeater) { repeater[k](); }; }; if (typeof dynamicTable !== 'undefined') { for (var k in dynamicTable) { dynamicTable[k](); }; }; }; $(document).on('click', '.modal-body button', function(e){ e.preventDefault(); return false; });";
+          $args['modalShowEvent'] = "if ($('.modal-body').find('.cdbt-entry-data-form').size() > 0) { var now = new Date(); $('.cdbt-datepicker').datepicker('getDate', now); $('.datepicker-combobox-hour input[type=text]').val(('00' + now.getHours()).slice(-2)); $('.datepicker-combobox-minute input[type=text]').val(('00' + now.getMinutes()).slice(-2)); $('.datepicker-combobox-second input[type=text]').val(('00' + now.getSeconds()).slice(-2)); } else { if (typeof repeater !== 'undefined') { for (var k in repeater) { repeater[k](); }; }; if (typeof DynamicTables !== 'undefined') { _.each($('.cdbt-table-wrapper').find('table').map(function(){return this.id; }).get(), function(v){ var table = new DynamicTables[v](); return table.render('disabled'); }); }; }; $(document).on('click', '.modal-body button, .modal-body a', function(e){ e.stopPropagation(); e.preventDefault(); return false; });";
           break;
         case 'preview_request_api': 
           $request_uri = $args['modalExtras']['request_uri'];

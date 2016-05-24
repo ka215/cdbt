@@ -219,40 +219,40 @@ trait CdbtView {
       $component_name = 'json';
     }
     
-    if (!empty($image_render) && !in_array(strtolower($image_render), [ 'rounded', 'circle', 'thumbnail', 'responsive' ])) {
+    if ( ! empty( $image_render ) && ! in_array( strtolower( $image_render ), [ 'rounded', 'circle', 'thumbnail', 'responsive' ] ) ) {
       $image_render = 'responsive';
     } else {
-      $image_render = strtolower($image_render);
+      $image_render = strtolower( $image_render );
     }
-    if ($display_title) {
-      $disp_title = $this->get_table_comment($table);
-      $disp_title = !empty($disp_title) ? $disp_title : $table;
+    if ( $display_title ) {
+      $disp_title = $this->get_table_comment( $table );
+      $disp_title = ! empty( $disp_title ) ? $disp_title : $table;
       $title = '<h4 class="sub-description-title">' . sprintf( __('View Data in "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
-    $all_columns = array_keys($table_schema);
-    if ($exclude_cols = $this->strtoarray($exclude_cols)) {
+    $all_columns = array_keys( $table_schema );
+    if ( $exclude_cols = $this->strtoarray( $exclude_cols ) ) {
       $output_columns = [];
-      foreach ($all_columns as $_col) {
-        if (!in_array($_col, $exclude_cols)) 
+      foreach ( $all_columns as $_col ) {
+        if ( ! in_array( $_col, $exclude_cols ) ) 
           $output_columns[] = $_col;
       }
     }
-    if ($display_cols = $this->strtoarray($display_cols)) {
+    if ( $display_cols = $this->strtoarray( $display_cols ) ) {
       $output_columns = [];
-      foreach ($all_columns as $_col) {
-        if (in_array($_col, $display_cols)) 
+      foreach ( $all_columns as $_col ) {
+        if ( in_array( $_col, $display_cols ) ) 
           $output_columns[] = $_col;
       }
     }
-    if ($order_cols = $this->strtoarray($order_cols)) {
+    if ( $order_cols = $this->strtoarray( $order_cols ) ) {
       $output_columns = [];
-      foreach ($order_cols as $_col) {
-        if (in_array($_col, $all_columns)) 
+      foreach ( $order_cols as $_col ) {
+        if ( in_array( $_col, $all_columns ) ) 
           $output_columns[] = $_col;
       }
     }
-    if (!isset($output_columns)) 
+    if ( ! isset( $output_columns ) ) 
       $output_columns = $all_columns;
     
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
@@ -284,12 +284,12 @@ trait CdbtView {
     if ( ! isset( $orders ) || empty( $orders ) ) 
       $orders = null;
     
-    if (!in_array($filter_column, $all_columns)) {
+    if ( ! in_array( $filter_column, $all_columns ) ) {
       $filter_column = '';
     }
-    $filters = $this->strtohash($filters);
+    $filters = $this->strtohash( $filters );
     
-    if ( ! $display_index_row ) {
+    if ( 'repeater' === $component_name && ! $display_index_row ) {
       $add_classes[] = 'hidden-index-row';
     }
     $add_class = implode( ' ', $add_classes );

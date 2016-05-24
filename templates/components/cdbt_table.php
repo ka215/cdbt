@@ -235,6 +235,13 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
 <?php endif; ?>
       </div><!-- /.col-md-4 -->
       <div class="col-xs-6 col-sm-6 col-md-8 align-right">
+<?php if ( $enable_editor && ! $disable_edit ) : ?>
+        <div class="cdbt-table-editor pull-right" for="<?php echo $table_id; ?>">
+          <button type="button" class="btn btn-default" id="table-editor-edit" title="<?php _e( 'Edit Data', CDBT ); ?>" disabled><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e( 'Edit Data', CDBT ); ?></span></button>
+          <button type="button" class="btn btn-default" id="table-editor-refresh" title="<?php _e( 'Refresh List', CDBT ); ?>"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e( 'Refresh List', CDBT ); ?></span></button>
+          <button type="button" class="btn btn-default" id="table-editor-delete" title="<?php _e( 'Delete Data', CDBT ); ?>" disabled><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e( 'Delete Data', CDBT ); ?></span></button>
+        </div><!-- /.cdbt-table-editor -->
+<?php endif; ?>
 <?php if ( $enable_view ) : ?>
         <div class="btn-group cdbt-table-views pull-right" data-toggle="buttons" data-current-view="<?php echo $default_view; ?>" for="<?php echo $table_id; ?>">
           <label class="btn btn-default<?php if ( 'list' === $default_view ) : ?> active<?php endif; ?>">
@@ -258,13 +265,6 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
           </ul>
           <input class="hidden hidden-field" name="filterSelection" readonly="readonly" aria-hidden="true" type="text"/>
         </div><!-- /.cdbt-table-filters -->
-<?php endif; ?>
-<?php if ( $enable_editor && ! $disable_edit ) : ?>
-        <div class="cdbt-table-editor pull-right" for="<?php echo $table_id; ?>">
-          <button type="button" class="btn btn-default" id="table-editor-edit" title="<?php _e( 'Edit Data', CDBT ); ?>" disabled><i class="fa fa-pencil-square-o"></i><span class="sr-only"><?php _e( 'Edit Data', CDBT ); ?></span></button>
-          <button type="button" class="btn btn-default" id="table-editor-refresh" title="<?php _e( 'Refresh List', CDBT ); ?>"><i class="fa fa-refresh"></i><span class="sr-only"><?php _e( 'Refresh List', CDBT ); ?></span></button>
-          <button type="button" class="btn btn-default" id="table-editor-delete" title="<?php _e( 'Delete Data', CDBT ); ?>" disabled><i class="fa fa-trash-o"></i><span class="sr-only"><?php _e( 'Delete Data', CDBT ); ?></span></button>
-        </div><!-- /.cdbt-table-editor -->
 <?php endif; ?>
       </div><!-- /.col-md-8 -->
     </div><!-- /.row -->
@@ -388,7 +388,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     return JSON.parse(JSON.stringify(Array.prototype.slice.call(object,0)));
   },
 //-  render: function(filtereditems) {
-  render: function() {
+  render: function(method) {
     var options = this.options;
 //-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
@@ -653,7 +653,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     $(window).scrollTop(componentPos.top - topMargin - adminBar);
     
     // customAfterRenderer
-    this.afterRender();
+    this.afterRender(method);
     
   }, 
 <?php if ( $_sortable_cols > 0 ) : ?>
@@ -859,7 +859,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   <?php endif; ?>
     
   },
-  afterRender: function() {
+  afterRender: function(method) {
     var options = this.options;
 //-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
@@ -898,6 +898,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         if (collapse_link.size()) {
           var full_str = collapse_link.data('raw');
           collapse_link.addClass('pull-right').css({position:'absolute',right:'8px',bottom:'8px'});
+          if (method === 'disabled') {
+            collapse_link.addClass('disabled');
+          }
           $(this).val(truncated_str).html(truncated_str).parent().append(collapse_link);
           $(this).css({height: $(this)[0].scrollHeight+'px'});
           $(this).val(full_str).html(full_str);
@@ -908,6 +911,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     $('#'+options.tableId).find('img').error(function(){
       $(this).attr('src', '<?php echo $this->plugin_url; ?>assets/images/cdbt-noimage.png').parent('a').prop('disabled', true);
     });
+    if (method === 'disabled') {
+      return this.disabled();
+    }
     
   <?php if ( isset($after_render_scripts) ) : ?>
     <?php echo $after_render_scripts; ?>
@@ -1023,6 +1029,13 @@ console.info([__tmp, row['<?php echo $_thumb_column; ?>']]);
   reload: function(){
     this.items = [];
     this.render();
+  },
+  disabled: function(){
+    var options = this.options;
+    $('.cdbt-table-wrapper[for="'+options.tableId+'"]').find('input,a').prop('disabled', true);
+    $('.cdbt-table-wrapper[for="'+options.tableId+'"]').find('button').on('click',function(e){
+      e.preventDefault();
+    });
   },
 };
 </script>

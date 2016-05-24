@@ -172,12 +172,11 @@ trait CdbtEdit {
     foreach ($hash_atts as $attribute_name) {
       ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
     }
+    $add_classes = [];
     if ( ! empty( $add_class ) ) {
-      $add_classes = [];
       foreach ( explode( ' ', rawurldecode( $add_class ) ) as $_class ) {
         $add_classes[] = esc_attr( trim( $_class ) );
       }
-      $add_class = implode( ' ', $add_classes );
     }
     if ( $enable_repeater ) {
       $display_index_row = $this->strtobool( $display_index_row );
@@ -200,19 +199,21 @@ trait CdbtEdit {
       $csid = 0;
     }
     
-    if ($bootstrap_style && $enable_repeater) {
-      $component_name = 'repeater';
-    } else {
-      $component_name = 'table';
+    if ( $bootstrap_style ) {
+      if ( $enable_repeater ) {
+        $component_name = 'repeater';
+      } else {
+        $component_name = 'table';
+      }
     }
     
-    if ($display_title) {
-      $disp_title = $this->get_table_comment($table);
-      $disp_title = !empty($disp_title) ? $disp_title : $table;
+    if ( $display_title ) {
+      $disp_title = $this->get_table_comment( $table );
+      $disp_title = ! empty( $disp_title ) ? $disp_title : $table;
       $title = '<h4 class="sub-description-title">' . sprintf( __('Edit Data of "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
-    $all_columns = array_keys($table_schema);
+    $all_columns = array_keys( $table_schema );
     if ( $exclude_cols = $this->strtoarray( $exclude_cols ) ) {
       $output_columns = [];
       foreach ( $all_columns as $_col ) {
@@ -224,13 +225,13 @@ trait CdbtEdit {
         }
       }
     }
-    if (!isset($output_columns)) 
+    if ( ! isset( $output_columns ) ) 
       $output_columns = $all_columns;
     
-    if (!in_array($filter_column, $all_columns)) {
+    if ( ! in_array( $filter_column, $all_columns ) ) {
       $filter_column = '';
     }
-    $filters = $this->strtohash($filters);
+    $filters = $this->strtohash( $filters );
     
     // Added since version 2.0.6
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
@@ -261,6 +262,16 @@ trait CdbtEdit {
     }
     if ( ! isset( $orders ) || empty( $orders ) ) 
       $orders = null;
+    
+    if ( ! in_array( $filter_column, $all_columns ) ) {
+      $filter_column = '';
+    }
+    $filters = $this->strtohash( $filters );
+    
+    if ( 'repeater' === $component_name && ! $display_index_row ) {
+      $add_classes[] = 'hidden-index-row';
+    }
+    $add_class = implode( ' ', $add_classes );
     
     if ( 'get' === $query_type ) {
       // $datasource = $this->get_data( $table, 'ARRAY_A' );
@@ -515,7 +526,7 @@ trait CdbtEdit {
       
       $component_options = [
         'id' => 'cdbt-'. $component_name .'-edit-' . $table, 
-        'enableSearch' => true, 
+        'enableSearch' => $display_search, 
         'enableFilter' => $display_filter, 
         'filter_column' => $filter_column, 
         'filters' => $filters, 

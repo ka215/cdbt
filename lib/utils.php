@@ -606,11 +606,11 @@ class CdbtUtility {
    * @return boolean
    */
   public function strtobool( $string=null ) {
-    $_boolstr = strval($string);
-    if (empty($_boolstr) || !in_array(strtolower($_boolstr), [ 'true', 'false', '1', '0', 1, 0 ])) 
+    $_boolstr = strval( $string );
+    if ( empty( $_boolstr ) || ! in_array( strtolower( $_boolstr ), [ 'true', 'false', '1', '0', 1, 0 ] ) ) 
       return false;
     
-    return in_array(strtolower($_boolstr), [ 'true', '1', 1 ]);
+    return in_array( strtolower( $_boolstr ), [ 'true', '1', 1 ] );
   }
   
   /**
@@ -623,12 +623,12 @@ class CdbtUtility {
    * @return mixed $data Array or Object specified by `return_array`
    */
   public function array_flatten( $data, $return_array=true ) {
-    if (is_object($data)) 
-      $data = json_decode(json_encode($data), true);
+    if ( is_object( $data ) ) 
+      $data = json_decode( json_encode( $data ), true );
     
-    if (is_array($data)) {
-      if (!$this->is_assoc($data))
-        $data = array_reduce($data, 'array_merge', []);
+    if ( is_array( $data ) ) {
+      if ( ! $this->is_assoc( $data ) )
+        $data = array_reduce( $data, 'array_merge', [] );
     }
     
     return $return_array ? (array) $data : (object) $data;
