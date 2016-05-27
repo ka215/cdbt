@@ -5,6 +5,7 @@
  *
  * @since 2.0.2
  * @since 2.0.9 Updated
+ * @since 2.1.31 Updated
  *
  */
 
@@ -45,19 +46,38 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
   $_p_fin = '</p>';
   // Step1 section
   $step1_content = '<section class="cdbt-wizard-content"><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>';
-  $step1_content .= $_p_begin. __('Thank you for waiting! We released plugin-major upgrade version of "CustomDataBaseTables (commonly called CDBT) Version 2 (hereinafter, referred to as V2)" at last.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('Thank you for waiting! We released the plugin upgraded version of "Custom DataBase Tables (commonly called CDBT) Version 2.1 (hereinafter, referred to as V2.1)" at last.', CDBT) .$_p_fin;
   $step1_content .= $_p_begin. __('The "CDBT" plugin is a database management tool. Using this plugin, you can create freely own table in  MySQL database of WordPress, and you can do input and output of data in an intuitive operation. Moreover you will be able to provide the data to as like themes and external sites easily.', CDBT) .'<br>';
   $step1_content .= __('Your website will be able to store own extended data by this plugin, it causes give you some phenomenal extension idea to your project.', CDBT) .$_p_fin;
-  $step1_content .= $_p_begin. __('From the "CDBT V2", it has been added the feature to manage the core tables built in the WordPress. Using this feature, you would be able to operating the WordPress as with CMS.', CDBT) .$_p_fin;
-  $step1_content .= $_p_begin. __('However, in order to utilize the "CDBT V2", please be aware that it is necessary environment of <strong class="text-danger">PHP 5.4 or higher</strong>. In addition, in this plugin it is using the external library below.', CDBT) .$_p_fin;
-  $step1_content .= '<ul class="contribute-extends list-inline">'. implode('', $_contribute_list) .'</ul>';
+  $step1_content .= $_p_begin. __('Since version 2.0, it has been added the feature to manage the core tables built in the WordPress. Using this feature, you would be able to operating the WordPress as with CMS.', CDBT) .' ';
+  $step1_content .= __('Further in the "CDBT V2.1", we enhanced the display of the data lists that is rendered in such as shortcode, and we revised various text on the management screen to make intelligible operation.', CDBT) .$_p_fin;
+  $step1_content .= $_p_begin. __('However, in order to utilize the "CDBT V2.1", please be aware that it is necessary environment of <strong class="text-danger">PHP 5.4 or higher</strong>. In addition, in this plugin it is using the external library below.', CDBT) .$_p_fin;
+  $step1_content .= '<ul class="contribute-extends list-inline">'. implode( '', $_contribute_list ) .'</ul>';
   $step1_content .= '</section>';
   // Step2 section
   $step2_content = '<section class="cdbt-wizard-content"><div class="pull-right"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_1.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step2_content .= $_p_begin. __('CDBT V2 In addition to the new features of the WordPress core table management has been added a lot. Then, review the internal processing for the conventional functions, it is possible to reform to easy-to-use interface, we made significant enhancements.', CDBT) .$_p_fin;
-  $step2_content .= $_p_begin. __('Added typical new feature in V2 is as follows.<br><ol><li>Management functions of the WordPress core table</li><li>Table replication function of</li><li>Editing of short codes and save function</li><li>WebAPI editing functions</li><li>Implementation of debug mode</li></ol><br>', CDBT) .$_p_fin;
+  $step2_content .= $_p_begin. __('"CDBT V2.1" release notes are as follows:', CDBT);
+  $_tmp_list = [
+    __('Added dynamic table layout as shortcode renderer for corresponded to multidevice', CDBT), 
+    __('Supported to render data of JSON format via shortcode', CDBT), 
+    __('Revised English in the management screen', CDBT), 
+    __('Added the ability to copy the specific string like shortcode, referenceable SQL with one click to the clipboard', CDBT), 
+    __('Changed the plugin&#39;s version notation specifications to the "(Major version number).(Minor version number).(Cumulative version number)".', CDBT), 
+    //__('Added a table backup function (a trial version)', CDBT), 
+  ];
+  $step2_content .= '<br><ol><li>'. implode( '</li><li>', $_tmp_list ) .'</li></ol><br>' .$_p_fin;
   $step2_content .= '<div class="clearfix"></div><div class="pull-left"><img src="'. $this->plugin_url .'assets/images/cdbt_v2_image_2.png" class="img-rounded cdbt-short-trip-img"></div>';
-  $step2_content .= $_p_begin. __('In addition,  significantly enhancemented benefits is as follows.<br><ol style="list-style-position: inside;"><li>Added a file type of import/export of table data</li><li>Enhancemented the tool of table creator</li><li>Changed the shortcode appearance to using repeater format of FuelUX</li><li>Refinement of the detailed information display of table</li><li>Reform of the management screen interface</li></ol><br>', CDBT) .$_p_fin;
+  $step2_content .= $_p_begin. __('Since CDBT version 2.0, in addition to the new features of the WordPress core table management has been added a lot. Then, review the internal processing for the conventional functions, it is possible to reform to easy-to-use interface, we made significant enhancements.', CDBT) .$_p_fin;
+  $step2_content .= $_p_begin. __('The Added new features since version 2.0 are as follows:', CDBT);
+  $_tmp_list = [
+    __('Capable of managing the core tables built in WordPress', CDBT), 
+    __('Function for duplicating a table', CDBT), 
+    __('Function for editing the shortcodes and maintaining', CDBT), 
+    __('Function for managing Web APIs (a trial version)', CDBT), 
+    __('Implementation of debug mode', CDBT), 
+    __('Capable of overwriting various notice messages of the plugin', CDBT), 
+  ];
+  $step2_content .= '<br><ol style="list-style-position: inside;"><li>'. implode( '</li><li>', $_tmp_list ) .'</li></ol><br>' .$_p_fin;
   $step2_content .= '</section>';
   // Step3 section
   $step3_content = '<section class="cdbt-wizard-content">';
@@ -98,10 +118,10 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
     'displayMaxStep' => 5, 
     'stepLabels' => [ __('Step1', CDBT), __('Step2', CDBT), __('Step3', CDBT), __('Step4', CDBT), __('Step5', CDBT) ], 
     'stepContents' => [ 
-      [ 'title' => __('Custom DataBase Tables version 2 out now!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step1_content ], 
-      [ 'title' => __('Version 2 has powered up all feature!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step2_content ], 
+      [ 'title' => __('New Custom DataBase Tables release - version 2.1!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step1_content ], 
+      [ 'title' => __('Version 2.1 has improved the user experience!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step2_content ], 
       [ 'title' => __('Let&#39;s create a new table!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step3_content ], 
-      [ 'title' => __('Let&#39;s try the shortcode!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step4_content ], 
+      [ 'title' => __('Let&#39;s try to use the shortcode!', CDBT), 'bgcolor' => 'bg-default', 'content' => $step4_content ], 
       [ 'title' => __('Cooperation with external site by API', CDBT), 'bgcolor' => 'bg-default', 'content' => $step5_content ], 
     ], 
     'disablePreviousStep' => false, 

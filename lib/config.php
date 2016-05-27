@@ -83,40 +83,40 @@ class CdbtConfig extends CdbtCore {
     ];
     
     $this->override_messages = [
-      'Reporting Errors', // admin.php:1882
-      'Reporting Results', // admin.php:1882
-      'Your entry data has been successfully registered to "%s" table.', // admin.php:1601 main.php:625,637
-      'Failed to insert data to "%s" table.', // admin.php:1603 main.php:629,640
-      'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', // main.php:633
-      'Remove the selected %s of data', // admin.php:1945
-      'You can not restore that data after deleted the data. Are you sure to delete the data?', // admin.php:1946
-      'Delete', // admin.php:1918,1947,1984,1990
-      'Removed successfully the specified data.', // 
-      'Can not remove some of the data.', // ajax.php:479 main.php:581
-      'Specified conditions for finding to delete data is invalid.', // ajax.php:482 main.php:584
-      'Parameters required for data deletion is missing.', // ajax.php:444,487 main.php:589
-      'Data updating are completed successfully.', // admin.php:1622 main.php:534
-      'Failed to update data of of "%s" table.', // admin.php:1624 main.php:537
-      'In the case of no change of between before and after, data does not updated.', // admin.php:1625 main.php:538
-      'It might not have updated because there is the record which has same data.', // admin.php:1626 main.php:539
-      'You do not have permission to access to this page.', // admin.php:713,716
-      'No data in this table.', // shortcodes.php:492,1287
-      'Please select the data.', // admin.php:1926
-      'Please retry to operate that after you select the data.', // admin.php:1927
-      'You select too many data.', // admin.php:1931
-      'Please retry after selecting one data you want to edit.', // admin.php:1932
-      'Required field is empty', // admin.php:1935
-      'Please fill in the required fields of non-input.', // admin.php:1936
-      'An empty required field is exists.', // admin.php:487 main.php:443
-      'View Data in "%s" Table', // shortcodes.php:398 cdbt_tables.php:1337
-      'Entry Data to "%s" Table', // shortcodes.php:833 cdbt_tables.php:1338
-      'Edit Data of "%s" Table', // shortcodes.php:1210 cdbt_tables.php:1339
-      'Edit Data Form', // admin.php:1939
-      'Update', // admin.php:1941
-      'Preview Image', // admin.php:1951
-      'Describe File', // admin.php:1955
-      'Download', // admin.php:1975
-      'Close', // cdbt_modal.php:108,115
+      'An empty required field is exists.', 								// admin.php:505 main.php:463
+      'You do not have permission to access to this page.', 				// admin.php:737,740
+      'Your entry data has been successfully registered to "%s" table.', 	// admin.php:1623 main.php:661,673
+      'Failed to insert data to "%s" table.', 								// admin.php:1625 main.php:665,676
+      'Data updating are completed successfully.', 							// admin.php:1644 main.php:570
+      'Failed to update data of of "%s" table.', 							// admin.php:1646 main.php:573
+      'In the case of no change of between before and after, data does not updated.', 	// admin.php:1647 main.php:574
+      'It might not have updated because there is the record which has same data.', 	// admin.php:1648 main.php:575
+      'Reporting Errors', 													// admin.php:1910
+      'Reporting Results', 													// admin.php:1910
+      'Please select the data', 											// admin.php:1926
+      'You select too many data', 											// admin.php:1931
+      'Please retry to operate that after you select the data.', 			// admin.php:1927
+      'Please retry after selecting one data you want to edit.', 			// admin.php:1932
+      'Required field is empty', 											// admin.php:1935
+      'Delete', 															// admin.php:1946,1975,2013,2019
+      'Please fill in the required fields of non-input.', 					// admin.php:1964
+      'Edit Data Form', 													// admin.php:1967
+      'Update', 															// admin.php:1969
+      'Remove the selected %s of data', 									// admin.php:1973
+      'You can not restore that data after deleted the data. Are you sure to delete the data?', 	// admin.php:1974
+      'Preview Image', 														// admin.php:1979
+      'Describe File', 														// admin.php:1984
+      'Download', 															// admin.php:2004
+      'Parameters required for data deletion is missing.', 					// ajax.php:444,487 main.php:625
+      'Removed successfully the specified data.', 							// ajax.php:477 main.php:614
+      'Can not remove some of the data.', 									// ajax.php:479 main.php:617
+      'Specified conditions for finding to delete data is invalid.', 		// ajax.php:482 main.php:620
+      'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', // main.php:669
+      'No data in this table.', 											// shortcodes/cdbt-edit.php:304 shortcodes/cdbt-view.php:324
+      'View Data in "%s" Table', 											// shortcodes/cdbt-view.php:230 templates/admin/cdbt_tables.php:1357
+      'Entry Data to "%s" Table', 											// shortcodes/cdbt-entry.php:130 templates/admin/cdbt_tables.php:1358
+      'Edit Data of "%s" Table', 											// shortcodes/cdbt-edit.php:213 templates/admin/cdbt_tables.php:1359
+      'Close', 																// templates/components/cdbt_modal.php:108,115
       // '', 
     ];
     

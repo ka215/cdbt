@@ -13,21 +13,23 @@
 $options = get_option($this->domain_name);
 $tabs = [
   'hosts_list' => __('Allowed Hosts', CDBT), 
-  'apikey_generator' => __('API Key generator', CDBT), 
-  'api_requests' => __('API Requests', CDBT), 
+  'apikey_generator' => __('Generate API Key', CDBT), 
+  'api_requests' => __('Register API Request', CDBT), 
 ];
 $default_tab = 'hosts_list';
 $current_tab = isset($this->query['tab']) && !empty($this->query['tab']) ? $this->query['tab'] : $default_tab;
 
 $_allowed_hosts = $this->get_allowed_hosts();
-$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
+//$label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) .'</span></h6>';
+$label_required = '<span class="label label-required">'. __('Required', CDBT) .'</span>';
+
 /**
  * Render html
  * ---------------------------------------------------------------------------
  */
 ?>
 <div id="page-head" name="page-head" class="wrap">
-  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT Web APIs Management', CDBT); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT WEB APIs Management', CDBT); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -141,7 +143,7 @@ $label_required = '<h6><span class="label label-danger">'. __('Required', CDBT) 
       <div class="clearfix"><br></div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary"><?php _e('Generate API Key', CDBT); ?></button>
+          <button type="submit" class="btn btn-primary"><?php _e('Register Host', CDBT); ?></button>
         </div>
       </div>
       

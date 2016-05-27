@@ -6,11 +6,12 @@
  * @since 2.0.0
  * @since 2.0.7 Added new options
  * @since 2.0.8 Added new tab
+ * @since 2.1.31 Updated
  *
  */
-$options = get_option($this->domain_name);
+$options = get_option( $this->domain_name );
 $tabs = [
-  'general_setting' => __('General Setting', CDBT), 
+  'general_setting' => __('General Settings', CDBT), 
   'messages' => __('Messages', CDBT), 
   'debug' => __('Debug', CDBT), 
 ];
@@ -20,16 +21,19 @@ if ( ! $options['debug_mode'] ) {
   unset( $tabs['debug'] );
 }
 
-
 $default_action = 'update';
 
+$fields_define = [];
+
+//global $wpdb;
+//var_dump($this->wpdb->prefix);
 /**
  * Render html
  * ---------------------------------------------------------------------------
  */
 ?>
 <div class="wrap">
-  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT Plugin Options', $this->domain_name); ?></h2>
+  <h2><i class="image-icon cdbt-icon square32"></i><?php _e('CDBT Plugin Options', CDBT); ?></h2>
   
   <div role="tabpanel">
     <ul class="nav nav-tabs" role="tablist">
@@ -43,7 +47,7 @@ $default_action = 'update';
 <?php if ($current_tab == 'general_setting') : ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('In this configuration page, you can edit the common settings that affect the overall operation of the "Custom DataBase Tables" plugin.', $this->domain_name); ?><br>
+      <?php _e('In this configuration page, you can edit the common settings that affect the overall operation of the "Custom DataBase Tables" plugin.', CDBT); ?><br>
     </p>
   </div>
   
@@ -54,140 +58,96 @@ $default_action = 'update';
       <input type="hidden" name="action" value="<?php echo $default_action; ?>">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
-      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Plugin Setting', $this->domain_name); ?></h4>
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('General Plugin Settings', CDBT); ?></h4>
+
+<?php $this->dynamic_field( [ 'elementName'=>'cleaning_options', 'elementId'=>'option-item-1', 'elementLabel'=>__('Cleanup Setting', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['cleaning_options'] ) && $this->strtobool( $options['cleaning_options'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('Optimizes such as to remove a table setting that does not exist in the database whenever you save the plugin settings if checked.', CDBT) ] ] ); ?>
+<?php $this->dynamic_field( [ 'elementName'=>'uninstall_options', 'elementId'=>'option-item-4', 'elementLabel'=>__('Uninstall Setting', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['uninstall_options'] ) && $this->strtobool( $options['uninstall_options'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('When you uninstall the plugin, it removes all of the configuration settings related to the plugin. However, your created table will not be deleted.', CDBT) ] ] ); ?>
+<?php $this->dynamic_field( [ 'elementName'=>'resume_options', 'elementId'=>'option-item-7', 'elementLabel'=>__('Restore Table', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['resume_options'] ) && $this->strtobool( $options['resume_options'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('If there is a plugin settings in the past, it restores the table setting from there. However, if a table does not exist when you are about to restore, it will not be restored.', CDBT) ] ] ); ?>
+<?php $this->dynamic_field( [ 'elementName'=>'enable_core_tables', 'elementId'=>'option-item-10', 'elementLabel'=>__('Manage WP Core Tables', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['enable_core_tables'] ) && $this->strtobool( $options['enable_core_tables'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('Capable of managing the core tables built in the WordPress if checked. Then you can do operation such as the data browsing, data registration, data editing, data exporting and data importing.', CDBT) ] ] ); ?>
+<?php $this->dynamic_field( [ 'elementName'=>'display_datetime_format', 'elementId'=>'option-item-11', 'elementLabel'=>__('Datetime Format', CDBT), 'elementType'=>'text', 'fieldSize'=>4, 
+  'defaultValue'=>isset( $options['display_datetime_format'] ) && ! empty( $options['display_datetime_format'] ) ? esc_attr( $options['display_datetime_format'] ) : '', 
+  'helperText'=>__('Defines the display format of datetime type data at the time of displaying in the plugin. By default, it will inherit the datetime format of the WordPress general settings.', CDBT) ] ); ?>
+<?php 
+  $_positions = [
+    'top' => __( 'Top (After &quot;dashboard&quot;): 3', CDBT ), 
+    'default' => __( 'Default (Before &quot;appearance&quot;): 55', CDBT ), 
+    'middle' => __( 'Middle (After &quot;tools&quot;): 77', CDBT ), 
+    'bottom' => __( 'Bottom (After &quot;setting&quot;): 85', CDBT ), 
+  ];
+  $_default_value = '';
+  if ( array_key_exists( 'plugin_menu_position', $options ) ) {
+    if ( array_key_exists( $options['plugin_menu_position'], $_positions ) ) {
+      $_current_pos = $_positions[$options['plugin_menu_position']];
+    } else {
+      $_current_pos = intval( $options['plugin_menu_position'] ) > 0 ? intval( $options['plugin_menu_position'] ) : 'default';
+      if ( is_int( $_current_pos ) ) 
+        $_default_value = ' value="'. $_current_pos .'"';
+    }
+  } else {
+    $_current_pos = 'bottom';
+  }
+  $this->dynamic_field( [ 'elementName'=>'plugin_menu_position', 'elementId'=>'option-item-12', 'elementLabel'=>__('Plugin Menu Position', CDBT), 'elementType'=>'combobox', 'fieldSize'=>4, 
+    'defaultValue'=>$_current_pos, 'selectableList'=>$_positions, 'placeholder'=>__('Enter position number', CDBT), 
+    'helperText'=>__('Specifies the display position of plugin menu on the WordPress admin panel.', CDBT) ] ); ?> 
+<?php $this->dynamic_field( [ 'elementName'=>'notices_via_modal', 'elementId'=>'option-item-13', 'elementLabel'=>__('Modal Dialog Notice', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['notices_via_modal'] ) && $this->strtobool( $options['notices_via_modal'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('All notifications (on the management console) from this plugin will be displayed via a modal dialog if checked.', CDBT) ] ] ); ?>
+<?php /* $this->dynamic_field( [ 'elementName'=>'display_list_format', 'elementId'=>'option-item-14', 'elementLabel'=>__('Data List Format', CDBT), 'elementType'=>'radio', 'horizontalList'=>true, 
+    'defaultValue'=>isset( $options['display_list_format'] ) && in_array( $options['display_list_format'], ['table', 'repeater'] ) ? $options['display_list_format'] : 'table', 
+    'selectableList'=>[ 'table'=>__('Table Layout (Recommended)', CDBT), 'repeater'=>__('Repeater Layout (conventional layout)', CDBT) ], 
+    'helperText'=>__( 'You can choose which the table layout or the repeater layout, as the display format when listed data on the tables management.', CDBT ), 
+    'elementExtras' => [ 'status' => 'under-test' ] ] ); */ ?>
       <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Cleaning option', $this->domain_name); ?></label>
+        <label class="col-sm-2 control-label" for="option-item-14"><?php _e('Data List Format', CDBT); ?> <?php $this->during_trial( 'display_list_format' ); ?></label>
         <div class="col-sm-10">
-          <div class="checkbox" id="option-item-1">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[cleaning_options]" type="checkbox" value="1" <?php checked('1', $options['cleaning_options']); ?>>
-              <span class="checkbox-label"><?php _e('When you save common settings, such as deleting the table settings that do not exist in the database, to perform the cleaning of the set value.', $this->domain_name); ?></span>
+          <div class="checkbox" id="option-item-14">
+            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-14-table">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="table"<?php checked( 'table', $options['display_list_format'] ); ?>> <?php _e('Table Layout (Recommended)', CDBT); ?>
             </label>
-          </div>
-        </div>
-      </div><!-- /option-item-1 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Uninstall setting', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-4">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[uninstall_options]" type="checkbox" value="1" <?php checked('1', $options['uninstall_options']); ?>>
-              <span class="checkbox-label"><?php _e('When you will uninstall this plugin, remove all of the configuration information related to plugin (but your created table is not deleted).', $this->domain_name); ?></span>
+            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-14-repeater">
+              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="repeater"<?php checked( 'repeater', $options['display_list_format'] ); ?>> <?php _e('Repeater Layout (conventional layout)', CDBT); ?>
             </label>
+            <p class="help-block"><?php _e('You can choose which the table layout or the repeater layout, as the display format when listed data on the tables management.', CDBT); ?></p>
           </div>
         </div>
-      </div><!-- /option-item-4 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Manageable table restoration', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-7">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[resume_options]" type="checkbox" value="1" <?php checked('1', $options['resume_options']); ?>>
-              <span class="checkbox-label"><?php _e('It will reconfigure tables from the past plugin configuration. However, the table that does not exist in the database at the time of restoration can not be recovered.', $this->domain_name); ?></span>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-7 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Manage WordPress core table', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-10">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[enable_core_tables]" type="checkbox" value="1" <?php checked('1', $options['enable_core_tables']); ?>>
-              <span class="checkbox-label"><?php _e('You make manageable of the WordPress core tables. Then, you will allow the table management, data browsing, registration, editing, and the import or export.', $this->domain_name); ?> <?php $this->during_trial( 'enable_core_tables' ); ?></span>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-10 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Display format of datetime', $this->domain_name); ?></label>
-        <div class="col-sm-4">
-          <input type="text" id="option-item-11" name="<?php echo $this->domain_name; ?>[display_datetime_format]" class="form-control" value="<?php echo $options['display_datetime_format']; ?>" placeholder="<?php echo get_option('links_updated_date_format'); ?>">
-        </div><div class="col-sm-1"> <?php $this->during_trial( 'display_datetime_format' ); ?></div>
-        <div class="col-sm-offset-2 col-sm-10">
-          <p class="help-block"><?php _e('You can define the display format of datetime type data that is displayed in the plugin. By default, it will use the datetime format of the WordPress general settings.', $this->domain_name); ?></p>
-        </div>
-      </div><!-- /option-item-11 -->
-      <div class="form-group">
-        <label for="option-item-12" class="col-sm-2 control-label"><?php _e('Plugin menu position', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-12">
-          <?php 
-            $_positions = [
-              'top' => __( 'Top (After &quot;dashboard&quot;): 3', CDBT ), 
-              'default' => __( 'Default (Before &quot;appearance&quot;): 55', CDBT ), 
-              'middle' => __( 'Middle (After &quot;tools&quot;): 77', CDBT ), 
-              'bottom' => __( 'Bottom (After &quot;setting&quot;): 85', CDBT ), 
-            ];
-            $_default_value = '';
-            if ( array_key_exists( 'plugin_menu_position', $options ) ) {
-              if ( array_key_exists( $options['plugin_menu_position'], $_positions ) ) {
-                $_current_pos = $options['plugin_menu_position'];
-              } else {
-                $_current_pos = intval( $options['plugin_menu_position'] ) > 0 ? intval( $options['plugin_menu_position'] ) : 'default';
-                if ( is_int( $_current_pos ) ) 
-                  $_default_value = ' value="'. $_current_pos .'"';
-              }
-            } else {
-              $_current_pos = 'bottom';
-            }
-          ?>
-            <input type="text" name="<?php echo $this->domain_name; ?>[plugin_menu_position]" class="form-control"<?php echo $_default_value;?> placeholder="<?= _e( 'Enter position number', CDBT ); ?>">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-              <ul class="dropdown-menu dropdown-menu-right">
-              <?php foreach ( $_positions as $_pos => $_desc ) : ?>
-                <li data-value="<?php echo $_pos; ?>"<?php if ( $_pos === $_current_pos ) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo $_desc; ?></a></li>
-              <?php endforeach; ?>
-              </ul>
-            </div>
-          </div>
-          <p class="help-block"><?php _e('Set the display position of plugin menu on the WordPress admin panel.', $this->domain_name); ?> <?php $this->during_trial( 'plugin_menu_position' ); ?></p>
-        </div>
-      </div><!-- /option-item-12 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Notices via modal', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-13">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[notices_via_modal]" type="checkbox" value="1" <?php checked('1', $options['notices_via_modal']); ?>>
-              <span class="checkbox-label"><?php _e('If enabled, all notifications (on the management console) from this plugin will be displayed on the modal window.', $this->domain_name); ?> <?php $this->during_trial( 'notices_via_modal' ); ?></span>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-13 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Debug mode', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-15">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_mode]" type="checkbox" value="1" <?php checked('1', $options['debug_mode']); ?>>
-              <span class="checkbox-label"><?php _e('If you enable the debug mode, an error that occurred in the plugin will be output as a log. Please use as you want to investigate incidents.', $this->domain_name); ?> <?php $this->during_trial( 'debug_mode' ); ?></span>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-15 -->
+      </div><!-- /#option-item-14 -->
+<?php $this->dynamic_field( [ 'elementName'=>'debug_mode', 'elementId'=>'option-item-15', 'elementLabel'=>__('Debug Mode', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['debug_mode'] ) && $this->strtobool( $options['debug_mode'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('If you enable the debug mode, the occurred errors in the plugin will be outputted as a log file. Please see the log as to if you investigate any incidents.', CDBT) ] ] ); ?>
       
       <div class="clearfix"><br></div>
-      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Initial definition for table creation', $this->domain_name); ?></h4>
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Table Creation Initial Definitions', CDBT); ?></h4>
       
+<?php $this->dynamic_field( [ 'elementName'=>'use_wp_prefix', 'elementId'=>'option-item-21', 'elementLabel'=>__('Table Prefix', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['use_wp_prefix'] ) && $this->strtobool( $options['use_wp_prefix'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>sprintf( __('Prepends a %s as table prefix defined at the WordPress configuration (wp-config.php) when you create a newly table if checked.', CDBT), '<code>'. $this->wpdb->prefix .'</code>' ) ], 
+  'helperText'=> __('Note: You can individually change this setting whenever you create a table.', CDBT) ] ); ?>
+<?php /*
+  $_default_charset = '';
+  if ( isset( $options['charset'] ) && ! empty( $options['charset'] ) ) {
+    foreach ( $this->db_charsets as $_i => $_val ) {
+      if ( $options['charset'] === $_val ) {
+        $_default_charset = $_i;
+        break;
+      }
+    }
+  }
+  $this->dynamic_field( [ 'elementName'=>'charset', 'elementId'=>'option-item-22', 'elementLabel'=>__('Table Charset', CDBT), 'elementType'=>'combobox', 'fieldSize'=>3, 
+    'defaultValue'=>$this->db_charsets[$_default_charset], 'selectableList'=>$this->db_charsets, 'placeholder'=>__('Enter the table charset', CDBT), 
+    'helperText'=>__('To be set as default charset whenever you create a newly table if checked.', CDBT) . ' <a href="#foot-note-1" class="note-link"><i class="fa fa-info-circle"></i></a>' ] ); */ ?>
       <div class="form-group">
-        <label class="col-sm-2 control-label"><?php _e('Table prefix', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-21">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[use_wp_prefix]" type="checkbox" value="1" <?php checked('1', $options['use_wp_prefix']); ?>>
-              <span class="checkbox-label"><?php global $wpdb; printf( __('Automatically prepend table prefix %s defined at the WordPress config (wp-config.php) when you create a new table.', $this->domain_name), '<code>'. $wpdb->prefix .'</code>' ); ?></span>
-            </label>
-            <p class="help-block"><?php _e('This setting can be changed individually at the time of table creation.', $this->domain_name); ?></p>
-          </div>
-        </div>
-      </div><!-- /option-item-21 -->
-      <div class="form-group">
-        <label for="option-item-22" class="col-sm-2 control-label"><?php _e('Table character set', $this->domain_name); ?></label>
+        <label for="option-item-22" class="col-sm-2 control-label"><?php _e('Table Charset', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-22">
-            <input type="text" name="<?php echo $this->domain_name; ?>[charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control">
+            <input type="text" name="<?php echo $this->domain_name; ?>[charset]" value="<?php esc_attr_e($options['charset']); ?>" class="form-control" placeholder="<?php _e('Enter the table charset', CDBT); ?>">
             <div class="input-group-btn">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
@@ -197,11 +157,11 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block"><?php _e('This setting is default character set when created the table.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_charset' ); ?></p>
+          <p class="help-block"><?php _e('This value will be set as default charset whenever you create a newly table.', CDBT); ?> <a href="#foot-note-1" class="note-link"><i class="fa fa-info-circle"></i></a></p>
         </div>
       </div><!-- /option-item-22 -->
       <div class="form-group">
-        <label for="option-item-23" class="col-sm-2 control-label"><?php _e('Default timezone', $this->domain_name); ?></label>
+        <label for="option-item-23" class="col-sm-2 control-label"><?php _e('Localizing Timezone', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-4 pull-left" data-initialize="combobox" id="option-item-23">
             <input type="text" name="<?php echo $this->domain_name; ?>[timezone]" value="<?php esc_attr_e($options['timezone']); ?>" class="form-control">
@@ -214,14 +174,14 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block inline-help"> <?php _e('Currently timezone of the MySQL database', $this->domain_name); ?>: <code><?php echo apply_filters( 'sanitize_option_timezone_string', $options['timezone'], 'timezone_string'); ?></code></p>
+          <p class="help-block inline-help"> <?php _e('Current timezone of the MySQL database', CDBT); ?>: <code><?php echo apply_filters( 'sanitize_option_timezone_string', $options['timezone'], 'timezone_string'); ?></code></p>
           <div class="clearfix">
-            <p class="help-block"><?php _e('When this plugin insert the datetime type data, localized the value according to the set timezone.', $this->domain_name); ?> <?php $this->during_trial( 'localize_timezone' ); ?></p>
+            <p class="help-block"><?php _e('This value will be set as default timezone whenever you create a newly table. Also the set timezone will be used for localizing of the datetime type data.', CDBT); ?></p>
           </div>
         </div>
       </div><!-- /option-item-23 -->
       <div class="form-group">
-        <label for="option-item-24" class="col-sm-2 control-label"><?php _e('Default database engine', $this->domain_name); ?></label>
+        <label for="option-item-24" class="col-sm-2 control-label"><?php _e('Database Engine', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="input-group input-append dropdown combobox col-sm-3" data-initialize="combobox" id="option-item-24">
             <input type="text" name="<?php echo $this->domain_name; ?>[default_db_engine]" value="<?php esc_attr_e($options['default_db_engine']); ?>" class="form-control">
@@ -234,77 +194,72 @@ $default_action = 'update';
               </ul>
             </div>
           </div>
-          <p class="help-block"><?php _e('This initial value is the database engine of the table created by the plugin.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_db_engine' ); ?></p>
+          <p class="help-block"><?php _e('This value will be set as default database engine whenever you create a newly table.', CDBT); ?><a href="#foot-note-1" class="note-link"><i class="fa fa-info-circle"></i></a></p>
         </div>
       </div><!-- /option-item-24 -->
       <div class="form-group">
-        <label for="option-item-25" class="col-sm-2 control-label"><?php _e('Initial display number of records', $this->domain_name); ?></label>
+        <label for="option-item-25" class="col-sm-2 control-label"><?php _e('Maximum display data per page', CDBT); ?></label>
         <div class="col-sm-10">
           <div class="spinbox disits-3" data-initialize="spinbox" id="option-item-25">
             <input type="text" name="<?php echo $this->domain_name; ?>[default_per_records]" value="<?php echo intval($options['default_per_records']); ?>" class="form-control input-mini spinbox-input">
             <div class="spinbox-buttons btn-group btn-group-vertical">
-              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only"><?php echo __('Increase', CDBT); ?></span></button>
-              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only"><?php echo __('Decrease', CDBT); ?></span></button>
+              <button type="button" class="btn btn-default spinbox-up btn-xs"><span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span></button>
+              <button type="button" class="btn btn-default spinbox-down btn-xs"><span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span></button>
             </div>
           </div>
-          <p class="help-block"><?php _e('This initial value is the number of displayed records per one page of the table created by the plugin.', $this->domain_name); ?><a href="#foot-note-1" class="note-link"><span class="dashicons dashicons-info"></span></a> <?php $this->during_trial( 'default_per_records' ); ?></p>
+          <p class="help-block"><?php _e('This value will be set as the number of displayed data per page whenever you create a newly table.', CDBT); ?><a href="#foot-note-1" class="note-link"><i class="fa fa-info-circle"></i></a></p>
         </div>
       </div><!-- /option-item-25 -->
       
       <div class="col-sm-offset-2 col-sm-10">
         <ul id="foot-note-1" class="foot-note">
-          <li><span class="dashicons dashicons-info"></span> <?php _e('Already it is not reflected in the previously created table. Please change the table settings individually if you want to change it.', $this->domain_name); ?></li>
+          <li><i class="fa fa-info-circle"></i> <?php _e('Those values are not applied to the already created table. Please modify the table settings individually if you want to change.', CDBT); ?></li>
         </ul>
       </div>
       
       <div class="clearfix"><br></div>
-      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Advanced Plugin Settings', $this->domain_name); ?></h4>
+      <h4 class="title"><i class="fa fa-gears text-muted"></i> <?php _e('Advanced Plugin Settings', CDBT); ?></h4>
       
+<?php $this->dynamic_field( [ 'elementName'=>'allow_rendering_shortcodes', 'elementId'=>'option-item-31', 'elementLabel'=>__('Page to Apply Shortcode', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['allow_rendering_shortcodes'] ) && $this->strtobool( $options['allow_rendering_shortcodes'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('If checked, the page that is rendered the shortcodes restrict to a singular post only.', CDBT) ], 
+  'helperText'=> __('Note: There is a possibility that degrade your web page performance by rendering the all shortcodes in an archive page if unchecked.', CDBT) ] ); ?>
       <div class="form-group">
-        <label class="col-sm-2 control-label" for="option-item-31"><?php _e('Allow rendering shortcodes', $this->domain_name); ?></label>
+        <label class="col-sm-2 control-label" for="option-item-32"><?php _e('Loading Resources', CDBT); ?></label>
         <div class="col-sm-10">
-          <div class="checkbox" id="option-item-31">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[allow_rendering_shortcodes]" type="checkbox" value="1" <?php checked('1', $options['allow_rendering_shortcodes']); ?>>
-              <span class="checkbox-label"><?php _e('The Rendering shortcodes will be allow into singular post only.', $this->domain_name); ?></span> <?php $this->during_trial( 'allow_rendering_shortcodes' ); ?>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-31 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label" for="option-item-32"><?php _e('Included assets setting', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <p style="margin-top: 6px; font-size: 14px;"><?php _e('It will control the reading of various assets. Please change this settings if it conflicts the assets of the theme and other plugin.', $this->domain_name); ?> <?php $this->during_trial( 'include_assets' ); ?></p>
+          <p style="margin-top: 6px; font-size: 14px;"><?php _e('You can switch loading/unloading of individual resources as needed. Please try to change this settings if the specific resource is in conflict with the resource of the theme or other plugin.', CDBT); ?> <?php $this->during_trial( 'include_assets' ); ?></p>
           <table class="table table-bordered col-sm-10" id="option-item-32">
             <thead>
               <tr>
-                <th><?php _e('At the admin panel (when managed this plugin)', CDBT); ?></th>
-                <th><?php _e('At the front-end (when rendered shortcode)', CDBT); ?></th>
+                <th class="text-center"><?php _e('Administration Screen <br>(when managed this plugin only)', CDBT); ?></th>
+                <th class="text-center"><?php _e('Front-end Screen <br>(when rendered the shortcode only)', CDBT); ?></th>
               </tr>
             </thead>
             <tbody>
               <td><ul>
-              <?php $_admin_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
-              <?php foreach ( $_admin_assets as $_asset_name ) : 
-                $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
-                $_checked_cond = isset( $options['include_assets']['admin_'. $_asset_slug ] ) ? $options['include_assets']['admin_'. $_asset_slug ] : '1'; ?>
+              <?php $_admin_resources = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
+              <?php foreach ( $_admin_resources as $_resource_name ) : 
+                $_resource_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_resource_name ) );
+                $_checked_cond = isset( $options['include_assets']['admin_'. $_resource_slug ] ) ? $options['include_assets']['admin_'. $_resource_slug ] : '1';
+                $_disp_resource = '<strong class="text-info">'. $_resource_name .' (v'. $this->contribute_extends[$_resource_name]['version'] .')</strong>'; ?>
                 <li><div class="checkbox">
                   <label class="checkbox-custom" data-initialize="checkbox">
-                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][admin_<?php echo $_asset_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
-                    <span class="checkbox-label"><?php printf( __('%s (v%s) that is built in plugin', CDBT), $_asset_name, $this->contribute_extends[$_asset_name]['version'] ); ?></span>
+                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][admin_<?php echo $_resource_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
+                    <span class="checkbox-label"><?php $_resource = printf( __('the built-in %s in plugin', CDBT), $_disp_resource ); ?></span>
                   </label>
                 </div></li>
               <?php endforeach; ?>
               </ul></td>
               <td><ul>
-              <?php $_main_assets = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
-              <?php foreach ( $_main_assets as $_asset_name ) : 
-                $_asset_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_asset_name ) );
-                $_checked_cond = isset( $options['include_assets']['main_'. $_asset_slug ] ) ? $options['include_assets']['main_'. $_asset_slug ] : '1'; ?>
+              <?php $_main_resources = [ 'jQuery', 'Underscore.js', 'Bootstrap', 'Fuel UX', 'Kinetic', 'Clipboard' ]; ?>
+              <?php foreach ( $_main_resources as $_resource_name ) : 
+                $_resource_slug = str_replace( [ ' ', '.', '-' ], '_', strtolower( $_resource_name ) );
+                $_checked_cond = isset( $options['include_assets']['main_'. $_resource_slug ] ) ? $options['include_assets']['main_'. $_resource_slug ] : '1';
+                $_disp_resource = '<strong class="text-info">'. $_resource_name .' (v'. $this->contribute_extends[$_resource_name]['version'] .')</strong>'; ?>
                 <li><div class="checkbox">
                   <label class="checkbox-custom" data-initialize="checkbox">
-                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][main_<?php echo $_asset_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
-                    <span class="checkbox-label"><?php printf( __('%s (v%s) that is built in plugin', CDBT), $_asset_name, $this->contribute_extends[$_asset_name]['version'] ); ?></span>
+                    <input class="sr-only" name="<?php echo $this->domain_name; ?>[include_assets][main_<?php echo $_resource_slug; ?>]" type="checkbox" value="1" <?php checked('1', $_checked_cond ); ?>>
+                    <span class="checkbox-label"><?php printf( __('the built-in %s in plugin', CDBT), $_disp_resource ); ?></span>
                   </label>
                 </div></li>
               <?php endforeach; ?>
@@ -312,41 +267,20 @@ $default_action = 'update';
             </tbody>
           </table>
           <div class="clearfix"></div>
-          <p class="help-block" style="margin-top: 0;"><?php _e('If disabled the assets, must be loaded individually. Assets disabling at the admin panel does not recommended.', CDBT); ?></p>
+          <p class="help-block" style="margin-top: 0;"><?php _e('Note: If disabled the loading of resource, you should be loaded those resources individually. Also it does not recommend of disabling resources of the administration screen.', CDBT); ?></p>
         </div>
       </div><!-- /option-item-32 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label" for="option-item-34"><?php _e('Prevent duplicate sending', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-34">
-            <label class="checkbox-custom" data-initialize="checkbox">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[prevent_duplicate_sending]" type="checkbox" value="1"<?php checked( '1', $options['prevent_duplicate_sending'] ); ?>>
-              <span class="checkbox-label"><?php _e('For preventing duplicate registration of the data when register the data, we will issue an one-time token in the cookie.', $this->domain_name); ?></span> <?php $this->during_trial( 'prevent_duplicate_sending' ); ?>
-            </label>
-          </div>
-        </div>
-      </div><!-- /option-item-34 -->
-      <div class="form-group">
-        <label class="col-sm-2 control-label" for="option-item-36"><?php _e('Display format of list', $this->domain_name); ?></label>
-        <div class="col-sm-10">
-          <div class="checkbox" id="option-item-36">
-            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-36-repeater">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="repeater"<?php checked( 'repeater', $options['display_list_format'] ); ?>> Repeater (Traditional Fuel UX)
-            </label>
-            <label class="radio-custom radio-inline" data-initialize="radio" id="option-item-36-table">
-              <input class="sr-only" name="<?php echo $this->domain_name; ?>[display_list_format]" type="radio" value="table"<?php checked( 'table', $options['display_list_format'] ); ?>> Table (Recommended) <?php $this->during_trial( 'display_list_format' ); ?>
-            </label>
-            <p class="help-block"><?php _e('You can choose the display format at the time of listing data at the table management.', $this->domain_name); ?></p>
-          </div>
-        </div>
-      </div><!-- /option-item-36 -->
+<?php $this->dynamic_field( [ 'elementName'=>'prevent_duplicate_sending', 'elementId'=>'option-item-34', 'elementLabel'=>__('Use Onetime Token', CDBT), 'elementType'=>'checkbox', 
+  'defaultValue'=>isset( $options['prevent_duplicate_sending'] ) && $this->strtobool( $options['prevent_duplicate_sending'] ) ? '1' : '0', 
+  'selectableList'=>[ '1'=>__('Takes with issuing a onetime token in the cookie whenever registered data.', CDBT) ], 
+  'helperText'=> __('Note: This option is for preventing a duplicate data registration, an illegal accessed or an invalid data registration.', CDBT) ] ); ?>
       
       
       <div class="clearfix"><br></div>
       <div class="form-group">
         <div class="col-sm-10 col-sm-offset-2">
-          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-left" value="<?php _e('Save Changes', $this->domain_name); ?>">
-          <input type="button" name="initialize" id="initialize" class="btn btn-default" value="<?php _e('Initialize Options', $this->domain_name); ?>" style="margin-left: 1.5em;">
+          <input type="submit" name="submit" id="submit" class="btn btn-primary pull-left" value="<?php _e('Save Changes', CDBT); ?>">
+          <input type="button" name="initialize" id="initialize" class="btn btn-default" value="<?php _e('Initialize Options', CDBT); ?>" style="margin-left: 1.5em;">
         </div>
       </div>
     </form>
@@ -359,7 +293,7 @@ $default_action = 'update';
   $override_messages = apply_filters( 'cdbt_override_translate_text', $this->override_messages ); ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('You can overwrite of the own messages to the notification messages displayed at this plugin.', $this->domain_name); ?> <?php $this->during_trial( 'override_messages' ); ?>
+      <?php _e('In this section, you can overwrite of the own custom messages to any notification messages displayed at this plugin.', CDBT); ?> <?php $this->during_trial( 'override_messages' ); ?>
     </p>
   </div>
   
@@ -371,27 +305,27 @@ $default_action = 'update';
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
       
       <div class="row" style="margin-bottom: .5em;">
-        <div class="col-md-5"><span class="label label-default" style="margin-left: 1em;"><?php _e('Original Text', $this->domain_name); ?></span></div>
-        <div class="col-md-7"><span class="label label-default"><?php _e('Current Translated Text', $this->domain_name); ?></span></div>
+        <div class="col-md-5"><span class="label label-default" style="margin-left: 1em;"><?php _e('Original Text', CDBT); ?></span></div>
+        <div class="col-md-7"><span class="label label-default"><?php _e('Current Translating Text', CDBT); ?></span></div>
       </div>
 <?php foreach ( $override_messages as $_text ) : $msg_hash = $this->create_hash( $_text ); ?>
       <div class="form-group row">
         <label class="col-md-5 control-label" for="override-messages-<?php echo $msg_hash; ?>"><p class="text-left" style="margin-left: 1em;">
-          <?php echo $_text; /* _e( $_text, $this->domain_name ); */ ?>
+          <?php echo $_text; ?>
         </p></label>
         <div class="col-md-7"><textarea class="form-control" id="override-messages-<?php echo $msg_hash; ?>" name="<?php echo $this->domain_name; ?>[override_messages][<?php echo $msg_hash; ?>]" rows="2" placeholder="<?php esc_attr_e( $_text ); ?>"><?php if ( isset( $options['override_messages'][$msg_hash] ) ) {
           echo esc_textarea( strip_tags( $this->cdbt_strarc( $options['override_messages'][$msg_hash], 'decode' ) ) );
         } else {
-          echo esc_textarea( __( $_text, $this->domain_name ) );
+          echo esc_textarea( __( $_text, CDBT ) );
         } ?></textarea></div>
-        <?php if ( ! isset( $options['override_messages'][$msg_hash] ) ) : ?><div class="hide" id="override-messages-<?php echo $msg_hash; ?>-default"><?php echo esc_textarea( __( $_text, $this->domain_name ) ); ?></div><?php endif; ?>
+        <?php if ( ! isset( $options['override_messages'][$msg_hash] ) ) : ?><div class="hide" id="override-messages-<?php echo $msg_hash; ?>-default"><?php echo esc_textarea( __( $_text, CDBT ) ); ?></div><?php endif; ?>
       </div>
 <?php endforeach; ?>
       
       <div class="form-group">
         <div class="col-sm-10">
-          <input type="button" name="override" id="override-messages" class="btn btn-primary pull-left" value="<?php _e('Save Changes', $this->domain_name); ?>">
-          <input type="button" name="format" id="format-messages" class="btn btn-default" value="<?php _e('Initialize Messages', $this->domain_name); ?>" style="margin-left: 1.5em;">
+          <input type="button" name="override" id="override-messages" class="btn btn-primary pull-left" value="<?php _e('Save Changes', CDBT); ?>">
+          <input type="button" name="format" id="format-messages" class="btn btn-default" value="<?php _e('Initialize Messages', CDBT); ?>" style="margin-left: 1.5em;">
         </div>
       </div>
       
@@ -402,8 +336,8 @@ $default_action = 'update';
 <?php if ( $current_tab === 'debug' ) : ?>
   <div class="well-sm">
     <p class="text-info">
-      <?php _e('In this section you can check the log of various processes executed at the "Custom DataBase Tables" plugin.', $this->domain_name); ?><br>
-      <?php _e('Available as a debugging log to follow the flow of the processing such as when trouble occurs.', $this->domain_name); ?>
+      <?php _e('In this section, you can check the logs of various processes executed in the "Custom DataBase Tables" plugin.', CDBT); ?><br>
+      <?php _e('Those logs maybe help you as a debugging log to follow the flow of the processing if it occurs something trouble.', CDBT); ?>
     </p>
   </div>
   
@@ -422,14 +356,14 @@ $default_action = 'update';
       
       <div class="form-group">
         <div class="checkbox highlight col-sm-11" id="debug-log-option">
-          <input type="submit" name="submit" id="debug-submit" class="btn btn-primary pull-left" value="<?php _e('Clear Logs', $this->domain_name); ?>">
+          <input type="submit" name="submit" id="debug-submit" class="btn btn-primary pull-left" value="<?php _e('Clear Logs', CDBT); ?>">
           <label class="checkbox-custom highlight" data-initialize="checkbox">
             <input class="sr-only" name="<?php echo $this->domain_name; ?>[debug_log_option]" type="checkbox" value="1">
-            <span class="checkbox-label"><?php _e('Remove the current log after backup of the log file.', $this->domain_name); ?></span>
+            <span class="checkbox-label"><?php _e('Removes the current logs after backup of the log file.', CDBT); ?></span>
           </label>
         </div>
         <p class="help-block col-sm-offset-1 col-sm-11">
-          <?php printf( __('Note: Backup files stores to the directory of %s.', $this->domain_name), '<code>'. $this->plugin_dir .'backup/</code>' ); ?>
+          <?php printf( __('Note: All backup files are stored to the directory of %s.', CDBT), '<code>'. $this->plugin_dir .'backup/</code>' ); ?>
         </p>
       </div>
       

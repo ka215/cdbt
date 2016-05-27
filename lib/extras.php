@@ -83,6 +83,8 @@ trait CdbtExtras {
       'truncate_strings' => 'done', 
       'display_list_format' => 'new', 
       'display_index_row' => 'try-yet', 
+      'dynamic_table_layout' => 'new', 
+      'json_support' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {

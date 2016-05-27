@@ -317,7 +317,7 @@ final class CdbtAdmin extends CdbtDB {
     
     $menus[] = add_submenu_page( 
       'cdbt_management_console', 
-      __('CDBT Web APIs Management', $this->domain_name), 
+      __('CDBT WEB APIs Management', $this->domain_name), 
       __('Web APIs', $this->domain_name), 
       $operating_capability, 
       'cdbt_web_apis', 
@@ -503,6 +503,7 @@ final class CdbtAdmin extends CdbtDB {
         'ajax_url' => $this->ajax_url( [ 'event' => 'setup_session' ] ), 
         'notices_via_modal' => isset( $this->options['notices_via_modal'] ) && $this->options['notices_via_modal'] ? 'true' : 'false', 
         'local_err_msg' => rawurlencode( __( 'An empty required field is exists.', CDBT ) ), 
+        'local_copied' => rawurlencode( __( 'Copied', CDBT ) ), 
       ];
       if (array_key_exists( 'cdbt-table-creator-script', $asset_data ) ) {
         $cdbt_admin_vars['column_types'] =  null;

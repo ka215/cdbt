@@ -45,7 +45,7 @@ code, kbd, pre, samp {
   }
 }
 
-code {
+code, code.cdbt-clipboard {
   padding: 2px 4px;
   font-size: 90%;
   color: $code-string;
@@ -53,7 +53,7 @@ code {
   border-radius: 4px;
 }
 
-pre {
+pre, pre.cdbt-clipboard {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
@@ -111,12 +111,12 @@ fieldset>label {
 }
 
 a.note-link {
-  font-size: 9px;
+  font-size: inherit;
   text-decoration: none;
-  color: $default;
+  color: $text-warning;
   
-  span {
-    font-size: 16px;
+  i,span {
+    font-size: inherit;
     margin-top: 2px;
   }
 }
@@ -124,15 +124,16 @@ a.note-link {
 .foot-note {
   margin-top: 10px;
   margin-left: -1em;
-  font-size: 85%;
+  font-size: 90%;
   
   li {
-    color: $default;
+    color: $text-warning;
     margin: 0 0 10px;
   }
   
-  li span {
-    font-size: 15px;
+  li i,span {
+    color: $text-warning;
+    font-size: inherit;
   }
 }
 
@@ -327,16 +328,46 @@ nav#operation-navbar {
   margin-bottom: 1em;
 }
 
-.table-responsive>strong {
-  display: block;
-  padding: 5px;
+.table-responsive {
+  
+  strong {
+    display: block;
+    padding: 5px;
+  }
+  
+  table#columns-detail {
+    
+    thead th {
+      vertical-align: middle;
+      word-wrap: normal;
+      word-break: keep-all;
+    }
+    
+    tbody td {
+      vertical-align: middle;
+    }
+  }
+  
+  table#table-detail {
+    width: calc(100% - 3px);
+    table-layout: fixed;
+    
+    tbody th {
+      padding-left: 1em;
+    }
+    
+    tbody>tr>th:first-child {
+      border-left: solid 1px #ddd;
+    }
+    tbody>tr>td {
+      border-right: solid 1px #ddd;
+    }
+  }
 }
 
 .sub-description-title {
   display: inline-block;
-  margin-left: 5px;
-  margin-right: 8px;
-  margin-bottom: 1em;
+  margin: 6px 8px 0 6px;
 }
 
 .checkbox.highlight, .checkbox-custom.highlight {
@@ -421,5 +452,31 @@ nav#operation-navbar {
   
   span.label {
     margin-left: .75em;
+  }
+}
+
+.inner-preview {
+  width: 100%;
+  height: auto;
+  padding: 8px;
+  word-break: break-all;
+  word-wrap: break-word;
+  border: solid 1px #ddd;
+  border-radius: 4px;
+  background-color: #e8e8e8;
+}
+
+.cdbt-clipboard {
+  background-color: inherit;
+  color: inherit;
+  
+  &.cdbt-copied {
+    background-color: $primary;
+    color: #fff;
+  }
+  
+  &.no-focus.cdbt-copied {
+    background-color: inherit;
+    color: inherit;
   }
 }

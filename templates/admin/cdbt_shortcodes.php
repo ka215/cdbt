@@ -33,8 +33,8 @@ $fields_define = [
   'appearances' => [ 'elementName' => 'look_feel', 'elementId' => 'look_feel', 'elementLabel' => __('Appearance and LookAndFeel', CDBT), 'idPrefix' => '', 'elementType' => 'checkbox', 'fieldSize' => 10, 
     'defaultValue' => 'bootstrap_style,display_search,display_title,enable_sort', 
     'selectableList' => [
-      'bootstrap_style' => 	__( 'Renders the data via the style of bootstrap if checked. Render the data of the JSON format if unchecked.', CDBT ), 
-      'enable_repeater' => 	__( 'Renders the data of table by using repeater component of the "FuelUX" libraries if checked. <wbr/>Or if unchecked, renders by using the original dynamic table component of this plugin.', CDBT ), 
+      'bootstrap_style' => 	__( 'Renders the data via the style of bootstrap if checked. Render the data of the JSON format if unchecked.', CDBT ) . $this->during_trial( 'json_support', false ), 
+      'enable_repeater' => 	__( 'Renders the data of table by using repeater component of the "FuelUX" libraries if checked. <wbr/>Or if unchecked, renders by using the original dynamic table component of this plugin.', CDBT ) . $this->during_trial( 'dynamic_table_layout', false ), 
       'display_list_num' => 	__( 'Adds an auto increment number column at the left edge of the data row if checked.', CDBT ), 
       'display_search' => 	__( 'Displays an input field for the data search if checked.', CDBT ), 
       'display_title' => 		__( 'Displays the heading of content as a title if checked.', CDBT ), 
@@ -81,8 +81,8 @@ $fields_define = [
   'description' => [ 'elementName'=>'description', 'elementId'=>'description', 'elementLabel'=>__('Description', CDBT), 'idPrefix'=>'', 'elementType'=>'textarea', 'fieldSize' => 9, 'defaultValue'=>'', 'helperText'=>__('You can specify as like description that will be displayed in the shortcode lists screen.', CDBT) ], 
   'csid' => [ 'elementName'=>'csid', 'elementId'=>'csid', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>0, 'noWrap'=>true ], 
   'author' => [ 'elementName'=>'author', 'elementId'=>'author', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>0, 'noWrap'=>true ], 
-  'generateSC' => [ 'elementName'=>'generate_shortcode', 'elementId'=>'generate_shortcode', 'elementLabel'=>__('Generated Shortcode', CDBT), 'idPrefix'=>'', 'elementType'=>'textarea', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No generated shortcode yet.', CDBT), 'elementExtras'=>[ 'rows'=>4, 'readonly'=>'readonly' ] ], 
-  'aliasCode' => [ 'elementName'=>'alias_code', 'elementId'=>'alias_code', 'elementLabel'=>__('Alias Shortcode', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No alias shortcode yet.', CDBT), 'elementExtras'=>[ 'readonly'=>'readonly' ] ], 
+  'generateSC' => [ 'elementName'=>'generate_shortcode', 'elementId'=>'generate_shortcode', 'elementLabel'=>__('Generated Shortcode', CDBT), 'idPrefix'=>'', 'elementType'=>'textarea', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No generated shortcode yet.', CDBT), 'addClass'=>'cdbt-clipboard', 'elementExtras'=>[ 'rows'=>4, 'readonly'=>'readonly' ] ], 
+  'aliasCode' => [ 'elementName'=>'alias_code', 'elementId'=>'alias_code', 'elementLabel'=>__('Alias Shortcode', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'fieldSize' => 9, 'defaultValue'=>'', 'placeholder'=>__('No alias shortcode yet.', CDBT), 'addClass'=>'cdbt-clipboard', 'helperText'=>__('When you click the code field you can copy the contents to the clipboard.', CDBT), 'elementExtras'=>[ 'readonly'=>'readonly' ] ], 
 ];
 /**
  * Render html

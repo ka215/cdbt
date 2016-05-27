@@ -250,7 +250,7 @@ trait CdbtAjax {
       }
       $row_index_number = 1;
       $render_tmpl = <<<EOH
-<div class="table-responsive">
+<div class="table-responsive cdbt-kinetic">
   <p class="text-info" id="collapse-reference"><i class="fa fa-minus-square"></i> %s &nbsp; %s</p>
   <table id="columns-detail" class="table table-striped table-bordered table-hover table-condensed">
     <thead>
@@ -268,10 +268,10 @@ trait CdbtAjax {
 </div>
 EOH;
       $thead_th = $tbody = [];
-      //$thead_th[] = '<th><small>#</small></th>';
+      //$thead_th[] = '<th><small><i class="fa fa-hashtag" aria-hidden="true"></small></th>';
       $thead_th[] = '<th><small>'. __('Column Name', CDBT) .'</small></th>';
       foreach ( $columns_schema_index as $columns_index_name ) {
-        $thead_th[] = '<th class="text-center"><small>'. __($columns_index_name, CDBT) .'</small></th>';
+        $thead_th[] = '<th class="text-center"><small>'. _x( $columns_index_name, 'cdbt:table-columns-info', CDBT) .'</small></th>';
       }
       foreach ( $columns_schema as $column_name => $column_scheme ) {
         $tbody_tr = '<tr id="row-index-number-'. $row_index_number .'">';

@@ -1,5 +1,5 @@
 /*!
- * Custom DataBase Tables v2.0.9 (http://ka2.org)
+ * Custom DataBase Tables v2.1.31 (http://ka2.org)
  * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
@@ -148,6 +148,7 @@ $(document).ready(function() {
   $.ajaxNonce = cdbt_admin_vars.ajax_nonce;
   $.modalNotices = 'true' === cdbt_admin_vars.notices_via_modal ? true : false;
   $.localErrMsg = decodeURIComponent(cdbt_admin_vars.local_err_msg.replace(/\+/g, ' '));
+  $.localCopied = decodeURIComponent(cdbt_admin_vars.local_copied.replace(/\+/g, ' '));
   $.onTimer = true;
   if ($.isDebug) {
     // check debug mode
@@ -191,6 +192,14 @@ $(document).ready(function() {
       
       $('body').append( $.ajaxResponse.responseText );
       
+      // For rendering JSON data (since 2.1.31)
+      if ( /^\[\{.*\}\]$/im.test($('.cdbt-modal .modal-body').text().trim()) ) {
+        $('.cdbt-modal .modal-body').html('<textarea class="inner-preview cdbt-clipboard">'+$('.cdbt-modal .modal-body').text().trim()+'</textarea>').queue(function(){
+          var __height = $(window).height() - $('.modal-header').height() - $('.modal-footer').height() - ($('#wpadminbar').size() > 0 ? $('#wpadminbar').height() : 0);
+          $('.inner-preview').css({ height: Math.ceil(__height * 0.6)+'px' });
+          
+        });
+      }
     };
     
     /**
@@ -673,6 +682,57 @@ $(document).ready(function() {
   
   
   /**
+   * Common kinetic component
+   */
+  if ($.fn.kinetic !== undefined) {
+    $('.cdbt-kinetic').kinetic({
+      filterTarget: function(target, e){
+        if (!/down|start/.test(e.type)){
+          return !(/span|area|a|input/i.test(target.tagName));
+        }
+      }
+    });
+  }
+  
+  /**
+   * Common clipboard copy handler
+   */
+  if (typeof Clipboard === 'function') {
+    
+    var cdbtClipboard = new Clipboard( '.cdbt-clipboard', {
+      text: function(trigger){
+        var _this = $(trigger), text;
+        if ('TEXTAREA' === _this.context.tagName || 'INPUT' === _this.context.tagName) {
+          text = _this.val();
+        } else {
+          text = _this.text() || false;
+        }
+        if (text && '' !== text) {
+          _this.addClass('cdbt-copied');
+          return text;
+        } else {
+          return false;
+        }
+      }
+    });
+    cdbtClipboard.on( 'success', function(e) {
+      var _this = $(e.trigger);
+      _this.tooltip({ trigger: 'manual', title: $.localCopied }).tooltip('show');
+      _this.animate({ backgroundColor:'#fff', color:'#333' }, 500, function(){
+        _this.removeClass('cdbt-copied').tooltip('hide');
+        e.clearSelection();
+      });
+    });
+    cdbtClipboard.on('error', function(e){
+      var _this = $(e.trigger);
+      _this.removeClass('cdbt-copied').tooltip('hide');
+      e.clearSelection();
+    });
+    
+  }
+  
+  
+  /**
    * Common ajax closure
    */
   var cdbtCallAjax = function(){
@@ -707,6 +767,9 @@ $(document).ready(function() {
         //alert( xhr.responseText );
       }
       if ('script' !== data_type) {
+        if (/0$/im.test(jqXHR.responseText)) {
+          jqXHR.responseText = jqXHR.responseText.substr(0, jqXHR.responseText.length-1);
+        }
         $.ajaxResponse = { 'responseText': jqXHR.responseText, 'status': jqXHR.status, 'statusText': jqXHR.statusText };
       } else {
         return data;
@@ -1078,6 +1141,7 @@ $(document).ready(function() {
           case 'import': 
           case 'export': 
           case 'duplicate': 
+          case 'backup': 
             $('section').each(function() {
               if (new_action === $(this).attr('id')) {
                 $(this).attr('class', 'show');
@@ -1104,11 +1168,6 @@ $(document).ready(function() {
               'callback_url': './admin.php?page=cdbt_tables&tab=modify_table', 
             };
             cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-            break;
-          case 'backup': 
-            
-            // Have not yet implemented
-            
             break;
           case 'drop': 
             post_data = {
@@ -1703,6 +1762,10 @@ $(document).ready(function() {
    */
   if ('cdbt_shortcodes' === $.QueryString.page) {
     
+    $('td.col-scl-name').find('code').each(function(){
+      $(this).addClass('cdbt-clipboard');
+    });
+    
     // Run of delete shortcode after confirmation
     $(document).on('click', '#run_delete_shortcode', function(){
       var post_data = {
@@ -1905,6 +1968,8 @@ $(document).ready(function() {
       });
       
     });
+    
+    
     
   }
   

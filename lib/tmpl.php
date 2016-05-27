@@ -202,12 +202,12 @@ trait DynamicTemplate {
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
             <ul class="dropdown-menu dropdown-menu-right">
             <?php foreach ( $selectable_list as $_key => $_val ) : ?>
-              <li data-value="<?php echo esc_attr( $_key ); ?>"<?php if ( $is_selected && $field_option['defaultValue'] === $_val ) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo esc_html( $_val ); ?></a></li>
+              <li data-value="<?php echo esc_attr( $_key ); ?>"<?php if ( $is_selected && $field_option['defaultValue'] === $_val ) echo ' data-selected="true"'; ?>><a href="#"><?php echo esc_html( $_val ); ?></a></li>
             <?php endforeach; ?>
             </ul>
           </div>
         </div>
-      <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo esc_html( $field_option['helperText'] ); ?></p><?php endif; ?>
+      <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?> -->
 <?php
@@ -230,7 +230,7 @@ trait DynamicTemplate {
           </ul>
           <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($field_option['elementName']); ?>]" readonly="readonly" aria-hidden="true" type="text"/>
         </div>
-      <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo esc_html( $field_option['helperText'] ); ?></p><?php endif; ?>
+      <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?> -->
 <?php
@@ -239,7 +239,7 @@ trait DynamicTemplate {
         $index_num = 0;
         $is_horizontal = isset( $field_option['horizontalList'] ) && ! empty( $field_option['horizontalList'] ) ? $this->strtobool( $field_option['horizontalList'] ) : false;
         $default_values = $this->strtoarray( $field_option['defaultValue'] );
-        $is_multiple = count( $selectable_list ) > 1 ? true : false; // for is horizontal
+        $is_multiple = count( $selectable_list ) > 1 ? true : false;
         $child_classes = isset( $field_option['elementExtras']['child-class'] ) && ! empty( $field_option['elementExtras']['child-class'] ) ? $this->strtohash( $field_option['elementExtras']['child-class'] ) : []; // for not horizontal
         $add_classes = $is_required ? $add_classes . ' required' : $add_classes;
         $selectable_list = empty( $selectable_list ) ? [ __('Undefined', CDBT) => '' ] : $selectable_list;
@@ -249,15 +249,15 @@ trait DynamicTemplate {
       <div class="col-sm-<?php echo $max_field_size; ?>">
       <?php foreach ( $selectable_list as $_key => $_val ) : $index_num++; ?>
         <?php if ( ! $is_horizontal ) : ?>
-        <div class="checkbox <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
+        <div class="checkbox <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" id="<?php echo esc_attr( $is_multiple ? $field_id . $index_num : $field_id ); ?>">
           <label class="checkbox-custom" data-initialize="checkbox">
-            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][<?php echo esc_attr( $_key ); ?>]" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
+            <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]<?php if ( $is_multiple ) : ?>[<?php echo esc_attr( $_key ); ?>]<?php endif; ?>" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
             <span class="checkbox-label"><?php echo $_val; ?></span>
           </label>
         </div>
         <?php else : ?>
-        <label class="checkbox-custom checkbox-inline<?php if ( $is_multiple ) : ?> multiple<?php endif; ?> <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" data-initialize="checkbox" id="<?php echo esc_attr( $field_id ) . $index_num; ?>">
-          <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][]" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
+        <label class="checkbox-custom checkbox-inline<?php if ( $is_multiple ) : ?> multiple<?php endif; ?> <?php echo esc_attr( $add_classes ); ?> <?php if ( isset( $child_classes[$_key] ) ) echo trim( $child_classes[$_key] ); ?>" data-initialize="checkbox" id="<?php echo esc_attr( $is_multiple ? $field_id . $index_num : $field_id ); ?>">
+          <input class="sr-only" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]<?php if ( $is_multiple ) : ?>[]<?php endif; ?>" type="checkbox" value="1"<?php if ( is_array( $default_values ) && in_array( $_key, $default_values ) ) : ?> checked="checked"<?php endif; ?> <?php echo $add_attributes; ?>>
           <span class="checkbox-label"><?php echo $_val; ?></span>
         </label>
         <?php endif; ?>
@@ -345,7 +345,7 @@ trait DynamicTemplate {
       <div class="col-sm-offset-2 col-sm-9">
       <?php echo $add_field; ?>
       </div>
-    <?php if (isset($field_option['helperText']) && !empty($field_option['helperText'])) : ?><p class="help-block"><?php echo esc_html($field_option['helperText']); ?></p><?php endif; ?>
+    <?php if (isset($field_option['helperText']) && !empty($field_option['helperText'])) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
     </div><!-- /entry-data-<?php echo esc_attr($field_option['elementName']); ?> -->
 <?php
         unset($_file_type, $_binary_array, $add_field);
