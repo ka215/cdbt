@@ -1,48 +1,8 @@
 /*!
- * Custom DataBase Tables v2.0.8 (http://ka2.org)
+ * Custom DataBase Tables v2.1.31 (http://ka2.org)
  * Copyright 2014-2016 ka2@ka2.org
  * Licensed under GPLv2 (http://www.gnu.org/licenses/gpl.txt)
  */
-/**
- * Common processing that does not depend on jQuery
- * /
-function setCookie(ck_name, ck_value, expiredays) {
-  // SetCookie
-  var path = '/';
-  var extime = new Date().getTime();
-  var cltime = new Date(extime + (60*60*24*1000*expiredays));
-  var exdate = cltime.toUTCString();
-  var tmp_data = new Array(ck_value);
-  var fix_data = tmp_data.filter(function (x, i, self) { return self.indexOf(x) === i; });
-  var s = '';
-  s += ck_name + '=' + escape(fix_data.join(','));
-  s += '; path=' + path;
-  s += expiredays ? '; expires=' + exdate + '; ' : '; ';
-  document.cookie = s;
-}
-function getCookie(ck_name) {
-  // GetCookie
-  var st = '', ed = '', res = '';
-  if (document.cookie.length > 0) {
-    st = document.cookie.indexOf(ck_name + '=');
-    if (st !== -1) {
-      st = st + ck_name.length + 1;
-      ed = document.cookie.indexOf(';', st);
-      if (ed === -1) {
-        ed = document.cookie.length;
-      }
-      res = unescape(document.cookie.substring(st, ed));
-    }
-  }
-  return res;
-}
-function removeCookie(ck_name) {
-  // removeCookie
-  var path = '/';
-  if (!ck_name || document.cookie.indexOf(ck_name + '=') !== -1) { return; }
-  document.cookie = escape(ck_name) + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' + (path ? '; path=' + path : '');
-}
-*/
 /*
  * :: cookies.js ::
  *
@@ -234,6 +194,14 @@ jQuery(document).ready(function($){
       
       $('body').append( $.ajaxResponse.responseText );
       
+      // For rendering JSON data (since 2.1.31)
+      if ( /^\[\{.*\}\]$/im.test($('.cdbt-modal .modal-body').text().trim()) ) {
+        $('.cdbt-modal .modal-body').html('<textarea class="inner-preview cdbt-clipboard">'+$('.cdbt-modal .modal-body').text().trim()+'</textarea>').queue(function(){
+          var __height = $(window).height() - $('.modal-header').height() - $('.modal-footer').height() - ($('#wpadminbar').size() > 0 ? $('#wpadminbar').height() : 0);
+          $('.inner-preview').css({ height: Math.ceil(__height * 0.6)+'px' });
+          
+        });
+      }
     };
     
     /**
@@ -256,10 +224,6 @@ jQuery(document).ready(function($){
         modalForm.find('.radio').radio('enable');
         modalForm.find('.search').search('enable');
         modalForm.find('.selectlist').selectlist('enable');
-        /*$('.selectlist').each(function(){
-          console.info($(this).attr('id'));
-          $('#'+$(this).attr('id')).selectlist('enable');
-        });*/
         modalForm.find('.spinbox').spinbox();
         modalForm.find('.tree').tree('render');
         modalForm.find('.wizard').wizard();
@@ -503,6 +467,7 @@ jQuery(document).ready(function($){
     var is_edit_via_shortcode = $('.repeater').attr('id').indexOf('cdbt-repeater-edit-') === 0;
     
     if (is_view_via_shortcode || is_edit_via_shortcode) {
+      // For shortcode "cdbt-view" or "cdbt-edit" on repeater component
       
       $('.dropdown-toggle').dropdown();
       
@@ -606,221 +571,220 @@ jQuery(document).ready(function($){
         
       });
       
-      /**
-       * When edit via shortcode
-       * @since 2.1.0 Updated for static table format
-       */
-      
-      // Button effect
-      var effect_buttons = function( id ){
-        var selectedItem, edit_button, delete_button;
-        if (id.indexOf('cdbt-repeater-edit-') > -1) {
-          // For repeater
-          selectedItem = $('#'+id).repeater('list_getSelectedItems');
-          edit_button = $('#'+id+' button#repeater-editor-edit');
-          delete_button = $('#'+id+' button#repeater-editor-delete');
-        } else {
-          // For table
-          selectedItem = $('#'+id).find('tbody>tr.selected');
-          edit_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-edit');
-          delete_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-delete');
-        }
-        if (selectedItem.length === 1) {
-          edit_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
-          delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
-        } else
-        if (selectedItem.length > 1) {
-          edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
-          delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
-        } else {
-          edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
-          delete_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
-        }
-      };
-      
-      // Event handler (for repeater and static table format)
-      $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(e){
-        effect_buttons( $(e.target).attr('id') );
-      });
-      $(document).on('click', '#repeater-check-switch', function(e){
-        effect_buttons( $(e.target).attr('id') );
-      });
-      $(document).on('click', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] tr.selectable', function(e){
-        if ($(e.target).parents('tbody').size() === 1) {
-          $(e.target).parents('tr.selectable').toggleClass('selected').find('.checkbox label').checkbox('toggle');
-          effect_buttons( $(e.target).parents('table').attr('id') );
-        } else
-        if ($(e.target).parents('th.editable-checkbox').size() === 1 || 'editable-checkbox' === e.target.className) {
-          $(e.target).parents('tr').find('.checkbox label').checkbox('toggle');
-          if ($(e.target).parents('tr').find('.checkbox label').checkbox('isChecked')){
-            $(e.target).parents('table').find('tr.selectable').addClass('selected').find('.checkbox label').checkbox('check');
-          } else {
-            $(e.target).parents('table').find('tr.selectable').removeClass('selected').find('.checkbox label').checkbox('uncheck');
-          }
-          effect_buttons( $(e.target).parents('table').attr('id') );
-        } else {
-          return false;
-        }
-      });
-      $(document).on('change', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] .checkbox input', function(e){
-        if ($(e.target).parents('tbody').size() === 1) {
-          $(e.target).parents('tr.selectable').toggleClass('selected');
-          effect_buttons( $(e.target).parents('table').attr('id') );
-        }
-      });
-      
-      $('button[id^="repeater-editor-"],button[id^="table-editor-"]').on('click', function(){
-        var dataAction = _.last( $(this).attr('id').split('-') );
-        var isRepeater = $(this).attr('id').indexOf('repeater-editor') > -1 ? true : false;
-        var targetTable, selectedItem, post_data = {};
-        if (isRepeater) {
-          targetTable = $(this).parents('.repeater').attr('id').replace('cdbt-repeater-edit-', '');
-          selectedItem = $(this).parents('.repeater').repeater('list_getSelectedItems');
-        } else {
-          var __tmp = $(this).parents('.cdbt-table-wrapper').find('table').attr('id').replace('cdbt-table-edit-', '');
-          targetTable = _.initial(__tmp.split('-')).join('-');
-          selectedItem = $(this).parents('.cdbt-table-wrapper').find('tbody>tr.selected');
-        }
-        $.sessionKey = 'cdbt-edit-' + targetTable;
-        
-        $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
-        
-        switch(dataAction){
-          case 'refresh': 
-            post_data = {
-              'session_key': $.sessionKey, 
-              'default_action': 'edit', 
-              'target_table': targetTable, 
-              'event': 'reload_page', 
-              'callback_url': window.location.href, 
-            };
-            return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
-            
-          case 'edit': 
-            post_data = {
-              id: 'cdbtEditData', 
-              insertContent: true, 
-              modalTitle: '', 
-              modalBody: '', 
-            };
-            if (selectedItem.length === 0) {
-              post_data.id = 'cdbtEditWarning';
-              post_data.modalTitle = 'no_selected_item';
-            } else if (selectedItem.length > 1) {
-              post_data.id = 'cdbtEditWarning';
-              post_data.modalTitle = 'too_many_selected_item';
-            } else {
-              post_data.modalSize = 'large';
-              post_data.modalTitle = 'edit_data_form';
-              post_data.modalExtras = { 
-                'table_name': targetTable, 
-                'action_url': window.location.href, 
-                'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
-              };
-            }
-            $.ajaxResponse.targetTable = targetTable;
-            init_modal( post_data );
-            
-            break;
-          case 'delete': 
-            post_data = {
-              id: 'cdbtDeleteData', 
-              insertContent: true, 
-              modalTitle: '', 
-              modalBody: '', 
-              modalExtras: { items: selectedItem.length },
-            };
-            if (selectedItem.length === 0) {
-              post_data.modalTitle = 'no_selected_item';
-            } else {
-              post_data.modalTitle = 'delete_data';
-            }
-            init_modal( post_data );
-            
-            break;
-          default: 
-            return false;
-        }
-      });
-      
-      $(document).on('show.bs.modal', '#cdbtEditData', function(){
-        var post_data = {
-          'session_key': $.sessionKey, 
-          'table_name': _.last($.sessionKey.split('-')), 
-          'operate_action': 'edit_data', 
-          'event': 'render_edit_form', 
-          'shortcode': '[' + $('#edit-data-form').val() + ']', 
-        };
-        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
-      });
-      
-      
-      $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
-        if ($(this).parent().hasClass('multiple')) {
-          var counter_elm = $('input[name="' + $(this).attr('name').replace('[]', '') + '[checked]"]');
-          var checked_count = Number(counter_elm.val());
-          if ( $(this).prop('checked') ) {
-            checked_count += 1;
-          } else {
-            checked_count -= 1;
-          }
-          checked_count = checked_count < 0 ? 0 : checked_count;
-          counter_elm.val(checked_count);
-        }
-      });
-      
-      
-      var countMultipleChecked = function(){
-        var $this = $('#cdbtEditData .checkbox');
-        $this.parent().each(function(){
-        	if ($(this).children().children('.checkbox-custom.multiple')) {
-            var counter_elm = $('input[name="' + $(this).children().children('.checkbox-custom').children('input').attr('name').replace('[]', '') + '[checked]"]');
-            var checked_count = 0; //Number(counter_elm.val());
-            $(this).find('.checkbox-custom input').each(function(){
-              if ( $(this).prop('checked') ) {
-                checked_count++;
-              }
-            });
-            counter_elm.val(checked_count);
-          }
-        });
-      };
-      
-      
-      $(document).on('click', '#run_update_data', function(e){
-        e.preventDefault();
-        var form = $('#cdbtEditData div.cdbt-entry-data-form form');
-        var formId = form.attr( 'id' );
-        form.children('input[name="_wp_http_referer"]').val(location.href);
-        if ( checkEmptyFields( formId ) ) {
-          docCookies.setItem( 'once_action', form.attr( 'id' ) );
-          form.submit();
-        } else {
-          // Added since 2.0.9
-          $(this).popover({ animation: true, content: $.localErrMsg, placement: 'top', trigger: 'hover' }).popover('show');
-          $(this).on('hidden.bs.popover', function(){
-            $(this).popover('destroy');
-          });
-          //return false;
-        }
-      });
-      
-      
-      // Run of deleting data after confirmation
-      $(document).on('click', '#run_delete_data', function(){
-        $('#run_delete_data').off();
-        var post_data = {
-          'table': _.last($.sessionKey.split('-')), 
-          'event': 'retrieve_nonce', 
-        };
-        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'text', 'submit_data_deletion' );
-      });
-      
     }
     adjustCellSize();
-    
-    
   }
+  
+  /**
+   * When edit via shortcode
+   * @since 2.1.31 Updated for static table format
+   */
+  
+  // Button effect
+  var effect_buttons = function( id ){
+    var selectedItem, edit_button, delete_button;
+    if (id.indexOf('cdbt-repeater-edit-') > -1) {
+      // For repeater
+      selectedItem = $('#'+id).repeater('list_getSelectedItems');
+      edit_button = $('#'+id+' button#repeater-editor-edit');
+      delete_button = $('#'+id+' button#repeater-editor-delete');
+    } else {
+      // For table
+      selectedItem = $('#'+id).find('tbody>tr.selected');
+      edit_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-edit');
+      delete_button = $('.cdbt-table-editor[for="'+id+'"] button#table-editor-delete');
+    }
+    if (selectedItem.length === 1) {
+      edit_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+      delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+    } else
+    if (selectedItem.length > 1) {
+      edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
+      delete_button.removeClass('btn-default').addClass('btn-primary').prop('disabled', false);
+    } else {
+      edit_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
+      delete_button.removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
+    }
+  };
+  
+  // Event handler (for repeater and static table format)
+  $('.repeater[id^="cdbt-repeater-edit-"]').on('selected.fu.repeaterList deselected.fu.repeaterList', function(e){
+    effect_buttons( $(e.target).attr('id') );
+  });
+  $(document).on('click', '#repeater-check-switch', function(e){
+    effect_buttons( $(e.target).attr('id') );
+  });
+  $(document).on('click', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] tr.selectable', function(e){
+    if ($(e.target).parents('tbody').size() === 1) {
+      $(e.target).parents('tr.selectable').toggleClass('selected').find('.checkbox label').checkbox('toggle');
+      effect_buttons( $(e.target).parents('table').attr('id') );
+    } else
+    if ($(e.target).parents('th.editable-checkbox').size() === 1 || 'editable-checkbox' === e.target.className) {
+      $(e.target).parents('tr').find('.checkbox label').checkbox('toggle');
+      if ($(e.target).parents('tr').find('.checkbox label').checkbox('isChecked')){
+        $(e.target).parents('table').find('tr.selectable').addClass('selected').find('.checkbox label').checkbox('check');
+      } else {
+        $(e.target).parents('table').find('tr.selectable').removeClass('selected').find('.checkbox label').checkbox('uncheck');
+      }
+      effect_buttons( $(e.target).parents('table').attr('id') );
+    } else {
+      return false;
+    }
+  });
+  $(document).on('change', '.cdbt-table-wrapper table[id^="cdbt-table-edit-"] .checkbox input', function(e){
+    if ($(e.target).parents('tbody').size() === 1) {
+      $(e.target).parents('tr.selectable').toggleClass('selected');
+      effect_buttons( $(e.target).parents('table').attr('id') );
+    }
+  });
+  
+  $('button[id^="repeater-editor-"],button[id^="table-editor-"]').on('click', function(){
+    var dataAction = _.last( $(this).attr('id').split('-') );
+    var isRepeater = $(this).attr('id').indexOf('repeater-editor') > -1 ? true : false;
+    var targetTable, selectedItem, post_data = {};
+    if (isRepeater) {
+      targetTable = $(this).parents('.repeater').attr('id').replace('cdbt-repeater-edit-', '');
+      selectedItem = $(this).parents('.repeater').repeater('list_getSelectedItems');
+    } else {
+      var __tmp = $(this).parents('.cdbt-table-wrapper').find('table').attr('id').replace('cdbt-table-edit-', '');
+      targetTable = _.initial(__tmp.split('-')).join('-');
+      selectedItem = $(this).parents('.cdbt-table-wrapper').find('tbody>tr.selected');
+    }
+    $.sessionKey = 'cdbt-edit-' + targetTable;
+    
+    $common_modal_hide = "$('input[name=\"custom-database-tables[operate_action]\"]').val('edit'); $('form.navbar-form').trigger('submit');";
+    
+    switch(dataAction){
+      case 'refresh': 
+        post_data = {
+          'session_key': $.sessionKey, 
+          'default_action': 'edit', 
+          'target_table': targetTable, 
+          'event': 'reload_page', 
+          'callback_url': window.location.href, 
+        };
+        return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
+        
+      case 'edit': 
+        post_data = {
+          id: 'cdbtEditData', 
+          insertContent: true, 
+          modalTitle: '', 
+          modalBody: '', 
+        };
+        if (selectedItem.length === 0) {
+          post_data.id = 'cdbtEditWarning';
+          post_data.modalTitle = 'no_selected_item';
+        } else if (selectedItem.length > 1) {
+          post_data.id = 'cdbtEditWarning';
+          post_data.modalTitle = 'too_many_selected_item';
+        } else {
+          post_data.modalSize = 'large';
+          post_data.modalTitle = 'edit_data_form';
+          post_data.modalExtras = { 
+            'table_name': targetTable, 
+            'action_url': window.location.href, 
+            'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
+          };
+        }
+        $.ajaxResponse.targetTable = targetTable;
+        init_modal( post_data );
+        
+        break;
+      case 'delete': 
+        post_data = {
+          id: 'cdbtDeleteData', 
+          insertContent: true, 
+          modalTitle: '', 
+          modalBody: '', 
+          modalExtras: { items: selectedItem.length },
+        };
+        if (selectedItem.length === 0) {
+          post_data.modalTitle = 'no_selected_item';
+        } else {
+          post_data.modalTitle = 'delete_data';
+        }
+        init_modal( post_data );
+        
+        break;
+      default: 
+        return false;
+    }
+  });
+  
+  $(document).on('show.bs.modal', '#cdbtEditData', function(){
+    var post_data = {
+      'session_key': $.sessionKey, 
+      'table_name': _.last($.sessionKey.split('-')), 
+      'operate_action': 'edit_data', 
+      'event': 'render_edit_form', 
+      'shortcode': '[' + $('#edit-data-form').val() + ']', 
+    };
+    return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'load_into_modal' );
+  });
+  
+  
+  $(document).on('change', '#cdbtEditData div.cdbt-entry-data-form form .checkbox-custom input', function () {
+    if ($(this).parent().hasClass('multiple')) {
+      var counter_elm = $('input[name="' + $(this).attr('name').replace('[]', '') + '[checked]"]');
+      var checked_count = Number(counter_elm.val());
+      if ( $(this).prop('checked') ) {
+        checked_count += 1;
+      } else {
+        checked_count -= 1;
+      }
+      checked_count = checked_count < 0 ? 0 : checked_count;
+      counter_elm.val(checked_count);
+    }
+  });
+  
+  
+  var countMultipleChecked = function(){
+    var $this = $('#cdbtEditData .checkbox');
+    $this.parent().each(function(){
+   	  if ($(this).children().children('.checkbox-custom.multiple')) {
+        var counter_elm = $('input[name="' + $(this).children().children('.checkbox-custom').children('input').attr('name').replace('[]', '') + '[checked]"]');
+        var checked_count = 0; //Number(counter_elm.val());
+        $(this).find('.checkbox-custom input').each(function(){
+          if ( $(this).prop('checked') ) {
+            checked_count++;
+          }
+        });
+        counter_elm.val(checked_count);
+      }
+    });
+  };
+  
+  
+  $(document).on('click', '#run_update_data', function(e){
+    e.preventDefault();
+    var form = $('#cdbtEditData div.cdbt-entry-data-form form');
+    var formId = form.attr( 'id' );
+    form.children('input[name="_wp_http_referer"]').val(location.href);
+    if ( checkEmptyFields( formId ) ) {
+      docCookies.setItem( 'once_action', form.attr( 'id' ) );
+      form.submit();
+    } else {
+      // Added since 2.0.9
+      $(this).popover({ animation: true, content: $.localErrMsg, placement: 'top', trigger: 'hover' }).popover('show');
+      $(this).on('hidden.bs.popover', function(){
+        $(this).popover('destroy');
+      });
+      //return false;
+    }
+  });
+  
+  
+  // Run of deleting data after confirmation
+  $(document).on('click', '#run_delete_data', function(){
+    $('#run_delete_data').off();
+    var post_data = {
+      'table': _.last($.sessionKey.split('-')), 
+      'event': 'retrieve_nonce', 
+    };
+    return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'text', 'submit_data_deletion' );
+  });
+  
   
   /**
    * Datepicker components of Fuel UX renderer

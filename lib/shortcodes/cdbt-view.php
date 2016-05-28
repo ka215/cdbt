@@ -177,11 +177,6 @@ trait CdbtView {
         $add_classes[] = esc_attr( trim( $_class ) );
       }
     }
-    if ( $enable_repeater ) {
-      $display_index_row = $this->strtobool( $display_index_row );
-    } else {
-      $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
-    }
     
     if ( $csid > 0 && $this->validate->checkInt( $csid ) ) {
       // Checks whether the shortcode has "csid (Custom Shortcode ID)" or not.
@@ -212,8 +207,10 @@ trait CdbtView {
     if ( $bootstrap_style ) {
       if ( $enable_repeater ) {
         $component_name = 'repeater';
+        $display_index_row = $this->strtobool( $display_index_row );
       } else {
         $component_name = 'table';
+        $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
       }
     } else {
       $component_name = 'json';
@@ -392,23 +389,23 @@ trait CdbtView {
     }
     
     // If contain list type columns
-    if (!empty($has_list)) {
+    if ( ! empty( $has_list ) ) {
       $_filter_items = [];
-      foreach ($has_list as $column) {
-        if (array_key_exists($column, $datasource[0])) {
+      foreach ( $has_list as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) && $column === $filter_column ) {
           foreach ( $this->parse_list_elements( $table_schema[$column]['type_format'] ) as $list_item ) {
             $_filter_items[] = sprintf( '%s:%s', mb_encode_numericentity( $list_item, array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ), mb_encode_numericentity( __( $list_item, CDBT ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
           }
-          if ('set' === $table_schema[$column]['type']) {
+          if ( 'set' === $table_schema[$column]['type'] ) {
             $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData[\''. $column .'\']) + \'</ul>\'';
           }
         }
       }
-      if ($display_filter && empty($filters)) {
-        if (!empty($_filter_items)) 
-          $filters = array_unique($_filter_items);
+      if ( $display_filter && empty( $filters ) ) {
+        if ( ! empty( $_filter_items ) ) 
+          $filters = array_unique( $_filter_items );
       }
-      unset($_filter_items);
+      unset( $_filter_items );
     }
     
     // If contain bit binary data in the datasource
@@ -484,12 +481,12 @@ trait CdbtView {
     
     if ('regular' === $table_type && $display_list_num) {
       foreach ($datasource as $i => $datum) {
-        $datasource[$i] = array_merge([ 'data_index_number' => $i + 1 ], $datum);
+        $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
       }
       if ( 'repeater' === $component_name ) {
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+        $add_column = [ 'label' => '<i class="fa fa-hashtag"></i>', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
       } else {
-        $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true ];
+        $add_column = [ 'label' => '<i class="fa fa-hashtag"></i>', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true ];
       }
       array_unshift($columns, $add_column);
     }

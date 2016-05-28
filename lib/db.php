@@ -852,7 +852,7 @@ class CdbtDB extends CdbtConfig {
     if ( ! empty( $result ) && '*' !== $select_clause && is_array( $where_clause ) ) {
       // Narrowing of result of union selection
       $_retval = [];
-      $select_clause = explode( ',', $select_clause );
+      $select_clause = explode( ',', str_replace( '`', '', $select_clause ) );
       switch ( $output_type ) {
         case 'OBJECT': 
         case 'OBJECT_K': 

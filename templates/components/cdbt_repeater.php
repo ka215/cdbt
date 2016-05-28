@@ -46,11 +46,17 @@ if (empty($this->component_options['filter_column']) || empty($this->component_o
 } else {
   $filter_column = $this->component_options['filter_column'];
   $filters_list = [];
-  foreach ( $this->component_options['filters'] as $val ) {
-    $_value = $this->strtohash( $val );
-    $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
-    $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
-    $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+  if ( $this->is_assoc( $this->component_options['filters'] ) ) {
+    foreach ( $this->component_options['filters'] as $_list_value => $_label ) {
+      $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+    }
+  } else {
+    foreach ( $this->component_options['filters'] as $val ) {
+      $_value = $this->strtohash( $val );
+      $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
+      $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
+      $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+    }
   }
 }
 

@@ -1785,7 +1785,11 @@ final class CdbtAdmin extends CdbtDB {
     // Optimize the radio's values
     $radio_options = [ 'display_index_row' ];
     foreach ( $radio_options as $option_name ) {
-      $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
+      if ( isset( $post_data[$option_name] ) ) {
+        $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
+      } else {
+        $post_data[$option_name] = 'true';
+      }
     }
     
     $stored_shortcode = $this->get_shortcode_option( intval( $post_data['csid'] ) );
@@ -1964,15 +1968,17 @@ final class CdbtAdmin extends CdbtDB {
           $args['modalBody'] = __('Please fill in the required fields of non-input.', CDBT);
           break;
         case 'edit_data_form': 
-          $args['modalTitle'] = __('Edit Data Form', CDBT);
+          $args['modalTitle'] = __('Form to edit data', CDBT);
           $args['modalBody'] = sprintf('<input type="hidden" id="edit-data-form" value="cdbt-entry table=\'%s\' display_title=\'false\' action_url=\'%s\' form_action=\'edit_data\' display_submit=\'false\' where_clause=\'%s\'">', $args['modalExtras']['table_name'], $args['modalExtras']['action_url'], $args['modalExtras']['where_clause'] );
           $args['modalFooter'] = [ sprintf('<button type="button" id="run_update_data" class="btn btn-primary">%s</button>', __('Update', CDBT)), ];
           // $args['modalShowEvent'] = "$('#run_update_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'delete_data': 
-          $args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
-          $args['modalBody'] = __('You can not restore that data after deleted the data. Are you sure to delete the data?', CDBT);
-          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+          //$args['modalTitle'] = sprintf(__('Remove the selected %s of data', CDBT), $args['modalExtras']['items']);
+          $args['modalTitle'] = __('Removes the selected data', CDBT);
+          $args['modalBody'] = sprintf( __('Data of current deletion candidates: %s', CDBT), $args['modalExtras']['items'] ) . "<br>\n";
+          $args['modalBody'] .= __('You can not restore that data after removed the data. Are you sure that you want to perform the data deletion?', CDBT);
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_data" class="btn btn-primary">%s</button>', __('Remove', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_data').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'image_preview': 

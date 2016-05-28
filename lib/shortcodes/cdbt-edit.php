@@ -49,10 +49,10 @@ trait CdbtEdit {
       'truncate_strings' => 0, 			// @attribute int    [optional] Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.
       /* The Added new attributes since 2.1.31 are followed: */
       'enable_repeater' => true, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
-/*+*/ 'display_search' => true, 		// @attribute bool   [optional] Adds an input field for the data search if true.
+      'display_search' => true, 		// @attribute bool   [optional] Adds an input field for the data search if true.
       'display_index_row' => true, 		// @attribute mixed  [optional] Displays the index row around the data rows as the header of the data column, if true. Also it's added of "head-only" for the table format besides boolean value. (since v2.1.x)
-/*+*/ 'order_cols' => '', 				// @attribute string [optional] Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the attribute "exclude_cols" and "display_cols". e.g. "col3,col2,col1,..."
-/*+*/ 'limit_items' => '', 				// @attribute int    [optional] If this attribute is specified, it overrides the "Maximum display data per page" of the table.
+      'order_cols' => '', 				// @attribute string [optional] Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the attribute "exclude_cols" and "display_cols". e.g. "col3,col2,col1,..."
+      'limit_items' => '', 				// @attribute int    [optional] If this attribute is specified, it overrides the "Maximum display data per page" of the table.
       'display_view' => false, 			// @attribute bool   [optional] You can switch to the thumbnail list view of the gallery format if there contained an image in the table data.
       'thumbnail_column' => '', 		// @attribute string [optional] Specifies a column as the thumbnail image. In this column it should be stored the image binary or a URL of image.
       'thumbnail_title_column' => '', 	// @attribute string [optional] Specifies a column as displayed title on the thumbnail list view. it displays nothing if this is not fill.
@@ -178,11 +178,6 @@ trait CdbtEdit {
         $add_classes[] = esc_attr( trim( $_class ) );
       }
     }
-    if ( $enable_repeater ) {
-      $display_index_row = $this->strtobool( $display_index_row );
-    } else {
-      $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
-    }
     $image_render = 'responsive';
     
     if ( $csid > 0 && $this->validate->checkInt( $csid ) ) {
@@ -199,12 +194,12 @@ trait CdbtEdit {
       $csid = 0;
     }
     
-    if ( $bootstrap_style ) {
-      if ( $enable_repeater ) {
-        $component_name = 'repeater';
-      } else {
-        $component_name = 'table';
-      }
+    if ( $enable_repeater ) {
+      $component_name = 'repeater';
+      $display_index_row = $this->strtobool( $display_index_row );
+    } else {
+      $component_name = 'table';
+      $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
     }
     
     if ( $display_title ) {
@@ -227,11 +222,6 @@ trait CdbtEdit {
     }
     if ( ! isset( $output_columns ) ) 
       $output_columns = $all_columns;
-    
-    if ( ! in_array( $filter_column, $all_columns ) ) {
-      $filter_column = '';
-    }
-    $filters = $this->strtohash( $filters );
     
     // Added since version 2.0.6
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
@@ -362,21 +352,23 @@ trait CdbtEdit {
     }
     
     // If contain list type columns
-    if (!empty($has_list)) {
+    if ( ! empty( $has_list ) ) {
       $_filter_items = [];
-      foreach ($has_list as $column) {
-        foreach ($this->parse_list_elements($table_schema[$column]['type_format']) as $list_item) {
-          $_filter_items[] = sprintf( '%s:%s', esc_attr($list_item), __($list_item, CDBT) );
-        }
-        if ('set' === $table_schema[$column]['type']) {
-          $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData[\''. $column .'\']) + \'</ul>\'';
+      foreach ( $has_list as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) && $column === $filter_column ) {
+          foreach ( $this->parse_list_elements( $table_schema[$column]['type_format'] ) as $list_item ) {
+            $_filter_items[] = sprintf( '%s:%s', mb_encode_numericentity( $list_item, array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ), mb_encode_numericentity( __( $list_item, CDBT ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
+          }
+          if ('set' === $table_schema[$column]['type'] ) {
+            $custom_column_renderer[$column] = '\'<ul class="list-inline">\' + convert_list(rowData[\''. $column .'\']) + \'</ul>\'';
+          }
         }
       }
-      if ($display_filter && empty($filters)) {
-        if (!empty($_filter_items)) 
-          $filters = array_unique($_filter_items);
+      if ( $display_filter && empty( $filters ) ) {
+        if ( ! empty( $_filter_items ) ) 
+          $filters = array_unique( $_filter_items );
       }
-      unset($_filter_items);
+      unset( $_filter_items );
     }
     
     // If contain bit binary data in the datasource
@@ -423,178 +415,174 @@ trait CdbtEdit {
     }
     
     
-    if ($bootstrap_style) {
-      // Generate repeater
-      $columns = [];
-      foreach ($table_schema as $column => $scheme) {
-        $_classes = [];
-        if ( ! in_array( $column, $output_columns ) ) 
-          $_classes[] = 'hide';
-        if ( isset( $exclude_cols ) && is_array( $exclude_cols ) && in_array( $column, $exclude_cols ) ) 
-          $_classes[] = 'hide';
-        if ( ! $enable_sort ) 
-          $_classes[] = 'disable-sort';
-        
-        $columns[] = [
-          'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
-          'property' => $column, 
-          'sortable' => $enable_sort, 
-          'sortDirection' => 'asc', 
-          'dataType' => $scheme['type'], // Added since 2.1.0
-          'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
-          'truncateStrings' => $truncate_strings, 
-          'className' => implode(' ', $_classes), 
-        ];
-      }
+    $columns = [];
+    foreach ($table_schema as $column => $scheme) {
+      $_classes = [];
+      if ( ! in_array( $column, $output_columns ) ) 
+        $_classes[] = 'hide';
+      if ( isset( $exclude_cols ) && is_array( $exclude_cols ) && in_array( $column, $exclude_cols ) ) 
+        $_classes[] = 'hide';
+      if ( ! $enable_sort ) 
+        $_classes[] = 'disable-sort';
       
-      if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
-        foreach ($columns as $i => $column_definition) {
-          if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
-            $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
-          }
-        }
-        unset($i);
-      }
-      
-      // Responding to `listSelectable` for `cdbt-edit`
-      $condition_keys = [];
-      $disabled_edit = false;
-      if ($has_pk) {
-        foreach ($table_schema as $column => $scheme) {
-          if ($scheme['primary_key']) {
-            if ( false !== strpos( $scheme['extra'], 'auto_increment' ) ) {
-              $condition_keys = [ $column ]; // Surrogate key is only one
-              break;
-            } else {
-              $condition_keys[] = $column; // In the case of composite primary key
-            }
-          }
-        }
-      } else {
-        foreach ($table_schema as $column => $scheme) {
-          if ( 'UNI' === strtoupper($scheme['column_key']) ) {
-            $condition_keys = [ $column ]; // If is a unique index
-            break;
-          } else
-          if ( $scheme['not_null'] ) {
-            if ( 'MUL' === strtoupper($scheme['column_key']) || 'datetime' === $scheme['type'] || 'timestamp' === $scheme['type'] ) 
-              $condition_keys[] = $column; // The columns often high accuracy uniqueness
-          }
-        }
-        if (empty($condition_keys)) {
-        	foreach ($table_schema as $column => $scheme) {
-        	  if (!$this->validate->check_column_type( $scheme['type'], 'blob' )) 
-              $condition_keys[] = $column; // Considerably low matching
-          }
-        }
-      }
-      unset($column, $scheme);
-      if (empty($condition_keys)) {
-        $disabled_edit = true;
-        $where_condition = '';
-      } else {
-        $_temp = [];
-        foreach ($condition_keys as $column) {
-          $_temp[] = sprintf('%s:\' + encodeURIComponent(rowData[\'%s\']) + \'', $column, $column);
-        }
-        $where_condition = sprintf( '<input type="hidden" class="row_where_condition" value="%s">', implode(',', $_temp) );
-      }
-      if (array_key_exists('customColumnRenderer', $columns[0])) {
-        $_temp = is_array($columns[0]['customColumnRenderer']) ? implode("\n", $columns[0]['customColumnRenderer']) : $columns[0]['customColumnRenderer'];
-        $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + %s + \'</div>%s\'', $_temp, $where_condition );
-      } else {
-        $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + rowData[\'%s\'] + \'</div>%s\'', $columns[0]['property'], $where_condition );
-      }
-      
-      
-      if ('regular' === $table_type && $display_list_num) {
-        foreach ($datasource as $i => $datum) {
-          $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
-        }
-        if ( 'repeater' === $component_name ) {
-          $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
-        } else {
-          $add_column = [ 'label' => '#', 'property' => 'data-index-number', 'sortable' => true, 'sortDirection' => 'asc', 'dataNumric' => true ];
-        }
-        array_unshift($columns, $add_column);
-      }
-      
-      // Filter the column definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
-      
-      $component_options = [
-        'id' => 'cdbt-'. $component_name .'-edit-' . $table, 
-        'enableSearch' => $display_search, 
-        'enableFilter' => $display_filter, 
-        'filter_column' => $filter_column, 
-        'filters' => $filters, 
-        'enableView' => false, 
-        'defaultView' => 'list', 
-        'enableEditor' => true, 
-        'disableEdit' => $disabled_edit, 
-        'listSelectable' => 'multi', 
-        'staticHeight' => -1, 
-        'pageIndex' => 1, 
-        'pageSize' => intval( $limit_items ), 
-        'columns' => $columns, 
-        'data' => $datasource, 
-        'customRowScripts' => [], 
+      $columns[] = [
+        'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
+        'property' => $column, 
+        'sortable' => $enable_sort, 
+        'sortDirection' => 'asc', 
+        'dataType' => $scheme['type'], // Added since 2.1.0
+        'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
+        'truncateStrings' => $truncate_strings, 
+        'className' => implode(' ', $_classes), 
       ];
-      
-      if ('repeater' === $component_name) {
-        $add_options = [ 
-          'addClass' => $add_class, 
-        ];
-      } else {
-        // For static table format
-        $add_options = [
-          'displayIndexRow' => $display_index_row, 
-          'customBeforeRender' => '', 
-          'customAfterRender' => '', 
-          'thumbnailOptions' => [ 'title' => $thumbnail_title_column, 'column' => $thumbnail_column, 'width' => intval( $thumbnail_width ) ], 
-          'tableClass' => $add_class, 
-          'theadClass' => '', 
-          'tbodyClass' => '', 
-          'tfootClass' => '', 
-        ];
-      }
-      $component_options = array_merge($component_options, $add_options);
-      
-      if ( $display_view && ! empty( $thumbnail_column ) && array_key_exists( $thumbnail_column, $table_schema ) ) {
-        if ('repeater' === $component_name) {
-          $thumbnail_title = ! empty( $thumbnail_title_column ) ? sprintf( '<span>{{%s}}</span>', esc_html( $thumbnail_title_column ) ) : '';
-          $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval( $thumbnail_width ) .'">'. $thumbnail_title .'</div>\'';
-          $component_options = array_merge( $component_options, [ 'thumbnailTemplate' => $thumbnail_template ] );
-          if ( isset( $custom_row_scripts ) && ! empty( $custom_row_scripts ) ) 
-            $component_options = array_merge( $component_options, [ 'customRowScripts' => $custom_row_scripts ] );
+    }
+    
+    if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
+      foreach ($columns as $i => $column_definition) {
+        if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
+          $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
         }
       }
-      
-      // Filter the component definition of the list content that is output by this shortcode
-      //
-      // @since 2.0.0
-      $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
-      
-      if ( is_admin() ) {
-        if (isset($title)) 
-          echo $title;
-        
-        return $this->component_render( $component_name, $component_options );
-      } else {
-        ob_start();
-        if (isset($title)) 
-          echo $title;
-        
-        echo $this->component_render( $component_name, $component_options );
-        
-        $render_content = ob_get_contents();
-        ob_end_clean();
-        
-        return $render_content;
+      unset($i);
+    }
+    
+    // Responding to `listSelectable` for `cdbt-edit`
+    $condition_keys = [];
+    $disabled_edit = false;
+    if ($has_pk) {
+      foreach ($table_schema as $column => $scheme) {
+        if ($scheme['primary_key']) {
+          if ( false !== strpos( $scheme['extra'], 'auto_increment' ) ) {
+            $condition_keys = [ $column ]; // Surrogate key is only one
+            break;
+          } else {
+            $condition_keys[] = $column; // In the case of composite primary key
+          }
+        }
       }
+    } else {
+      foreach ($table_schema as $column => $scheme) {
+        if ( 'UNI' === strtoupper($scheme['column_key']) ) {
+          $condition_keys = [ $column ]; // If is a unique index
+          break;
+        } else
+        if ( $scheme['not_null'] ) {
+          if ( 'MUL' === strtoupper($scheme['column_key']) || 'datetime' === $scheme['type'] || 'timestamp' === $scheme['type'] ) 
+            $condition_keys[] = $column; // The columns often high accuracy uniqueness
+        }
+      }
+      if (empty($condition_keys)) {
+        foreach ($table_schema as $column => $scheme) {
+      	  if (!$this->validate->check_column_type( $scheme['type'], 'blob' )) 
+            $condition_keys[] = $column; // Considerably low matching
+        }
+      }
+    }
+    unset($column, $scheme);
+    if (empty($condition_keys)) {
+      $disabled_edit = true;
+      $where_condition = '';
+    } else {
+      $_temp = [];
+      foreach ($condition_keys as $column) {
+        $_temp[] = sprintf('%s:\' + encodeURIComponent(rowData[\'%s\']) + \'', $column, $column);
+      }
+      $where_condition = sprintf( '<input type="hidden" class="row_where_condition" value="%s">', implode(',', $_temp) );
+    }
+    if (array_key_exists('customColumnRenderer', $columns[0])) {
+      $_temp = is_array($columns[0]['customColumnRenderer']) ? implode("\n", $columns[0]['customColumnRenderer']) : $columns[0]['customColumnRenderer'];
+      $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + %s + \'</div>%s\'', $_temp, $where_condition );
+    } else {
+      $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + rowData[\'%s\'] + \'</div>%s\'', $columns[0]['property'], $where_condition );
+    }
+    
+    
+    if ('regular' === $table_type && $display_list_num) {
+      foreach ($datasource as $i => $datum) {
+        $datasource[$i] = array_merge([ 'data-index-number' => $i + 1 ], $datum);
+      }
+      if ( 'repeater' === $component_name ) {
+        $add_column = [ 'label' => '<i class="fa fa-hashtag"></i>', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true, 'width' => 80 ];
+      } else {
+        $add_column = [ 'label' => '<i class="fa fa-hashtag"></i>', 'property' => 'data-index-number', 'sortable' => $enable_sort, 'sortDirection' => 'asc', 'dataNumric' => true ];
+      }
+      array_unshift($columns, $add_column);
+    }
+    
+    // Filter the column definition of the list content that is output by this shortcode
+    //
+    // @since 2.0.0
+    $columns = apply_filters( 'cdbt_shortcode_custom_columns', $columns, $shortcode_name, $table );
+    
+    $component_options = [
+      'id' => 'cdbt-'. $component_name .'-edit-' . $table, 
+      'enableSearch' => $display_search, 
+      'enableFilter' => $display_filter, 
+      'filter_column' => $filter_column, 
+      'filters' => $filters, 
+      'enableView' => false, 
+      'defaultView' => 'list', 
+      'enableEditor' => true, 
+      'disableEdit' => $disabled_edit, 
+      'listSelectable' => 'multi', 
+      'staticHeight' => -1, 
+      'pageIndex' => 1, 
+      'pageSize' => intval( $limit_items ), 
+      'columns' => $columns, 
+      'data' => $datasource, 
+      'customRowScripts' => [], 
+    ];
+    
+    if ('repeater' === $component_name) {
+      $add_options = [ 
+        'addClass' => $add_class, 
+      ];
+    } else {
+      // For table format
+      $add_options = [
+        'displayIndexRow' => $display_index_row, 
+        'customBeforeRender' => '', 
+        'customAfterRender' => '', 
+        'thumbnailOptions' => [ 'title' => $thumbnail_title_column, 'column' => $thumbnail_column, 'width' => intval( $thumbnail_width ) ], 
+        'tableClass' => $add_class, 
+        'theadClass' => '', 
+        'tbodyClass' => '', 
+        'tfootClass' => '', 
+      ];
+    }
+    $component_options = array_merge($component_options, $add_options);
+    
+    if ( $display_view && ! empty( $thumbnail_column ) && array_key_exists( $thumbnail_column, $table_schema ) ) {
+      if ('repeater' === $component_name) {
+        $thumbnail_title = ! empty( $thumbnail_title_column ) ? sprintf( '<span>{{%s}}</span>', esc_html( $thumbnail_title_column ) ) : '';
+        $thumbnail_template = '\'<div class="thumbnail repeater-thumbnail" style="background: #ffffff;"><img src="{{'. $thumbnail_column .'}}" width="'. intval( $thumbnail_width ) .'">'. $thumbnail_title .'</div>\'';
+        $component_options = array_merge( $component_options, [ 'thumbnailTemplate' => $thumbnail_template ] );
+        if ( isset( $custom_row_scripts ) && ! empty( $custom_row_scripts ) ) 
+          $component_options = array_merge( $component_options, [ 'customRowScripts' => $custom_row_scripts ] );
+      }
+    }
+    
+    // Filter the component definition of the list content that is output by this shortcode
+    //
+    // @since 2.0.0
+    $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
+    
+    if ( is_admin() ) {
+      if (isset($title)) 
+        echo $title;
       
+      return $this->component_render( $component_name, $component_options );
+    } else {
+      ob_start();
+      if (isset($title)) 
+        echo $title;
+      
+      echo $this->component_render( $component_name, $component_options );
+      
+      $render_content = ob_get_contents();
+      ob_end_clean();
+      
+      return $render_content;
     }
     
   }

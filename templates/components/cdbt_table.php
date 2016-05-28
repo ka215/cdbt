@@ -52,11 +52,17 @@ if ( empty( $this->component_options['filter_column'] ) || empty( $this->compone
 } else {
   $filter_column = $this->component_options['filter_column'];
   $filters_list = [];
-  foreach ( $this->component_options['filters'] as $val ) {
-    $_value = $this->strtohash( $val );
-    $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
-    $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
-    $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+  if ( $this->is_assoc( $this->component_options['filters'] ) ) {
+    foreach ( $this->component_options['filters'] as $_list_value => $_label ) {
+      $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+    }
+  } else {
+    foreach ( $this->component_options['filters'] as $val ) {
+      $_value = $this->strtohash( $val );
+      $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
+      $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
+      $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
+    }
   }
 }
 
@@ -70,7 +76,14 @@ if ( isset( $this->component_options['defaultView'] ) && in_array( $this->compon
 }
 
 // `displayIndexRow` section
-$display_index_row = isset( $this->component_options['displayIndexRow'] ) ? $this->component_options['displayIndexRow'] : true;
+if ( isset( $this->component_options['displayIndexRow'] ) && ! empty( $this->component_options['displayIndexRow'] ) ) {
+  $display_index_row = strval( $this->component_options['displayIndexRow'] );
+  if ( ! in_array( $display_index_row, [ 'false', 'true', 'head-only' ] ) ) {
+    $display_index_row = 'true';
+  }
+} else {
+  $display_index_row = 'false';
+}
 
 // `enableEditor` section
 $enable_editor = isset($this->component_options['enableEditor']) ? $this->strtobool( $this->component_options['enableEditor'] ) : false;
@@ -320,8 +333,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     var items = this.items;
     
     var templateRow = '<?php echo $template_row; ?>';
-    var perPageLimit = <?php echo intval($this->component_options['pageSize']); ?>;
-    var currentPage = <?php echo intval($this->component_options['pageIndex']); ?>;
+    var perPageLimit = <?php echo intval( $page_size ); ?>;
+    var currentPage = <?php echo intval( $page_index ); ?>;
     
     var optCookie = docCookies.getItem('<?php echo $table_name; ?>');
     if ( ! _.isNull(optCookie) ) {
@@ -345,13 +358,11 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       searchKeyword: _.isNull(optCookie) ? '' : optCookie.searchKeyword, 
       searchedData: [], // _.isNull(optCookie) ? [] : optCookie.searchedData, 
       isFiltering: false, //_.isNull(optCookie) ? false : optCookie.isFiltering, 
-      showTh: <?php echo is_bool( $display_index_row ) ? ( $display_index_row ? 'true' : 'false' ) : "'". $display_index_row ."'"; ?>, 
+      showTh: <?php echo 'head-only' === $display_index_row ? "'". $display_index_row ."'" : $display_index_row; ?>, 
       sortedProperty: _.isNull(optCookie) ? '' : optCookie.sortedProperty, 
       currentSortDir: _.isNull(optCookie) ? '' : optCookie.currentSortDir, 
     };
     
-//console.info(optCookie);
-	
     // Add Event Listener
     var _self = this;
 <?php if ( $enable_search ) : ?>
@@ -982,9 +993,13 @@ console.info([__tmp, row['<?php echo $_thumb_column; ?>']]);
           thumbnails.push(thumb_data);
         }
       });
-      _.each(thumbnails, function(val){
-        $('#'+options.tableId+'-view').append(thumbnail_template(val));
-      });
+      if (thumbnails.length > 0) {
+        _.each(thumbnails, function(val){
+          $('#'+options.tableId+'-view').append(thumbnail_template(val));
+        });
+      } else {
+        $('#'+options.tableId+'-view').append('<div class="text-center text-muted" style="margin-top:2.5em;margin-bottom:4em;cpacity:0.5;"><?php _e( "No result.", CDBT); ?></div>');
+      }
       
       $('#'+options.tableId+'-view').find('img').each(function(){
         $(this).error(function(){

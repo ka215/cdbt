@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.1.31\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-05-27 15:56+0900\n"
+"POT-Creation-Date: 2016-05-28 22:24+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -271,7 +271,7 @@ msgstr "プラグイン設定"
 msgid "An empty required field is exists."
 msgstr "未入力の必須フィールドがあります。"
 
-#: lib/admin.php:506 templates/components/cdbt_table.php:620
+#: lib/admin.php:506 templates/components/cdbt_table.php:631
 msgid "Copied"
 msgstr "コピーしました"
 
@@ -524,64 +524,64 @@ msgid "Failed to save because the specific custom shortcode id already exists."
 msgstr ""
 "指定のカスタムショートコードIDが既に存在しているため保存できませんでした。"
 
-#: lib/admin.php:1802
+#: lib/admin.php:1806
 #, php-format
 msgid "Updated successfully as a custom shortcode ID: %d."
 msgstr "カスタムショートコードID: %d の更新に成功しました。"
 
-#: lib/admin.php:1804
+#: lib/admin.php:1808
 msgid "Failed to update the custom shortcode."
 msgstr "カスタムショートコードを更新できませんでした。"
 
-#: lib/admin.php:1807
+#: lib/admin.php:1811
 msgid "Failed to update because there is not the specified custom shortcode."
 msgstr "指定されたカスタムショートコードがないため更新できませんでした。"
 
-#: lib/admin.php:1841
+#: lib/admin.php:1845
 msgid "Request origin host does not specified."
 msgstr "リクエスト元ホストが指定されていません。"
 
-#: lib/admin.php:1849
+#: lib/admin.php:1853
 msgid "Specified request origin host is invalid."
 msgstr "リクエスト元ホストの指定が無効です。"
 
-#: lib/admin.php:1853
+#: lib/admin.php:1857
 msgid ""
 "You can not registered the hosts which do not allow all of the request "
 "methods."
 msgstr "すべてのリクエストメソッドを許可しないホストは登録できません。"
 
-#: lib/admin.php:1882
+#: lib/admin.php:1886
 #, php-format
 msgid "The \"%s\" was registered as a host to allow the API request."
 msgstr "「%s」をAPIリクエストを許可するホストとして登録しました。 "
 
-#: lib/admin.php:1885
+#: lib/admin.php:1889
 msgid "Failed to generate the API key."
 msgstr "APIキーの生成に失敗しました。"
 
-#: lib/admin.php:1910
+#: lib/admin.php:1914
 msgid "Reporting Errors"
 msgstr "エラーレポート"
 
-#: lib/admin.php:1910
+#: lib/admin.php:1914
 msgid "Reporting Results"
 msgstr "結果レポート"
 
-#: lib/admin.php:1923
+#: lib/admin.php:1927
 msgid "No modification item"
 msgstr "変更項目なし"
 
-#: lib/admin.php:1924
+#: lib/admin.php:1928
 msgid "Please run again after you correct the item you want to modify."
 msgstr "変更したい項目を修正した後に再度実行してください。"
 
-#: lib/admin.php:1930
+#: lib/admin.php:1934
 #, php-format
 msgid "Export data from \"%s\" table"
 msgstr "「%s」テーブルからデータをエクスポート"
 
-#: lib/admin.php:1931
+#: lib/admin.php:1935
 msgid ""
 "If specified export table has a lot of data, it might take a long time to "
 "complete the download. Please start the export if it is convinient for you."
@@ -590,16 +590,16 @@ msgstr ""
 "ドが完了するまで長い時間がかかる場合があります。<br>よろしければ、エクスポー"
 "トを開始してください。"
 
-#: lib/admin.php:1933 templates/admin/cdbt_tables.php:1269
+#: lib/admin.php:1937 templates/admin/cdbt_tables.php:1269
 msgid "Export"
 msgstr "エクスポート"
 
-#: lib/admin.php:1938
+#: lib/admin.php:1942
 #, php-format
 msgid "Truncate data in \"%s\" table"
 msgstr "%sテーブルのデータを初期化"
 
-#: lib/admin.php:1939
+#: lib/admin.php:1943
 msgid ""
 "If you truncate the table, all currently stored data will be lost. In "
 "addition, you can not resume this prosess.<br>Are you sure to truncate this "
@@ -609,16 +609,16 @@ msgstr ""
 "れます。さらに、このプロセスはやり直すことができません。<br>本当にテーブル初"
 "期化を行ってもよろしいですか？"
 
-#: lib/admin.php:1940
+#: lib/admin.php:1944
 msgid "Truncate"
 msgstr "初期化"
 
-#: lib/admin.php:1944
+#: lib/admin.php:1948
 #, php-format
 msgid "Remove the \"%s\" table"
 msgstr "「%s」テーブルの削除"
 
-#: lib/admin.php:1945
+#: lib/admin.php:1949
 msgid ""
 "If you removed the table, all currently stored data will be lost. In "
 "addition, you can not resume this prosess.<br>Are you sure to remove this "
@@ -628,96 +628,104 @@ msgstr ""
 "失われます。さらに、削除後はこのプロセスをやり直すことができません。<br>本当"
 "にテーブルを削除しますか？"
 
-#: lib/admin.php:1946 lib/admin.php:1975 lib/admin.php:2013 lib/admin.php:2019
+#: lib/admin.php:1950 lib/admin.php:2019 lib/admin.php:2025
 msgid "Delete"
 msgstr "削除"
 
-#: lib/admin.php:1950
+#: lib/admin.php:1954
 msgid "Please select the table"
 msgstr "テーブルが選択されていません"
 
-#: lib/admin.php:1951
+#: lib/admin.php:1955
 msgid "Please retry to operate that after you select the table."
 msgstr "テーブル選択後に再試行してください。"
 
-#: lib/admin.php:1954
+#: lib/admin.php:1958
 msgid "Please select the data"
 msgstr "データが選択されていません"
 
-#: lib/admin.php:1955
+#: lib/admin.php:1959
 msgid "Please retry to operate that after you select the data."
 msgstr "データ選択後に再試行してください。"
 
-#: lib/admin.php:1959
+#: lib/admin.php:1963
 msgid "You select too many data"
 msgstr "選択されたデータが多すぎます"
 
-#: lib/admin.php:1960
+#: lib/admin.php:1964
 msgid "Please retry after selecting one data you want to edit."
 msgstr "編集したい1つのデータを選択後に再試行してください。"
 
-#: lib/admin.php:1963
+#: lib/admin.php:1967
 msgid "Required field is empty"
 msgstr "空の必須フィールド"
 
-#: lib/admin.php:1964
+#: lib/admin.php:1968
 msgid "Please fill in the required fields of non-input."
 msgstr "未入力の必須フィールドへ入力してください。"
 
-#: lib/admin.php:1967
-msgid "Edit Data Form"
+#: lib/admin.php:1971
+msgid "Form to edit data"
 msgstr "データ編集フォーム"
 
-#: lib/admin.php:1969
-msgid "Update"
-msgstr "更新"
-
 #: lib/admin.php:1973
-#, php-format
-msgid "Remove the selected %s of data"
-msgstr "選択された%sのデータを削除"
+msgid "Update"
+msgstr "更新する"
 
-#: lib/admin.php:1974
+#: lib/admin.php:1978
+msgid "Removes the selected data"
+msgstr "選択データの削除"
+
+#: lib/admin.php:1979
+#, php-format
+msgid "Data of current deletion candidates: %s"
+msgstr "現在の削除候補データ数：%s"
+
+#: lib/admin.php:1980
 msgid ""
-"You can not restore that data after deleted the data. Are you sure to delete "
-"the data?"
+"You can not restore that data after removed the data. Are you sure that you "
+"want to perform the data deletion?"
 msgstr ""
 "データ削除後にそのデータを復元することはできません。データ削除を実行してもよ"
 "ろしいですか？"
 
-#: lib/admin.php:1979
+#: lib/admin.php:1981 templates/admin/cdbt_tables.php:1085
+msgid "Remove"
+msgstr "削除する"
+
+#: lib/admin.php:1985
 msgid "Preview Image"
 msgstr "画像プレビュー"
 
-#: lib/admin.php:1984
+#: lib/admin.php:1990
 msgid "Describe File"
 msgstr "ファイル詳細"
 
-#: lib/admin.php:1997
+#: lib/admin.php:2003
 msgid "File Name"
 msgstr "ファイル名"
 
-#: lib/admin.php:1998
+#: lib/admin.php:2004
 msgid "MIME Type"
 msgstr "ファイルタイプ"
 
-#: lib/admin.php:1999
+#: lib/admin.php:2005
 msgid "File Size"
 msgstr "ファイルサイズ"
 
-#: lib/admin.php:2000
+#: lib/admin.php:2006
 msgid "File Hash"
 msgstr "ファイルハッシュ"
 
-#: lib/admin.php:2004
+#: lib/admin.php:2010
 msgid "Download"
 msgstr "ダウンロード"
 
-#: lib/admin.php:2011
+#: lib/admin.php:2017
 msgid "Remove the shortcode"
 msgstr "ショートコードの削除"
 
-#: lib/admin.php:2012
+#: lib/admin.php:2018
 msgid ""
 "You can not restore the shortcode settings after deleted. Are you sure to "
 "delete this shortcode settings?"
@@ -725,11 +733,11 @@ msgstr ""
 "削除後にショートコードの設定を復元することはできません。このショートコード設"
 "定を削除してもよろしいですか？"
 
-#: lib/admin.php:2017
+#: lib/admin.php:2023
 msgid "Remove the allowed host"
 msgstr "許可されたホストの削除"
 
-#: lib/admin.php:2018
+#: lib/admin.php:2024
 #, php-format
 msgid ""
 "You can not restore the allowed host %s after deleted. Are you sure to "
@@ -738,19 +746,19 @@ msgstr ""
 "削除後に許可されたホスト %s の設定を復元することはできません。このホスト設定"
 "を削除してもよろしいですか？"
 
-#: lib/admin.php:2023
+#: lib/admin.php:2029
 msgid "Preview shortcode"
 msgstr "ショートコードのプレビュー"
 
-#: lib/admin.php:2030
+#: lib/admin.php:2036
 msgid "Preview Request Web API"
 msgstr "WEB APIリクエスト プレビュー"
 
-#: lib/admin.php:2042 templates/admin/cdbt_tables.php:233
+#: lib/admin.php:2048 templates/admin/cdbt_tables.php:233
 msgid "Table Creator"
 msgstr "テーブルクリエイター"
 
-#: lib/admin.php:2043
+#: lib/admin.php:2049
 msgid ""
 "In the \"table creator\" you can intuitively create the columns "
 "configuration of table. It will be cached the settings after you click of "
@@ -760,19 +768,19 @@ msgstr ""
 "「SQLを適用する」を実行した設定内容はキャッシュされ、このウィンドウを閉じても"
 "失われません。"
 
-#: lib/admin.php:2044
+#: lib/admin.php:2050
 msgid "Reset"
 msgstr "リセット"
 
-#: lib/admin.php:2044
+#: lib/admin.php:2050
 msgid "Apply SQL"
 msgstr "SQLを適用する"
 
-#: lib/admin.php:2047
+#: lib/admin.php:2053
 msgid "Tutorial displaying confirmation"
 msgstr "チュートリアル表示の確認"
 
-#: lib/admin.php:2048
+#: lib/admin.php:2054
 msgid ""
 "Do you want to hide the display of the tutorial? If so, please click the "
 "\"Hide\" below."
@@ -780,11 +788,11 @@ msgstr ""
 "チュートリアルを非表示にしますか？ 非表示にするには「隠す」をクリックしてくだ"
 "さい。"
 
-#: lib/admin.php:2049
+#: lib/admin.php:2055
 msgid "Hide"
 msgstr "隠す"
 
-#: lib/admin.php:2053
+#: lib/admin.php:2059
 msgid "Show Full Content"
 msgstr "すべての内容の表示"
 
@@ -1154,8 +1162,8 @@ msgid "Entry Data"
 msgstr "データ登録"
 
 #: lib/extras.php:207 templates/admin/cdbt_tables.php:861
-#: templates/components/cdbt_repeater.php:251
-#: templates/components/cdbt_table.php:240
+#: templates/components/cdbt_repeater.php:257
+#: templates/components/cdbt_table.php:253
 msgid "Edit Data"
 msgstr "データ編集"
 
@@ -1293,12 +1301,12 @@ msgstr "対象のテーブルが存在しないためこのショートコード
 msgid "You can not see this content without permission."
 msgstr "あなたはこのコンテンツを閲覧する権限がありません。"
 
-#: lib/shortcodes/cdbt-edit.php:213 templates/admin/cdbt_tables.php:1359
+#: lib/shortcodes/cdbt-edit.php:208 templates/admin/cdbt_tables.php:1359
 #, php-format
 msgid "Edit Data of \"%s\" Table"
 msgstr "「%s」テーブルのデータを編集"
 
-#: lib/shortcodes/cdbt-edit.php:304 lib/shortcodes/cdbt-view.php:324
+#: lib/shortcodes/cdbt-edit.php:299 lib/shortcodes/cdbt-view.php:321
 msgid "No data in this table."
 msgstr "このテーブルにはデータがありません。"
 
@@ -1337,7 +1345,7 @@ msgstr "指定されたクエリを使用することができません。"
 msgid "Specified query is invalid"
 msgstr "指定されたクエリが無効です。"
 
-#: lib/shortcodes/cdbt-view.php:230 templates/admin/cdbt_tables.php:1357
+#: lib/shortcodes/cdbt-view.php:227 templates/admin/cdbt_tables.php:1357
 #, php-format
 msgid "View Data in \"%s\" Table"
 msgstr "%sテーブルのデータ閲覧"
@@ -3619,8 +3627,8 @@ msgstr "取り込み可能なテーブル"
 #: templates/admin/cdbt_tables.php:1094 templates/admin/cdbt_tables.php:1199
 #: templates/admin/cdbt_tables.php:1230 templates/admin/cdbt_web_apis.php:183
 #: templates/admin/cdbt_web_apis.php:203 templates/admin/cdbt_web_apis.php:223
-#: templates/components/cdbt_repeater.php:272
-#: templates/components/cdbt_repeater.php:305
+#: templates/components/cdbt_repeater.php:278
+#: templates/components/cdbt_repeater.php:311
 #: templates/components/cdbt_table_creator.php:243
 msgid "Toggle Dropdown"
 msgstr "ドロップダウン切り替え"
@@ -3796,10 +3804,6 @@ msgstr "アップロードファイル形式"
 #: templates/admin/cdbt_tables.php:1068 templates/admin/cdbt_tables.php:1211
 msgid "Prepend Indices Line"
 msgstr "インデックス行の挿入"
-
-#: templates/admin/cdbt_tables.php:1085
-msgid "Remove"
-msgstr "削除"
 
 #: templates/admin/cdbt_tables.php:1090
 #: templates/components/cdbt_table_creator.php:239
@@ -4226,70 +4230,71 @@ msgstr "データ登録"
 msgid "Close"
 msgstr "閉じる"
 
-#: templates/components/cdbt_repeater.php:210
-#: templates/components/cdbt_repeater.php:214
+#: templates/components/cdbt_repeater.php:216
+#: templates/components/cdbt_repeater.php:220
 #: templates/components/cdbt_table.bak.php:101
 #: templates/components/cdbt_table.bak.php:103
-#: templates/components/cdbt_table.php:217
-#: templates/components/cdbt_table.php:219
+#: templates/components/cdbt_table.php:230
+#: templates/components/cdbt_table.php:232
 msgid "Search"
 msgstr "検索"
 
-#: templates/components/cdbt_repeater.php:227
-#: templates/components/cdbt_table.php:227
-#: templates/components/cdbt_table.php:260
+#: templates/components/cdbt_repeater.php:233
+#: templates/components/cdbt_table.php:240
+#: templates/components/cdbt_table.php:273
 msgid "Toggle Filters"
 msgstr "フィルター切り替え"
 
-#: templates/components/cdbt_repeater.php:230
-#: templates/components/cdbt_table.php:230
-#: templates/components/cdbt_table.php:263
+#: templates/components/cdbt_repeater.php:236
+#: templates/components/cdbt_table.php:243
+#: templates/components/cdbt_table.php:276
 msgid "all"
 msgstr "すべて"
 
-#: templates/components/cdbt_repeater.php:249
-#: templates/components/cdbt_table.php:275
+#: templates/components/cdbt_repeater.php:255
+#: templates/components/cdbt_table.php:288
 msgid "Disable the data editing because it can not identify a single data."
 msgstr "単一データを区別できないため、データ編集できません。"
 
-#: templates/components/cdbt_repeater.php:252
-#: templates/components/cdbt_table.php:241
+#: templates/components/cdbt_repeater.php:258
+#: templates/components/cdbt_table.php:254
 msgid "Refresh List"
 msgstr "一覧を更新"
 
-#: templates/components/cdbt_repeater.php:253
-#: templates/components/cdbt_table.php:242
+#: templates/components/cdbt_repeater.php:259
+#: templates/components/cdbt_table.php:255
 msgid "Delete Data"
 msgstr "データ削除"
 
-#: templates/components/cdbt_repeater.php:267
+#: templates/components/cdbt_repeater.php:273
 #, php-format
 msgid "%1$s - %2$s of %3$s items"
 msgstr "%3$s 件中 %1$s ～ %2$s を表示"
 
-#: templates/components/cdbt_repeater.php:289
+#: templates/components/cdbt_repeater.php:295
 msgid "Per Page"
 msgstr "件表示"
 
-#: templates/components/cdbt_repeater.php:296
+#: templates/components/cdbt_repeater.php:302
 msgid "Previous Page"
 msgstr "前ページ"
 
-#: templates/components/cdbt_repeater.php:298
+#: templates/components/cdbt_repeater.php:304
 msgid "Page"
 msgstr "ページ"
 
-#: templates/components/cdbt_repeater.php:312
+#: templates/components/cdbt_repeater.php:318
 #, php-format
 msgid "of %1$s"
 msgstr " / %1$s"
 
-#: templates/components/cdbt_repeater.php:315
+#: templates/components/cdbt_repeater.php:321
 msgid "Next Page"
 msgstr "次ページ"
 
-#: templates/components/cdbt_repeater.php:578
-#: templates/components/cdbt_table.php:508
+#: templates/components/cdbt_repeater.php:584
+#: templates/components/cdbt_table.php:519
+#: templates/components/cdbt_table.php:1001
 msgid "No result."
 msgstr "見つかりませんでした"
 
@@ -4297,8 +4302,8 @@ msgstr "見つかりませんでした"
 msgid "-"
 msgstr "‐"
 
-#: templates/components/cdbt_table.php:278
-#: templates/components/cdbt_table.php:296
+#: templates/components/cdbt_table.php:291
+#: templates/components/cdbt_table.php:309
 msgid "Loading..."
 msgstr "ロード中…"
 
@@ -4408,6 +4413,19 @@ msgstr "終了"
 #: templates/components/cdbt_wizard.php:143
 msgid "Next"
 msgstr "次へ"
+
+#~ msgid "Edit Data Form"
+#~ msgstr "データ編集フォーム"
+
+#~ msgid "Remove the selected %s of data"
+#~ msgstr "選択された%sのデータを削除"
+
+#~ msgid ""
+#~ "You can not restore that data after deleted the data. Are you sure to "
+#~ "delete the data?"
+#~ msgstr ""
+#~ "データ削除後にそのデータを復元することはできません。データ削除を実行しても"
+#~ "よろしいですか？"
 
 #~ msgid "CDBT Web APIs Management"
 #~ msgstr "カスタムDBテーブル WEB API管理"
