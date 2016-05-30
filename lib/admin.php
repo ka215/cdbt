@@ -1690,9 +1690,9 @@ final class CdbtAdmin extends CdbtDB {
       $_POST = array_map( 'stripslashes_deep', $_POST );
     
     $post_data = [];
-    foreach($_POST[$this->domain_name] as $_key => $_val) {
-      if (is_array($_val)) {
-        $post_data = array_merge($post_data, $this->array_flatten($_val));
+    foreach ( $_POST[$this->domain_name] as $_key => $_val ) {
+      if ( is_array( $_val ) && ! in_array( $_key, [ 'display_index_row', 'narrow_operator' ] ) ) {
+        $post_data = array_merge( $post_data, $this->array_flatten( $_val ) );
       } else {
         $post_data[$_key] = $_val;
       }
@@ -1710,9 +1710,15 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_index_row', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
-    foreach ($checkbox_options as $option_name) {
-      $post_data[$option_name] = array_key_exists($option_name, $post_data) ? $this->strtobool($post_data[$option_name]) : false;
+    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    foreach ( $checkbox_options as $option_name ) {
+      $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
+    }
+    
+    // radio button values
+    $radio_options = [ 'display_index_row', 'narrow_operator' ];
+    foreach ( $radio_options as $option_name ) {
+      $post_data[$option_name] = is_array( $post_data[$option_name] ) ? $post_data[$option_name][0] : $post_data[$option_name];
     }
     
     $stored_shortcode = $this->get_shortcode_option(intval($post_data['csid']));
