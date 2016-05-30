@@ -1783,12 +1783,16 @@ final class CdbtAdmin extends CdbtDB {
       $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
     }
     // Optimize the radio's values
-    $radio_options = [ 'display_index_row' ];
+    $radio_options = [ 'display_index_row', 'narrow_operator' ];
     foreach ( $radio_options as $option_name ) {
-      if ( isset( $post_data[$option_name] ) ) {
-        $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
+      if ( 'display_index_row' === $option_name ) {
+        if ( isset( $post_data[$option_name] ) ) {
+          $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
+        } else {
+          $post_data[$option_name] = 'true';
+        }
       } else {
-        $post_data[$option_name] = 'true';
+        $post_data[$option_name] = is_array( $post_data[$option_name] ) ? array_shift( $post_data[$option_name] ) : strval( $post_data[$option_name] );
       }
     }
     
@@ -1947,7 +1951,7 @@ final class CdbtAdmin extends CdbtDB {
         case 'drop_table': 
           $args['modalTitle'] = sprintf(__('Remove the "%s" table', CDBT), $args['modalExtras']['table_name']);
           $args['modalBody'] = __('If you removed the table, all currently stored data will be lost. In addition, you can not resume this prosess.<br>Are you sure to remove this table?', CDBT);
-          $args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Delete', CDBT)), ];
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_drop_table" class="btn btn-primary">%s</button>', __('Remove', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_drop_table').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'table_unknown': 
@@ -1991,7 +1995,7 @@ final class CdbtAdmin extends CdbtDB {
           $_table_name = trim( $args['modalExtras']['table_name'] );
           $_target_column = trim( $args['modalExtras']['target_column'] );
           $_where_clause = $this->strtohash( $args['modalExtras']['where_clause'] );
-          $ret = $this->array_flatten( $this->get_data( $_table_name, $_target_column, $_where_clause, null, 1, ARRAY_A ) );
+          $ret = $this->array_flatten( $this->get_data( $_table_name, $_target_column, $_where_clause, null, null, null, 1, ARRAY_A ) );
           if ( array_key_exists( $_target_column, $ret ) ) {
             $_bin_array = unserialize( $ret[$_target_column] );
             unset($_bin_array['bin_data']);
@@ -2016,13 +2020,13 @@ final class CdbtAdmin extends CdbtDB {
           $_generated_shortcode = array_key_exists( 'generate_shortcode', $_current_shortcode ) ? stripslashes_deep( substr( $_current_shortcode['generate_shortcode'], 1, -1 ) ) : '';
           $args['modalTitle'] = __('Remove the shortcode', CDBT);
           $args['modalBody'] = __('You can not restore the shortcode settings after deleted. Are you sure to delete this shortcode settings?', CDBT) . sprintf( '<div style="margin: 1em;"><pre><code>&#91;%s&#93;</code></pre></div>', $_generated_shortcode );
-          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Delete', CDBT)), ];
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_shortcode" class="btn btn-primary" data-csid="%s">%s</button>', $args['modalExtras']['target_scid'], __('Remove', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_shortcode').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'delete_host': 
           $args['modalTitle'] = __('Remove the allowed host', CDBT);
           $args['modalBody'] = sprintf(__('You can not restore the allowed host %s after deleted. Are you sure to delete this host settings?', CDBT), $args['modalExtras']['host_name']);
-          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_host" class="btn btn-primary" data-hostid="%s">%s</button>', $args['modalExtras']['host_id'], __('Delete', CDBT)), ];
+          $args['modalFooter'] = [ sprintf('<button type="button" id="run_delete_host" class="btn btn-primary" data-hostid="%s">%s</button>', $args['modalExtras']['host_id'], __('Remove', CDBT)), ];
           $args['modalShowEvent'] = "$('#run_delete_host').on('click', function(){ $('#cdbtModal').modal('hide'); });";
           break;
         case 'preview_shortcode': 

@@ -314,7 +314,7 @@ $fields_define = [];
           <?php echo $_text; ?>
         </p></label>
         <div class="col-md-7"><textarea class="form-control" id="override-messages-<?php echo $msg_hash; ?>" name="<?php echo $this->domain_name; ?>[override_messages][<?php echo $msg_hash; ?>]" rows="2" placeholder="<?php esc_attr_e( $_text ); ?>"><?php if ( isset( $options['override_messages'][$msg_hash] ) ) {
-          echo esc_textarea( strip_tags( $this->cdbt_strarc( $options['override_messages'][$msg_hash], 'decode' ) ) );
+          echo esc_textarea( $this->cdbt_strarc( $options['override_messages'][$msg_hash], 'decode' ) );
         } else {
           echo esc_textarea( __( $_text, CDBT ) );
         } ?></textarea></div>

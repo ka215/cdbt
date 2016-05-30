@@ -58,10 +58,19 @@ $fields_define = [
   ], 
   'excludeCols' => [ 'elementName'=>'exclude_cols', 'elementId'=>'exclude_cols', 'elementLabel'=>__('Excludes Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to hide the column. e.g. "column1,column2,column3,..."', CDBT) ], 
   'addClass' => [ 'elementName'=>'add_class', 'elementId'=>'add_class', 'elementLabel'=>__('Adds Classes', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'class1 class2 class3 ...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-i on-e', 'helperText'=>__('Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.', CDBT) ], 
-  'narrowKeyword' => [ 'elementName'=>'narrow_keyword', 'elementId'=>'narrow_keyword', 'elementLabel'=>__('Narrow-down Keywords', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'keyword1,keyword2,... OR column1:keyword1,column2:keyword2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the narrowing condition of the output data in a comma-delimited. If there are the multiple condition, it will be evaluated at the "AND" condition. <wbr/>e.g. "keyword1,keyword2,..." or "column1:keyword1,column2:keyword2,..."', CDBT) ], 
+  'narrowKeyword' => [ 'elementName'=>'narrow_keyword', 'elementId'=>'narrow_keyword', 'elementLabel'=>__('Narrow-down Keywords', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'keyword1,keyword2,... OR column1:keyword1,column2:keyword2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 
+    'helperText'=>__('Specifies the narrowing condition of the output data in a comma-delimited. If you specify in the pair of the column name and keyword, it will be narrowed down in the complete matching data. In the meanwhile, it will be narrowed down in the partial matching data if the keyword only. <wbr/>e.g. "keyword1,keyword2,..." or "column1:keyword1,column2:keyword2,..."', CDBT) ], 
+  'narrowOperator' => [ 'elementName'=>'narrow_operator', 'elementId'=>'narrow_operator', 'elementLabel'=>__('Narrowing Condition', CDBT), 'idPrefix'=>'', 'elementType'=>'radio', 'horizontalList'=>true, 
+    'defaultValue'=>'and', 'selectableList'=>[ 'and'=>__('AND', CDBT), 'or'=>__('OR', CDBT) ], 
+    'helperText'=>__( 'Chooses the narrowing conditional operator for joining each keywords if you want to narrow down the data by using a plurality of keywords.', CDBT ), 
+    'elementExtras' => [
+      'child-class' => 'and:for-multiple,or:for-multiple', 
+      'status' => 'under-test',
+    ], 'addWrapClass' => 'switching-item on-v on-e', 
+   ], 
   'hiddenCols' => [ 'elementName'=>'hidden_cols', 'elementId'=>'hidden_cols', 'elementLabel'=>__('Hides Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies a comma delimited the column names if you want to hide any column. Then the hidden column will be rendered as field of "hidden" type. <wbr/>e.g. "column1,column2,column3,..."', CDBT) ], 
-  'displayCols' => [ 'elementName'=>'display_cols', 'elementId'=>'display_cols', 'elementLabel'=>__('Displays Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v', 'helperText'=>__('Specifies the comma-delimited column names if you want to show the column. This overrides the value of the option "Excludes columns". e.g. "column1,column2,column3,..."', CDBT) ], 
-  'orderCols' => [ 'elementName'=>'order_cols', 'elementId'=>'order_cols', 'elementLabel'=>__('Columns Display Order', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column3,column1,column2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v', 'helperText'=>__('Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the option "Excludes Columns" and "Displays Columns". e.g. "column3,column1,column2,..."', CDBT) ], 
+  'displayCols' => [ 'elementName'=>'display_cols', 'elementId'=>'display_cols', 'elementLabel'=>__('Displays Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to show the column. This overrides the value of the option "Excludes columns". e.g. "column1,column2,column3,..."', CDBT) ], 
+  'orderCols' => [ 'elementName'=>'order_cols', 'elementId'=>'order_cols', 'elementLabel'=>__('Columns Display Order', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column3,column1,column2,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the option "Excludes Columns" and "Displays Columns". e.g. "column3,column1,column2,..."', CDBT) ], 
   'sortOrder' => [ 'elementName'=>'sort_order', 'elementId'=>'sort_order', 'elementLabel'=>__('Initial Sort Order', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'created:desc', 'placeholder'=>'updated:desc,ID:asc,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies in the pair of column name and the ascending(asc) or descending(desc) order, for the display order of the initial data. If there are multiple condition, please use the comma-delimited. e.g. "updated:desc,ID:asc,..."', CDBT) ], 
   'limitItems' => [ 'elementName'=>'limit_items', 'elementId'=>'limit_items', 'elementLabel'=>__('Max Rows Per Page', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>'', 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('If this attribute is specified, it overrides the "Maximum display data per page" of the table.', CDBT) ], 
   'truncateStr' => [ 'elementName'=>'truncate_strings', 'elementId'=>'truncate_strings', 'elementLabel'=>__('Truncates String', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>40, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.', CDBT) ], 
@@ -229,7 +238,7 @@ $fields_define = [
       
 <?php 
   $_field_order = [ 
-    'appearances', 'indexRow', 'narrowKeyword', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
+    'appearances', 'indexRow', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
     'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
   ];
   foreach ( $_field_order as $_df_key ) {
@@ -324,7 +333,7 @@ $fields_define = [
         }
         $__val['defaultValue'] = implode( ',', $_defval );
       } else
-      if ( 'indexRow' === $__key ) {
+      if ( 'indexRow' === $__key || 'narrowOperator' === $__key ) {
         if ( array_key_exists( $__val['elementName'], $this_tab_vars ) && ! empty( $this_tab_vars[$__val['elementName']] ) ) {
           $__val['defaultValue'] = $this_tab_vars[$__val['elementName']];
         }
@@ -382,7 +391,7 @@ $fields_define = [
       
 <?php 
   $_field_order = [ 
-    'appearances', 'indexRow', 'narrowKeyword', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
+    'appearances', 'indexRow', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
     'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
   ];
   foreach ( $_field_order as $_df_key ) {

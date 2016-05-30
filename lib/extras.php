@@ -83,6 +83,7 @@ trait CdbtExtras {
       'truncate_strings' => 'done', 
       'display_list_format' => 'new', 
       'display_index_row' => 'try-yet', 
+      'narrow_operator' => 'new', 
       'dynamic_table_layout' => 'new', 
       'json_support' => 'new', 
     ];

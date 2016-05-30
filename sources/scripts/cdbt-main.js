@@ -256,9 +256,18 @@ jQuery(document).ready(function($){
     this.submit_data_deletion = function(){
       
       var where_conditions = [];
-      $('tr.selectable.selected input.row_where_condition').each(function(){
-        where_conditions.push($(this).val());
-      });
+      if ( $('.panel-table-wrapper table[id^="cdbt-table-edit-' + _.last($.sessionKey.split('-')) + '"]').size() > 0 ) {
+        // For table layout
+        $('.panel-table-wrapper table[id^="cdbt-table-edit-' + _.last($.sessionKey.split('-')) + '"]').find('tr.selectable.selected label').each(function(){
+          where_conditions.push($(this).data('row'));
+        });
+      } else {
+        // For repeater layout
+        $('.repeater[id^="cdbt-repeater-edit-' + _.last($.sessionKey.split('-')) + '"]').find('tr.selectable.selected label.repeater-select-checkbox').each(function(){
+          where_conditions.push($(this).data('row'));
+        });
+      }
+      where_conditions = _.uniq(where_conditions);
       
       var nonce = $.ajaxResponse.responseText;
       var generate_form = '<form method="post" action="' + location.href + '" id="data-deletion-' + nonce + '" style="display: none;">';
@@ -679,12 +688,18 @@ jQuery(document).ready(function($){
           post_data.id = 'cdbtEditWarning';
           post_data.modalTitle = 'too_many_selected_item';
         } else {
+          var _whereClause;
+          if (isRepeater) {
+            _whereClause = $('tr.selectable.selected label').data('row');
+          } else {
+            _whereClause = selectedItem.find('td.editable-checkbox label').data('row');
+          }
           post_data.modalSize = 'large';
           post_data.modalTitle = 'edit_data_form';
           post_data.modalExtras = { 
             'table_name': targetTable, 
             'action_url': window.location.href, 
-            'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
+            'where_clause': _whereClause, 
           };
         }
         $.ajaxResponse.targetTable = targetTable;

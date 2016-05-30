@@ -253,7 +253,7 @@ trait CdbtView {
       $output_columns = $all_columns;
     
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
-    if ( ! $narrow_keyword ) {
+    if ( empty( $narrow_keyword ) ) {
       $query_type = 'get';
     } else {
       $query_type = $this->is_assoc( $narrow_keyword ) ? 'get' : 'find';
@@ -292,33 +292,16 @@ trait CdbtView {
     $add_class = implode( ' ', $add_classes );
     
     if ('get' === $query_type) {
-      // $datasource = $this->get_data($table, 'ARRAY_A');
-      $datasource = $this->get_data($table, '`'.implode('`,`', $output_columns).'`', $conditions, $orders, 'ARRAY_A');
+      $datasource = $this->get_data($table, '`'.implode('`,`', $output_columns).'`', $conditions, $narrow_operator, $orders, 'ARRAY_A');
     } else {
       $datasource = [];
       // Added since version 2.0.7
+      // Fixed bug since version 2.1.31
       $narrow_operator = strtolower( $narrow_operator );
-      if (is_array($conditions) && !empty($conditions)) {
-        foreach ($conditions as $_i => $_keyword) {
-          if (0 === $_i) {
-            $datasource = $this->find_data($table, $_keyword, $narrow_operator, $output_columns, $orders, 'ARRAY_A');
-          } else {
-            // Currently, the plurality of keywords are not supported
-            /*
-            $diff_datasource = $this->find_data($table, $_keyword, $output_columns, $orders, 'ARRAY_A');
-            if (is_array($diff_datasource) && is_array($datasource)) 
-              $datasource = array_intersect($diff_datasource, $datasource);
-              //$datasource = array_merge($datasource, $diff_datasource);
-            */
-            break;
-          }
-        }
-      } else {
-        $datasource = $this->find_data($table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A');
-      }
+      $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
     }
     if (empty($datasource))
-      return sprintf('<p>%s</p>', __('No data in this table.', CDBT));
+      return sprintf('<p>%s</p>', __('The specified table&#39;s data was not found. There is no data in the table at all, or no data of matching condition.', CDBT));
     
     if ( 'json' === $component_name ) 
       return json_encode( $datasource );

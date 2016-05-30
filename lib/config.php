@@ -98,12 +98,13 @@ class CdbtConfig extends CdbtCore {
       'Please retry to operate that after you select the data.', 			// admin.php:1927
       'Please retry after selecting one data you want to edit.', 			// admin.php:1932
       'Required field is empty', 											// admin.php:1935
-      'Delete', 															// admin.php:1946,1975,2013,2019
+      'Remove', 															// admin.php:1950,1981,2019,2025 templates/admin/cdbt_tables.php:1085
       'Please fill in the required fields of non-input.', 					// admin.php:1964
-      'Edit Data Form', 													// admin.php:1967
-      'Update', 															// admin.php:1969
-      'Remove the selected %s of data', 									// admin.php:1973
-      'You can not restore that data after deleted the data. Are you sure to delete the data?', 	// admin.php:1974
+      'Form to edit data', 													// admin.php:1971
+      'Update', 															// admin.php:1973
+      'Removes the selected data', 											// admin.php:1978
+      'Data of current deletion candidates: %s', 							// admin.php:1979
+      'You can not restore that data after removed the data. Are you sure that you want to perform the data deletion?', 	// admin.php:1974
       'Preview Image', 														// admin.php:1979
       'Describe File', 														// admin.php:1984
       'Download', 															// admin.php:2004
@@ -112,7 +113,7 @@ class CdbtConfig extends CdbtCore {
       'Can not remove some of the data.', 									// ajax.php:479 main.php:617
       'Specified conditions for finding to delete data is invalid.', 		// ajax.php:482 main.php:620
       'Could not multiple registration by the continuous transmission. So you reload this entry page, please try to refresh the token.', // main.php:669
-      'No data in this table.', 											// shortcodes/cdbt-edit.php:304 shortcodes/cdbt-view.php:324
+      'The specified table&#39;s data was not found. There is no data in the table at all, or no data of matching condition.', // shortcodes/cdbt-edit.php:276 shortcodes/cdbt-view.php:304
       'View Data in "%s" Table', 											// shortcodes/cdbt-view.php:230 templates/admin/cdbt_tables.php:1357
       'Entry Data to "%s" Table', 											// shortcodes/cdbt-entry.php:130 templates/admin/cdbt_tables.php:1358
       'Edit Data of "%s" Table', 											// shortcodes/cdbt-edit.php:213 templates/admin/cdbt_tables.php:1359
@@ -500,7 +501,7 @@ class CdbtConfig extends CdbtCore {
     $user_permission_edit = 'editor';
     if ( ! empty( $table_options ) ) {
       $table_charset = array_key_exists('table_charset', $table_options) ? $table_options['table_charset'] : $table_charset;
-      $max_show_records = array_key_exists('max_show_records', $table_options) ? $table_options['max_show_records'] : $show_max_records;
+      $max_show_records = array_key_exists('max_show_records', $table_options) ? $table_options['max_show_records'] : $max_show_records;
       $sanitization = array_key_exists( 'sanitization', $table_options ) ? $table_options['sanitization'] : $sanitization;
       $user_permission_view = array_key_exists('user_permission_view', $table_options) ? $table_options['user_permission_view'] : $user_permission_view;
       $user_permission_entry = array_key_exists('user_permission_entry', $table_options) ? $table_options['user_permission_entry'] : $user_permission_view;

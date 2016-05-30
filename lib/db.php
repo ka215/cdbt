@@ -572,17 +572,19 @@ class CdbtDB extends CdbtConfig {
    * @since 1.0.0
    * @since 2.0.0 Have refactored logic.
    * @since 2.0.7 Fixed a bug of $columns argument
+   * @since 2.1.31 Added $operator
    *
    * @param string $table_name [require]
    * @param mixed $columns [optional] Use as select clause, for default is wildcard of '*'.
    * @param array $conditions [optional] Use as where clause.
+   * @param string $operator [optional] Operators of multiple keywords; default is 'and', or 'or'. Note: Added version 2.1.31
    * @param array $order [optional] Use as orderby and order clause, for default is "order by `created` desc".
    * @param int $limit [optional] Use as limit clause.
    * @param int $offset [optional] Use as offset clause.
    * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
    * @return mixed 
    */
-  public function get_data( $table_name, $columns='*', $conditions=null, $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
+  public function get_data( $table_name, $columns='*', $conditions=null, $operator='and', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
     if ( in_array( end( $arguments ), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ] ) ) {
@@ -594,6 +596,7 @@ class CdbtDB extends CdbtConfig {
       'table_name' => null, 
       'columns' => '*', 
       'conditions' => null, 
+      'operator' => 'and', 
       'order' => ['created'=>'desc'], 
       'limit' => null, 
       'offset' => null, 
@@ -628,7 +631,7 @@ class CdbtDB extends CdbtConfig {
           if ( $i === 0 ) {
             $where_clause = "WHERE `$key` = '$val' ";
           } else {
-            $where_clause .= "AND `$key` = '$val' ";
+            $where_clause .= strtoupper( $operator ) ." `$key` = '$val' ";
           }
           $i++;
         } else {
@@ -859,21 +862,24 @@ class CdbtDB extends CdbtConfig {
           foreach ( $result as $_row_key => $_row_data ) {
             $_retval[$_row_key] = new \stdClass;
             foreach ( $select_clause as $_col ) {
-              $_retval[$_row_key]->$_col = $_row_data->$_col;
+              if ( isset( $_row_data->$_col ) ) 
+                $_retval[$_row_key]->$_col = $_row_data->$_col;
             }
           }
           break;
         case 'ARRAY_A': 
           foreach ( $result as $_row_index => $_row_data ) {
             foreach ( $select_clause as $_col ) {
-              $_retval[$_row_index][$_col] = $_row_data[$_col];
+              if ( isset( $_row_data[$_col] ) ) 
+                $_retval[$_row_index][$_col] = $_row_data[$_col];
             }
           }
           break;
         case 'ARRAY_N': 
           foreach ( $result as $_row_index => $_row_data ) {
           	foreach ( $select_clause as $_col ) {
-       	      $_retval[$_row_index][] = $_row_data[$_col_index[$_col]];
+          	  if ( isset( $_row_data[$_col_index[$_col]] ) ) 
+       	        $_retval[$_row_index][] = $_row_data[$_col_index[$_col]];
             }
           }
           break;

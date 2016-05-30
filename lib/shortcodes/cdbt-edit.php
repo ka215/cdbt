@@ -212,20 +212,39 @@ trait CdbtEdit {
     if ( $exclude_cols = $this->strtoarray( $exclude_cols ) ) {
       $output_columns = [];
       foreach ( $all_columns as $_col ) {
-        if ( $has_pk && in_array( $_col, $pk_columns ) ) {
-          $output_columns[] = $_col;
-        } else
         if ( ! in_array( $_col, $exclude_cols ) ) {
           $output_columns[] = $_col;
         }
       }
     }
-    if ( ! isset( $output_columns ) ) 
+    if ( $order_cols = $this->strtoarray( $order_cols ) ) {
+      $output_columns = [];
+      foreach ( $order_cols as $_col ) {
+        if ( in_array( $_col, $all_columns ) ) 
+          $output_columns[] = $_col;
+      }
+      $exclude_cols = array_diff( $all_columns, $output_columns );
+    }
+    if ( ! isset( $output_columns ) ) {
       $output_columns = $all_columns;
+    } else {
+      if ( $has_pk ) {
+        $_contain_pk = false;
+        foreach ( $pk_columns as $_col ) {
+          if ( in_array( $_col, $output_columns ) ) {
+            $_contain_pk = true;
+            break;
+          }
+        }
+        if ( ! $_contain_pk ) {
+          $output_columns = array_merge( $output_columns, $pk_columns );
+        }
+      }
+    }
     
     // Added since version 2.0.6
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
-    if ( ! $narrow_keyword ) {
+    if ( empty( $narrow_keyword ) ) {
       $query_type = 'get';
     } else {
       $query_type = $this->is_assoc( $narrow_keyword ) ? 'get' : 'find';
@@ -264,34 +283,16 @@ trait CdbtEdit {
     $add_class = implode( ' ', $add_classes );
     
     if ( 'get' === $query_type ) {
-      // $datasource = $this->get_data( $table, 'ARRAY_A' );
-      $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $orders, 'ARRAY_A' );
+      $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $narrow_operator, $orders, 'ARRAY_A' );
     } else {
       $datasource = [];
       // Added since version 2.0.7
+      // Fixed bug since version 2.1.31
       $narrow_operator = strtolower( $narrow_operator );
-      if ( is_array( $conditions ) && ! empty( $conditions ) ) {
-        foreach ( $conditions as $_i => $_keyword ) {
-          if ( 0 === $_i ) {
-            $datasource = $this->find_data( $table, $_keyword, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
-          } else {
-            // Currently, the plurality of keywords are not supported
-            /*
-            $diff_datasource = $this->find_data( $table, $_keyword, $output_columns, $orders, 'ARRAY_A' );
-            if ( is_array( $diff_datasource ) && is_array( $datasource ) ) {
-              $datasource = array_intersect( $diff_datasource, $datasource );
-              //$datasource = array_merge( $datasource, $diff_datasource );
-            }
-            */
-            break;
-          }
-        }
-      } else {
-        $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
-      }
+      $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
     }
     if ( empty( $datasource ) ) 
-      return sprintf( '<p>%s</p>', __('No data in this table.', CDBT ) );
+      return sprintf( '<p>%s</p>', __('The specified table&#39;s data was not found. There is no data in the table at all, or no data of matching condition.', CDBT ) );
     
     $custom_column_renderer = [];
     
@@ -303,7 +304,8 @@ trait CdbtEdit {
             if ( $strip_tags ) {
               $datasource[$i][$column] = strip_tags( $row_data[$column] );
             } else {
-              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'char' ) );
+              if ( isset( $row_data[$column] ) ) 
+                $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'char' ) );
             }
           }
         }
@@ -318,7 +320,8 @@ trait CdbtEdit {
             if ( $strip_tags ) {
               $datasource[$i][$column] = strip_tags( $row_data[$column] );
             } else {
-              $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'text' ) );
+              if ( isset( $row_data[$column] ) ) 
+                $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'text' ) );
             }
           }
         }
@@ -415,11 +418,16 @@ trait CdbtEdit {
     }
     
     
-    $columns = [];
+    $columns = $_col_disp_order = [];
+    $_col_index = 0;
     foreach ($table_schema as $column => $scheme) {
       $_classes = [];
-      if ( ! in_array( $column, $output_columns ) ) 
+      if ( ! in_array( $column, $output_columns ) ) {
         $_classes[] = 'hide';
+        $_col_disp_order[] = count( $output_columns ) + $_col_index;
+      } else {
+        $_col_disp_order[] = array_search( $column, $output_columns );
+      }
       if ( isset( $exclude_cols ) && is_array( $exclude_cols ) && in_array( $column, $exclude_cols ) ) 
         $_classes[] = 'hide';
       if ( ! $enable_sort ) 
@@ -435,6 +443,7 @@ trait CdbtEdit {
         'truncateStrings' => $truncate_strings, 
         'className' => implode(' ', $_classes), 
       ];
+      $_col_index++;
     }
     
     if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
@@ -479,22 +488,6 @@ trait CdbtEdit {
       }
     }
     unset($column, $scheme);
-    if (empty($condition_keys)) {
-      $disabled_edit = true;
-      $where_condition = '';
-    } else {
-      $_temp = [];
-      foreach ($condition_keys as $column) {
-        $_temp[] = sprintf('%s:\' + encodeURIComponent(rowData[\'%s\']) + \'', $column, $column);
-      }
-      $where_condition = sprintf( '<input type="hidden" class="row_where_condition" value="%s">', implode(',', $_temp) );
-    }
-    if (array_key_exists('customColumnRenderer', $columns[0])) {
-      $_temp = is_array($columns[0]['customColumnRenderer']) ? implode("\n", $columns[0]['customColumnRenderer']) : $columns[0]['customColumnRenderer'];
-      $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + %s + \'</div>%s\'', $_temp, $where_condition );
-    } else {
-      $columns[0]['customColumnRenderer'] = sprintf( '\'<div class="cdbt-repeater-left-main">\' + rowData[\'%s\'] + \'</div>%s\'', $columns[0]['property'], $where_condition );
-    }
     
     
     if ('regular' === $table_type && $display_list_num) {
@@ -551,6 +544,27 @@ trait CdbtEdit {
       ];
     }
     $component_options = array_merge($component_options, $add_options);
+    
+    if (empty($condition_keys)) {
+      $disabled_edit = true;
+      $where_condition = '';
+    } else {
+      $_temp = [];
+      foreach ($condition_keys as $column) {
+        if ( 'repeater' === $component_name ) {
+          $_temp[] = sprintf( '%s:\' + encodeURIComponent(helpers.rowData[\'%s\']) + \'', $column, $column );
+        } else {
+          $_temp[] = sprintf( '%s:\' + encodeURIComponent(rowData[\'%s\']) + \'', $column, $column );
+        }
+      }
+      $where_condition = implode(',', $_temp);
+    }
+    if ( 'repeater' === $component_name ) {
+      $component_options['customRowScripts'][] = "item.find('label.repeater-select-checkbox').attr('data-row', '". $where_condition ."');";
+    } else {
+      $component_options['customRowScripts'][] = "item.find('.table-body-checkbox label').attr('data-row', '". $where_condition ."');";
+    }
+    
     
     if ( $display_view && ! empty( $thumbnail_column ) && array_key_exists( $thumbnail_column, $table_schema ) ) {
       if ('repeater' === $component_name) {

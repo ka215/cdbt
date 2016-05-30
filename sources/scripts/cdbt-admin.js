@@ -1644,6 +1644,12 @@ $(document).ready(function() {
             post_data.id = 'cdbtEditWarning';
             post_data.modalTitle = 'too_many_selected_item';
           } else {
+            var _whereClause;
+            if (isRepeater) {
+              _whereClause = $('tr.selectable.selected label').data('row');
+            } else {
+              _whereClause = selectedItem.find('td.editable-checkbox label').data('row');
+            }
             post_data.modalSize = 'large';
             post_data.modalTitle = 'edit_data_form';
             post_data.modalExtras = { 
@@ -1651,7 +1657,7 @@ $(document).ready(function() {
               'action_url': '/wp-admin/admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, // location.href
               'page': $.QueryString.page, 
               'active_tab': $.QueryString.tab, 
-              'where_clause': $('tr.selectable.selected input.row_where_condition').val(), 
+              'where_clause': _whereClause, 
             };
           }
           init_modal( post_data );
@@ -1739,12 +1745,23 @@ $(document).ready(function() {
     
     // Run of deleting data after confirmation
     $(document).on('click', '#run_delete_data', function(){
+      var _current_table = $('input[name="custom-database-tables[operate_current_table]"]').val();
       var where_conditions = [];
-      $('tr.selectable.selected input.row_where_condition').each(function(){
-        where_conditions.push($(this).val());
-      });
+      if ( $('.panel-table-wrapper table[id^="cdbt-table-edit-' + _current_table + '"]').size() > 0 ) {
+        // For table layout
+        $('.panel-table-wrapper table[id^="cdbt-table-edit-' + _current_table + '"]').find('tr.selectable.selected label').each(function(){
+          where_conditions.push($(this).data('row'));
+        });
+      } else {
+        // For repeater layout
+        $('.repeater[id^="cdbt-repeater-edit-' + _current_table + '"]').find('tr.selectable.selected label.repeater-select-checkbox').each(function(){
+          where_conditions.push($(this).data('row'));
+        });
+      }
+      where_conditions = _.uniq(where_conditions);
+      
       var post_data = {
-        'table_name': $('input[name="custom-database-tables[operate_current_table]"]').val(), 
+        'table_name': _current_table, 
         'operate_action': $('input[name="custom-database-tables[operate_action]"]').val(), 
         'event': 'delete_data', 
         'where_conditions': where_conditions, 
