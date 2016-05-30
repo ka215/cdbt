@@ -576,7 +576,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     // Adjust table size
     var draggableTable = false;
-    if (table_width > $.em2pxl(4) * cols && table_width > wrapper_width) {
+    //if (table_width > $.em2pxl(4) * cols && table_width > wrapper_width) {
+    if (table_width > $.em2pxl(6) * cols) {
       draggableTable = true;
       var total_width = c = 0;
       $('#'+options.tableId+' thead>tr>th').each(function(){
