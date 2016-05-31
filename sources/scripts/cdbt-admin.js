@@ -273,6 +273,14 @@ $(document).ready(function() {
       $('#columns-information').html('').append( $.ajaxResponse.responseText );
       
     };
+    this.hide_columns_info = function(){
+      
+      $('#columns-information').html('').append( $.ajaxResponse.responseText ).queue(function(){
+        $('#columns-detail').addClass('hide');
+        $('#collapse-reference').children('i').attr('class', 'fa fa-plus-square');
+      });
+      
+    };
     
   };
   var Callback = new CallbackClass();
@@ -1872,22 +1880,16 @@ $(document).ready(function() {
     });
     controllForms();
     
-    var getColumnsInfo = function( target_table ){
+    var getColumnsInfo = function( target_table, default_action ){
       var post_data = {
         event: 'get_columns_info', 
         'table_name': target_table, 
       };
-      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', 'show_columns_info' );
+      var callback = default_action === undefined || 'show' === default_action ? 'show_columns_info' : 'hide_columns_info';
+      cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'html', callback );
     };
     
     $('#register-shortcode-target_table, #edit-shortcode-target_table').on('changed.fu.combobox', function(e,d){
-      if ( d.text !== '' ) {
-        getColumnsInfo( d.text );
-      }
-    });
-    
-    $(window).on('load', function(){
-      var d = $('#register-shortcode-target_table, #edit-shortcode-target_table').combobox('selectedItem');
       if ( d.text !== '' ) {
         getColumnsInfo( d.text );
       }
@@ -1899,6 +1901,13 @@ $(document).ready(function() {
         $(this).children('i').attr('class', 'fa fa-plus-square');
       } else {
         $(this).children('i').attr('class', 'fa fa-minus-square');
+      }
+    });
+    
+    $(window).on('load', function(){
+      var d = $('#register-shortcode-target_table, #edit-shortcode-target_table').combobox('selectedItem');
+      if ( d.text !== '' ) {
+        getColumnsInfo( d.text, 'hide' );
       }
     });
     

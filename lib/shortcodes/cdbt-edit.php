@@ -48,7 +48,7 @@ trait CdbtEdit {
       /* The Added new attribute since v2.0.10 is followed: */
       'truncate_strings' => 0, 			// @attribute int    [optional] Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.
       /* The Added new attributes since 2.1.31 are followed: */
-      'enable_repeater' => true, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
+      'enable_repeater' => false, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
       'display_search' => true, 		// @attribute bool   [optional] Adds an input field for the data search if true.
       'display_index_row' => true, 		// @attribute mixed  [optional] Displays the index row around the data rows as the header of the data column, if true. Also it's added of "head-only" for the table format besides boolean value. (since v2.1.x)
       'order_cols' => '', 				// @attribute string [optional] Specifies the comma-delimited column names in the display order if you want to display columns in the order of your display request. This overrides the value of the attribute "exclude_cols" and "display_cols". e.g. "col3,col2,col1,..."

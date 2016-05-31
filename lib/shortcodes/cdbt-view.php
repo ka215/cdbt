@@ -42,7 +42,7 @@ trait CdbtView {
       'limit_items' => '', 				// @attribute int    [optional] If this attribute is specified, it overrides the "Maximum display data per page" of the table.
       'image_render' => 'responsive', 	// @attribute string [optional] Specifies a CSS class name for styling the element of thumbnail image. This attribute is available only if the "enable_repeater" is true.
       /* The Added new attributes since v2.0.x are followed: */
-      'enable_repeater' => true, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
+      'enable_repeater' => false, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
       'display_filter' => false, 		// @attribute bool   [optional] Adds a dropdown list box for filtering the data if true. Then there should be specified the column to filter if you want to enable this.
       'filter_column' => '', 			// @attribute string [optional] Specifies a column name for filtering the data.
       'filters' => '', 					// @attribute string [optional] Specifies the keyword lists for filtering the data. Also, a plurality of the pairs of the keyword and the display label can be defined by using the comma-delimited. e.g. "filter-keyword1:display-label1,filter-keyword2:display-label2,..."
