@@ -670,7 +670,7 @@ jQuery(document).ready(function($){
           'default_action': 'edit', 
           'target_table': targetTable, 
           'event': 'reload_page', 
-          'callback_url': window.location.href, 
+          'callback_url': location.replace( location.href ), 
         };
         return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
         

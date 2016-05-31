@@ -445,6 +445,9 @@ trait CdbtEdit {
       ];
       $_col_index++;
     }
+    if ( count( $_col_disp_order ) === count( $columns ) && ! empty( $order_cols ) ) {
+      array_multisort( $_col_disp_order, $columns );
+    }
     
     if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
       foreach ($columns as $i => $column_definition) {

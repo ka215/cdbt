@@ -3,22 +3,22 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
-Tested up to: 4.5.1
-Stable tag: 2.1.31beta-d7a29a9
+Tested up to: 4.5.2
+Stable tag: 2.1.31
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom DataBase Tables plugin allows you to perform data storage and reference by creating a free tables in database of WordPress.
+Using this database management tool, You can create freely own table in  MySQL database, and do input and output of data in an intuitive operation.
 
 == Description ==
 
-WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, is more better to create a new table. 
+WordPress database is easy to use with simple, but if you want to handle the data that does not conform to the provided initial table structure, or considering the use of as the CMS, you should create a newly table as a better case. 
 
-This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. **At the since plugin version 2.x works with PHP5.4 or more**. 
+This plugin provides the ability to be able to add a new table freely in the database (direct on MySQL) of WordPress in such a case, and can be management of data in a simple user interface. **However, since the plugin version 2.x, you need to be PHP version 5.4 or more on the environment**. 
 
-If you make by full use the various APIs, methods, and shortcodes that is provided a rich set on this plugin, WordPress might be transformed into a powerful CMS.
+When you use the various shortcodes, built-in methods, and APIs that is provided a rich on this plugin, WordPress might be transformed into a powerful CMS.
 
-[Please visit here for more description of the plugin](http://cdbt.ka2.org/).
+[Please see here for more documentation of the plugin](https://ka2.org/cdbt/).
 
 == Installation ==
 
@@ -67,6 +67,17 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.1.31 =
+* Changed the version notation specifications of the plugin: (Major version number).(Minor version number).(Cumulative version number) and append the development stage display if necessary.
+* Supported completely to the static table component of non-repeater as an output format of "cdbt-view" and "cdbt-edit" shortcode.
+* Added a new feature to render data of JSON format via "cdbt-view" shortcode.
+* Added the ability to copy the specific string like shortcode, referenceable SQL with one click to the clipboard.
+* Revised English in the management screen (almost entirely completed).
+* Merged the Cookie control processing that was different in the front-end and the management screen.
+* Fixed a bug that process of value truncation does not work if it contains as like a slash or spaces at the column name.
+* Fixed a bug that could not import the data using the SQL file.
+* Besides, fixed some minor bugs, and enhanced several interfaces.
 
 = 2.0.12 =
 * Fixed a bug in when converting the datetime format of the data outputted.
@@ -294,6 +305,9 @@ Detailed documentation has published at the site of author. If you are free, Ple
 (Sorry, for about documentation will be only the Japanese version currently.)
 
 == Upgrade Notice ==
+
+= 2.1.31 =
+Minor upgrade version 2.1 has improved the user experience.
 
 = 2.0.8 =
 Hotfix of fixing the bug that had set an invalid select clause in select query.

@@ -965,7 +965,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
           thumb_data['title'] = <?php if ( empty( $_thumb_title ) || 'auto' === strtolower( $_thumb_title ) ) : ?>''<?php else: ?>row['<?php echo $_thumb_title; ?>']<?php endif; ?>;
           var titled = <?php echo 'auto' === strtolower( $_thumb_title ) ? 'false' : 'true'; ?>;
           _.each(_.values(row), function(col){
-            if ( ! _.isNull(col) && 'data:image' === col.substr(0, 10)) {
+            if ( ! _.isNull(col) && _.isString(col) && 'data:image' === col.substr(0, 10)) {
               thumb_data['src'] = col;
             } else
             if ( ! titled ) {

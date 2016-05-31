@@ -1634,7 +1634,7 @@ $(document).ready(function() {
             'session_key': $.QueryString.tab, 
             'default_action': 'edit', 
             'target_table': $('section').attr('data-target_table'), 
-            'callback_url': './admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab, 
+            'callback_url': location.replace('./admin.php?page=' + $.QueryString.page + '&tab=' + $.QueryString.tab), 
           };
           return cdbtCallAjax( $.ajaxUrl, 'post', post_data, 'script' );
           
