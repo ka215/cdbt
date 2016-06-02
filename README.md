@@ -1,6 +1,6 @@
 # Custom DataBase Tables
 
-__C__ustom __D__ata__B__ase __T__ables is commonly called "__CDBT__",  it is the plugin for the WordPress. Using this plugin, you can create new table on the database of the WordPress as you like. Then you can do input, output and data updating to created table. Also you can do import and export by format of CSV, TSV, JSON and SQL, and duplicate specific table. Those operation is able to be done easily from the GUI tools on the administration screen of WordPress. In addition, you can provide the functional data manipulation interface to the Web front-end by using some shortcodes or APIs.
+**C**ustom **D**ata**B**ase **T**ables is commonly called "**CDBT**",  it is the plugin for the WordPress. Using this plugin, you can create new table on the database of the WordPress as you like. Then you can do input, output and data updating to created table. Also you can do import and export by format of CSV, TSV, JSON and SQL, and duplicate specific table. Those operation is able to be done easily from the GUI tools on the administration screen of WordPress. In addition, you can provide the functional data manipulation interface to the Web front-end by using some shortcodes or APIs.
 
 * Source: [https://github.com/ka215/cdbt](https://github.com/ka215/cdbt)
 * Public SVN Repository: [http://wordpress.org/plugins/custom-database-tables/](https://wordpress.org/support/plugin/custom-database-tables)
