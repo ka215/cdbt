@@ -141,14 +141,11 @@ if ( ! isset( $this->component_options['columns'] ) || empty( $this->component_o
       $_index_cols[] = sprintf( '<th data-property="%s" class="%s"%s><label>%s</label></th>', $_col_atts['property'], $_add_class, $_cell_width, $_col_atts['label'] );
     }
     if ( isset( $_col_atts['dataNumric'] ) && $_col_atts['dataNumric'] ) {
-      // $_data_wrapper = '<span class="data-numric"><%= '. $_col_atts['property'] .' %></span>'; // for _.template() of underscore.js
       $_data_wrapper = '<span class="data-numric"><% "'. $_col_atts['property'] .'" %></span>';
     } else
     if ( isset( $_col_atts['dataType'] ) && strpos( $_col_atts['dataType'], 'text' ) !== false ) {
-      // $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .'" readonly><%= '. $_col_atts['property'] .' %></textarea>'; // _.template() of underscore.js
       $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .'" readonly><% "'. $_col_atts['property'] .'" %></textarea>';
     } else {
-      // $_data_wrapper = '<span class="data-'. $_col_atts['dataType'] .'"><%= '. $_col_atts['property'] .' %></span>'; // _.tmplate() of underscore.js
       $_data_wrapper = '<span class="data-'. $_col_atts['dataType'] .'"><% "'. $_col_atts['property'] .'" %></span>';
     }
     // Note: Replaced with underscore if the property value contains except alphanumeric and the hyphen and underscore.
@@ -356,8 +353,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       startIndex: startIndex, 
       endIndex: endIndex > items.length ? items.length : endIndex, 
       searchKeyword: _.isNull(optCookie) ? '' : optCookie.searchKeyword, 
-      searchedData: [], // _.isNull(optCookie) ? [] : optCookie.searchedData, 
-      isFiltering: false, //_.isNull(optCookie) ? false : optCookie.isFiltering, 
+      searchedData: [], 
+      isFiltering: false, 
       showTh: <?php echo 'head-only' === $display_index_row ? "'". $display_index_row ."'" : $display_index_row; ?>, 
       sortedProperty: _.isNull(optCookie) ? '' : optCookie.sortedProperty, 
       currentSortDir: _.isNull(optCookie) ? '' : optCookie.currentSortDir, 
@@ -398,17 +395,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   deepCopy: function(object) {
     return JSON.parse(JSON.stringify(Array.prototype.slice.call(object,0)));
   },
-//-  render: function(filtereditems) {
   render: function(method) {
     var options = this.options;
-//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
-/*
-    if (typeof filtereditems !== 'undefined') {
-      data = filtereditems;
-    }
-*/
-  	//var data = typeof filtereditems === 'undefined' ? this.deepCopy(this.items) : filtereditems;
     
     options.totalItems = data.length;
     options.totalPages = Math.ceil( data.length / options.perPageLimit );
@@ -429,7 +418,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     $('#'+options.tableId+' tbody').empty();
     _.each(data, function(rowData){
-      // var template = _.template(options.templateRow); // for underscore.js
       var template = options.templateRow;
       var helpers = {}; // For compatibility with repeater
       
@@ -447,7 +435,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         
         switch(column) {
 <?php if ( ! empty( $_custom_column_renders ) ) : foreach ( $_custom_column_renders as $_col => $_val ) : ?>
-//-      rowData['<?php echo $_col; ?>'] = <?php echo $_val; ?>;
           case '<?php echo $_col; ?>':
             customMarkup = <?php echo $_val; ?>;
             break;
@@ -459,7 +446,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         rowData[column] = typeof customMarkup === 'object' ? customMarkup.get(0).outerHTML : customMarkup;
       });
       
-      // var rowMarkup = template(rowData); // for underscore.js
       var rowMarkup = _.reduce(options.templateRow.match(/<%+\s(.|\s)*?\s+%>/gi),function(tmpl,placeholder){
         var __property = placeholder.replace(/<%+\s(\'|\")?/, '').replace(/(\'|\")?\s+%>$/, '');
         return tmpl.replace(placeholder, rowData[__property]);
@@ -471,8 +457,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( isset( $custom_rows ) && ! empty( $custom_rows ) ) : ?>
       <?php echo implode( "\n", $custom_rows ) . "\n"; ?>
 <?php endif; ?>
-//console.info(customRowMarkup.find('.binary-data input[type=hidden]').length);
-//-      if ( customRowMarkup.find('.binary-data input[type=hidden]').length === 1) {
         customRowMarkup.find('.binary-data input[type=hidden]').each(function(){
           if ('data:image' === $(this).attr('data').substr(0, 10)) {
             $(this).parents('span[class^="data-"]').css({position:'relative',display:'inline-block',maxWidth:'100%',maxHeight:'<?php echo $_thumb_width; ?>px',overflow:'hidden',transition:'all .2s ease-in-out'});
@@ -493,22 +477,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
             }
           }
         });
-/*
-      } else {
-        customRowMarkup.find('.binary-data input[type=hidden]').last().queue(function(){
-          if ('' !== $(this).attr('data')) {
-            if ( options.isFiltering ){
-              var __source = $(this).attr('data');
-              var __spanClass = $(this).parents('span[class^="data-"]').attr('class');
-              var __content = '<span class="'+__spanClass+'" style="position:relative;display:inline-block;max-width:100%;max-height:<?php echo $_thumb_width; ?>px;overflow:hidden;transition:all .2s ease-in-out">';
-              __content += '<a href="javascript:;" class="binary-data modal-preview" data-column-name="<?php echo $_thumb_column; ?>" data-where-conditions="">'
-              __content += '<img src="'+ __source +'" style="position:relative;max-width:none;max-height:none;" class="'+ $(this).attr('data-class') +'" width="<?php echo $_thumb_width; ?>"></a></span>';
-              $(this).parents('span[class^="data-"]').replaceWith(__content);
-            }
-          }
-        });
-      }
-*/
       
       $('#'+options.tableId+' tbody').append( customRowMarkup.html() );
     });
@@ -697,9 +665,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     return order !== 'asc' ? data.reverse() : data;
   },
   sortBy: function(e,target) {
-    //e.preventDefault();
     var options = this.options;
-//-  	var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
   	if (data.length <= 1) {
   	  return false;
@@ -721,12 +687,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     var currentSortDir = target.hasClass('sortdir-desc') ? 'desc' : 'asc';
     options.currentSortDir = currentSortDir;
     if ( options.isFiltering ) {
-//-      this.render(this.objArraySort(data,sortedProperty,currentSortDir));
       this.filteredItems = this.objArraySort(data,sortedProperty,currentSortDir);
     } else {
       this.items = this.objArraySort(data,sortedProperty,currentSortDir);
-      //this.render();
-//-      this.render(this.objArraySort(data,sortedProperty,currentSortDir));
     }
     return this.render();
     
@@ -734,9 +697,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php endif; ?>
 <?php if ( $enable_search ) : ?>
   searchFor: function(e,target) {
-    //e.preventDefault();
     var options = this.options;
-//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     var keyword = $('#'+options.tableId+'-search input').val().toLowerCase();
     var searchedData = [];
@@ -774,13 +735,11 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       options.currentPage = 1;
       options.searchKeyword = $('#'+options.tableId+'-search input').val();
     }
-//-    options.searchedData = searchedData;
     this.filteredItems = searchedData;
   <?php if ( $enable_filter ) : ?>
     $('#'+options.tableId+'-filters').selectlist('disable');
   <?php endif; ?>
     options.isFiltering = true;
-//-    this.render(searchedData);
     return this.render();
     
   }, 
@@ -802,17 +761,14 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     if (searchedData.length > 0) {
       options.currentPage = 1;
     }
-//-    options.searchedData = searchedData;
     this.filteredItems = searchedData;
     options.isFiltering = true;
-//-    this.render(searchedData);
     return this.render();
     
   },
 <?php endif; ?>
 <?php if ( $_must_paging ) : ?>
   pageFeed: function(e,target) {
-    //e.preventDefault();
     var options = this.options;
     var ariaLabel = target.attr('aria-label');
     if ('Previous' === ariaLabel) {
@@ -827,7 +783,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         return false;
       }
     }
-//-    this.render();
     return this.render();
     
   }, 
@@ -863,7 +818,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php endif; ?>
   beforeRender: function() {
     var options = this.options;
-//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     
   <?php if ( isset($before_render_scripts) ) : ?>
@@ -873,7 +827,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   },
   afterRender: function(method) {
     var options = this.options;
-//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     
 <?php if ( $enable_editor ) : ?>
@@ -935,7 +888,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $enable_view ) : ?>
   changeView: function(e,target) {
     var options = this.options;
-//-    var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(options.searchedData);
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     var toView = $('.cdbt-table-views[for="'+options.tableId+'"]>label.active>input').val();
     var currentView = $('.cdbt-table-views[for="'+options.tableId+'"]').data().currentView;
@@ -955,7 +907,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       }
       $('#'+options.tableId+'-view').removeClass('hide');
       
-      //var loadingHTML = $('.panel-body[for="'+options.tableId+'"]').html();
       $('#'+options.tableId+'-view').empty();
       var thumbnails = [];
       var thumbnail_template = _.template('<?php echo $_thumb_template; ?>');
@@ -979,15 +930,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
           }
         <?php if ( ! empty( $_thumb_column ) ) : ?>
           if ( thumb_data.src === undefined ) {
-/*
-            if ( ! options.isFiltering ) {
-              thumb_data['src'] = row['<?php echo $_thumb_column; ?>'];
-            } else {
-              var __tmp = $('<div/>').html(row['<?php echo $_thumb_column; ?>']);
-console.info([__tmp, row['<?php echo $_thumb_column; ?>']]);
-              thumb_data['src'] = $(__tmp).find('input').attr('data');
-            }
-*/
             thumb_data['src'] = row['<?php echo $_thumb_column; ?>'];
           }
         <?php endif; ?>
@@ -1031,11 +973,8 @@ console.info([__tmp, row['<?php echo $_thumb_column; ?>']]);
   cacheOpt: function(e,target){
     var options = this.options;
     var saveOpt = {};
-    //saveOpt['tableId'] = options.tableId;
     saveOpt['currentPage'] = options.currentPage;
     saveOpt['searchKeyword'] = options.searchKeyword;
-    //saveOpt['searchedData'] = options.searchedData;
-    //saveOpt['isFiltering'] = options.isFiltering;
     saveOpt['sortedProperty'] = options.sortedProperty;
     saveOpt['currentSortDir'] = options.currentSortDir;
     docCookies.setItem( '<?php echo $table_name; ?>', JSON.stringify(saveOpt) );
