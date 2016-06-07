@@ -17,6 +17,7 @@ trait CdbtEdit {
    * @since 1.0.0
    * @since 2.0.0 Refactored logic.
    * @since 2.1.31 Greatly enhanced
+   * @since 2.1.32 Updated
    *
    * @param  array  $attributes [require]  - Array in shortcode's attributes
    * @param  string $content    [optional] - Should be actually nothing
@@ -46,8 +47,8 @@ trait CdbtEdit {
       'narrow_operator' => 'and', 		// @attribute string [optional] You can specify the value of either "and" or "or", as evaluated condition of multiple narrowing keywords.
       // 'strip_tags' => true, 			// @attribute bool   [optional] Whether to strip the tags in the string type data.
       /* The Added new attribute since v2.0.10 is followed: */
-      'truncate_strings' => 0, 			// @attribute int    [optional] Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.
-      /* The Added new attributes since 2.1.31 are followed: */
+      'truncate_strings' => 40, 		// @attribute int    [optional] Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.
+      /* The Added new attributes since v2.1.31 are followed: */
       'enable_repeater' => false, 		// @attribute bool   [optional] Renders the data of table by using repeater component of the "FuelUX" libraries if true. Or render by using the original dynamic table component of this plugin if false (since v2.1.x).
       'display_search' => true, 		// @attribute bool   [optional] Adds an input field for the data search if true.
       'display_index_row' => true, 		// @attribute mixed  [optional] Displays the index row around the data rows as the header of the data column, if true. Also it's added of "head-only" for the table format besides boolean value. (since v2.1.x)
@@ -57,6 +58,12 @@ trait CdbtEdit {
       'thumbnail_column' => '', 		// @attribute string [optional] Specifies a column as the thumbnail image. In this column it should be stored the image binary or a URL of image.
       'thumbnail_title_column' => '', 	// @attribute string [optional] Specifies a column as displayed title on the thumbnail list view. it displays nothing if this is not fill.
       'thumbnail_width' => 100, 		// @attribute int    [optional] Specifies a width of the thumbnail image, also the default size of thumbnail will be square equal to this width.
+      /* The Added new attributes since v2.1.32 is followed: */
+      'strip_tags' => true, 			// @attribute bool   [optional] Whether to strip the tags in the string type data.
+      'draggable' => true, 				// @attribute bool	 [optional] You can drag overflow content if this is enabled. Default is true. Note: this attribute is enabled for table layout only.
+      'clickable_cols' => '', 			// @attribute string [optional] Specifies the comma-delimited column names if you want to be able to click the column value. Also in those columns, it should be stored the string as like the url. e.g. "column1,column2,column3,..."
+      'footer_interface' => 'pagination', 	// @attribute string [optional] You can specify which is "pagination (default)" or "pager". Note: this attribute is enabled for table layout only.
+      'truncate_cols' => '', 			// @attribute string [optional] Specifies the comma-delimited column names if you want to specify the columns truncating the strings. e.g. "column1,column2,column3,..."
       ], $attributes) );
     if (empty($table) || !$this->check_table_exists($table)) 
       return;
@@ -75,7 +82,7 @@ trait CdbtEdit {
       $pk_columns = $has_pk ? $table_option['primary_key'] : [];
       $limit_items = empty( $limit_items ) || intval( $limit_items ) < 1 ? intval( $table_option['show_max_records'] ) : intval( $limit_items );
       $truncate_strings = empty( $truncate_strings ) || intval( $truncate_strings ) < 0 ? 0 : intval( $truncate_strings );
-      $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : true;
+      $strip_tags = array_key_exists( 'sanitization', $table_option ) ? $table_option['sanitization'] : $strip_tags;
       foreach ($table_schema as $column => $scheme) {
       	if ($this->validate->check_column_type($scheme['type'], 'char'))
       	  $has_char[] = $column;
@@ -160,11 +167,11 @@ trait CdbtEdit {
     
     
     // Validation of the attributes, then sanitizing
-    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags', 'enable_repeater' ];
+    $boolean_atts = [ 'bootstrap_style', 'display_list_num', 'display_title', 'enable_sort', 'display_filter', 'ajax_load', 'strip_tags', 'enable_repeater', 'draggable' ];
     foreach ($boolean_atts as $attribute_name) {
       ${$attribute_name} = $this->strtobool( rawurldecode( ${$attribute_name} ) );
     }
-    $not_assoc_atts = [ 'exclude_cols' ];
+    $not_assoc_atts = [ 'exclude_cols', 'order_cols', 'clickable_cols', 'truncate_cols' ];
     foreach ($not_assoc_atts as $attribute_name) {
       ${$attribute_name} = $this->strtoarray( rawurldecode( ${$attribute_name} ) );
     }
@@ -242,6 +249,34 @@ trait CdbtEdit {
       }
     }
     
+    $clickable_cols = ! $clickable_cols ? [] : $this->strtoarray( $clickable_cols );
+    foreach ( $clickable_cols as $_i => $_ck_col ) {
+      if ( in_array( $_ck_col, $all_columns ) ) {
+        if ( ( ! empty( $has_char ) && in_array( $_ck_col, $has_char ) ) || ( ! empty( $has_text ) && in_array( $_ck_col, $has_text ) ) ) {
+          // done
+        } else {
+          unset( $clickable_cols[$_i] );
+        }
+      } else {
+        unset( $clickable_cols[$_i] );
+      }
+    }
+    $_candidate_truncate = [];
+    foreach ( $all_columns as $_col ) {
+      if ( ( ! empty( $has_char ) && in_array( $_col, $has_char ) ) || ( ! empty( $has_text ) && in_array( $_col, $has_text ) ) ) {
+        $_candidate_truncate[] = $_col;
+      }
+    }
+    $truncate_cols = ! $truncate_cols ? [] : $this->strtoarray( $truncate_cols );
+    if ( empty( $truncate_cols ) ) {
+      $truncate_cols = $_candidate_truncate;
+    } else {
+      foreach ( $truncate_cols as $_j => $_tc_col ) {
+        if ( ! in_array( $_tc_col, $_candidate_truncate ) ) 
+          unset( $truncate_cols[$_j] );
+      }
+    }
+    
     // Added since version 2.0.6
     $narrow_keyword = $this->is_assoc( $narrow_keyword ) ? $narrow_keyword : $this->strtohash( $narrow_keyword );
     if ( empty( $narrow_keyword ) ) {
@@ -282,6 +317,11 @@ trait CdbtEdit {
     }
     $add_class = implode( ' ', $add_classes );
     
+    // Filter conditions issued query via this shortcode
+    // 
+    // @since 2.1.32 Add new
+    $conditions = apply_filters( 'cdbt_shortcode_query_conditions', $conditions, $shortcode_name, $table );
+    
     if ( 'get' === $query_type ) {
       $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $narrow_operator, $orders, 'ARRAY_A' );
     } else {
@@ -301,11 +341,16 @@ trait CdbtEdit {
       foreach ( $has_char as $column ) {
         if ( array_key_exists( $column, $datasource[0] ) ) {
           foreach ($datasource as $i => $row_data) {
-            if ( $strip_tags ) {
-              $datasource[$i][$column] = strip_tags( $row_data[$column] );
-            } else {
-              if ( isset( $row_data[$column] ) ) 
+            if ( isset( $row_data[$column] ) ) {
+              if ( $strip_tags ) {
+                $datasource[$i][$column] = strip_tags( $row_data[$column] );
+              } else {
                 $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'char' ) );
+              }
+              if ( in_array( $column, $clickable_cols ) ) 
+                $custom_column_renderer[$column] = '$(\'<a target="_blank" />\').attr("href",rowData[\''. $column .'\']).html(rowData[\''. $column .'\'])';
+            } else {
+              $datasource[$i][$column] = null;
             }
           }
         }
@@ -317,11 +362,16 @@ trait CdbtEdit {
       foreach ( $has_text as $column ) {
         if ( array_key_exists( $column, $datasource[0] ) ) {
           foreach ($datasource as $i => $row_data) {
-            if ( $strip_tags ) {
-              $datasource[$i][$column] = strip_tags( $row_data[$column] );
-            } else {
-              if ( isset( $row_data[$column] ) ) 
+            if ( isset( $row_data[$column] ) ) {
+              if ( $strip_tags ) {
+                $datasource[$i][$column] = strip_tags( $row_data[$column] );
+              } else {
                 $datasource[$i][$column] = stripslashes_deep( $this->validate->esc_column_value( $row_data[$column], 'text' ) );
+              }
+              if ( in_array( $column, $clickable_cols ) ) 
+                $custom_column_renderer[$column] = '$(\'<a target="_blank" />\').attr("href",rowData[\''. $column .'\']).html(rowData[\''. $column .'\'])';
+            } else {
+              $datasource[$i][$column] = null;
             }
           }
         }
@@ -436,10 +486,12 @@ trait CdbtEdit {
       $columns[] = [
         'label' => empty($scheme['logical_name']) ? $column : $scheme['logical_name'], 
         'property' => $column, 
-        'sortable' => $enable_sort, 
-        'sortDirection' => 'asc', 
-        'dataType' => $scheme['type'], // Added since 2.1.0
+        'sortable' => in_array( $column, $truncate_cols ) ? ( in_array( $column, $clickable_cols ) ? $enable_sort : false ) : $enable_sort, 
+        'sortDirection' => array_key_exists( $column, $sort_order ) ? $sort_order[$column] : 'asc', 
+        'dataType' => in_array( $column, $clickable_cols ) ? 'clickable' : $scheme['type'], // Added since 2.1.31; Updated since 2.1.32
         'dataNumric' => $this->validate->check_column_type( $scheme['type'], 'numeric' ), 
+        'isClickable' => in_array( $column, $clickable_cols ), 
+        'isTruncate' => in_array( $column, $truncate_cols ), 
         'truncateStrings' => $truncate_strings, 
         'className' => implode(' ', $_classes), 
       ];
@@ -449,13 +501,13 @@ trait CdbtEdit {
       array_multisort( $_col_disp_order, $columns );
     }
     
-    if (isset($custom_column_renderer) && !empty($custom_column_renderer)) {
-      foreach ($columns as $i => $column_definition) {
-        if (array_key_exists($column_definition['property'], $custom_column_renderer)) {
-          $columns[$i] = array_merge($columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ]);
+    if ( isset( $custom_column_renderer ) && ! empty( $custom_column_renderer ) ) {
+      foreach ( $columns as $i => $column_definition ) {
+        if ( array_key_exists( $column_definition['property'], $custom_column_renderer ) ) {
+          $columns[$i] = array_merge( $columns[$i], [ 'customColumnRenderer' => $custom_column_renderer[$column_definition['property']] ] );
         }
       }
-      unset($i);
+      unset( $i );
     }
     
     // Responding to `listSelectable` for `cdbt-edit`
@@ -536,6 +588,7 @@ trait CdbtEdit {
     } else {
       // For table format
       $add_options = [
+        'draggable' => $draggable, 
         'displayIndexRow' => $display_index_row, 
         'customBeforeRender' => '', 
         'customAfterRender' => '', 

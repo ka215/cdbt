@@ -496,7 +496,7 @@ trait CdbtExtras {
    * If there is placed both repeater and table on the same page, it will enable this fileter. That is currentry trouble.
    *
    * @since 2.0.10
-   * @since 2.1.x Future deprecated
+   * @since 2.1.31 Updated
    *
    * @param array $columns [required]
    * @param string $shortcode_name [optional]
@@ -507,7 +507,8 @@ trait CdbtExtras {
     if ( in_array( $shortcode_name, [ 'cdbt-view', 'cdbt-edit' ] ) ) {
       $table_schema = $this->get_table_schema( $table_name );
       foreach ( $columns as $_i => $_data ) {
-        if ( ! $_data['dataNumric'] && isset( $table_schema[$_data['property']] ) && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
+        //if ( ! $_data['dataNumric'] && isset( $table_schema[$_data['property']] ) && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
+        if ( $_data['isTruncate'] ) {
           // Filter the number of character truncation
           // 
           // @since 2.0.11

@@ -17,6 +17,7 @@
  * 'pageSize' => @integer is displayed data per page [optional]
  * 'columns' => @array(assoc) is listing label [require]
  * 'data' => @array(assoc) is listing data [require]
+ * 'draggable' => @boolean Switching draggable table or not [optional] defalt `true`
  * 'customRowScripts' => @array is customized row as javascript lines [optional]
  * 'customBeforeRender' => @string is custom javascript [optional]
  * 'customAfterRender' => @string is custom javascript [optional]
@@ -144,7 +145,11 @@ if ( ! isset( $this->component_options['columns'] ) || empty( $this->component_o
       $_data_wrapper = '<span class="data-numric"><% "'. $_col_atts['property'] .'" %></span>';
     } else
     if ( isset( $_col_atts['dataType'] ) && strpos( $_col_atts['dataType'], 'text' ) !== false ) {
-      $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .'" readonly><% "'. $_col_atts['property'] .'" %></textarea>';
+      if ( $_col_atts['isTruncate'] && $_col_atts['truncateStrings'] > 0 ) {
+        $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .' truncation" readonly><% "'. $_col_atts['property'] .'" %></textarea>';
+      } else {
+        $_data_wrapper = '<span class="data-'. $_col_atts['dataType'] .'"><% "'. $_col_atts['property'] .'" %></span>';
+      }
     } else {
       $_data_wrapper = '<span class="data-'. $_col_atts['dataType'] .'"><% "'. $_col_atts['property'] .'" %></span>';
     }
@@ -174,6 +179,9 @@ if ( ! isset( $this->component_options['data'] ) || empty( $this->component_opti
 } else {
   $items = $this->component_options['data'];
 }
+
+// `draggable` section
+$draggable = isset( $this->component_options['draggable'] ) ? $this->strtobool( $this->component_options['draggable'] ) : true;
 
 // `pageIndex` section
 if ( isset( $this->component_options['pageIndex'] ) && intval( $this->component_options['pageIndex'] ) >= 0 ) {
@@ -544,6 +552,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     // Adjust table size
     var draggableTable = false;
+<?php if ( $draggable ) : ?>
     //if (table_width > $.em2pxl(4) * cols && table_width > wrapper_width) {
     if (table_width > $.em2pxl(6) * cols) {
       draggableTable = true;
@@ -579,6 +588,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         });
       }
     }
+<?php endif; ?>
     
     if (typeof Clipboard === 'function') {
       // To enable the clipboard copy
@@ -855,7 +865,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   	$('.panel-body[for="'+options.tableId+'"]').fadeOut(300, function(){
       $('#'+options.tableId).fadeIn(300).removeClass('hide');
       
-      $('#'+options.tableId+' tbody>tr>td>textarea').each(function(){
+      $('#'+options.tableId+' tbody>tr>td>textarea.truncation').each(function(){
         var origin_str = $(this).val();
         var _tmp = $('<div/>').html($(this).val());
         var truncated_str = _tmp.text();
