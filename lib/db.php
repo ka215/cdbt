@@ -862,24 +862,21 @@ class CdbtDB extends CdbtConfig {
           foreach ( $result as $_row_key => $_row_data ) {
             $_retval[$_row_key] = new \stdClass;
             foreach ( $select_clause as $_col ) {
-              if ( isset( $_row_data->$_col ) ) 
-                $_retval[$_row_key]->$_col = $_row_data->$_col;
+              $_retval[$_row_key]->$_col = isset( $_row_data->$_col ) ? $_row_data->$_col : '';
             }
           }
           break;
         case 'ARRAY_A': 
           foreach ( $result as $_row_index => $_row_data ) {
             foreach ( $select_clause as $_col ) {
-              if ( isset( $_row_data[$_col] ) ) 
-                $_retval[$_row_index][$_col] = $_row_data[$_col];
+              $_retval[$_row_index][$_col] = isset( $_row_data[$_col] ) ? $_row_data[$_col] : '';
             }
           }
           break;
         case 'ARRAY_N': 
           foreach ( $result as $_row_index => $_row_data ) {
           	foreach ( $select_clause as $_col ) {
-          	  if ( isset( $_row_data[$_col_index[$_col]] ) ) 
-       	        $_retval[$_row_index][] = $_row_data[$_col_index[$_col]];
+              $_retval[$_row_index][] = isset( $_row_data[$_col_index[$_col]] ) ? $_row_data[$_col_index[$_col]] : '';
             }
           }
           break;

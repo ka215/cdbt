@@ -73,6 +73,8 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Added new features that is able to choose the clickable columns and the truncating columns in the shortcode of "cdbt-view" and "cdbt-edit".
 * Added new features that is able to toggle the draggable table and choose the footer interface on the table layout of the shortcode.
 * In the "cdbt_shortcode_custom_forms" filter, it became able to get rightly "cdbt-edit" at the second argument of shortcode name.
+* Added new filter of "cdbt_shortcode_query_conditions" to be able to filter the WHERE clause before issuing sql query in the "cdbt-view" and the "cdbt-edit".
+* Fixed a bug that has been excluded such columns from search results if the column value is null when narrowed down the data by the UNION query.
 
 = 2.1.31 =
 * Changed the version notation specifications of the plugin: (Major version number).(Minor version number).(Cumulative version number) and append the development stage display if necessary.

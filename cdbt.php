@@ -3,7 +3,7 @@
   Plugin Name: Custom DataBase Tables
   Plugin URI: https://ka2.org/
   Description: <strong>C</strong>ustom <strong>D</strong>ata<strong>B</strong>ase <strong>T</strong>ables is a database management tool to enhance WordPress as the strongest CMS. Whereby this plugin will dominate the MySQL database of the WordPress, you will be able to create a new custom table. Also you will be able to more thoroughly to manipulate the data.
-  Version: 2.1.32beta
+  Version: 2.1.32
   Author: ka2
   Author URI: https://ka2.org/
   Copyright: 2016 Monaural Sound (email : ka2@ka2.org)

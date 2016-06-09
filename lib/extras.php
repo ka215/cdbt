@@ -512,7 +512,7 @@ trait CdbtExtras {
       $table_schema = $this->get_table_schema( $table_name );
       foreach ( $columns as $_i => $_data ) {
         //if ( ! $_data['dataNumric'] && isset( $table_schema[$_data['property']] ) && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
-        if ( $_data['isTruncate'] ) {
+        if ( isset( $_data['isTruncate'] ) && $_data['isTruncate'] ) {
           // Filter the number of character truncation
           // 
           // @since 2.0.11

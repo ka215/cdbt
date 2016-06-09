@@ -332,7 +332,7 @@ trait CdbtView {
     // Filter conditions issued query via this shortcode
     // 
     // @since 2.1.32 Add new
-    $conditions = apply_filters( 'cdbt_shortcode_query_conditions', $conditions, $shortcode_name, $table );
+    $conditions = apply_filters( 'cdbt_shortcode_query_conditions', $conditions, $narrow_operator, $shortcode_name, $table );
     
     // Added for loading data via Ajax since 2.1.32
     $_limit_clause = $ajax_load ? intval( $limit_items ) : null;
@@ -509,7 +509,7 @@ trait CdbtView {
           'label' => empty( $table_schema[$column]['logical_name'] ) ? $column : $table_schema[$column]['logical_name'], 
           'property' => $column, 
           'sortable' => in_array( $column, $truncate_cols ) ? ( in_array( $column, $clickable_cols ) ? $enable_sort : false ) : $enable_sort, 
-          'sortDirection' => array_key_exists( $column, $sort_order ) ? $sort_order[$column] : 'asc', 
+          'sortDirection' => is_array( $sort_order ) && array_key_exists( $column, $sort_order ) ? $sort_order[$column] : 'asc', 
           'dataType' => in_array( $column, $clickable_cols ) ? 'clickable' : $table_schema[$column]['type'], // Added since 2.1.31; Updated since 2.1.32
           'dataNumric' => $this->validate->check_column_type( $table_schema[$column]['type'], 'numeric' ), 
           'isClickable' => in_array( $column, $clickable_cols ), 
