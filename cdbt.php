@@ -30,7 +30,7 @@
 */
 ?>
 <?php
-define('CDBT_PLUGIN_VERSION', '2.1.32beta');
+define('CDBT_PLUGIN_VERSION', '2.1.32');
 define('CDBT_DB_VERSION', '2.1');
 define('CDBT', 'custom-database-tables'); // This plugin domain name
 

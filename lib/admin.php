@@ -1691,7 +1691,7 @@ final class CdbtAdmin extends CdbtDB {
     
     $post_data = [];
     foreach ( $_POST[$this->domain_name] as $_key => $_val ) {
-      if ( is_array( $_val ) && ! in_array( $_key, [ 'display_index_row', 'narrow_operator' ] ) ) {
+      if ( is_array( $_val ) && ! in_array( $_key, [ 'display_index_row', 'narrow_operator', 'footer_interface' ] ) ) {
         $post_data = array_merge( $post_data, $this->array_flatten( $_val ) );
       } else {
         $post_data[$_key] = $_val;
@@ -1710,13 +1710,13 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'draggable', 'ajax_load', 'display_submit' ];
     foreach ( $checkbox_options as $option_name ) {
       $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
     }
     
     // radio button values
-    $radio_options = [ 'display_index_row', 'narrow_operator' ];
+    $radio_options = [ 'display_index_row', 'narrow_operator', 'footer_interface' ];
     foreach ( $radio_options as $option_name ) {
       $post_data[$option_name] = is_array( $post_data[$option_name] ) ? $post_data[$option_name][0] : $post_data[$option_name];
     }
@@ -1784,12 +1784,12 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // Optimize the checkbox's values
-    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'ajax_load', 'display_submit' ];
+    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'draggable', 'ajax_load', 'display_submit' ];
     foreach ( $checkbox_options as $option_name ) {
       $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
     }
     // Optimize the radio's values
-    $radio_options = [ 'display_index_row', 'narrow_operator' ];
+    $radio_options = [ 'display_index_row', 'narrow_operator', 'footer_interface' ];
     foreach ( $radio_options as $option_name ) {
       if ( 'display_index_row' === $option_name ) {
         if ( isset( $post_data[$option_name] ) ) {
@@ -1930,6 +1930,9 @@ final class CdbtAdmin extends CdbtDB {
                 $args['modalShowEvent'] = "$('#cdbtModal').on('hidden.bs.modal', function(){ location.replace('". $_SERVER['HTTP_REFERER'] ."'); });";
                 break;
               }
+            }
+            if ( strpos( $_SERVER['HTTP_REFERER'], 'page=cdbt_shortcodes&tab=shortcode_register' ) ) {
+              $args['modalShowEvent'] = "$('#cdbtModal').on('hidden.bs.modal', function(){ location.href='". admin_url('admin.php?page=cdbt_shortcodes&tab=shortcode_list') ."'; });";
             }
           }
           break;

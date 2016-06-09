@@ -426,19 +426,84 @@ nav#operation-navbar {
   }
 }
 
-.donate-links {
+.donate-info {
   
-  li {
-    display: table-cell;
-    width: 257px;
-    vertical-align: middle;
+  .noteworthy {
+    clear: both;
+    margin: .25em auto .75em;
     text-align: center;
     
-    &.donate-coinbase {
-      padding-top: 10px;
+    a {
+      &:link, &:hover, &:active, &:visited {
+        text-decoration: none;
+        color: #fff;
+      }
+    }
+    
+    .cdbt-btn-group {
+      display: table-row;
+      width: inherit;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      font-weight: 600;
+      
+      &:hover, &:active, &:focus {
+        box-shadow: 0 0 2px 3px $primary!important;
+      }
+      
+      .btn-left {
+        display: table-cell;
+        width: 30px;
+        line-height: 30px;
+        border-radius: 3px 0 0 3px;
+        vertical-align: middle;
+        text-align: center;
+      }
+      .btn-right {
+        display: table-cell;
+        width: auto;
+        line-height: 30px;
+        padding-left: .5em;
+        padding-right: .75em;
+        border-radius: 0 3px 3px 0;
+        vertical-align: middle;
+        text-align: center;
+      }
+      
+      &.cdbt-twitter {
+        background-color: #00aced;
+        .btn-right { background-color: #52c4ef; }
+      }
+      &.cdbt-facebook {
+        background-color: #305097;
+        .btn-right { background-color: #4a70c6; }
+      }
+      &.cdbt-review {
+        background-color: #db4a39;
+        .btn-right { background-color: #f9866b; }
+      }
+      &.cdbt-official {
+        background-color: #27ae60;
+        .btn-right { background-color: #7c7c7c; }
+      }
+      
     }
   }
   
+  .donate-links {
+    
+    li {
+      display: table-cell;
+      width: 257px;
+      vertical-align: middle;
+      text-align: center;
+      
+      &.donate-coinbase {
+        padding-top: 10px;
+      }
+    }
+  }
 }
 
 #collapse-reference {

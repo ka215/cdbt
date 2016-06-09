@@ -306,6 +306,83 @@
     }
   }
 }
+.cdbt-pager {
+  
+  .cdbt-table-itemization {
+    display: table-cell;
+    padding-left: .5em;
+    line-height: 34px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .cdbt-pager-body {
+    display: table;
+    text-align: right;
+    vertical-align: top;
+    
+    .pager-row {
+      display: table-row;
+      width: inherit;
+      
+      .pager-prev, .pager-control, .pager-next {
+        display: table-cell;
+        padding: 0 .5em;
+        vertical-align: middle;
+      }
+      .pager-prev {
+        width: inherit;
+        text-align: right;
+      }
+      .pager-next {
+        width: calc( 33px + 1em );
+        text-align: center;
+      }
+      .pager-control {
+        width: auto;
+        
+        label.pager-label {
+          display: table-cell;
+          padding-right: .5em;
+          text-align: left;
+          vertical-align: middle;
+          font-weight: normal;
+        }
+        
+        .cdbt-pager-combobox {
+          display: table-cell;
+          
+          input[type="text"] {
+            min-width: 3em;
+            max-width: 4em;
+            border-radius: 4px 0 0 4px;
+          }
+          
+          .input-group-btn {
+            width: auto;
+            
+            .btn {
+              border-left: 0px;
+              border-radius: 0 4px 4px 0;
+            }
+            
+            .dropdown-menu {
+              min-width: auto;
+              text-align: left;
+              
+            }
+          }
+        }
+        
+        .pager-index {
+          display: table-cell;
+          padding-left: .5em;
+          text-align: center;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
 /* For firefox only hack */
 @-moz-document url-prefix() {
   .cdbt-table-wrapper {

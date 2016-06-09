@@ -18,6 +18,10 @@
  * 'columns' => @array(assoc) is listing label [require]
  * 'data' => @array(assoc) is listing data [require]
  * 'draggable' => @boolean Switching draggable table or not [optional] defalt `true`
+ * 'footerUI' => @string Changing interface in table footer [optional] default `pagination`, other 'pager'
+ * 'ajaxLoad' => @boolean [optional]
+ * 'totalData' => @integer For ajax loading [optional]
+ * 'queryAssets' => @array For ajax loading [optional]
  * 'customRowScripts' => @array is customized row as javascript lines [optional]
  * 'customBeforeRender' => @string is custom javascript [optional]
  * 'customAfterRender' => @string is custom javascript [optional]
@@ -183,6 +187,9 @@ if ( ! isset( $this->component_options['data'] ) || empty( $this->component_opti
 // `draggable` section
 $draggable = isset( $this->component_options['draggable'] ) ? $this->strtobool( $this->component_options['draggable'] ) : true;
 
+// `footerUI` section
+$footer_ui = isset( $this->component_options['footerUI'] ) ? $this->component_options['footerUI'] : 'pagination';
+
 // `pageIndex` section
 if ( isset( $this->component_options['pageIndex'] ) && intval( $this->component_options['pageIndex'] ) >= 0 ) {
   $page_index = intval( $this->component_options['pageIndex'] );
@@ -199,6 +206,15 @@ if ( isset( $this->component_options['pageSize'] ) && intval( $this->component_o
 
 // `Paging` section
 $_must_paging = ( $page_size !== 0 ? ceil( count( $items ) / $page_size ) : 1 ) > 1;
+
+// `ajaxLoad` section
+$ajax_load = isset( $this->component_options['ajaxLoad'] ) ? $this->strtobool( $this->component_options['ajaxLoad'] ) : false;
+if ( $ajax_load ) {
+  $query_assets = serialize( $this->component_options['queryAssets'] );
+  $total_data = $this->component_options['totalData'];
+  $_must_paging = ( $page_size !== 0 ? ceil( $total_data / $page_size ) : 1 ) > 1;
+//var_dump( $total_data, $page_index, $page_size, $_must_paging, $query_assets );
+}
 
 // `customRowScripts` section
 if ( isset( $this->component_options['customRowScripts'] ) && ! empty( $this->component_options['customRowScripts'] ) ) {
@@ -318,10 +334,13 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
   </div><!-- /.panel-table-wrapper-->
 <?php if ( $_must_paging ) : ?>
   <div class="panel-footer" for="<?php echo $table_id; ?>">
-    <nav class="cdbt-pagination text-center" for="<?php echo $table_id; ?>"></nav>
+    <nav class="cdbt-<?php echo $footer_ui; ?> text-center" for="<?php echo $table_id; ?>"></nav>
   </div><!-- /.panel-footer -->
 <?php endif; ?>
-</div>
+<?php if ( $ajax_load ) : ?>
+  <input type="hidden" name="ajax_queries" value="<?php echo esc_attr( $query_assets ); ?>" for="<?php echo $table_id; ?>">
+<?php endif; ?>
+</div><!-- /.cdbt-table-wrapper -->
 <script>
 // For doing inherit class
 if (typeof DynamicTables === 'undefined') {
@@ -356,10 +375,17 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       templateRow: templateRow, 
       perPageLimit: perPageLimit, 
       currentPage: currentPage, 
+<?php if ( $ajax_load ) : ?>
+      totalItems: <?php echo $total_data; ?>, 
+      totalPages: Math.ceil(<?php echo $total_data; ?> / perPageLimit), 
+      startIndex: startIndex, 
+      endIndex: endIndex > <?php echo $total_data; ?> ? <?php echo $total_data; ?> : endIndex, 
+<?php else : ?>
       totalItems: items.length, 
       totalPages: Math.ceil(items.length / perPageLimit), 
       startIndex: startIndex, 
       endIndex: endIndex > items.length ? items.length : endIndex, 
+<?php endif; ?>
       searchKeyword: _.isNull(optCookie) ? '' : optCookie.searchKeyword, 
       searchedData: [], 
       isFiltering: false, 
@@ -385,8 +411,13 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       //_self.sortBy();
     }
 <?php endif; ?>
-<?php if ( $_must_paging ) : ?>
+<?php if ( $_must_paging && 'pagination' === $footer_ui ) : ?>
     $(document).on('click', 'nav.cdbt-pagination[for="<?php echo $table_id; ?>"] a', function(e){ _self.pageFeed(e,$(this)); }); // paging
+<?php endif; ?>
+<?php if ( $_must_paging && 'pager' === $footer_ui ) : ?>
+    $(document).on('click', 'nav.cdbt-pager[for="<?php echo $table_id; ?>"] button', function(e){ _self.pageFeed(e,$(this)); }); // paging by clicking
+    $(document).on('keypress', 'nav.cdbt-pager[for="<?php echo $table_id; ?>"] .cdbt-pager-combobox>input', function(e){ if (e.which === 13) { _self.pageFeed(e,$(this)); } }); // paging by inputting
+    $(document).on('changed.fu.combobox', 'nav.cdbt-pager[for="<?php echo $table_id; ?>"] .cdbt-pager-combobox', function(e){ _self.pageFeed(e,$(this)); }); // paging by changing
 <?php endif; ?>
 <?php if ( $enable_view ) : ?>
     $(document).on('click', '.cdbt-table-views[for="<?php echo $table_id; ?>"]', function(e){ _self.changeView(e,$(this)); }); // view
@@ -407,8 +438,13 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     var options = this.options;
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
     
+<?php if ( $ajax_load ) : ?>
+    options.totalItems = <?php echo $total_data; ?>;
+    options.totalPages = Math.ceil( <?php echo $total_data; ?> / options.perPageLimit );
+<?php else : ?>
     options.totalItems = data.length;
     options.totalPages = Math.ceil( data.length / options.perPageLimit );
+<?php endif; ?>
     options.startIndex = ((options.currentPage - 1) * options.perPageLimit) + 1;
     options.endIndex = (options.startIndex + options.perPageLimit) - 1;
     
@@ -628,11 +664,11 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     }
     
 <?php if ( $_must_paging ) : ?>
-    // Render pagenation
+    // Render <?php echo $footer_ui; ?> 
     if (options.totalPages > 1) {
-      this.pagination();
+      this.<?php echo $footer_ui; ?>();
     } else {
-      $('.cdbt-pagination[for="'+options.tableId+'"]').html('');
+      $('.cdbt-<?php echo $footer_ui; ?>[for="'+options.tableId+'"]').html('');
     }
 <?php endif; ?>
     
@@ -778,6 +814,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   },
 <?php endif; ?>
 <?php if ( $_must_paging ) : ?>
+<?php   if ( 'pagination' === $footer_ui ) : ?>
   pageFeed: function(e,target) {
     var options = this.options;
     var ariaLabel = target.attr('aria-label');
@@ -798,7 +835,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   }, 
   pagination: function() {
     var options = this.options;
-    var disp = 5;
+    var disp = 5; // Display page range
     var start = options.currentPage - Math.floor(disp / 2) > 0 ? options.currentPage - Math.floor(disp / 2) : 1;
     var end = start > 1 ? options.currentPage + Math.floor(disp / 2) : disp;
     start = options.totalPages < end ? start - (end - options.totalPages) : start;
@@ -825,6 +862,85 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     $('.panel-footer[for="'+options.tableId+'"]>nav.cdbt-pagination').html( pagination );
     
   }, 
+<?php   endif; ?>
+<?php   if ( 'pager' === $footer_ui ) : ?>
+  pageFeed: function(e,target) {
+    var options = this.options;
+    var mustRender = true;
+    if ('click' === e.type) {
+      if (target.parent().hasClass('pager-prev')) {
+        options.currentPage = (options.currentPage - 1) < 1 ? 1 : options.currentPage - 1;
+      }
+      if (target.parent().hasClass('pager-next')) {
+        options.currentPage = (options.currentPage + 1) > options.totalPages ? options.totalPages : options.currentPage + 1;
+      }
+    } else
+    if ('changed' === e.type) {
+      var _selected = target.combobox('selectedItem');
+      if (options.currentPage !== _selected.value) {
+        options.currentPage = _selected.value;
+      } else {
+        mustRender = false;
+      }
+    } else {
+      if (target.get(0).defaultValue !== target.get(0).value && target.get(0).value > 0 && target.get(0).value <= options.totalPages) {
+        options.currentPage = Number(target.get(0).value);
+      } else {
+        target.val(target.get(0).defaultValue);
+        mustRender = false;
+      }
+    }
+    
+    return mustRender ? this.render() : false;
+  },
+  pager: function() {
+    var options = this.options;
+    var pagerContainer = $('.panel-footer[for="'+options.tableId+'"]>nav.cdbt-pager');
+    
+    var pager = '<div class="cdbt-table-pager row" data-curentpage="'+options.currentPage+'">';
+    pager += '<div class="cdbt-table-itemization pull-left"><?php printf( esc_html__('%1$s - %2$s of %3$s items', CDBT), '<span class="item-start"></span>', '<span class="item-end"></span>', '<span class="item-count"></span>'); ?></div>'; // .cdbt-table-itemization
+    pager += '<div class="cdbt-pager-body pull-right"><div class="pager-row">';
+    pager += '<div class="pager-prev"><button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-left" aria-hidden="true"></i></button></div>'; // .pager-prev
+    pager += '<div class="pager-control"><label class="pager-label"><?php _e('Page', CDBT); ?></label>';
+    pager += '<div class="input-group input-append dropdown combobox cdbt-pager-combobox" data-initialize="combobox"><input type="text" class="form-control" value="'+options.currentPage+'">';
+    pager += '<div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></button>';
+    pager += '<ul class="dropdown-menu dropdown-menu-right"></ul></div>'; // .input-group-btn
+    pager += '<span class="pager-index"><?php printf(esc_html__('of %1$s', CDBT), '<span class="total-pages"></span>'); ?></span></div>'; // .cdbt-pager-combobox
+    pager += '</div>'; // .pager-control
+    pager += '<div class="pager-next"><button type="button" class="btn btn-default btn-sm"><i class="fa fa-chevron-right" aria-hidden="true"></i></button></div>'; // .pager-next
+    pager += '</div></div>'; // .cdbt-pager-body
+    pager += '</div>'; // .cdbt-table-pager
+    pagerContainer.html( pager );
+    
+    // Set variables
+    pagerContainer.find('.item-start').text(options.startIndex);
+    pagerContainer.find('.item-end').text(options.endIndex);
+    pagerContainer.find('.item-count').text(options.totalItems);
+    pagerContainer.find('.total-pages').text(options.totalPages);
+    // Adjustment size
+    var _actual_center_width = pagerContainer.find('.pager-label').get(0).offsetWidth + pagerContainer.find('.cdbt-pager-combobox').get(0).offsetWidth + $.em2pxl(1);
+    pagerContainer.find('.pager-control').css({ width: _actual_center_width + 'px' });
+    pagerContainer.find('.pager-prev').css({ width: pagerContainer.find('.pager-row').get(0).offsetWidth - (_actual_center_width + pagerContainer.find('.pager-next').get(0).offsetWidth) + 'px' });
+    // Initialize elements
+    if ( options.currentPage === 1 ) {
+      pagerContainer.find('.pager-prev>button').prop('disabled', true);
+    }
+    if ( options.currentPage === options.totalPages ) {
+      pagerContainer.find('.pager-next>button').prop('disabled', true);
+    }
+    if ( options.totalPages > 1 ) {
+      var tmpl = _.template('<li data-value="<%= page %>"><a href="javascript:;"><%= page %></a></li>');
+      var dropdownLists = _.reduce(_.range(options.totalPages), function(lists, pnum){
+        return lists += tmpl({ page: pnum+1 });
+      }, '');
+      pagerContainer.find('ul.dropdown-menu').html(dropdownLists);
+      pagerContainer.find('[data-toggle="dropdown"]').dropdown();
+      pagerContainer.find('.cdbt-pager-combobox').combobox();
+    } else {
+      pagerContainer.find('[data-toggle="dropdown"]').prop('disabled', true);
+    }
+  },
+<?php   endif; ?>
 <?php endif; ?>
   beforeRender: function() {
     var options = this.options;

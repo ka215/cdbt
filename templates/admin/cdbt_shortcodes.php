@@ -31,30 +31,39 @@ $fields_define = [
   'targetTable' => [ 'elementName'=>'target_table', 'elementId'=>'target_table', 'elementLabel'=>__('Target Table', CDBT), 'idPrefix'=>'', 'elementType'=>'combobox', 'isRequired'=>true, 'labelSize'=>3, 'fieldSize'=>3, 'defaultValue'=>'', 'selectableList'=>[] ], 
   'entryPage' => [ 'elementName'=>'entry_page', 'elementId'=>'entry_page', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>'', 'addWrapClass'=>'switching-item on-e' ], 
   'appearances' => [ 'elementName' => 'look_feel', 'elementId' => 'look_feel', 'elementLabel' => __('Appearance and LookAndFeel', CDBT), 'idPrefix' => '', 'elementType' => 'checkbox', 'fieldSize' => 10, 
-    'defaultValue' => 'bootstrap_style,display_search,display_title,enable_sort', 
+    'defaultValue' => 'bootstrap_style,display_search,display_title,enable_sort,draggable', 
     'selectableList' => [
       'bootstrap_style' => 	__( 'Renders the data via the style of bootstrap if checked. Render the data of the JSON format if unchecked.', CDBT ) . $this->during_trial( 'json_support', false ), 
       'enable_repeater' => 	__( 'Renders the data of table by using repeater component of the "FuelUX" libraries if checked. <wbr/>Or if unchecked, renders by using the original dynamic table component of this plugin.', CDBT ) . $this->during_trial( 'dynamic_table_layout', false ), 
-      'display_list_num' => 	__( 'Adds an auto increment number column at the left edge of the data row if checked.', CDBT ), 
+      'display_list_num' => __( 'Adds an auto increment number column at the left edge of the data row if checked.', CDBT ), 
       'display_search' => 	__( 'Displays an input field for the data search if checked.', CDBT ), 
-      'display_title' => 		__( 'Displays the heading of content as a title if checked.', CDBT ), 
+      'display_title' => 	__( 'Displays the heading of content as a title if checked.', CDBT ), 
       'enable_sort' => 		__( 'It will be able to sort of data by clicking on the header row if checked.', CDBT ), 
-//    'display_index_row' => 	__( 'Displays the index row around the data rows as the header of the data column, if true. Also it&#39;s added of "head-only" for the table format besides boolean value.', CDBT ), 
+//    'display_index_row' =>__( 'Displays the index row around the data rows as the header of the data column, if true. Also it&#39;s added of "head-only" for the table format besides boolean value.', CDBT ), 
       'display_filter' => 	__( 'Adds a dropdown list box for filtering the data if checked. Then there should be specified the column to filter if you want to enable this.', CDBT ), 
-      'display_view' => 		__( 'You can switch to the thumbnail list view of the gallery format if there contained an image in the table data.', CDBT ), 
+      'display_view' => 	__( 'You can switch to the thumbnail list view of the gallery format if there contained an image in the table data.', CDBT ), 
+      'draggable' => 		__( 'You will be draggable the hiding content area (moreover it performs the cell&#39;s width adjustment in automatically) if the table content overflows from display area when you are using the table layout.', CDBT ) . $this->during_trial( 'draggable_table', false ), 
     ], 'addWrapClass' => 'toggle-group', 'addClass' => 'switching-item', 
     'elementExtras' => [
-      'child-class' => 'bootstrap_style:on-v,enable_repeater:on-v on-e,display_list_num:on-v on-e,display_search:on-v on-e,display_title:on-v on-i on-e,enable_sort:on-v on-e,display_index_row:on-v,display_filter:on-v on-e,display_view:on-v'
+      'child-class' => 'bootstrap_style:on-v,enable_repeater:on-v on-e,display_list_num:on-v on-e,display_search:on-v on-e,display_title:on-v on-i on-e,enable_sort:on-v on-e,display_index_row:on-v,display_filter:on-v on-e,display_view:on-v,draggable:on-v on-e for-tbl'
     ]
   ], 
   'indexRow' => [ 'elementName'=>'display_index_row', 'elementId'=>'display_index_row', 'elementLabel'=>__('Display Index Row', CDBT), 'idPrefix'=>'', 'elementType'=>'radio', 'horizontalList'=>true, 
     'defaultValue'=>'true', 
     'selectableList'=>[ 'false'=>__('Does not show', CDBT), 'true'=>__('Show all', CDBT), 'head-only'=>__('Show the header only', CDBT) ], 
-    'helperText'=>__( 'Displays the index row around the data rows as the header of the data column. Also  you can specify the "head-only" if uses the table layout.', CDBT ), 
+    'helperText'=>__( 'Displays the index row around the data rows as the header of the data column. Also you can specify the "head-only" if uses the table layout.', CDBT ), 
     'elementExtras' => [
       'child-class' => 'false:for-rpt for-tbl,true:for-rpt for-tbl,head-only:for-tbl', 
       'status' => 'under-test',
     ], 'addWrapClass' => 'switching-item on-v on-e', 
+  ], 
+  'footerInterface' => [ 'elementName'=>'footer_interface', 'elementId'=>'footer_interface', 'elementLabel'=>__('Footer Interface', CDBT), 'idPrefix'=>'', 'elementType'=>'radio', 'horizontalList'=>true, 
+    'defaultValue'=>'pagination', 
+    'selectableList'=>[ 'pagination'=>__('Pagination', CDBT), 'pager'=>__('Pager (Conventional)', CDBT) ], 
+    'helperText'=>__( 'You can choose either "Pagination" or "Pager (Conventional Interface)", as the paging interface for the table layout.', CDBT ), 
+    'elementExtras' => [
+      'status' => 'under-test',
+    ], 'addWrapClass' => 'switching-item on-v on-e for-tbl', 
   ], 
   'excludeCols' => [ 'elementName'=>'exclude_cols', 'elementId'=>'exclude_cols', 'elementLabel'=>__('Excludes Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'column1,column2,column3,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to hide the column. e.g. "column1,column2,column3,..."', CDBT) ], 
   'addClass' => [ 'elementName'=>'add_class', 'elementId'=>'add_class', 'elementLabel'=>__('Adds Classes', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'placeholder'=>'class1 class2 class3 ...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-i on-e', 'helperText'=>__('Specifies a CSS class name for styling the element of listed data table. If there are multiple class, please separated by a single-byte space.', CDBT) ], 
@@ -74,6 +83,8 @@ $fields_define = [
   'sortOrder' => [ 'elementName'=>'sort_order', 'elementId'=>'sort_order', 'elementLabel'=>__('Initial Sort Order', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'created:desc', 'placeholder'=>'updated:desc,ID:asc,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies in the pair of column name and the ascending(asc) or descending(desc) order, for the display order of the initial data. If there are multiple condition, please use the comma-delimited. e.g. "updated:desc,ID:asc,..."', CDBT) ], 
   'limitItems' => [ 'elementName'=>'limit_items', 'elementId'=>'limit_items', 'elementLabel'=>__('Max Rows Per Page', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>'', 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('If this attribute is specified, it overrides the "Maximum display data per page" of the table.', CDBT) ], 
   'truncateStr' => [ 'elementName'=>'truncate_strings', 'elementId'=>'truncate_strings', 'elementLabel'=>__('Truncates String', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>40, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.', CDBT) ], 
+  'truncateCols' => [ 'elementName'=>'truncate_cols', 'elementId'=>'truncate_cols', 'elementLabel'=>__('Truncate Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to specify the columns truncating the strings. If nothing is specified, it will be performed the strings truncation to all string type columns. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'new' ] ], 
+  'clickableCols' => [ 'elementName'=>'clickable_cols', 'elementId'=>'clickable_cols', 'elementLabel'=>__('Clickable Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to be able to click the column value. Also in those columns, it should be stored the string as like the url. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'new' ] ], 
   'imageRender' => [ 'elementName'=>'image_render', 'elementId'=>'image_render', 'elementLabel'=>__('Thumbnail Image Class', CDBT), 'idPrefix'=>'', 'elementType'=>'combobox', 'fieldSize'=>3, 'defaultValue'=>'responsive', 'selectableList'=>['rounded', 'circle', 'thumbnail', 'responsive'], 'addWrapClass'=>'switching-item on-v on-e for-rpt', 'helperText'=>__('Specifies a CSS class name for styling the thumbnail images. This CSS class will be added to img tag of thumbnail image. It will enable only if renders the repeater layout.', CDBT) ], 
   'submitLabel' => [ 'elementName'=>'submit_button_label', 'elementId'=>'submit_button_label', 'elementLabel'=>__('Labeled Submit Button', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the label name of button for submitting in the entry form.', CDBT) ], 
   'redirectUrl' => [ 'elementName'=>'redirect_url', 'elementId'=>'redirect_url', 'elementLabel'=>__('Redirect URL', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the url to redirect after the time of insertion and the update of the data. If not specified, self page is reloaded.', CDBT) ], 
@@ -238,8 +249,8 @@ $fields_define = [
       
 <?php 
   $_field_order = [ 
-    'appearances', 'indexRow', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
-    'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
+    'appearances', 'indexRow', 'footerInterface', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
+    'truncateCols', 'clickableCols', 'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
   ];
   foreach ( $_field_order as $_df_key ) {
     $this->dynamic_field( $fields_define[$_df_key] );
@@ -333,7 +344,7 @@ $fields_define = [
         }
         $__val['defaultValue'] = implode( ',', $_defval );
       } else
-      if ( 'indexRow' === $__key || 'narrowOperator' === $__key ) {
+      if ( 'indexRow' === $__key || 'narrowOperator' === $__key || 'footerInterface' === $__key ) {
         if ( array_key_exists( $__val['elementName'], $this_tab_vars ) && ! empty( $this_tab_vars[$__val['elementName']] ) ) {
           $__val['defaultValue'] = $this_tab_vars[$__val['elementName']];
         }
@@ -391,8 +402,8 @@ $fields_define = [
       
 <?php 
   $_field_order = [ 
-    'appearances', 'indexRow', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
-    'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
+    'appearances', 'indexRow', 'footerInterface', 'narrowKeyword', 'narrowOperator', 'excludeCols', 'hiddenCols', 'displayCols', 'orderCols', 'sortOrder', 'limitItems', 'truncateStr', 
+    'truncateCols', 'clickableCols', 'filterCol', 'filters', 'thumbCol', 'thumbTitle', 'thumbWidth', 'imageRender', 'submitLabel', 'redirectUrl', 'addClass', 'ajaxLoad', 
   ];
   foreach ( $_field_order as $_df_key ) {
     $this->dynamic_field( $fields_define[$_df_key] );

@@ -130,6 +130,8 @@ trait CdbtEntry {
       $title = '<h4 class="sub-description-title">' . sprintf( __('Entry Data to "%s" Table', CDBT), $disp_title ) . '</h4>';
     }
     
+    // For hooking the editing form; added since 2.1.32
+    $shortcode_name = ! empty( $action_url ) && 'edit_data' === $form_action ? 'cdbt-edit' : $shortcode_name;
     
     $elements_options = $has_bit = [];
     $is_file_upload = false;

@@ -26,6 +26,14 @@
     background-image: url(../images/cdbt-icon-v1.svg);
   }
   
+  &.square_max {
+    /* maxlarge size */
+    top: 0;
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
+    background-size: 198px 198px;
+  }
   &.square128 {
     /* xxlarge size */
     top: 0;

@@ -81,11 +81,15 @@ trait CdbtExtras {
       'changelog_panel' => 'done', 
       'reference_columns' => 'done', 
       'truncate_strings' => 'done', 
-      'display_list_format' => 'new', 
-      'display_index_row' => 'try-yet', 
-      'narrow_operator' => 'new', 
-      'dynamic_table_layout' => 'new', 
-      'json_support' => 'new', 
+      'display_list_format' => 'try-yet', 
+      'display_index_row' => 'done', 
+      'narrow_operator' => 'try-yet', 
+      'dynamic_table_layout' => 'try-yet', 
+      'json_support' => 'try-yet', 
+      'draggable_table' => 'new', 
+      'footer_interface' => 'new', 
+      'clickable_cols' => 'new', 
+      'truncate_cols' => 'new', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {

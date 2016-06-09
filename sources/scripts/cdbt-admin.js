@@ -1833,6 +1833,15 @@ $(document).ready(function() {
           $(this).find('input').prop('disabled', true);
         }
       });
+      $('.switching-item.for-tbl').each(function(){
+        if ( $(this).hasClass(targetClass) ) {
+          $(this).css({ position: 'static', display: 'block' });
+          $(this).find('input').prop('disabled', false);
+        } else {
+          $(this).css({ position: 'absolute', display: 'none' });
+          $(this).find('input').prop('disabled', true);
+        }
+      });
     };
     $('input[name="custom-database-tables[look_feel][enable_repeater]"]').on('change', function(){
       toggleRenderer();

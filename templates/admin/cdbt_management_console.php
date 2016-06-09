@@ -45,7 +45,7 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
   $_p_begin = '<p class="paragraph'. $_local_code .'">';
   $_p_fin = '</p>';
   // Step1 section
-  $step1_content = '<section class="cdbt-wizard-content"><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-icon-v1 square96 pull-left" style="margin-top: 10px;"></i><i class="fa fa-arrow-right text-danger" style="margin: 50px 10px 0;"></i><i class="image-icon cdbt-logo square128 pull-right"></i></div>';
+  $step1_content = '<section class="cdbt-wizard-content"><div class="pull-left" style="margin: 1em 1.5em 1em 0;"><i class="image-icon cdbt-logo square_max pull-right"></i></div>';
   $step1_content .= $_p_begin. __('Thank you for waiting! We released the plugin upgraded version of "Custom DataBase Tables (commonly called CDBT) Version 2.1 (hereinafter, referred to as V2.1)" at last.', CDBT) .$_p_fin;
   $step1_content .= $_p_begin. __('The "CDBT" plugin is a database management tool. Using this plugin, you can create freely own table in  MySQL database of WordPress, and you can do input and output of data in an intuitive operation. Moreover you will be able to provide the data to as like themes and external sites easily.', CDBT) .'<br>';
   $step1_content .= __('Your website will be able to store own extended data by this plugin, it causes give you some phenomenal extension idea to your project.', CDBT) .$_p_fin;
@@ -144,11 +144,24 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
   <div class="panel panel-default donate-info">
     <div class="panel-heading"><span class="glyphicon glyphicon-heart" style="color: #f33;"></span> <?php esc_html_e( 'About Custom DataBase Tables', CDBT ); ?></div>
     <div class="panel-body">
+      <p><?php printf( __('Custom DataBase Tables is free of charge and is released under the same license as WordPress, the %sGPL%s.', CDBT), '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>' ); ?>
+      <?php printf( __('We have informed to %sfacebook page%s the latest developments about this plugin. Since it has also accepted requests and questions, please try to see.', CDBT), '<a href="https://www.facebook.com/ka2.org/" target="_blank">', '</a>' ); ?></p>
+      <div class="noteworthy">
+        <ul class="list-inline">
+          <li><a href="https://twitter.com/intent/tweet?text=Custom%20DataBase%20Tables%20v<?php echo $this->version; ?>%20-%20&url=https%3A%2F%2Fka2.org%2Fcdbt%2F&via=ka2bowy" target="_blank" class="cdbt-btn-group cdbt-twitter">
+            <span class="btn-left"><i class="fa fa-twitter" aria-hidden="true"></i></span><span class="btn-right"><?php _e('SHOW YOUR LOVE', CDBT); ?></span></a></li>
+          <li><a href="https://www.facebook.com/ka2.org/" target="_blank" class="cdbt-btn-group cdbt-facebook">
+            <span class="btn-left"><i class="fa fa-facebook" aria-hidden="true"></i></span><span class="btn-right"><?php _e('CHECK LATEST INFO', CDBT); ?></span></a></li>
+          <li><a href="https://wordpress.org/support/view/plugin-reviews/custom-database-tables#postform" target="_blank" class="cdbt-btn-group cdbt-review">
+            <span class="btn-left"><i class="fa fa-star" aria-hidden="true"></i></span><span class="btn-right"><?php _e('LEAVE A REVIEW', CDBT); ?></span></a></li>
+          <li><a href="https://ka2.org/cdbt/" target="_blank" class="cdbt-btn-group cdbt-official">
+            <span class="btn-left"><i class="fa fa-home" aria-hidden="true"></i></span><span class="btn-right"><?php _e('OFFICIAL SITE', CDBT); ?></span></a></li>
+        </ul>
+      </div>
       <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="https://ka2.org/cdbt/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
-      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/toc/" target="_blank" alt="CDBT Tutorial">', '</a>' ); ?>
-      <?php printf( __('Custom DataBase Table is free of charge and is released under the same license as WordPress, the %sGPL%s.', CDBT), '<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" alt="GPL 2.0">', '</a>' ); ?></p>
-      <p class="pull-left"><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?>
-      <?php esc_html_e( 'Finally if you like this plugin or if it helps your business, donations to the author are greatly appreciated.', CDBT ); ?></p>
+      <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/toc/" target="_blank" alt="CDBT Tutorial">', '</a>' ); ?></p>
+      <p><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?></p>
+      <p><?php esc_html_e( 'Finally if you like this plugin or if it helps your business, please examine donations to the author.', CDBT ); ?></p>
       <div class="clearfix" style="margin-bottom: 1em;"></div>
       <ul class="list-inline donate-links">
         <li class="donate-paypal"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">

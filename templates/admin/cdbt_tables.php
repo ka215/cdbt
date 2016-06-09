@@ -1366,7 +1366,7 @@ $label_required = '<span class="label label-required">'. __('Required', CDBT) .'
     
     $shortcode_options = [];
     if ( in_array( $current_action, [ 'view', 'edit' ] ) ) {
-      $shortcode_options = 'table' === $options['display_list_format'] ? [ 'enable_repeater="false"' ] : [ 'enable_repeater="true"' ];
+      $shortcode_options = 'table' === $options['display_list_format'] ? [ 'enable_repeater="false"', 'footer_interface="pager"' ] : [ 'enable_repeater="true"' ];
     }
 ?>
 <section id="<?php echo $current_action; ?>" data-target_table="<?php echo $target_table; ?>">

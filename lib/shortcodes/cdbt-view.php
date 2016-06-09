@@ -214,12 +214,16 @@ trait CdbtView {
       if ( $enable_repeater ) {
         $component_name = 'repeater';
         $display_index_row = $this->strtobool( $display_index_row );
+        $ajax_load = false;
       } else {
         $component_name = 'table';
         $display_index_row = 'head-only' === $display_index_row ? $display_index_row : $this->strtobool( $display_index_row );
+        $footer_interface = ! empty( $footer_interface ) && in_array( $footer_interface, [ 'pagination', 'pager' ] ) ? $footer_interface : 'pagination';
+        $ajax_load = $this->strtobool( $ajax_load );
       }
     } else {
       $component_name = 'json';
+      $ajax_load = false;
     }
     
     if ( ! empty( $image_render ) && ! in_array( strtolower( $image_render ), [ 'rounded', 'circle', 'thumbnail', 'responsive' ] ) ) {
@@ -330,17 +334,27 @@ trait CdbtView {
     // @since 2.1.32 Add new
     $conditions = apply_filters( 'cdbt_shortcode_query_conditions', $conditions, $shortcode_name, $table );
     
-    if ('get' === $query_type) {
-      $datasource = $this->get_data($table, '`'.implode('`,`', $output_columns).'`', $conditions, $narrow_operator, $orders, 'ARRAY_A');
+    // Added for loading data via Ajax since 2.1.32
+    $_limit_clause = $ajax_load ? intval( $limit_items ) : null;
+    if ( 'get' === $query_type ) {
+      $datasource = $this->get_data( $table, '`'.implode('`,`', $output_columns).'`', $conditions, $narrow_operator, $orders, $_limit_clause, 'ARRAY_A' );
     } else {
       $datasource = [];
       // Added since version 2.0.7
       // Fixed bug since version 2.1.31
       $narrow_operator = strtolower( $narrow_operator );
-      $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, 'ARRAY_A' );
+      $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, $_limit_clause, 'ARRAY_A' );
     }
-    if (empty($datasource))
+    if ( empty( $datasource ) ) {
       return sprintf('<p>%s</p>', __('The specified table&#39;s data was not found. There is no data in the table at all, or no data of matching condition.', CDBT));
+    } else 
+    if ( $ajax_load ) {
+      $_cnt_col = $has_pk ? $pk_columns[0] : $output_columns[0];
+      $_res = $this->get_data( $table, 'COUNT(`'. $_cnt_col .'`)', $conditions, $narrow_operator, 'OBJECT_K' );
+      $total_data = ! empty( $_res ) ? intval( array_keys( $_res )[0] ) : 0;
+      $query_assets = [ $query_type, $output_columns, $conditions, $narrow_operator, $orders, $_limit_clause ];
+      unset( $_cnt_col, $_res );
+    }
     
     if ( 'json' === $component_name ) 
       return json_encode( $datasource );
@@ -557,7 +571,9 @@ trait CdbtView {
       // For static table format
       $add_options = [
         'draggable' => $draggable, 
+        'footerUI' => $footer_interface,
         'displayIndexRow' => $display_index_row, 
+        'ajaxLoad' => $ajax_load, 
         'customBeforeRender' => '', 
         'customAfterRender' => '', 
         'thumbnailOptions' => [ 'title' => $thumbnail_title_column, 'column' => $thumbnail_column, 'width' => intval( $thumbnail_width ) ], 
@@ -566,6 +582,10 @@ trait CdbtView {
         'tbodyClass' => '', 
         'tfootClass' => '', 
       ];
+      if ( $ajax_load ) {
+        $add_options['totalData'] = $total_data;
+        $add_options['queryAssets'] = $query_assets;
+      }
     }
     $component_options = array_merge( $component_options, $add_options );
     

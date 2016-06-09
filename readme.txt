@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.5.2
-Stable tag: 2.1.32beta
+Stable tag: 2.1.32
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,12 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.1.32 =
+* Changed the string truncation processing of table data in the management screen, from current fixed 100 characters to newly 40 characters as the initial value.
+* Added new features that is able to choose the clickable columns and the truncating columns in the shortcode of "cdbt-view" and "cdbt-edit".
+* Added new features that is able to toggle the draggable table and choose the footer interface on the table layout of the shortcode.
+* In the "cdbt_shortcode_custom_forms" filter, it became able to get rightly "cdbt-edit" at the second argument of shortcode name.
 
 = 2.1.31 =
 * Changed the version notation specifications of the plugin: (Major version number).(Minor version number).(Cumulative version number) and append the development stage display if necessary.
