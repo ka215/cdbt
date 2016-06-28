@@ -65,6 +65,7 @@ if ( empty( $this->component_options['filter_column'] ) || empty( $this->compone
     foreach ( $this->component_options['filters'] as $val ) {
       $_value = $this->strtohash( $val );
       $_list_value = esc_attr( mb_decode_numericentity( key( $_value ), array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) );
+      $_list_value = $_list_value === '0' ? $_value[0] : $_list_value;
       $_label = ! empty( $_value[key( $_value )] ) ? mb_decode_numericentity( $_value[key( $_value )], array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' ) : $_list_value;
       $filters_list[] = sprintf( '<li data-value="%s"><a href="#">%s</a></li>', $_list_value, $_label );
     }
@@ -626,7 +627,12 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     }
 <?php endif; ?>
     
-    if (typeof Clipboard === 'function') {
+    var _is_safari = false;
+    if (/AppleWebkit/i.test(window.navigator.userAgent)) {
+      _is_safari = /Chrome/i.test(window.navigator.userAgent) ? false : true;
+    }
+    
+    if (typeof Clipboard === 'function' && ! _is_safari) {
       // To enable the clipboard copy
       var clipboard = new Clipboard('tbody>tr>td', {
         text: function(trigger){
@@ -800,7 +806,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       return this.render();
     }
     _.each(data, function(item){
-      if (item[searchObj.column] === searchObj.keyword) {
+      if (item[searchObj.column] === String(searchObj.keyword)) {
         searchedData.push(item);
       }
     });

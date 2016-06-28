@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.1.32\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-06-09 14:44+0900\n"
+"POT-Creation-Date: 2016-06-09 18:37+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -1058,39 +1058,39 @@ msgstr "テーブル複製が完了しましたが、データのコピーに失
 msgid "Failed to duplicate of the \"%s\" table."
 msgstr "複製テーブル「%s」の作成に失敗しました。"
 
-#: lib/db.php:917
+#: lib/db.php:914
 msgid "No insert data."
 msgstr "挿入するデータがありません。"
 
-#: lib/db.php:986
+#: lib/db.php:983
 msgid "Inserted data is invalid."
 msgstr "挿入するデータが不正です。"
 
-#: lib/db.php:1007
+#: lib/db.php:1004
 msgid "Failed to insert data."
 msgstr "データの挿入に失敗しました。"
 
-#: lib/db.php:1067
+#: lib/db.php:1064
 msgid "No update data."
 msgstr "更新データがありません。"
 
-#: lib/db.php:1071
+#: lib/db.php:1068
 msgid "Update data is invalid."
 msgstr "更新データが不正です。"
 
-#: lib/db.php:1083
+#: lib/db.php:1080
 msgid "You can not update to a column that will be modified automatically."
 msgstr "自動的に変更されるカラムを更新することはできません。"
 
-#: lib/db.php:1088
+#: lib/db.php:1085
 msgid "Condition to find the updating data is not specified."
 msgstr "更新データを検索するための条件が指定されていません。"
 
-#: lib/db.php:1092
+#: lib/db.php:1089
 msgid "Condition to find the updating data is invalid."
 msgstr "更新データを検索するための条件が無効です。"
 
-#: lib/db.php:1154
+#: lib/db.php:1151
 msgid ""
 "Failed to update data because the record having the same data exist in the "
 "other."
@@ -1098,37 +1098,37 @@ msgstr ""
 "同じデータを持つレコードが他に存在していたため、更新することができませんでし"
 "た。"
 
-#: lib/db.php:1191
+#: lib/db.php:1188
 msgid "Failed to modify your specified data."
 msgstr "指定されたデータの更新に失敗しました。"
 
-#: lib/db.php:1324
+#: lib/db.php:1321
 msgid "Condition to find the deleting data is not specified."
 msgstr "削除データを検索するための条件が指定されていません。"
 
-#: lib/db.php:1328
+#: lib/db.php:1325
 msgid "Condition to find the deleting data is invalid."
 msgstr "削除データを検索するための条件が無効です。"
 
-#: lib/db.php:1368
+#: lib/db.php:1365
 #, php-format
 msgid "Failed to remove data of the deletion condition of \"%s\"."
 msgstr "削除条件「%s」のデータを削除できませんでした。"
 
-#: lib/db.php:1626
+#: lib/db.php:1623
 msgid "No origin table for exporting."
 msgstr "エクスポート元のテーブルがありません。"
 
-#: lib/db.php:1629
+#: lib/db.php:1626
 #, php-format
 msgid "The \"%s\" of specified download file format does not supported."
 msgstr "指定されたダウンロードファイルの形式「%s」には対応していません。"
 
-#: lib/db.php:1633
+#: lib/db.php:1630
 msgid "Export target column is not specified."
 msgstr "エクスポートする対象カラムが指定されていません。"
 
-#: lib/db.php:1644
+#: lib/db.php:1641
 #, php-format
 msgid "The \"%s\" column for exporting does not exist."
 msgstr "エクスポート対象の「%s」カラムがありません。"
@@ -2015,7 +2015,7 @@ msgstr ""
 
 #: templates/admin/cdbt_management_console.php:152
 msgid "SHOW YOUR LOVE"
-msgstr "あなたの表示項目:"
+msgstr "プラグインを紹介する"
 
 #: templates/admin/cdbt_management_console.php:154
 msgid "CHECK LATEST INFO"
