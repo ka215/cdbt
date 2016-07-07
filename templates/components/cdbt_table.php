@@ -338,9 +338,6 @@ $adjust_thumbnail = apply_filters( 'cdbt_crop_thumbnail_position', [ 'landscape'
     <nav class="cdbt-<?php echo $footer_ui; ?> text-center" for="<?php echo $table_id; ?>"></nav>
   </div><!-- /.panel-footer -->
 <?php endif; ?>
-<?php if ( $ajax_load ) : ?>
-  <input type="hidden" name="ajax_queries" value="<?php echo esc_attr( $query_assets ); ?>" for="<?php echo $table_id; ?>">
-<?php endif; ?>
 </div><!-- /.cdbt-table-wrapper -->
 <script>
 // For doing inherit class
@@ -348,12 +345,18 @@ if (typeof DynamicTables === 'undefined') {
   var DynamicTables = {};
 }
 DynamicTables['<?php echo $table_id; ?>'] = function() {
+  if (typeof $ === 'undefined' && typeof jQuery === 'function') {
+    $ = jQuery;
+  }
   this.init();
 };
 DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php $json_code = json_encode($items); ?>
   items: new Array(<?php echo substr($json_code, 1, -1); ?>),
   filteredItems: new Array(),
+<?php if ( $ajax_load ) : ?>
+  baseQuery: '<?php echo $query_assets; ?>',
+<?php endif; ?>
   init: function() {
     var items = this.items;
     
@@ -381,6 +384,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       totalPages: Math.ceil(<?php echo $total_data; ?> / perPageLimit), 
       startIndex: startIndex, 
       endIndex: endIndex > <?php echo $total_data; ?> ? <?php echo $total_data; ?> : endIndex, 
+      filterType: '', 
+      cachePage: _.isNull(optCookie) ? '' : optCookie.cachePage, 
 <?php else : ?>
       totalItems: items.length, 
       totalPages: Math.ceil(items.length / perPageLimit), 
@@ -388,6 +393,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       endIndex: endIndex > items.length ? items.length : endIndex, 
 <?php endif; ?>
       searchKeyword: _.isNull(optCookie) ? '' : optCookie.searchKeyword, 
+      filterKeyword: _.isNull(optCookie) ? '' : optCookie.filterKeyword, 
       searchedData: [], 
       isFiltering: false, 
       showTh: <?php echo 'head-only' === $display_index_row ? "'". $display_index_row ."'" : $display_index_row; ?>, 
@@ -397,14 +403,6 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     // Add Event Listener
     var _self = this;
-<?php if ( $enable_search ) : ?>
-    $('#<?php echo $table_id; ?>-search button').on('click', function(e){ _self.searchFor(e,$(this)); }); // search button
-    $('#<?php echo $table_id; ?>-search input').on('keypress', function(e){ if (e.which === 13) { _self.searchFor(e,$(this)); } }); // search enter key
-    if ( ! _.isNull(optCookie) && '' !== optCookie.searchKeyword ) {
-      $('#<?php echo $table_id; ?>-search input').val(optCookie.searchKeyword);
-      $('#<?php echo $table_id; ?>-search button').trigger('click');
-    }
-<?php endif; ?>
 <?php if ( $_sortable_cols > 0 ) : ?>
     $('#<?php echo $table_id; ?> thead th.sortable').on('click', function(e){ _self.sortBy(e,$(this)); }); // sort
     if ( ! _.isNull(optCookie) && '' !== optCookie.sortedProperty ) {
@@ -425,9 +423,24 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php endif; ?>
 <?php if ( $enable_filter ) : ?>
 	$('#<?php echo $table_id; ?>-filters').on('changed.fu.selectlist', function(e){ _self.filterAt(e,$(this)); }); // filter
+	if ( ! _.isNull(optCookie) && '' !== optCookie.filterKeyword ) {
+      var _value = optCookie.filterKeyword.split(':');
+      $('#<?php echo $table_id; ?>-filters').selectlist('selectByValue', _value[1]);
+      if ( '' === optCookie.searchKeyword ) {
+        $('#<?php echo $table_id; ?>-filters').trigger('changed.fu.selectlist');
+      }
+    }
+<?php endif; ?>
+<?php if ( $enable_search ) : ?>
+    $('#<?php echo $table_id; ?>-search button').on('click', function(e){ _self.searchFor(e,$(this)); }); // search button
+    $('#<?php echo $table_id; ?>-search input').on('keypress', function(e){ if (e.which === 13) { _self.searchFor(e,$(this)); } }); // search enter key
+    if ( ! _.isNull(optCookie) && '' !== optCookie.searchKeyword ) {
+      $('#<?php echo $table_id; ?>-search input').val(optCookie.searchKeyword);
+      $('#<?php echo $table_id; ?>-search button').trigger('click');
+    }
 <?php endif; ?>
 <?php if ( $enable_editor ) : ?>
-    $('.cdbt-table-editor[for="<?php echo $table_id; ?>"]').find('#table-editor-edit,#table-editor-delete').on('click', function(e){ _self.cacheOpt(e,$(this)); }); // cache
+    $(document).on('click', '.cdbt-table-editor[for="<?php echo $table_id; ?>"] button#table-editor-edit, .cdbt-table-editor[for="<?php echo $table_id; ?>"] button#table-editor-delete', function(e){ _self.cacheOpt(e,$(this)); }); // cache
 <?php endif; ?>
 	$(window).on('resize', function(e){ _self.render(); });
     
@@ -435,24 +448,30 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   deepCopy: function(object) {
     return JSON.parse(JSON.stringify(Array.prototype.slice.call(object,0)));
   },
+<?php if ( $ajax_load ) : ?>
+  render: function(now_data) {
+    var options = this.options;
+    if (typeof now_data !== 'undefined') {
+      this.items = now_data;
+    }
+    var data = this.deepCopy(this.items);
+<?php else : ?>
   render: function(method) {
     var options = this.options;
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
-    
-<?php if ( $ajax_load ) : ?>
-    options.totalItems = <?php echo $total_data; ?>;
-    options.totalPages = Math.ceil( <?php echo $total_data; ?> / options.perPageLimit );
-<?php else : ?>
     options.totalItems = data.length;
-    options.totalPages = Math.ceil( data.length / options.perPageLimit );
 <?php endif; ?>
+    
+    options.totalPages = Math.ceil( options.totalItems / options.perPageLimit );
     options.startIndex = ((options.currentPage - 1) * options.perPageLimit) + 1;
     options.endIndex = (options.startIndex + options.perPageLimit) - 1;
     
     if (options.endIndex > options.totalItems) {
       options.endIndex = options.totalItems;
     }
+<?php if ( ! $ajax_load ) : ?>
     data = data.slice(options.startIndex-1, options.endIndex);
+<?php endif; ?>
     
     // customBeforeRenderer
     this.beforeRender();
@@ -671,7 +690,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
 <?php if ( $_must_paging ) : ?>
     // Render <?php echo $footer_ui; ?> 
-    if (options.totalPages > 1) {
+    if (options.totalPages > <?php echo 'pager' === $footer_ui ? 0 : 1; ?>) {
       this.<?php echo $footer_ui; ?>();
     } else {
       $('.cdbt-<?php echo $footer_ui; ?>[for="'+options.tableId+'"]').html('');
@@ -685,10 +704,15 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     $(window).scrollTop(componentPos.top - topMargin - adminBar);
     
     // customAfterRenderer
+<?php if ( $ajax_load ) : ?>
+    this.afterRender('');
+<?php else : ?>
     this.afterRender(method);
+<?php endif; ?>
     
   }, 
 <?php if ( $_sortable_cols > 0 ) : ?>
+<?php if ( ! $ajax_load ) : ?>
   objArraySort: function(data,prop,order){
     data.sort(function(a,b){
       if (_.isNumber(a[prop]) && _.isNumber(b[prop])) {
@@ -716,12 +740,19 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     });
     return order !== 'asc' ? data.reverse() : data;
   },
+<?php endif; ?>
   sortBy: function(e,target) {
     var options = this.options;
+<?php if ( $ajax_load ) : ?>
+    if ( options.totalItems <= 1 ) {
+      return false;
+    }
+<?php else : ?>
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
   	if (data.length <= 1) {
   	  return false;
   	}
+<?php endif; ?>
     var sortedProperty = target.data('property');
     options.sortedProperty = sortedProperty;
     if ( ! target.hasClass('sorted')) {
@@ -738,19 +769,38 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     }
     var currentSortDir = target.hasClass('sortdir-desc') ? 'desc' : 'asc';
     options.currentSortDir = currentSortDir;
+<?php if ( $ajax_load ) : ?>
+	var new_query = {
+      sortColumn: options.sortedProperty,
+      sortOrder: options.currentSortDir,
+      offset: (options.currentPage - 1) * options.perPageLimit,
+    };
+    if ( options.isFiltering ) {
+      if ( options.searchKeyword !== '' ) {
+        new_query.narrowSearchKey = options.searchKeyword;
+      }
+      if ( options.filterKeyword !== '' ) {
+        new_query.narrowFilterKey = options.filterKeyword;
+      }
+    }
+    this.reload( new_query, this );
+<?php else : ?>
     if ( options.isFiltering ) {
       this.filteredItems = this.objArraySort(data,sortedProperty,currentSortDir);
     } else {
       this.items = this.objArraySort(data,sortedProperty,currentSortDir);
     }
     return this.render();
+<?php endif; ?>
     
   }, 
 <?php endif; ?>
 <?php if ( $enable_search ) : ?>
   searchFor: function(e,target) {
     var options = this.options;
+<?php if ( ! $ajax_load ) : ?>
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+<?php endif; ?>
     var keyword = $('#'+options.tableId+'-search input').val().toLowerCase();
     var searchedData = [];
     if ('' === keyword) {
@@ -760,6 +810,28 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     if (target.find('i').hasClass('fa-close')) {
       $('#'+options.tableId+'-search').find('input').val('').prop('disabled', false);
       $('#'+options.tableId+'-search').find('i').attr('class', 'fa fa-search');
+<?php if ( $ajax_load ) : ?>
+      options.currentPage = 1;
+      options.isFiltering = options.filterKeyword === undefined || options.filterKeyword === '' ? false : true;
+      options.searchKeyword = '';
+      //options.filterType = '';
+    <?php if ( $enable_filter ) : ?>
+      var __selectlist = $('#'+options.tableId+'-filters');
+      __selectlist.selectlist('enable');
+    <?php endif; ?>
+      var new_query = {
+        narrowSearchKey: options.searchKeyword, 
+        offset: 0,
+      };
+      if ( options.filterKeyword !== '' ) {
+        new_query.narrowFilterKey = options.filterKeyword;
+      }
+      if ( options.sortedProperty !== '' ) {
+        new_query.sortColumn = options.sortedProperty;
+        new_query.sortOrder = options.currentSortDir;
+      }
+      this.reload( new_query, this );
+<?php else : ?>
       options.isFiltering = false;
     <?php if ( $enable_filter ) : ?>
       var __selectlist = $('#'+options.tableId+'-filters');
@@ -769,7 +841,36 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       }
     <?php endif; ?>
       return this.render();
+<?php endif; ?>
     } else {
+<?php if ( $ajax_load ) : ?>
+      options.currentPage = 1;
+      options.isFiltering = true;
+      options.searchKeyword = keyword;
+      var new_query = {
+        narrowSearchKey: options.searchKeyword, 
+        offset: 0,
+      };
+      if ( options.cachePage > 0 ) {
+        new_query.offset = (options.cachePage - 1) * options.perPageLimit;
+        options.currentPage = options.cachePage;
+        options.cachePage = 0;
+      }
+      $('#'+options.tableId+'-search').find('i').attr('class', 'fa fa-close');
+      $('#'+options.tableId+'-search').find('input').prop('disabled', true);
+    <?php if ( $enable_filter ) : ?>
+      $('#'+options.tableId+'-filters').selectlist('disable');
+      if ( options.filterKeyword !== '' ) {
+        new_query.narrowFilterKey = options.filterKeyword;
+      }
+    <?php endif; ?>
+      if ( options.sortedProperty !== '' ) {
+        new_query.sortColumn = options.sortedProperty;
+        new_query.sortOrder = options.currentSortDir;
+      }
+      this.reload( new_query, this );
+    }
+<?php else : ?>
       _.each(data, function(item){
         var values = _.values(item);
         var found = _.find(values, function(v) {
@@ -793,12 +894,40 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   <?php endif; ?>
     options.isFiltering = true;
     return this.render();
+<?php endif; ?>
     
   }, 
 <?php endif; ?>
 <?php if ( $enable_filter ) : ?>
   filterAt: function(e,target) {
     var options = this.options;
+<?php if ( $ajax_load ) : ?>
+    var keyword = $('#'+options.tableId+'-filters').selectlist('selectedItem').value;
+    var new_query = {};
+    if (keyword !== '') {
+      options.currentPage = 1;
+      options.isFiltering = true;
+      options.filterKeyword = '<?php echo $filter_column; ?>:' + keyword;
+      new_query = {
+        narrowFilterKey: options.filterKeyword, 
+        offset: 0,
+      };
+      if ( options.cachePage > 0 && options.searchKeyword === '' ) {
+        new_query.offset = (options.cachePage - 1) * options.perPageLimit;
+        options.currentPage = options.cachePage;
+        options.cachePage = 0;
+      }
+    } else {
+      options.currentPage = 1;
+      options.isFiltering = options.searchKeyword === '' ? false : true;
+      options.filterKeyword = '';
+    }
+    if ( options.sortedProperty !== '' ) {
+      new_query.sortColumn = options.sortedProperty;
+      new_query.sortOrder = options.currentSortDir;
+    }
+    this.reload( new_query, this );
+<?php else : ?>
     var data = this.deepCopy(this.items);
     var searchedData = [], searchObj = { column: '<?php echo $filter_column; ?>', keyword: $('#'+options.tableId+'-filters').selectlist('selectedItem').value };
     if (searchObj.keyword === '') {
@@ -816,6 +945,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     this.filteredItems = searchedData;
     options.isFiltering = true;
     return this.render();
+<?php endif; ?>
     
   },
 <?php endif; ?>
@@ -836,7 +966,26 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
         return false;
       }
     }
+<?php if ( $ajax_load ) : ?>
+	var new_query = {
+      offset: (options.currentPage - 1) * options.perPageLimit
+    };
+    if ( options.sortedProperty !== '' ) {
+      new_query.sortColumn = options.sortedProperty;
+      new_query.sortOrder = options.currentSortDir;
+    }
+    if ( options.isFiltering ) {
+      if ( options.searchKeyword !== '' ) {
+        new_query.narrowSearchKey = options.searchKeyword;
+      }
+      if ( options.filterKeyword !== '' ) {
+        new_query.narrowFilterKey = options.filterKeyword;
+      }
+    }
+    this.reload( new_query, this );
+<?php else : ?>
     return this.render();
+<?php endif; ?>
     
   }, 
   pagination: function() {
@@ -897,7 +1046,31 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       }
     }
     
+<?php if ( $ajax_load ) : ?>
+	var new_query = {
+      offset: (options.currentPage - 1) * options.perPageLimit
+    };
+    if ( options.sortedProperty !== '' ) {
+      new_query.sortColumn = options.sortedProperty;
+      new_query.sortOrder = options.currentSortDir;
+    }
+    if ( options.isFiltering ) {
+      if ( options.searchKeyword !== '' ) {
+        new_query.narrowSearchKey = options.searchKeyword;
+      }
+      if ( options.filterKeyword !== '' ) {
+        new_query.narrowFilterKey = options.filterKeyword;
+      }
+    }
+    if ( mustRender ) {
+      this.reload( new_query, this );
+    } else {
+      return false;
+    }
+<?php else : ?>
     return mustRender ? this.render() : false;
+<?php endif; ?>
+    
   },
   pager: function() {
     var options = this.options;
@@ -950,7 +1123,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php endif; ?>
   beforeRender: function() {
     var options = this.options;
+<?php if ( ! $ajax_load ) : ?>
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+<?php endif; ?>
     
   <?php if ( isset($before_render_scripts) ) : ?>
     <?php echo $before_render_scripts; ?>
@@ -959,7 +1134,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
   },
   afterRender: function(method) {
     var options = this.options;
+<?php if ( ! $ajax_load ) : ?>
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+<?php endif; ?>
     
 <?php if ( $enable_editor ) : ?>
     $('.cdbt-table-editor[for="'+options.tableId+'"] button#table-editor-edit').removeClass('btn-primary').addClass('btn-default').prop('disabled', true);
@@ -1020,7 +1197,11 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $enable_view ) : ?>
   changeView: function(e,target) {
     var options = this.options;
+<?php if ( $ajax_load ) : ?>
+    var data = this.deepCopy(this.items);
+<?php else : ?>
     var data = ! options.isFiltering ? this.deepCopy(this.items) : this.deepCopy(this.filteredItems);
+<?php endif; ?>
     var toView = $('.cdbt-table-views[for="'+options.tableId+'"]>label.active>input').val();
     var currentView = $('.cdbt-table-views[for="'+options.tableId+'"]').data().currentView;
     if (currentView !== toView) {
@@ -1043,7 +1224,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       var thumbnails = [];
       var thumbnail_template = _.template('<?php echo $_thumb_template; ?>');
       _.each(data, function(row,i){
+<?php if ( ! $ajax_load ) : ?>
         if ( i + 1 >= options.startIndex && i + 1 < options.startIndex + options.perPageLimit ) {
+<?php endif; ?>
           var thumb_data = {};
           thumb_data['title'] = <?php if ( empty( $_thumb_title ) || 'auto' === strtolower( $_thumb_title ) ) : ?>''<?php else: ?>row['<?php echo $_thumb_title; ?>']<?php endif; ?>;
           var titled = <?php echo 'auto' === strtolower( $_thumb_title ) ? 'false' : 'true'; ?>;
@@ -1066,7 +1249,9 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
           }
         <?php endif; ?>
           thumbnails.push(thumb_data);
+<?php if ( ! $ajax_load ) : ?>
         }
+<?php endif; ?>
       });
       if (thumbnails.length > 0) {
         _.each(thumbnails, function(val){
@@ -1107,16 +1292,53 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     var saveOpt = {};
     saveOpt['currentPage'] = options.currentPage;
     saveOpt['searchKeyword'] = options.searchKeyword;
+<?php if ( $ajax_load ) : ?>
+    saveOpt['filterKeyword'] = options.filterKeyword;
+    saveOpt['cachePage'] = options.currentPage;
+<?php endif; ?>
     saveOpt['sortedProperty'] = options.sortedProperty;
     saveOpt['currentSortDir'] = options.currentSortDir;
     docCookies.setItem( '<?php echo $table_name; ?>', JSON.stringify(saveOpt) );
     return;
   },
 <?php endif; ?>
-  reload: function(){
-    this.items = [];
-    this.render();
+<?php if ( $ajax_load ) : ?>
+  reload: function( args, callback ){
+    //var options = this.options;
+    var ajaxUrl = cdbt_<?php if ( is_admin() ) : ?>admin<?php else : ?>main<?php endif; ?>_vars.ajax_url;
+    var post_data = {
+      tableName: '<?php echo $table_name; ?>',
+      queryAssets: this.baseQuery, 
+      event: 'get_data', 
+      newQuery: args, 
+    };
+    var ajax_params = {
+      async: true, 
+      url: ajaxUrl, 
+      type: 'post', 
+      data: post_data, 
+      dataType: 'json', 
+      cache: false,
+    };
+  	$('#<?php echo $table_id; ?>').animate({opacity: .5}, 150);
+    var container_width = $('.cdbt-table-wrapper[for="<?php echo $table_id; ?>"]').outerWidth();
+    $('.panel-body[for="<?php echo $table_id; ?>"]').css({position:'absolute', width:(container_width-2)+'px', top:'50%', zIndex:999 }).fadeIn(300);
+    $.ajax( ajax_params ).done( function( data, stat, xhr ) {
+//console.log({ done: stat, data: data, xhr: xhr });
+      var _totalItems = data.pop();
+      if ( callback.options.isFiltering ) {
+        callback.options.totalItems = _totalItems;
+      } else {
+        callback.options.totalItems = <?php echo $total_data; ?>;
+      }
+      $('#<?php echo $table_id; ?>').animate({opacity: 1}, 150);
+      callback.render( data );
+    }).fail( function( xhr, stat, err ) {
+//console.log({ fail: stat, error: err, xhr: xhr });
+      
+    });
   },
+<?php endif; ?>
   disabled: function(){
     var options = this.options;
     $('.cdbt-table-wrapper[for="'+options.tableId+'"]').find('input,a').prop('disabled', true);

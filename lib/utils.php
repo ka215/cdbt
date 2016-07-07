@@ -558,39 +558,47 @@ class CdbtUtility {
    * Convert to object or array from string like hash
    *
    * @since 2.0.0
+   * @since 2.1.33 Updated
    *
    * @param string $string [require]
    * @param string $var_type [optional] Whether return value is at assoc array or object. For default is `array`
    * @return mixed Return specified variables if conversion success, False otherwise
    */
   public function strtohash( $string=null, $var_type='array' ) {
-    if (empty($string) || !in_array(strtolower($var_type), [ 'array', 'object' ])) 
+    if ( empty( $string ) || ! in_array( strtolower( $var_type ), [ 'array', 'object' ] ) ) 
       return false;
     
-    
-    if (!($_ary = $this->strtoarray($string))) 
+    if ( ! ( $_ary = $this->strtoarray( $string ) ) ) 
       return false;
     
     $_assoc = [];
-    foreach ($_ary as $_row) {
-      if (strpos($_row, ':') !== false) {
-        list($_key, $_val) = explode(':', $_row);
-        $_key = trim(trim(stripcslashes(trim($_key)), "\"' "));
-        $_val = trim(trim(stripcslashes(trim($_val)), "\"' "));
-        if (!empty($_key) && strlen($_key) > 0) {
-          $_assoc[$_key] = $_val;
+    foreach ( $_ary as $_row ) {
+      if ( strpos( $_row, ':' ) !== false ) {
+        list( $_key, $_val ) = preg_split( '/(?<!\\\):/im', $_row ); //explode( ':', $_row );
+        $_key = trim( trim( stripcslashes( trim( $_key ) ), "\"' " ) );
+        $_val = trim( trim( stripcslashes( trim( $_val ) ), "\"' " ) );
+        if ( ! empty( $_key ) && strlen( $_key ) > 0 ) {
+          if ( array_key_exists( $_key, $_assoc ) ) {
+            if ( is_array( $_assoc[$_key] ) ) {
+              $_assoc[$_key][] = $_val;
+            } else {
+              $_assoc[$_key] = array_merge( ( array )$_assoc[$_key], [ $_val ] );
+            }
+          } else {
+            $_assoc[$_key] = $_val;
+          }
         }
       } else {
-        $_row = trim(trim(stripcslashes(trim($_row)), "\"' "));
+        $_row = trim( trim( stripcslashes( trim( $_row ) ), "\"' " ) );
         $_assoc[] = $_row;
       }
     }
     
-    if (empty($_assoc)) 
+    if ( empty( $_assoc ) ) 
       return false;
     
-    if ('object' === strtolower($var_type)) 
-      return (object)$_assoc;
+    if ( 'object' === strtolower( $var_type ) ) 
+      return ( object )$_assoc;
     
     return $_assoc;
     

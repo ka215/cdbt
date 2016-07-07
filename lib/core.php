@@ -7,6 +7,7 @@ if ( !class_exists( 'CdbtCore' ) ) :
  * Main Plugin Core Class for CustomDataBaseTables
  * 
  * @since 2.0.0
+ * @since 2.1.33 Add a handler for the add-on
  *
  * @see CustomDataBaseTables\Lib\CdbtUtility
  */
@@ -22,7 +23,7 @@ class CdbtCore extends CdbtUtility {
   /**
    * @var obj Append to this plugin as addon
    */
-  public $extend;
+  public $extend = array();
   
   /**
    * @var array Overloads get_option()
@@ -74,6 +75,7 @@ class CdbtCore extends CdbtUtility {
     $this->plugin_dir = apply_filters( 'cdbt_plugin_dir_path', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_path( $this->file )) );
     $this->plugin_url = apply_filters( 'cdbt_plugin_dir_url', str_replace($this->plugin_lib_dir . '/', '', plugin_dir_url( $this->file )) );
     $this->plugin_main_file = apply_filters( 'cdbt_plugin_main_file', $this->plugin_dir . 'cdbt.php' );
+    $this->plugin_addons_dir = apply_filters( 'cdbt_plugin_addons_dir', $this->plugin_dir . 'addons' ); // @since 2.1.33
     
     // Languages
     $this->plugin_lang_dir = apply_filters( 'cdbt_plugin_lang_dir', plugin_basename($this->plugin_dir) . '/langs' );
@@ -82,6 +84,17 @@ class CdbtCore extends CdbtUtility {
     // Ajax Action name
     $this->plugin_ajax_action = apply_filters( 'cdbt_plugin_ajax_action', 'cdbt_ajax_handler' );
     
+    // Check Installed Addons
+    // @since 2.1.33
+    if ( file_exists( $this->plugin_addons_dir ) ) {
+      $this->installed_addons = [];
+      array_map( function( $_val ){
+        $_pi = pathinfo( $_val );
+        if ( ! isset( $_pi['extension'] ) && ! in_array( $_pi['basename'], [ '.', '..' ] ) ) {
+          $this->installed_addons[] = $_pi['filename'];
+        }
+      }, scandir( $this->plugin_dir . 'addons' ) );
+    }
   }
   
   
@@ -117,6 +130,12 @@ class CdbtCore extends CdbtUtility {
       if ('export_table' === $_POST['action']) 
         $this->download_file( $_POST[$this->domain_name] );
       
+    }
+    
+    if ( isset( $this->installed_addons ) && ! empty( $this->installed_addons ) ) {
+      foreach ( $this->installed_addons as $_installed_addon ) {
+        require_once( $this->plugin_addons_dir .'/'. $_installed_addon .'/'. $_installed_addon .'.php' );
+      }
     }
     
     add_filter( 'gettext', array( &$this, 'cdbt_gettext_messages' ), 10, 3 );

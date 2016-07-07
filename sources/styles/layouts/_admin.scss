@@ -545,3 +545,77 @@ nav#operation-navbar {
     color: inherit;
   }
 }
+
+.addons-section {
+  padding: 0 9px;
+  
+  .addons-list {
+    
+    li {
+      vertical-align: top;
+      
+      .thumbnail {
+        min-width: 242px;
+        
+        img {
+          width: 100%;
+          max-width: 232px;
+          height: auto;
+          max-height: 200px;
+          background-color: #e8e8e8;
+          
+        }
+        
+        .caption {
+          
+          .addon-title {
+            margin-top: 15px;
+          }
+          
+          .addon-description {
+            word-wrap: break-word;
+            word-break: normal;
+            white-space: normal;
+            overflow: hidden;
+            height: 6em;
+            border-bottom: 1px dotted #d1d1d1;
+          }
+          
+          .addon-version, .addon-author {
+            text-align: right;
+            border-bottom: 1px dotted #d1d1d1;
+            
+            label {
+              color: #919497;
+              font-weight: 400;
+            }
+          }
+          
+          .addon-footer {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+            
+            .add-btn {
+              text-align: left;
+            }
+            
+            .addon-amount {
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .addon-message {
+    width: 100%;
+    margin-top: 3em;
+    text-align: center;
+    color: #a2a2a2;
+    font-size: 19px;
+  }
+}

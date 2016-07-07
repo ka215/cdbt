@@ -149,7 +149,7 @@ $(document).ready(function() {
   $.modalNotices = 'true' === cdbt_admin_vars.notices_via_modal ? true : false;
   $.localErrMsg = decodeURIComponent(cdbt_admin_vars.local_err_msg.replace(/\+/g, ' '));
   $.localCopied = decodeURIComponent(cdbt_admin_vars.local_copied.replace(/\+/g, ' '));
-  $.onTimer = true;
+  $.onTimer = false;
   if ($.isDebug) {
     // check debug mode
     console.info( $.extend({ debugMode: 'ON', modalNotices: $.modalNotices }, $.QueryString) );
@@ -681,11 +681,12 @@ $(document).ready(function() {
       var prevDate = $(this).parent().next('input[type=hidden]').val();
       if ( prevDate === '0000-00-00 00:00:00' ) {
         $.onTimer = true;
+        Callback.reload_timer();// once only
       } else {
         $.onTimer = false;
       }
     });
-    setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
+    //setInterval( function(){ 'use strict'; Callback.reload_timer(); }, 1000 );
   }
   
   
@@ -2481,12 +2482,16 @@ var strip_tags = function( str, allowed ) {
     return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
   });
 };
+var strip_slashes = function( str ) {
+  return str.replace(/\\(.)/mg, "$1");
+};
 var cdbtCustomColumnFilter = function( value, truncate ){
   truncate = truncate || 100;
   var raw_str = $('<div/>').html( strip_tags( _.unescape( value ), '<a><b><strong><em><i>' ) ).text();
+  var esc_str = strip_slashes( value );
   if ( mb_strlen( raw_str ) > truncate ) {
     var truncate_str = mb_substr( raw_str, 0, truncate - 1 );
-    value = truncate_str + '<a href="javascript:;" class="btn btn-default btn-sm collapse-col-data" data-raw="'+ value +'"><i class="fa fa-ellipsis-h" aria-hidden="true"></i> <i class="fa fa-level-up" aria-hidden="true"></i></a>';
+    value = truncate_str + '<a href="javascript:;" class="btn btn-default btn-sm collapse-col-data" data-raw="'+ esc_str +'"><i class="fa fa-ellipsis-h" aria-hidden="true"></i> <i class="fa fa-level-up" aria-hidden="true"></i></a>';
   } else {
     value = raw_str;
   }

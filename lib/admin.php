@@ -165,10 +165,11 @@ final class CdbtAdmin extends CdbtDB {
   private function setup_actions() {
     
     // Include Extensions
-    $this->includes();
+    //$this->includes();
+    add_action( 'admin_init', array($this, 'includes'), 1 );
     
     // Initial Action
-    add_action( 'admin_init', array($this, 'admin_initialize') );
+    add_action( 'admin_init', array($this, 'admin_initialize'), 2 );
     
     // General Actions
     if (!empty($GLOBALS['pagenow']) && 'plugins.php' === $GLOBALS['pagenow'] ) 
@@ -192,12 +193,20 @@ final class CdbtAdmin extends CdbtDB {
   /**
    * Include Extensions
    *
-   * @since -
+   * @since 2.1.33 Added loading addons
    */
   private function includes() {
     
-    if (class_exists( $validator_class = __NAMESPACE__ . '\CdbtValidator')) 
+    if ( class_exists( $validator_class = __NAMESPACE__ . '\CdbtValidator') ) 
       $this->validate = $validator_class::instance();
+    
+    if ( ! empty( $this->options['activated_addons'] ) ) {
+      $this->addons = [];
+      foreach ( $this->options['activated_addons'] as $addon_name => $addon_path ) {
+        if ( class_exists( $addon_path ) ) 
+          $this->addons[$addon_name] = new $addon_path();
+      }
+    }
     
   }
 
@@ -597,8 +606,9 @@ final class CdbtAdmin extends CdbtDB {
    * Register the notice messages on the admin panel 
    *
    * @since 2.0.0
+   * @since 2.1.33 Change to public method for addons
    */
-  private function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
+  public function register_admin_notices( $code=null, $message, $expire_seconds=10, $is_init=false ) {
     $code = empty($code) ? CDBT . '-error' : $code;
     // Filter of expiry time at displaying the notice message on the admin screen
     //
@@ -676,6 +686,7 @@ final class CdbtAdmin extends CdbtDB {
    * Controllers of admin pages for this plugin
    *
    * @since 2.0.0
+   * @since 2.1.33 Added for addons
    */
   public function admin_controller() {
     if (empty( $_POST )) 
@@ -697,8 +708,18 @@ final class CdbtAdmin extends CdbtDB {
         $_SESSION = array_map( 'stripslashes_deep', $_POST );
         $this->update_session( $worker_method );
         $this->$worker_method();
+      } elseif ( isset( $_POST[$this->domain_name]['for_addon'] ) && array_key_exists( $_POST[$this->domain_name]['for_addon'], $this->extend ) ) {
+        if ( is_object( $this->addons[$_POST[$this->domain_name]['for_addon']] ) && method_exists( $this->addons[$_POST[$this->domain_name]['for_addon']], $worker_method ) ) {
+          $_SESSION = array_map( 'stripslashes_deep', $_POST );
+          $this->update_session( $worker_method );
+          $this->addons[$_POST[$this->domain_name]['for_addon']]->$worker_method();
+        } else {
+          // invalid access (No method in add-on)
+          $this->destroy_session( $worker_method );
+          $this->register_admin_notices( CDBT . '-error', __('Unauthorized access to this addon.', CDBT), 3, true );
+        }
       } else {
-        // invalid access
+        // invalid access (No method)
         $this->destroy_session( $worker_method );
         $this->register_admin_notices( CDBT . '-error', __('Unauthorized Access to this page.', CDBT), 3, true );
       }
@@ -978,6 +999,47 @@ final class CdbtAdmin extends CdbtDB {
     fclose($_fp);
     
     $this->register_admin_notices( CDBT . '-notice', __('The log file was removed.', CDBT), 3, true );
+  }
+
+
+  /**
+   * Page: cdbt_options | Tab: addons
+   *
+   * @since 2.1.33
+   */
+  public function do_cdbt_options_addons() {
+    static $message = '';
+    
+    // Access authentication process to the page
+    $message = $this->access_page_authentication( [ 'install', 'activate', 'deactivate' ] );
+    if (!empty($message)) {
+      $this->register_admin_notices( CDBT . '-error', $message, 3, true );
+      return;
+    }
+    
+    $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
+    
+    if ( 'install' === $_POST['action'] ) {
+      // download addon
+    } else {
+      if ( class_exists( __NAMESPACE__ .'\\Addons\\'. $submit_options['addon_class'] ) ) {
+        $addon_class_path = __NAMESPACE__ .'\\Addons\\'. $submit_options['addon_class'];
+        $addon_instance = new $addon_class_path();
+        //$addon_instance->{$_POST['action'].'_addon'}();
+        if ( 'activate' === $_POST['action'] ) {
+          $this->extend[$submit_options['addon_class']] = $addon_class_path;
+        } elseif ( 'deactivate' === $_POST['action'] ) {
+          if ( array_key_exists( $submit_options['addon_class'], $this->extend ) ) 
+            unset( $this->extend[$submit_options['addon_class']] );
+        }
+        $this->options['activated_addons'] = $this->extend;
+        $this->update_options( $this->options );
+      } else {
+        // not installed crrectly
+      }
+    }
+    
+    $this->register_admin_notices( CDBT . '-notice', __('done.', CDBT), 3, true );
   }
 
 

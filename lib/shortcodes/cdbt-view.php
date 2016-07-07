@@ -98,8 +98,8 @@ trait CdbtView {
         if ($this->validate->check_column_type($scheme['type'], 'binary')) 
           $has_bit[] = $column;
         
-        if ($this->validate->check_column_type($scheme['type'], 'datetime')) {
-          if (in_array($scheme['type'], [ 'date', 'datetime', 'timestamp' ])) 
+        if ( $this->validate->check_column_type( $scheme['type'], 'datetime' ) ) {
+          if ( in_array( $scheme['type'], [ 'date', 'datetime', 'timestamp' ] ) ) 
             $has_datetime[] = $column;
         }
         
@@ -350,8 +350,14 @@ trait CdbtView {
     } else 
     if ( $ajax_load ) {
       $_cnt_col = $has_pk ? $pk_columns[0] : $output_columns[0];
-      $_res = $this->get_data( $table, 'COUNT(`'. $_cnt_col .'`)', $conditions, $narrow_operator, 'OBJECT_K' );
-      $total_data = ! empty( $_res ) ? intval( array_keys( $_res )[0] ) : 0;
+      $total_data = 0;
+      if ( 'get' === $query_type ) {
+        $_res = $this->get_data( $table, 'COUNT(`'. $_cnt_col .'`)', $conditions, $narrow_operator, 'OBJECT_K' );
+        $total_data = ! empty( $_res ) ? intval( array_keys( $_res )[0] ) : $total_data;
+      } else {
+      	$_res = $this->find_data( $table, $conditions, $narrow_operator, $_cnt_col );
+        $total_data = count( $_res );
+      }
       $query_assets = [ $query_type, $output_columns, $conditions, $narrow_operator, $orders, $_limit_clause ];
       unset( $_cnt_col, $_res );
     }
@@ -487,18 +493,22 @@ trait CdbtView {
     }
     
     // If contain datetime data in the datasource
-    if (!empty($has_datetime)) {
-      foreach ($has_datetime as $column) {
-        if (array_key_exists($column, $datasource[0])) {
-          if (empty($this->options['display_datetime_format'])) {
-            $_datetime_format = '[\''. get_option( 'date_format' ) .'\', \''. get_option( 'time_format' ) .'\']';
+    if ( ! empty( $has_datetime ) ) {
+      foreach ( $has_datetime as $column ) {
+        if ( array_key_exists( $column, $datasource[0] ) ) {
+          if ( empty( $this->options['display_datetime_format'] ) ) {
+            $_datetime_format = get_option( 'date_format' ) ."', '". get_option( 'time_format' );
           } else {
-            $_datetime_format = '[\''. $this->options['display_datetime_format'] .'\']';
+            $_datetime_format = $this->options['display_datetime_format'];
           }
+          // Filter the outputting of date time format
+          // 
+          // @since 2.1.33
+          $_datetime_format = "['". apply_filters( 'cdbt_shortcode_datetime_format', $_datetime_format, $column, $table_schema[$column]['type'], $shortcode_name, $table ) ."']";
           $custom_column_renderer[$column] = '\'<div class="custom-datetime">\' + convert_datetime(rowData[\''. $column .'\'], '. $_datetime_format .') + \'</div>\'';
         }
       }
-      unset($_datetime_format);
+      unset( $_datetime_format );
     }
     
     
@@ -516,6 +526,7 @@ trait CdbtView {
           'isTruncate' => in_array( $column, $truncate_cols ), 
           'truncateStrings' => $truncate_strings, 
           'className' => $enable_sort ? '' : 'disable-sort', 
+          'isRepeater' => 'repeater' === $component_name, // Added since 2.1.33
         ];
       }
     }

@@ -422,22 +422,6 @@ EOH;
     
     if (array_key_exists('table_name', $args) && array_key_exists('operate_action', $args) && 'edit' === $args['operate_action']) {
       
-/*
-      if (array_key_exists('where_condition', $args) && !empty($args['where_condition'])) {
-        if ($this->update_data( $args['table_name'], $_where )) {
-            $deleted_data++;
-          }
-        }
-        if ($deleted_data === count($args['where_conditions'])) {
-          $notices_class = CDBT . '-notice';
-          $message = __('Specified data have been removed successfully.', CDBT);
-        } else {
-          $message = __('Some of the data could not remove.', CDBT);
-        }
-      } else {
-        $message = __('Specified conditions for finding to delete data is invalid.', CDBT);
-      }
-*/
       
     } else {
       
@@ -445,9 +429,120 @@ EOH;
       
     }
     
-//    $this->register_admin_notices( $notices_class, $message, 3, true );
-//    wp_die('location.reload();');
+  }
+  
+  
+  /**
+   * Run the get data via Ajax
+   *
+   * @since 2.1.33
+   *
+   * @param array $args [require]
+   * @return void Output the JavaScript for callback on the frontend
+   */
+  public function ajax_event_get_data( $args=[] ) {
     
+    if ( isset( $args['tableName'] ) && ! empty( $args['tableName'] ) && isset( $args['queryAssets'] ) && ! empty( $args['queryAssets'] ) ) {
+      $query_assets = unserialize( stripslashes( $args['queryAssets'] ) );
+      $method_type = $query_assets[0];
+      $table = $args['tableName'];
+      $output_columns = isset( $query_assets[1] ) ? $query_assets[1] : '*';
+      $_select_clause = '*' !== $output_columns ? '`'. implode( '`,`', $output_columns ) .'`' : $output_columns;
+      $conditions = isset( $query_assets[2] ) ? $query_assets[2] : [];
+      $narrow_operator = isset( $query_assets[3] ) ? $query_assets[3] : 'and';
+      $orders = isset( $query_assets[4] ) ? $query_assets[4] : ['created'=>'desc'];
+      $limit_clause = isset( $query_assets[5] ) ? $query_assets[5] : null;
+      $offset_clause = isset( $query_assets[6] ) ? $query_assets[6] : null;
+      if ( isset( $args['newQuery'] ) && ! empty( $args['newQuery'] ) ) {
+        // Override new queries
+        if ( array_key_exists( 'sortColumn', $args['newQuery'] ) && ! empty( $args['newQuery']['sortColumn'] ) ) {
+          // Sort By
+          $_sort_dir = in_array( $args['newQuery']['sortOrder'], [ 'asc', 'desc' ] ) ? $args['newQuery']['sortOrder'] : 'desc';
+          $orders = [ $args['newQuery']['sortColumn'] => $_sort_dir ];
+        }
+        if ( array_key_exists( 'narrowSearchKey', $args['newQuery'] ) && ! empty( $args['newQuery']['narrowSearchKey'] ) ) {
+            // Search For
+            if ( count( $conditions ) <= 1 ) {
+              $conditions[] = $args['newQuery']['narrowSearchKey']; // $args['newQuery']['narrowKeyword'];
+              $narrow_operator = 'and';// 'or'
+              $method_type = 'find';
+            } else {
+              // custom sql
+              if ( 'get' === $method_type ) {
+                $origin_sql = $this->get_data( $table, $_select_clause, $conditions, $narrow_operator, null, null, 'SQL' );
+              } else {
+                $origin_sql = $this->find_data( $table, $conditions, $narrow_operator, $_select_clause, null, null, 'SQL' );
+              }
+              $_tmp = explode( ' ORDER BY ', str_replace( 'WHERE ', 'WHERE ( ', $origin_sql ) );
+              $custom_sql = rtrim($_tmp[0]) . ' )';
+              $_add_condition = $this->find_data( $table, $args['newQuery']['narrowSearchKey'], 'or', $_select_clause, null, null, 'SQL' );
+              if ( preg_match( '/^(.*)WHERE+\s(.*)ORDER+\sBY+\s(.*)$/im', $_add_condition, $matches ) && isset( $matches[2] ) ) {
+                $custom_sql .= ' AND '. trim( $matches[2] ) .' ';
+              }
+              $method_type = 'custom';
+            }
+        }
+        if ( array_key_exists( 'narrowFilterKey', $args['newQuery'] ) && ! empty( $args['newQuery']['narrowFilterKey'] ) ) {
+            // Filter At
+            if ( 'get' === $method_type && count( $conditions ) <= 1 ) {
+              $conditions = array_merge( $conditions, $this->strtohash( $args['newQuery']['narrowFilterKey'] ) );
+              $narrow_operator = 'and';
+            } else {
+              // custom sql
+              if ( ! isset( $custom_sql ) || empty( $custom_sql ) ) {
+                if ( 'get' === $method_type ) {
+                  $origin_sql = $this->get_data( $table, $_select_clause, $conditions, $narrow_operator, null, null, 'SQL' );
+                } else {
+                  $origin_sql = $this->find_data( $table, $conditions, $narrow_operator, $_select_clause, null, null, 'SQL' );
+                }
+                $_tmp = explode( ' ORDER BY ', str_replace( 'WHERE ', 'WHERE ( ', $origin_sql ) );
+                $custom_sql = rtrim($_tmp[0]) . ' )';
+              }
+              foreach ( $this->strtohash( $args['newQuery']['narrowFilterKey'] ) as $_k => $_v ) {
+                $custom_sql .= ' AND `'. $_k ."` = '". $_v ."'";
+                break;
+              }
+              $method_type = 'custom';
+            }
+        }
+        if ( array_key_exists( 'offset', $args['newQuery'] ) && ! empty( $args['newQuery']['offset'] ) ) {
+          // Page Feed
+          $offset_clause = intval( $args['newQuery']['offset'] );
+        }
+      }
+      if ( $method_type === 'get' ) {
+      	$_items = $this->get_data( $table, 'COUNT(*)', $conditions, $narrow_operator, 'ARRAY_A' );
+      	$_total_items = intval( $_items[0]['COUNT(*)'] );
+        $datasource = $this->get_data( $table, '`'.implode('`,`', $output_columns).'`', $conditions, $narrow_operator, $orders, $limit_clause, $offset_clause, 'ARRAY_A' );
+      } else
+      if ($method_type === 'find' ) {
+      	$_items = $this->find_data( $table, $conditions, $narrow_operator, 'COUNT(*)', 'ARRAY_A' );
+      	$_total_items = intval( $_items[0]['COUNT(*)'] );
+        $datasource = $this->find_data( $table, $conditions, $narrow_operator, $output_columns, $orders, $limit_clause, $offset_clause, 'ARRAY_A' );
+      } else {
+        $_total_items = $this->run_query( $custom_sql );
+        $_append_sql = [];
+        if ( ! empty( $orders ) ) {
+          $_tmp = ' ORDER BY ';
+          foreach ( $orders as $_col => $_dir ) {
+            $_tmp .= '`'. $_col .'` '. strtoupper( $_dir ) .' ';
+          }
+          $_append_sql[] = $_tmp;
+        }
+        if ( ! empty( $limit_clause ) ) {
+          $_append_sql[] = 'LIMIT ' . $limit_clause;
+          if ( ! empty( $offset_clause ) ) {
+            $_append_sql[] = 'OFFSET ' . $offset_clause;
+          }
+        }
+        $full_custom_sql = $custom_sql . implode( ' ', $_append_sql );
+        // $this->logger( $full_custom_sql ); // debug
+        $datasource = $this->wpdb->get_results( $full_custom_sql );
+      }
+      $response = array_merge( $datasource, [ $_total_items ] );
+    }
+    
+    wp_die( json_encode( $response ) );
   }
   
   

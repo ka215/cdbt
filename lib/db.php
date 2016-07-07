@@ -573,6 +573,7 @@ class CdbtDB extends CdbtConfig {
    * @since 2.0.0 Have refactored logic.
    * @since 2.0.7 Fixed a bug of $columns argument
    * @since 2.1.31 Added $operator
+   * @since 2.1.33 Supported IN and BETWEEN
    *
    * @param string $table_name [require]
    * @param mixed $columns [optional] Use as select clause, for default is wildcard of '*'.
@@ -581,13 +582,13 @@ class CdbtDB extends CdbtConfig {
    * @param array $order [optional] Use as orderby and order clause, for default is "order by `created` desc".
    * @param int $limit [optional] Use as limit clause.
    * @param int $offset [optional] Use as offset clause.
-   * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
+   * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N'), add 'SQL' since 2.1.33
    * @return mixed 
    */
   public function get_data( $table_name, $columns='*', $conditions=null, $operator='and', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
-    if ( in_array( end( $arguments ), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ] ) ) {
+    if ( in_array( end( $arguments ), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N', 'SQL' ] ) ) {
       $output_type = array_pop( $arguments );
     } else {
       $output_type = 'OBJECT';
@@ -628,10 +629,19 @@ class CdbtDB extends CdbtConfig {
       $i = 0;
       foreach ( $conditions as $key => $val ) {
         if ( array_key_exists( $key, $table_schema ) ) {
-          if ( $i === 0 ) {
-            $where_clause = "WHERE `$key` = '$val' ";
+          $where_clause .= $i == 0 ? 'WHERE ' : strtoupper( $operator ) . ' ';
+          $_col_type = $this->validate->check_column_type( $table_schema[$key]['type_format'] );
+          if ( array_key_exists( 'datetime', $_col_type ) ) {
+            if ( ! is_array( $val ) ) {
+              $_target_date = $this->validate->checkDate( $val, 'Y-m-d' ) ? $val : date( 'Y-m-d', strtotime( $val ) );
+              $where_clause .= sprintf( "`%s` BETWEEN '%s 00:00:00' AND '%s 23:59:59' ", $key, $_target_date, $_target_date );
+            } else {
+              $_start_date = $this->validate->checkDate( $val[0], 'Y-m-d' ) ? $val[0] : date( 'Y-m-d', strtotime( $val[0] ) );
+              $_end_date = $this->validate->checkDate( $val[1], 'Y-m-d' ) ? $val[1] : date( 'Y-m-d', strtotime( $val[1] ) );
+              $where_clause .= sprintf( "`%s` BETWEEN '%s 00:00:00' AND '%s 23:59:59' ", $key, $_start_date, $_end_date );
+          	}
           } else {
-            $where_clause .= strtoupper( $operator ) ." `$key` = '$val' ";
+            $where_clause .= ! is_array( $val ) ? "`$key` = '$val' " : "`$key` IN ('". implode( "','", $val ) ."') ";
           }
           $i++;
         } else {
@@ -675,7 +685,11 @@ class CdbtDB extends CdbtConfig {
     // @since 2.0.0
     $sql = apply_filters( 'cdbt_crud_get_data_sql', $sql, $table_name, [ $select_clause, $where_clause, $order_clause, $limit_clause ] );
     
-    return $this->wpdb->get_results( $sql, $output_type );
+    if ( 'SQL' === $output_type ) {
+      return $sql;
+    } else {
+      return $this->wpdb->get_results( $sql, $output_type );
+    }
   }
   
   
@@ -683,7 +697,8 @@ class CdbtDB extends CdbtConfig {
    * Find data
    *
    * @since 1.0.0
-   * @since 2.0.0 Have refactored logic.
+   * @since 2.0.0 Refactored logic.
+   * @since 2.1.33 Deprecated UNION query
    *
    * Locate the appropriate data by extracting the best column from the schema information of the table for the search keyword. 
    * Same behavior as get_data() If there is no schema of the table argument is.
@@ -695,13 +710,13 @@ class CdbtDB extends CdbtConfig {
    * @param array $order [optional] Use as orderby and order clause, for default is "order by `created` desc".
    * @param int $limit [optional] Use as limit clause.
    * @param int $offset [optional] Use as offset clause.
-   * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N')
+   * @param string $output_type [optional] Use as wrapper argument for "wpdb->get_results()". For default is 'OBJECT' (or 'OBJECT_K', 'ARRAY_A', 'ARRAY_N'), add 'SQL' since 2.1.33
    * @return array
    */
   public function find_data( $table_name, $search_key, $operator='and', $columns='*', $order=['created'=>'desc'], $limit=null, $offset=null, $output_type='OBJECT' ) {
     // Initialize by dynamically allocating an argument
     $arguments = func_get_args();
-    if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N' ])) {
+    if (in_array(end($arguments), [ 'OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N', 'SQL' ])) {
       $output_type = array_pop($arguments);
     } else {
       $output_type = 'OBJECT';
@@ -738,12 +753,12 @@ class CdbtDB extends CdbtConfig {
     // @since 2.0.7
     $select_clause = apply_filters( 'cdbt_select_clause_optimaize', $columns, $table_name, 'find_data' );
     $where_clause = $order_clause = $limit_clause = null;
-    if (!empty($order)) {
+    if ( ! empty( $order ) ) {
       $i = 0;
-      foreach ($order as $key => $val) {
-        if (array_key_exists($key, $table_schema)) {
-          $val = strtoupper($val) == 'DESC' ? 'DESC' : 'ASC';
-          if ($i == 0) {
+      foreach ( $order as $key => $val ) {
+        if ( array_key_exists( $key, $table_schema ) ) {
+          $val = strtoupper( $val ) == 'DESC' ? 'DESC' : 'ASC';
+          if ( $i == 0 ) {
             $order_clause = "ORDER BY `$key` $val ";
           } else {
             $order_clause .= ", `$key` $val ";
@@ -755,84 +770,70 @@ class CdbtDB extends CdbtConfig {
       }
     }
     
-    if (!empty($limit)) {
+    if ( ! empty( $limit ) ) {
       $limit_clause = "LIMIT ";
-      $limit_clause .= (!empty($offset)) ? intval($offset) .', '. intval($limit) : intval($limit);
+      $limit_clause .= ! empty( $offset ) ? intval( $offset ) .', '. intval( $limit ) : intval( $limit );
     }
     
-    if (is_array($search_key)) {
+    if ( is_array( $search_key ) ) {
       $keywords = $search_key;
     } else {
-      $search_key = preg_replace('/[\s　]+/u', ' ', trim($search_key), -1);
-      $keywords = preg_split('/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY);
+      $search_key = preg_replace( '/[\s　]+/u', ' ', trim( $search_key ), -1 );
+      $keywords = preg_split( '/[\s]/', $search_key, 0, PREG_SPLIT_NO_EMPTY );
     }
-    if (!empty($keywords)) {
+    if ( ! empty( $keywords ) ) {
       $primary_key_name = null;
       $_col_index = [];
       $_i = 0;
-      foreach ($table_schema as $col_name => $col_scm) {
-        if (empty($primary_key_name) && $col_scm['primary_key']) {
+      foreach ( $table_schema as $col_name => $col_scm ) {
+        if ( empty( $primary_key_name ) && $col_scm['primary_key'] ) {
           $primary_key_name = $col_name;
         }
         $_col_index[$col_name] = $_i;
         $_i++;
       }
-      $union_clauses = [];
-      foreach ($keywords as $value) {
-        if (!empty($table_schema)) {
-          unset($table_schema[$primary_key_name], $table_schema['created'], $table_schema['updated']);
+      foreach ( $keywords as $value ) {
+        if ( ! empty( $table_schema ) ) {
+          unset( $table_schema[$primary_key_name], $table_schema['created'], $table_schema['updated'] );
           $target_columns = [];
-          foreach ($table_schema as $column_name => $column_info) {
-            if (is_float($value)) {
-              if (preg_match('/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'])) 
+          foreach ( $table_schema as $column_name => $column_info ) {
+            if ( is_float( $value ) ) {
+              if ( preg_match( '/^(float|double(| precision)|real|dec(|imal)|numeric|fixed)$/', $column_info['type'] ) ) 
                 $target_columns[] = $column_name;
             } else 
-            if (is_int($value)) {
-              if (preg_match('/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'])) 
+            if ( is_int( $value ) ) {
+              if ( preg_match( '/^((|tiny|small|medium|big)int|bool(|ean)|bit)$/', $column_info['type'] ) ) 
                 $target_columns[] = $column_name;
             }
-            if (preg_match('/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'])) 
+            if ( preg_match( '/^((|var|national |n)char(|acter)|(|tiny|medium|long)text|(|tiny|medium|long)blob|(|var)binary|enum|set)$/', $column_info['type'] ) ) 
               $target_columns[] = $column_name;
           }
         }
       }
-      // Rebuilt the processing of union selection for fixing bug
-      // @since version 2.0.7
       if ( ! empty( $target_columns ) ) {
-      	$_result_column = count( $target_columns ) > 1 ? '*' : $select_clause;
-        foreach ( $target_columns as $target_column_name ) {
-          $i = 0;
-          foreach ( $keywords as $value ) {
-            if ( $i === 0 ) {
-              $where_clause = "WHERE `$target_column_name` LIKE '%%$value%%' ";
-            } else {
-              $operator = in_array( strtolower( $operator ), [ 'and', 'or' ] ) ? strtoupper( $operator ) : 'AND';
-              $where_clause .= $operator . " `$target_column_name` LIKE '%%$value%%' ";
+        // Filter whether to concat columns or not
+        // 
+        // @since 2.1.33
+        $is_concat = apply_filters( 'cdbt_find_concat_columns', false, $table_name );
+        $_conditions = [];
+        foreach ( $keywords as $value ) {
+          if ( $is_concat ) {
+            $_conditions[] = 'CONCAT_WS(char(0),`'. implode( '`,`', $target_columns ) ."`) LIKE '%%". $value ."%%'";
+          } else {
+            $_child_cond = [];
+            foreach ( $target_columns as $target_column_name ) {
+              $_child_cond[] = '`'. $target_column_name ."` LIKE '%%". $value ."%%'";
             }
-            $i++;
+            $_conditions[] = '( '. implode( ' OR ', $_child_cond ) .' )';
           }
-          $_select_statements[] = sprintf( 'SELECT %s FROM %s %s', $_result_column, $table_name, $where_clause );
         }
+        $operator = in_array( strtolower( $operator ), [ 'and', 'or' ] ) ? strtoupper( $operator ) : 'AND';
+        $where_clause = 'WHERE '. implode( " $operator ", $_conditions ) .' ';
+        $_select_statements = sprintf( 'SELECT %s FROM `%s` %s ', $select_clause, $table_name, $where_clause );
+      } else {
+        $_select_statements = sprintf( 'SELECT %s FROM `%s` ', $select_clause, $table_name );
       }
-      if ( ! empty( $_select_statements ) ) {
-        if ( count( $_select_statements ) === 1 ) {
-          // Single select query
-          $sql = array_shift( $_select_statements ) .' '. $order_clause .' '. $limit_clause;
-        } else {
-          // Multiple select query (union)
-          $where_clause = [];
-          $i = 0;
-          foreach ( $_select_statements as $_select_sql ) {
-            if ( $i === 0 ) {
-              $where_clause[] = '(' . $_select_sql . ')';
-            } else {
-              $where_clause[] = 'UNION (' . $_select_sql . ')';
-            }
-            $i++;
-          }
-          $sql = implode( ' ', $where_clause ) . " $order_clause $limit_clause";
-        }
-      }
+      $sql = $_select_statements . $order_clause .' '. $limit_clause;
     }
     
     if ( ! isset( $sql ) || empty( $sql ) ) {
@@ -849,6 +850,10 @@ class CdbtDB extends CdbtConfig {
     //
     // @since 2.0.0
     $sql = apply_filters( 'cdbt_crud_find_data_sql', $sql, $table_name, [ $select_clause, $where_clause, $order_clause, $limit_clause ] );
+    
+    if ( 'SQL' === $output_type ) {
+      return $sql;
+    }
     
     $result = $this->wpdb->get_results($sql, $output_type);
     
@@ -963,7 +968,7 @@ class CdbtDB extends CdbtConfig {
         }
       } else {
         if ( in_array( 'created', $is_auto_add_column ) && 'created' === $column ) {
-          $value = date_i18n( 'Y-m-d H:i:s' );
+          $value = $this->validate->checkDate( $value, 'Y-m-d H:i:s' ) && $value !== '0000-00-00 00:00:00' ? $value : date_i18n( 'Y-m-d H:i:s' );
         }
         $insert_data[$column] = $value;
       }

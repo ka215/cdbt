@@ -501,6 +501,7 @@ trait CdbtExtras {
    *
    * @since 2.0.10
    * @since 2.1.31 Updated
+   * @since 2.1.33 Changed to deprecated filter (no used at dynamic table layout)
    *
    * @param array $columns [required]
    * @param string $shortcode_name [optional]
@@ -509,8 +510,10 @@ trait CdbtExtras {
    */
   public function string_type_custom_column_renderer( $columns, $shortcode_name, $table_name ) {
     if ( in_array( $shortcode_name, [ 'cdbt-view', 'cdbt-edit' ] ) ) {
-      $table_schema = $this->get_table_schema( $table_name );
+      //$table_schema = $this->get_table_schema( $table_name );
       foreach ( $columns as $_i => $_data ) {
+        if ( isset( $_data['isRepeater'] ) && ! $_data['isRepeater'] ) 
+          break;
         //if ( ! $_data['dataNumric'] && isset( $table_schema[$_data['property']] ) && in_array( $table_schema[$_data['property']]['type'], [ 'varchar', 'char', 'tinytext', 'text', 'mediumtext', 'longtext' ] ) ) {
         if ( isset( $_data['isTruncate'] ) && $_data['isTruncate'] ) {
           // Filter the number of character truncation

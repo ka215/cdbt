@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
 Tested up to: 4.5.2
-Stable tag: 2.1.33beta
+Stable tag: 2.1.33
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,7 +69,13 @@ There is no particular restriction on the amount of data that is stored in a tab
 == Changelog ==
 
 = 2.1.33 =
-
+* Added new feature of ajax loading on the shortcode.
+* Added a new filter named "cdbt_shortcode_datetime_format" for customizing the display date time format on the shortcode.
+* Added the platform for using the add-ons to extend plugin.
+* Enhanced the data narrowing on the shortcode (supported "IN" and "BETWEEN" queries). [More details can be found here](https://ka2.org/cdbt/v2/shortcodes/).
+* Improved the UI and a bug about the related the "created" as an auto insertion column.
+* Fixed a bug that was not working properly to truncate string that contains the quotation.
+* Were disabled "clipboard.js" on the Safari because unsupported.
 
 = 2.1.32 =
 * Changed the string truncation processing of table data in the management screen, from current fixed 100 characters to newly 40 characters as the initial value.

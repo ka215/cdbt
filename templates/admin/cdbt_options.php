@@ -7,6 +7,7 @@
  * @since 2.0.7 Added new options
  * @since 2.0.8 Added new tab
  * @since 2.1.31 Updated
+ * @since 2.1.33 Updated
  *
  */
 $options = get_option( $this->domain_name );
@@ -14,7 +15,12 @@ $tabs = [
   'general_setting' => __('General Settings', CDBT), 
   'messages' => __('Messages', CDBT), 
   'debug' => __('Debug', CDBT), 
+  'addons' => __('Addons', CDBT), 
 ];
+// Filter the tabs on page of plugin options
+// 
+// @since 2.1.33
+$tabs = apply_filters( 'cdbt_plugin_options_tab', $tabs );
 $default_tab = 'general_setting';
 $current_tab = isset( $this->query['tab'] ) && ! empty( $this->query['tab'] ) ? $this->query['tab'] : $default_tab;
 if ( ! $options['debug_mode'] ) {
@@ -285,8 +291,7 @@ $fields_define = [];
       </div>
     </form>
   </div>
-<?php endif; ?>
-<?php if ($current_tab == 'messages') : 
+<?php elseif ($current_tab == 'messages') : 
   // Filter translate text to extend
   //
   // @since 2.0.9
@@ -331,9 +336,7 @@ $fields_define = [];
       
     </form>
   </div>
-  
-<?php endif; ?>
-<?php if ( $current_tab === 'debug' ) : ?>
+<?php elseif ( $current_tab === 'debug' ) : ?>
   <div class="well-sm">
     <p class="text-info">
       <?php _e('In this section, you can check the logs of various processes executed in the "Custom DataBase Tables" plugin.', CDBT); ?><br>
@@ -369,7 +372,79 @@ $fields_define = [];
       
     </form>
   </div>
+<?php elseif ( $current_tab === 'addons' ) : ?>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php _e('By installing these add-on packs, this plugin will further evolve, and extend various functionality.', CDBT); ?><br>
+    </p>
+  </div>
   
+  <div class="addons-section">
+    <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" id="cdbt-addons" class="form-horizontal">
+      <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
+      <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[addon_class]" value="CustomReview">
+      <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
+
+<?php
+/*
+  $all_addons = [ 
+    'CustomReview' => [ 'label' => __( 'Custom Review', CDBT ), 'basename' => 'custom-review', 'description' => 'This add-on has been activated now.', 'version' => '0.9.0', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '0' ], 
+    'DummyAddon1' => [ 'label' => __( 'Addon Name 1', CDBT ), 'basename' => 'dummy-addon-1', 'description' => 'This add-on has been installed now, <br>but it does not activate yet.', 'version' => '1.0.0', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '5.00' ], 
+    'DummyAddon2' => [ 'label' => __( 'Addon Name 2', CDBT ), 'basename' => 'dummy-addon-2', 'description' => 'You don&#39;t have this add-on yet.', 'version' => '1.0.2', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '9.99' ], 
+  ];
+*/
+  $develop = true;
+  $official_site = $develop ? 'http://dev.ka2.org' : 'https://ka2.org';
+  $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons/' ) );
+  $response_code = wp_remote_retrieve_response_code( $response );
+  if ( $response_code == 200 ) {
+    $all_addons = json_decode( wp_remote_retrieve_body( $response ) );
+    if ( empty( $all_addons ) ) {
+      printf( '<div class="addon-message">%s</div>', __('Sorry, the providable addon is nothing yet.', CDBT) );
+    } else {
+?>
+  <ul class="list-inline addons-list">
+  <?php foreach( $all_addons as $_addon => $_meta ) : 
+    if ( is_array( $this->extend ) && array_key_exists( $_addon, $this->extend ) ) {
+      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="deactivate" class="btn btn-default pull-left">'. __('Deactivate', CDBT) .'</button>';
+    } elseif ( in_array( $_meta->basename, $this->installed_addons ) ) {
+      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="activate" class="btn btn-primary pull-left">'. __('Activate', CDBT) .'</button>';
+    } else {
+      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="install" class="btn btn-default pull-left">'. __('Install', CDBT) .'</button>';
+    }
+  ?>
+    <li><div class="thumbnail">
+      <img src="<?= $this->plugin_url . $this->plugin_assets_dir ?>/images/cdbt-noimage_reversal.png" alt="<?= $_meta->label ?>">
+      <div class="caption">
+        <h3 class="addon-title"><?= $_meta->label ?></h3>
+        <p class="addon-description"><?= $_meta->description ?></p>
+        <p class="addon-version"><label>Latest Ver.</label> <?= $_meta->version ?></p>
+        <p class="addon-author"><label>Produced by</label> <a href="<?= $_meta->author_url ?>"><?= $_meta->author ?></a></p>
+        <div class="addon-footer"><div class="addon-btn"><?= $_btn ?></div><div class="addon-amount"><?= intval( $_meta->amount ) == 0 ? __('FREE', CDBT) : '$ ' . $_meta->amount ?></div></div>
+      </div>
+    </div></li>
+  <?php endforeach; ?>
+  </ul><!-- /.addons-list -->
+<?php
+    }
+  } else {
+    $api_response = json_decode( wp_remote_retrieve_body( $response ) );
+    printf( '<div class="addon-message error">%s (%d)</p>', $api_response->message, $api_response->data->status );
+  }
+?>
+    </form>
+  </div><!-- /.addons-section -->
+<?php else : ?>
+  <div class="well-sm">
+    <p class="text-info">
+      <?php do_action( 'cdbt_get_admin_tab_info', $current_tab ); ?>
+    </p>
+  </div>
+  
+  <div class="addons-section">
+    <?php do_action( 'cdbt_get_admin_tab_body', $current_tab ); ?>
+  </div>
 <?php endif; ?>
   
       </div><!-- /.tab-pane -->

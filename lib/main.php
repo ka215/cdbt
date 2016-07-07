@@ -169,13 +169,14 @@ final class CdbtFrontend extends CdbtDB {
   private function setup_actions() {
     
     // Include Extensions
-    $this->includes();
+    //$this->includes();
+    add_action( 'init', array($this, 'includes'), 1 );
     
     // Before template redirection
     add_action( 'template_redirect', array($this, 'before_template_redirection') );
     
     // Initial Action
-    add_action( 'init', array($this, 'frontend_initialize') );
+    add_action( 'init', array($this, 'frontend_initialize'), 2 );
     
   }
 
@@ -189,6 +190,14 @@ final class CdbtFrontend extends CdbtDB {
     
     if (class_exists( $validator_class = __NAMESPACE__ . '\CdbtValidator')) 
       $this->validate = $validator_class::instance();
+    
+    if ( ! empty( $this->options['activated_addons'] ) ) {
+      $this->addons = [];
+      foreach ( $this->options['activated_addons'] as $addon_name => $addon_path ) {
+        if ( class_exists( $addon_path ) ) 
+          $this->addons[$addon_name] = new $addon_path();
+      }
+    }
     
   }
 

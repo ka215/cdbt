@@ -128,6 +128,9 @@ class CdbtConfig extends CdbtCore {
     if ( $this->debug ) 
       $this->prepare_debug();
     
+    // Loading addons
+    $this->extend = array_key_exists( 'activated_addons', $this->options ) ? $this->options['activated_addons'] : [];
+    
   }
 
 
@@ -190,6 +193,7 @@ class CdbtConfig extends CdbtCore {
         // {host_id(not zero)} => [ 'host_name' => {host_name}, 'api_key' => {api_key}, 'desc' => {description}, 'permission' => {permission(bit)}, 'generated' => {generated_date(datetime)} ]
       ],
       'override_messages' => [], // add new from ver 2.0.9
+      'activated_addons' => [], // add new since ver 2.1.33
     ];
     
     return $default_options;
