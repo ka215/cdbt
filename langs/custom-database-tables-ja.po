@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Custom DataBase Tables v2.1.33\n"
 "Report-Msgid-Bugs-To: Translator Name <translations@example.com>\n"
-"POT-Creation-Date: 2016-07-07 12:19+0900\n"
+"POT-Creation-Date: 2016-07-07 20:57+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ka2 <ka2@ka2.org>\n"
 "Language-Team: ka2 <ka2@ka2.org>\n"
@@ -242,7 +242,7 @@ msgstr "カスタムDBテーブル テーブル管理"
 msgid "Tables"
 msgstr "テーブル管理"
 
-#: lib/admin.php:320 templates/admin/cdbt_shortcodes.php:113
+#: lib/admin.php:320 templates/admin/cdbt_shortcodes.php:114
 msgid "CDBT Shortcodes Management"
 msgstr "カスタムDBテーブル ショートコード管理"
 
@@ -258,7 +258,8 @@ msgstr "カスタムDBテーブル WEB API管理"
 msgid "Web APIs"
 msgstr "WEB API管理"
 
-#: lib/admin.php:338 templates/admin/cdbt_options.php:42
+#: lib/admin.php:338 templates/admin/cdbt_options.develop.php:42
+#: templates/admin/cdbt_options.php:42
 msgid "CDBT Plugin Options"
 msgstr "カスタムDBテーブル プラグイン設定"
 
@@ -273,7 +274,7 @@ msgstr "未入力の必須フィールドがあります。"
 #: lib/admin.php:515 templates/components/cdbt_table.ajax.php:643
 #: templates/components/cdbt_table.ajax.php:1397
 #: templates/components/cdbt_table.bak.php:632
-#: templates/components/cdbt_table.php:671
+#: templates/components/cdbt_table.php:673
 msgid "Copied"
 msgstr "コピーしました"
 
@@ -1228,7 +1229,7 @@ msgstr "CSID"
 msgid "Shortcode Name / Alias Shortcode"
 msgstr "ショートコード名／エイリアスコード"
 
-#: lib/extras.php:319 templates/admin/cdbt_shortcodes.php:101
+#: lib/extras.php:319 templates/admin/cdbt_shortcodes.php:102
 msgid "Description"
 msgstr "備考"
 
@@ -1362,7 +1363,7 @@ msgstr "指定されたクエリが無効です。"
 msgid "View Data in \"%s\" Table"
 msgstr "%sテーブルのデータ閲覧"
 
-#: lib/tmpl.php:112 templates/admin/cdbt_shortcodes.php:27
+#: lib/tmpl.php:112 templates/admin/cdbt_shortcodes.php:28
 #: templates/admin/cdbt_tables.php:39 templates/admin/cdbt_web_apis.php:24
 #: templates/components/cdbt_forms.php:185
 msgid "Required"
@@ -2128,22 +2129,27 @@ msgstr ""
 "this program; if not, write to the Free Software Foundation, Inc., 51 "
 "Franklin St, Fifth Floor, Boston, MA  02110-1301  USA"
 
+#: templates/admin/cdbt_options.develop.php:15
 #: templates/admin/cdbt_options.php:15
 msgid "General Settings"
 msgstr "一般設定"
 
+#: templates/admin/cdbt_options.develop.php:16
 #: templates/admin/cdbt_options.php:16
 msgid "Messages"
 msgstr "メッセージ"
 
+#: templates/admin/cdbt_options.develop.php:17
 #: templates/admin/cdbt_options.php:17
 msgid "Debug"
 msgstr "デバッグ"
 
+#: templates/admin/cdbt_options.develop.php:18
 #: templates/admin/cdbt_options.php:18
 msgid "Addons"
 msgstr "アドオン"
 
+#: templates/admin/cdbt_options.develop.php:56
 #: templates/admin/cdbt_options.php:56
 msgid ""
 "In this configuration page, you can edit the common settings that affect the "
@@ -2152,14 +2158,17 @@ msgstr ""
 "この設定ページでは、「Custom DataBase Tables」プラグインの動作全体に影響する"
 "共通設定を編集できます。"
 
+#: templates/admin/cdbt_options.develop.php:67
 #: templates/admin/cdbt_options.php:67
 msgid "General Plugin Settings"
 msgstr "プラグインの全般設定"
 
+#: templates/admin/cdbt_options.develop.php:69
 #: templates/admin/cdbt_options.php:69
 msgid "Cleanup Setting"
 msgstr "クリーンアップ設定"
 
+#: templates/admin/cdbt_options.develop.php:71
 #: templates/admin/cdbt_options.php:71
 msgid ""
 "Optimizes such as to remove a table setting that does not exist in the "
@@ -2168,10 +2177,12 @@ msgstr ""
 "有効化時、プラグイン設定が保存されるたびにデータベースに存在しないテーブル設"
 "定を削除する等の最適化を行います。"
 
+#: templates/admin/cdbt_options.develop.php:72
 #: templates/admin/cdbt_options.php:72
 msgid "Uninstall Setting"
 msgstr "アンインストール設定"
 
+#: templates/admin/cdbt_options.develop.php:74
 #: templates/admin/cdbt_options.php:74
 msgid ""
 "When you uninstall the plugin, it removes all of the configuration settings "
@@ -2180,10 +2191,12 @@ msgstr ""
 "プラグインのアンインストール時に当プラグインに関連するすべての構成設定を削除"
 "します。しかし、作成したテーブルは削除されません。"
 
+#: templates/admin/cdbt_options.develop.php:75
 #: templates/admin/cdbt_options.php:75
 msgid "Restore Table"
 msgstr "テーブルの復元"
 
+#: templates/admin/cdbt_options.develop.php:77
 #: templates/admin/cdbt_options.php:77
 msgid ""
 "If there is a plugin settings in the past, it restores the table setting "
@@ -2193,10 +2206,12 @@ msgstr ""
 "以前のプラグイン設定がある場合、そこからテーブル設定を復元します。もし復元時"
 "にテーブルが存在しない場合、テーブルは復元されません。"
 
+#: templates/admin/cdbt_options.develop.php:78
 #: templates/admin/cdbt_options.php:78
 msgid "Manage WP Core Tables"
 msgstr "WordPressコア・テーブル管理"
 
+#: templates/admin/cdbt_options.develop.php:80
 #: templates/admin/cdbt_options.php:80
 msgid ""
 "Capable of managing the core tables built in the WordPress if checked. Then "
@@ -2207,10 +2222,12 @@ msgstr ""
 "す。コア・テーブルに対しては、データの閲覧、登録、編集、データのエクスポート"
 "およびインポートなどの操作が可能です。"
 
+#: templates/admin/cdbt_options.develop.php:81
 #: templates/admin/cdbt_options.php:81
 msgid "Datetime Format"
 msgstr "日時の表示書式"
 
+#: templates/admin/cdbt_options.develop.php:83
 #: templates/admin/cdbt_options.php:83
 msgid ""
 "Defines the display format of datetime type data at the time of displaying "
@@ -2220,39 +2237,48 @@ msgstr ""
 "プラグインで表示する際の日時型データの表示形式を指定します。デフォルトでは、"
 "WordPressの一般設定の日時書式を引き継ぎます。"
 
+#: templates/admin/cdbt_options.develop.php:86
 #: templates/admin/cdbt_options.php:86
 msgid "Top (After &quot;dashboard&quot;): 3"
 msgstr "上部（「ダッシュボード」の後）: 3"
 
+#: templates/admin/cdbt_options.develop.php:87
 #: templates/admin/cdbt_options.php:87
 msgid "Default (Before &quot;appearance&quot;): 55"
 msgstr "初期（「外観」の前）: 55"
 
+#: templates/admin/cdbt_options.develop.php:88
 #: templates/admin/cdbt_options.php:88
 msgid "Middle (After &quot;tools&quot;): 77"
 msgstr "中部（「ツール」の後）: 77"
 
+#: templates/admin/cdbt_options.develop.php:89
 #: templates/admin/cdbt_options.php:89
 msgid "Bottom (After &quot;setting&quot;): 85"
 msgstr "下部（「設定」の後）: 85"
 
+#: templates/admin/cdbt_options.develop.php:103
 #: templates/admin/cdbt_options.php:103
 msgid "Plugin Menu Position"
 msgstr "プラグイン・メニューの位置"
 
+#: templates/admin/cdbt_options.develop.php:104
 #: templates/admin/cdbt_options.php:104
 msgid "Enter position number"
 msgstr "位置番号を入力してください"
 
+#: templates/admin/cdbt_options.develop.php:105
 #: templates/admin/cdbt_options.php:105
 msgid ""
 "Specifies the display position of plugin menu on the WordPress admin panel."
 msgstr "WordPressの管理パネル上のプラグイン・メニューの表示位置を指定します。"
 
+#: templates/admin/cdbt_options.develop.php:106
 #: templates/admin/cdbt_options.php:106
 msgid "Modal Dialog Notice"
 msgstr "モーダル・ダイアログ通知"
 
+#: templates/admin/cdbt_options.develop.php:108
 #: templates/admin/cdbt_options.php:108
 msgid ""
 "All notifications (on the management console) from this plugin will be "
@@ -2261,18 +2287,22 @@ msgstr ""
 "有効時、このプラグインから（管理コンソール上の）すべての通知は、モーダルダイ"
 "アログで表示されます。"
 
+#: templates/admin/cdbt_options.develop.php:115
 #: templates/admin/cdbt_options.php:115
 msgid "Data List Format"
 msgstr "データリストの表示形式"
 
+#: templates/admin/cdbt_options.develop.php:119
 #: templates/admin/cdbt_options.php:119
 msgid "Table Layout (Recommended)"
 msgstr "テーブルレイアウト（推奨）"
 
+#: templates/admin/cdbt_options.develop.php:122
 #: templates/admin/cdbt_options.php:122
 msgid "Repeater Layout (conventional layout)"
 msgstr "リピーターレイアウト（従来のレイアウト）"
 
+#: templates/admin/cdbt_options.develop.php:124
 #: templates/admin/cdbt_options.php:124
 msgid ""
 "You can choose which the table layout or the repeater layout, as the display "
@@ -2281,10 +2311,12 @@ msgstr ""
 "テーブル管理でデータ一覧を表示する時の表示形式として、テーブルレイアウトもし"
 "くはリピータレイアウトのどちらかを選択可能です。"
 
+#: templates/admin/cdbt_options.develop.php:128
 #: templates/admin/cdbt_options.php:128
 msgid "Debug Mode"
 msgstr "デバッグモード"
 
+#: templates/admin/cdbt_options.develop.php:130
 #: templates/admin/cdbt_options.php:130
 msgid ""
 "If you enable the debug mode, the occurred errors in the plugin will be "
@@ -2295,14 +2327,17 @@ msgstr ""
 "て出力されます。任意のインシデントを調査する場合などにログを参照してくださ"
 "い。"
 
+#: templates/admin/cdbt_options.develop.php:133
 #: templates/admin/cdbt_options.php:133
 msgid "Table Creation Initial Definitions"
 msgstr "テーブル作成時の初期設定"
 
+#: templates/admin/cdbt_options.develop.php:135
 #: templates/admin/cdbt_options.php:135
 msgid "Table Prefix"
 msgstr "テーブル接頭辞"
 
+#: templates/admin/cdbt_options.develop.php:137
 #: templates/admin/cdbt_options.php:137
 #, php-format
 msgid ""
@@ -2312,20 +2347,24 @@ msgstr ""
 "有効の場合、新しいテーブルを作成する時にWordPressの設定（wp-config.php）で定"
 "義されているテーブル接頭辞 %s を先頭に挿入します。"
 
+#: templates/admin/cdbt_options.develop.php:138
 #: templates/admin/cdbt_options.php:138
 msgid ""
 "Note: You can individually change this setting whenever you create a table."
 msgstr "注：テーブルを作成する際に個別にこの設定を変更することができます。"
 
+#: templates/admin/cdbt_options.develop.php:153
 #: templates/admin/cdbt_options.php:153 templates/admin/cdbt_tables.php:159
 #: templates/admin/cdbt_tables.php:549
 msgid "Table Charset"
 msgstr "テーブルの文字コード"
 
+#: templates/admin/cdbt_options.develop.php:156
 #: templates/admin/cdbt_options.php:156
 msgid "Enter the table charset"
 msgstr "テーブルの文字セットを入力"
 
+#: templates/admin/cdbt_options.develop.php:166
 #: templates/admin/cdbt_options.php:166
 msgid ""
 "This value will be set as default charset whenever you create a newly table."
@@ -2333,14 +2372,17 @@ msgstr ""
 "新しいテーブルを作成するたびに、この値がデフォルトの文字セットとして設定され"
 "ます。"
 
+#: templates/admin/cdbt_options.develop.php:170
 #: templates/admin/cdbt_options.php:170
 msgid "Localizing Timezone"
 msgstr "タイムゾーンのローカライズ"
 
+#: templates/admin/cdbt_options.develop.php:183
 #: templates/admin/cdbt_options.php:183
 msgid "Current timezone of the MySQL database"
 msgstr "現在のMySQLデータベースのタイムゾーン"
 
+#: templates/admin/cdbt_options.develop.php:185
 #: templates/admin/cdbt_options.php:185
 msgid ""
 "This value will be set as default timezone whenever you create a newly "
@@ -2351,11 +2393,13 @@ msgstr ""
 "れます。なお、設定されたタイムゾーンは、日時型データのローカライズに使用され"
 "ます。"
 
+#: templates/admin/cdbt_options.develop.php:190
 #: templates/admin/cdbt_options.php:190 templates/admin/cdbt_tables.php:182
 #: templates/admin/cdbt_tables.php:580
 msgid "Database Engine"
 msgstr "データベースエンジン"
 
+#: templates/admin/cdbt_options.develop.php:203
 #: templates/admin/cdbt_options.php:203
 msgid ""
 "This value will be set as default database engine whenever you create a "
@@ -2364,11 +2408,13 @@ msgstr ""
 "新しいテーブルを作成するたびに、この値がデフォルトのデータベースエンジンとし"
 "て設定されます。"
 
+#: templates/admin/cdbt_options.develop.php:207
 #: templates/admin/cdbt_options.php:207 templates/admin/cdbt_tables.php:263
 #: templates/admin/cdbt_tables.php:663
 msgid "Maximum display data per page"
 msgstr "最大表示データ数"
 
+#: templates/admin/cdbt_options.develop.php:216
 #: templates/admin/cdbt_options.php:216
 msgid ""
 "This value will be set as the number of displayed data per page whenever you "
@@ -2377,6 +2423,7 @@ msgstr ""
 "新たにテーブルを作成するたびに、この値がページごとに表示されるデータ数として"
 "設定されます。"
 
+#: templates/admin/cdbt_options.develop.php:222
 #: templates/admin/cdbt_options.php:222
 msgid ""
 "Those values are not applied to the already created table. Please modify the "
@@ -2385,14 +2432,17 @@ msgstr ""
 "これらの値は既に作成されたテーブルには適用されません。変更したい場合は、個別"
 "にテーブル設定を変更してください。"
 
+#: templates/admin/cdbt_options.develop.php:227
 #: templates/admin/cdbt_options.php:227
 msgid "Advanced Plugin Settings"
 msgstr "高度なプラグイン設定"
 
+#: templates/admin/cdbt_options.develop.php:229
 #: templates/admin/cdbt_options.php:229
 msgid "Page to Apply Shortcode"
 msgstr "ショートコードを適用するページ"
 
+#: templates/admin/cdbt_options.develop.php:231
 #: templates/admin/cdbt_options.php:231
 msgid ""
 "If checked, the page that is rendered the shortcodes restrict to a singular "
@@ -2401,6 +2451,7 @@ msgstr ""
 "チェックした場合、ショートコードがレンダリングされるページを単一投稿"
 "（singular post）のみに制限します。"
 
+#: templates/admin/cdbt_options.develop.php:232
 #: templates/admin/cdbt_options.php:232
 msgid ""
 "Note: There is a possibility that degrade your web page performance by "
@@ -2409,10 +2460,12 @@ msgstr ""
 "注：無効にすると、アーカイブページ等にすべてのショートコードがレンダリングさ"
 "れることで、あなたのWebページのパフォーマンスが低下する可能性があります。"
 
+#: templates/admin/cdbt_options.develop.php:234
 #: templates/admin/cdbt_options.php:234
 msgid "Loading Resources"
 msgstr "読み込みリソース"
 
+#: templates/admin/cdbt_options.develop.php:236
 #: templates/admin/cdbt_options.php:236
 msgid ""
 "You can switch loading/unloading of individual resources as needed. Please "
@@ -2423,19 +2476,24 @@ msgstr ""
 "す。特定のリソースがテーマや他のプラグインのリソースと競合している場合にこの"
 "設定を変更してみてください。"
 
+#: templates/admin/cdbt_options.develop.php:240
 #: templates/admin/cdbt_options.php:240
 msgid "Administration Screen <br>(when managed this plugin only)"
 msgstr "管理画面<br>（当プラグイン管理時のみ）"
 
+#: templates/admin/cdbt_options.develop.php:241
 #: templates/admin/cdbt_options.php:241
 msgid "Front-end Screen <br>(when rendered the shortcode only)"
 msgstr "フロントエンド画面<br>（ショートコード出力時のみ）"
 
+#: templates/admin/cdbt_options.develop.php:254
+#: templates/admin/cdbt_options.develop.php:268
 #: templates/admin/cdbt_options.php:254 templates/admin/cdbt_options.php:268
 #, php-format
 msgid "the built-in %s in plugin"
 msgstr "プラグイン内臓版 %s"
 
+#: templates/admin/cdbt_options.develop.php:276
 #: templates/admin/cdbt_options.php:276
 msgid ""
 "Note: If disabled the loading of resource, you should be loaded those "
@@ -2446,10 +2504,12 @@ msgstr ""
 "があります。なお、管理画面のリソース読み込みを無効にすることはお勧めしませ"
 "ん。"
 
+#: templates/admin/cdbt_options.develop.php:279
 #: templates/admin/cdbt_options.php:279
 msgid "Use Onetime Token"
 msgstr "ワンタイム・トークン利用"
 
+#: templates/admin/cdbt_options.develop.php:281
 #: templates/admin/cdbt_options.php:281
 msgid ""
 "Takes with issuing a onetime token in the cookie whenever registered data."
@@ -2457,6 +2517,7 @@ msgstr ""
 "データを登録するたびにCookieにワンタイム・トークンを発行して登録処理を行いま"
 "す。"
 
+#: templates/admin/cdbt_options.develop.php:282
 #: templates/admin/cdbt_options.php:282
 msgid ""
 "Note: This option is for preventing a duplicate data registration, an "
@@ -2465,15 +2526,19 @@ msgstr ""
 "注：このオプションは、重複データの登録、不正なアクセス、無効なデータ登録を防"
 "止するためのものです。"
 
+#: templates/admin/cdbt_options.develop.php:288
+#: templates/admin/cdbt_options.develop.php:332
 #: templates/admin/cdbt_options.php:288 templates/admin/cdbt_options.php:332
 #: templates/admin/cdbt_tables.php:781
 msgid "Save Changes"
 msgstr "変更を保存"
 
+#: templates/admin/cdbt_options.develop.php:289
 #: templates/admin/cdbt_options.php:289
 msgid "Initialize Options"
 msgstr "設定を初期化"
 
+#: templates/admin/cdbt_options.develop.php:301
 #: templates/admin/cdbt_options.php:301
 msgid ""
 "In this section, you can overwrite of the own custom messages to any "
@@ -2482,18 +2547,22 @@ msgstr ""
 "このセクションでは、当プラグインで表示される任意の通知メッセージを独自のメッ"
 "セージにて上書きすることができます。"
 
+#: templates/admin/cdbt_options.develop.php:313
 #: templates/admin/cdbt_options.php:313
 msgid "Original Text"
 msgstr "原文"
 
+#: templates/admin/cdbt_options.develop.php:314
 #: templates/admin/cdbt_options.php:314
 msgid "Current Translating Text"
 msgstr "現在の翻訳テキスト"
 
+#: templates/admin/cdbt_options.develop.php:333
 #: templates/admin/cdbt_options.php:333
 msgid "Initialize Messages"
 msgstr "メッセージを初期化"
 
+#: templates/admin/cdbt_options.develop.php:342
 #: templates/admin/cdbt_options.php:342
 msgid ""
 "In this section, you can check the logs of various processes executed in the "
@@ -2502,6 +2571,7 @@ msgstr ""
 "このセクションでは、「カスタムデータベーステーブル」プラグインで実行される各"
 "種処理のログを確認することができます。"
 
+#: templates/admin/cdbt_options.develop.php:343
 #: templates/admin/cdbt_options.php:343
 msgid ""
 "Those logs maybe help you as a debugging log to follow the flow of the "
@@ -2510,19 +2580,23 @@ msgstr ""
 "これらのログは、何かしらのトラブルが発生した場合に、処理の流れを追跡するデ"
 "バッグログとしてあなたを助けるでしょう。"
 
+#: templates/admin/cdbt_options.develop.php:362
 #: templates/admin/cdbt_options.php:362
 msgid "Clear Logs"
 msgstr "ログ削除"
 
+#: templates/admin/cdbt_options.develop.php:365
 #: templates/admin/cdbt_options.php:365
 msgid "Removes the current logs after backup of the log file."
 msgstr "ログファイルのバックアップ後に現在のログを削除します。"
 
+#: templates/admin/cdbt_options.develop.php:369
 #: templates/admin/cdbt_options.php:369
 #, php-format
 msgid "Note: All backup files are stored to the directory of %s."
 msgstr "注：すべてのバックアップファイルは、 %s のディレクトリに格納されます。"
 
+#: templates/admin/cdbt_options.develop.php:378
 #: templates/admin/cdbt_options.php:378
 msgid ""
 "By installing these add-on packs, this plugin will further evolve, and "
@@ -2531,51 +2605,64 @@ msgstr ""
 "これらのアドオン・パックをインストールすることで、このプラグインはさらに進化"
 "し、様々な機能が拡張されます。"
 
-#: templates/admin/cdbt_options.php:404
+#: templates/admin/cdbt_options.develop.php:404
+#: templates/admin/cdbt_options.php:396
 msgid "Sorry, the providable addon is nothing yet."
 msgstr "申し訳ありませんが、提供可能なアドオンはまだありません。"
 
-#: templates/admin/cdbt_options.php:410
+#: templates/admin/cdbt_options.develop.php:410
+#: templates/admin/cdbt_options.php:402
 msgid "Deactivate"
 msgstr "無効化"
 
-#: templates/admin/cdbt_options.php:412
+#: templates/admin/cdbt_options.develop.php:412
+#: templates/admin/cdbt_options.php:404
 msgid "Activate"
 msgstr "有効化"
 
-#: templates/admin/cdbt_options.php:414
+#: templates/admin/cdbt_options.develop.php:414
+#: templates/admin/cdbt_options.php:406
 msgid "Install"
 msgstr "インストール"
 
-#: templates/admin/cdbt_options.php:424
+#: templates/admin/cdbt_options.develop.php:424
+#: templates/admin/cdbt_options.php:416
 msgid "FREE"
 msgstr "無料"
 
-#: templates/admin/cdbt_shortcodes.php:16
+#: templates/admin/cdbt_options.php:414
+msgid "Latest Ver."
+msgstr "最新バージョン"
+
+#: templates/admin/cdbt_options.php:415
+msgid "Produced by"
+msgstr "提供元"
+
+#: templates/admin/cdbt_shortcodes.php:17
 msgid "Shortcode Lists"
 msgstr "ショートコード一覧"
 
-#: templates/admin/cdbt_shortcodes.php:17
+#: templates/admin/cdbt_shortcodes.php:18
 msgid "Shortcode Register"
 msgstr "ショートコード登録"
 
-#: templates/admin/cdbt_shortcodes.php:18
+#: templates/admin/cdbt_shortcodes.php:19
 msgid "Shortcode Edit"
 msgstr "ショートコード編集"
 
-#: templates/admin/cdbt_shortcodes.php:30
+#: templates/admin/cdbt_shortcodes.php:31
 msgid "Base Shortcode"
 msgstr "ベース・ショートコード"
 
-#: templates/admin/cdbt_shortcodes.php:31 templates/admin/cdbt_web_apis.php:197
+#: templates/admin/cdbt_shortcodes.php:32 templates/admin/cdbt_web_apis.php:197
 msgid "Target Table"
 msgstr "対象テーブル名"
 
-#: templates/admin/cdbt_shortcodes.php:33
+#: templates/admin/cdbt_shortcodes.php:34
 msgid "Appearance and LookAndFeel"
 msgstr "外観や操作性"
 
-#: templates/admin/cdbt_shortcodes.php:36
+#: templates/admin/cdbt_shortcodes.php:37
 msgid ""
 "Renders the data via the style of bootstrap if checked. Render the data of "
 "the JSON format if unchecked."
@@ -2583,7 +2670,7 @@ msgstr ""
 "オンの場合、ブートストラップ・スタイルが適用されたデータ出力が行われます。オ"
 "フの場合はJSON形式でデータを出力します。"
 
-#: templates/admin/cdbt_shortcodes.php:37
+#: templates/admin/cdbt_shortcodes.php:38
 msgid ""
 "Renders the data of table by using repeater component of the \"FuelUX\" "
 "libraries if checked. <wbr/>Or if unchecked, renders by using the original "
@@ -2593,28 +2680,28 @@ msgstr ""
 "ルのデータを出力します。 オフにすると、プラグインオリジナルのテーブルレイアウ"
 "トを使用して出力されます。"
 
-#: templates/admin/cdbt_shortcodes.php:38
+#: templates/admin/cdbt_shortcodes.php:39
 msgid ""
 "Adds an auto increment number column at the left edge of the data row if "
 "checked."
 msgstr "データ行の左端に自動採番される整理番号の列が追加されます。"
 
-#: templates/admin/cdbt_shortcodes.php:39
+#: templates/admin/cdbt_shortcodes.php:40
 msgid "Displays an input field for the data search if checked."
 msgstr "データ検索のための入力フィールド（検索ボックス）を表示します。"
 
-#: templates/admin/cdbt_shortcodes.php:40
+#: templates/admin/cdbt_shortcodes.php:41
 msgid "Displays the heading of content as a title if checked."
 msgstr "コンテンツのタイトルとなる見出しを表示します。"
 
-#: templates/admin/cdbt_shortcodes.php:41
+#: templates/admin/cdbt_shortcodes.php:42
 msgid ""
 "It will be able to sort of data by clicking on the header row if checked."
 msgstr ""
 "ヘッダー行をクリックすることでデータの並び替えをすることができるようになりま"
 "す。"
 
-#: templates/admin/cdbt_shortcodes.php:43
+#: templates/admin/cdbt_shortcodes.php:44
 msgid ""
 "Adds a dropdown list box for filtering the data if checked. Then there "
 "should be specified the column to filter if you want to enable this."
@@ -2623,7 +2710,7 @@ msgstr ""
 "お、このオプションを完全に有効化するためにはフィルタリングするカラムを指定す"
 "る必要があります。"
 
-#: templates/admin/cdbt_shortcodes.php:44
+#: templates/admin/cdbt_shortcodes.php:45
 msgid ""
 "You can switch to the thumbnail list view of the gallery format if there "
 "contained an image in the table data."
@@ -2631,7 +2718,7 @@ msgstr ""
 "テーブルデータに画像が含まれている場合、ギャラリー形式のサムネイル一覧ビュー"
 "に切り替えることができます。"
 
-#: templates/admin/cdbt_shortcodes.php:45
+#: templates/admin/cdbt_shortcodes.php:46
 msgid ""
 "You will be draggable the hiding content area (moreover it performs the "
 "cell&#39;s width adjustment in automatically) if the table content overflows "
@@ -2641,23 +2728,23 @@ msgstr ""
 "隠れたコンテンツ部分をドラッグできるようになります（さらにこの時、各セル幅は"
 "自動的に最適な幅に調整されます）。"
 
-#: templates/admin/cdbt_shortcodes.php:51
+#: templates/admin/cdbt_shortcodes.php:52
 msgid "Display Index Row"
 msgstr "インデックス行の表示"
 
-#: templates/admin/cdbt_shortcodes.php:53
+#: templates/admin/cdbt_shortcodes.php:54
 msgid "Does not show"
 msgstr "表示しない"
 
-#: templates/admin/cdbt_shortcodes.php:53
+#: templates/admin/cdbt_shortcodes.php:54
 msgid "Show all"
 msgstr "すべてを表示"
 
-#: templates/admin/cdbt_shortcodes.php:53
+#: templates/admin/cdbt_shortcodes.php:54
 msgid "Show the header only"
 msgstr "上部のみ表示"
 
-#: templates/admin/cdbt_shortcodes.php:54
+#: templates/admin/cdbt_shortcodes.php:55
 msgid ""
 "Displays the index row around the data rows as the header of the data "
 "column. Also you can specify the \"head-only\" if uses the table layout."
@@ -2665,19 +2752,19 @@ msgstr ""
 "データ列のヘッダとしてデータ行の上下にインデックス行を表示します。なお、テー"
 "ブルレイアウトでの出力時は「上部のみ」を指定可能です。"
 
-#: templates/admin/cdbt_shortcodes.php:60
+#: templates/admin/cdbt_shortcodes.php:61
 msgid "Footer Interface"
 msgstr "フッター・インターフェース"
 
-#: templates/admin/cdbt_shortcodes.php:62
+#: templates/admin/cdbt_shortcodes.php:63
 msgid "Pagination"
 msgstr "ページネーション"
 
-#: templates/admin/cdbt_shortcodes.php:62
+#: templates/admin/cdbt_shortcodes.php:63
 msgid "Pager (Conventional)"
 msgstr "ページャ（従来のインターフェース）"
 
-#: templates/admin/cdbt_shortcodes.php:63
+#: templates/admin/cdbt_shortcodes.php:64
 msgid ""
 "You can choose either \"Pagination\" or \"Pager (Conventional Interface)\", "
 "as the paging interface for the table layout."
@@ -2685,11 +2772,11 @@ msgstr ""
 "テーブル・レイアウト用のページング・インターフェースとして、「ページネーショ"
 "ン」もしくは「ページャ（従来のインターフェース）」を選択することができます。"
 
-#: templates/admin/cdbt_shortcodes.php:68
+#: templates/admin/cdbt_shortcodes.php:69
 msgid "Excludes Columns"
 msgstr "除外する列"
 
-#: templates/admin/cdbt_shortcodes.php:68
+#: templates/admin/cdbt_shortcodes.php:69
 msgid ""
 "Specifies the comma-delimited column names if you want to hide the column. e."
 "g. \"column1,column2,column3,...\""
@@ -2697,11 +2784,11 @@ msgstr ""
 "列を非表示にする場合は、カンマ区切りで列名を指定します。例: <code>column1,"
 "column2,column3,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:69
+#: templates/admin/cdbt_shortcodes.php:70
 msgid "Adds Classes"
 msgstr "追加CSSクラス"
 
-#: templates/admin/cdbt_shortcodes.php:69
+#: templates/admin/cdbt_shortcodes.php:70
 msgid ""
 "Specifies a CSS class name for styling the element of listed data table. If "
 "there are multiple class, please separated by a single-byte space."
@@ -2709,11 +2796,11 @@ msgstr ""
 "一覧化されたデータテーブルの要素をスタイリングするためのCSSクラス名を指定しま"
 "す。複数のクラスが存在する場合は、半角スペースで区切ってください。"
 
-#: templates/admin/cdbt_shortcodes.php:70
+#: templates/admin/cdbt_shortcodes.php:71
 msgid "Narrow-down Keywords"
 msgstr "絞り込みキーワード"
 
-#: templates/admin/cdbt_shortcodes.php:71
+#: templates/admin/cdbt_shortcodes.php:72
 msgid ""
 "Specifies the narrowing condition of the output data in a comma-delimited. "
 "If you specify in the pair of the column name and keyword, it will be "
@@ -2726,19 +2813,19 @@ msgstr ""
 "部分一致するデータで絞り込まれます。<wbr>例：<code>keyword1,keyword2,...</"
 "code>もしくは<code>column1:keyword1,column2:keyword2,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:72
+#: templates/admin/cdbt_shortcodes.php:73
 msgid "Narrowing Condition"
 msgstr "絞り込み条件"
 
-#: templates/admin/cdbt_shortcodes.php:73
+#: templates/admin/cdbt_shortcodes.php:74
 msgid "AND"
 msgstr "AND（かつ）"
 
-#: templates/admin/cdbt_shortcodes.php:73
+#: templates/admin/cdbt_shortcodes.php:74
 msgid "OR"
 msgstr "OR（もしくは）"
 
-#: templates/admin/cdbt_shortcodes.php:74
+#: templates/admin/cdbt_shortcodes.php:75
 msgid ""
 "Chooses the narrowing conditional operator for joining each keywords if you "
 "want to narrow down the data by using a plurality of keywords."
@@ -2746,11 +2833,11 @@ msgstr ""
 "複数のキーワードを使用してデータを絞り込む場合、各キーワードを結合するための"
 "絞り込み条件の演算子を選択します。"
 
-#: templates/admin/cdbt_shortcodes.php:80
+#: templates/admin/cdbt_shortcodes.php:81
 msgid "Hides Columns"
 msgstr "非表示列"
 
-#: templates/admin/cdbt_shortcodes.php:80
+#: templates/admin/cdbt_shortcodes.php:81
 msgid ""
 "Specifies a comma delimited the column names if you want to hide any column. "
 "Then the hidden column will be rendered as field of \"hidden\" type. <wbr/>e."
@@ -2760,11 +2847,11 @@ msgstr ""
 "「hidden」型のフィールドとして出力されます。<wbr/>例: <code>column1,column2,"
 "column3,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:81
+#: templates/admin/cdbt_shortcodes.php:82
 msgid "Displays Columns"
 msgstr "表示する列"
 
-#: templates/admin/cdbt_shortcodes.php:81
+#: templates/admin/cdbt_shortcodes.php:82
 msgid ""
 "Specifies the comma-delimited column names if you want to show the column. "
 "This overrides the value of the option \"Excludes columns\". e.g. \"column1,"
@@ -2773,11 +2860,11 @@ msgstr ""
 "表示したい列をカンマ区切りで指定します。この設定は「除外する列」の値を上書き"
 "します。例: <code>column1,column2,column3,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:82
+#: templates/admin/cdbt_shortcodes.php:83
 msgid "Columns Display Order"
 msgstr "列の表示順序"
 
-#: templates/admin/cdbt_shortcodes.php:82
+#: templates/admin/cdbt_shortcodes.php:83
 msgid ""
 "Specifies the comma-delimited column names in the display order if you want "
 "to display columns in the order of your display request. This overrides the "
@@ -2788,11 +2875,11 @@ msgstr ""
 "名を指定します。この設定は「除外する列」と「表示する列」の値を上書きします。 "
 "例: <code>column3,column1,column2,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:83
+#: templates/admin/cdbt_shortcodes.php:84
 msgid "Initial Sort Order"
 msgstr "初期ソート順"
 
-#: templates/admin/cdbt_shortcodes.php:83
+#: templates/admin/cdbt_shortcodes.php:84
 msgid ""
 "Specifies in the pair of column name and the ascending(asc) or "
 "descending(desc) order, for the display order of the initial data. If there "
@@ -2803,11 +2890,11 @@ msgstr ""
 "指定します。複数の条件がある場合は、カンマで区切ってください。例: "
 "<code>updated:desc,ID:asc,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:84
+#: templates/admin/cdbt_shortcodes.php:85
 msgid "Max Rows Per Page"
 msgstr "ページあたりの最大行数"
 
-#: templates/admin/cdbt_shortcodes.php:84
+#: templates/admin/cdbt_shortcodes.php:85
 msgid ""
 "If this attribute is specified, it overrides the \"Maximum display data per "
 "page\" of the table."
@@ -2815,11 +2902,11 @@ msgstr ""
 "この属性が指定されると、テーブル自体の「（1ページの）最大表示データ数」設定を"
 "上書きしてデータを表示します。"
 
-#: templates/admin/cdbt_shortcodes.php:85
+#: templates/admin/cdbt_shortcodes.php:86
 msgid "Truncates String"
 msgstr "文字の切り捨て"
 
-#: templates/admin/cdbt_shortcodes.php:85
+#: templates/admin/cdbt_shortcodes.php:86
 msgid ""
 "Truncates the display data if the strings type data is longer than the "
 "specified characters (not bytes). If value is zero it does not truncate."
@@ -2827,11 +2914,11 @@ msgstr ""
 "文字列型のデータがここで指定された文字数（バイト数ではない）よりも長い場合、"
 "表示データを切り捨てます。ゼロを指定した場合、切り捨てはおこないません。"
 
-#: templates/admin/cdbt_shortcodes.php:86
+#: templates/admin/cdbt_shortcodes.php:87
 msgid "Truncate Columns"
 msgstr "文字を切り捨てるカラム"
 
-#: templates/admin/cdbt_shortcodes.php:86
+#: templates/admin/cdbt_shortcodes.php:87
 msgid ""
 "Specifies the comma-delimited column names if you want to specify the "
 "columns truncating the strings. If nothing is specified, it will be "
@@ -2842,11 +2929,11 @@ msgstr ""
 "も指定されないと、すべての文字列型カラムに対して文字の切り捨てを実行します。"
 "<wbr/>例：<code>column1,column2,column3,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:87
+#: templates/admin/cdbt_shortcodes.php:88
 msgid "Clickable Columns"
 msgstr "クリック可能なカラム"
 
-#: templates/admin/cdbt_shortcodes.php:87
+#: templates/admin/cdbt_shortcodes.php:88
 msgid ""
 "Specifies the comma-delimited column names if you want to be able to click "
 "the column value. Also in those columns, it should be stored the string as "
@@ -2856,11 +2943,11 @@ msgstr ""
 "さい。なお、対象カラムにURL等の文字列が格納されていないと正常にリンクできませ"
 "ん。<wbr/>例：<code>column1,column2,column3,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:88
+#: templates/admin/cdbt_shortcodes.php:89
 msgid "Thumbnail Image Class"
 msgstr "サムネイル画像クラス"
 
-#: templates/admin/cdbt_shortcodes.php:88
+#: templates/admin/cdbt_shortcodes.php:89
 msgid ""
 "Specifies a CSS class name for styling the thumbnail images. This CSS class "
 "will be added to img tag of thumbnail image. It will enable only if renders "
@@ -2870,19 +2957,19 @@ msgstr ""
 "は、サムネイル画像のimgタグに追加されます。リピーターレイアウトをご利用の場合"
 "のみ有効になります。"
 
-#: templates/admin/cdbt_shortcodes.php:89
+#: templates/admin/cdbt_shortcodes.php:90
 msgid "Labeled Submit Button"
 msgstr "送信ボタンのラベル"
 
-#: templates/admin/cdbt_shortcodes.php:89
+#: templates/admin/cdbt_shortcodes.php:90
 msgid "Specifies the label name of button for submitting in the entry form."
 msgstr "入力フォームで送信するためのボタンのラベル名を指定します。"
 
-#: templates/admin/cdbt_shortcodes.php:90
+#: templates/admin/cdbt_shortcodes.php:91
 msgid "Redirect URL"
 msgstr "リダイレクトURL"
 
-#: templates/admin/cdbt_shortcodes.php:90
+#: templates/admin/cdbt_shortcodes.php:91
 msgid ""
 "Specifies the url to redirect after the time of insertion and the update of "
 "the data. If not specified, self page is reloaded."
@@ -2890,11 +2977,11 @@ msgstr ""
 "データの挿入・更新後にリダイレクトするURLを指定します。指定されていない場合"
 "は、自己のページがリロードされます。"
 
-#: templates/admin/cdbt_shortcodes.php:91
+#: templates/admin/cdbt_shortcodes.php:92
 msgid "Filtering Column Name"
 msgstr "フィルタリングの列名"
 
-#: templates/admin/cdbt_shortcodes.php:91
+#: templates/admin/cdbt_shortcodes.php:92
 msgid ""
 "Specifies a column name for filtering the data. If you specify a column of "
 "\"enum\" or \"set\" type, the filtering will be enabled by automatic without "
@@ -2904,11 +2991,11 @@ msgstr ""
 "（カラム）を指定した場合、以下のフィルタ定義を行わなくても自動でフィルタリン"
 "グ可能です。"
 
-#: templates/admin/cdbt_shortcodes.php:92
+#: templates/admin/cdbt_shortcodes.php:93
 msgid "Filter Definition"
 msgstr "フィルター定義"
 
-#: templates/admin/cdbt_shortcodes.php:92
+#: templates/admin/cdbt_shortcodes.php:93
 msgid ""
 "Specifies the keyword lists for filtering the data. Also, a plurality of the "
 "pairs of the keyword and the display label can be defined by using the comma-"
@@ -2919,11 +3006,11 @@ msgstr ""
 "ドと表示ラベルのペアはカンマ区切りで定義することができます。例: <code>filter-"
 "keyword1:display-label1,filter-keyword2:display-label2,...</code>"
 
-#: templates/admin/cdbt_shortcodes.php:93
+#: templates/admin/cdbt_shortcodes.php:94
 msgid "Thumbnail Image Column"
 msgstr "サムネイル画像カラム"
 
-#: templates/admin/cdbt_shortcodes.php:93
+#: templates/admin/cdbt_shortcodes.php:94
 msgid ""
 "Specifies a column as the thumbnail image. In this column it should be "
 "stored the image binary or a URL of image."
@@ -2931,11 +3018,11 @@ msgstr ""
 "サムネイル画像を表示する列を指定します。この列（カラム）には、画像のバイナリ"
 "もしくは画像のURLが格納されている必要があります。"
 
-#: templates/admin/cdbt_shortcodes.php:94
+#: templates/admin/cdbt_shortcodes.php:95
 msgid "Thumbnail Title column"
 msgstr "サムネイル用タイトルカラム"
 
-#: templates/admin/cdbt_shortcodes.php:94
+#: templates/admin/cdbt_shortcodes.php:95
 msgid ""
 "Specifies a column as displayed title on the thumbnail list view. it "
 "displays nothing if this is not fill."
@@ -2943,11 +3030,11 @@ msgstr ""
 "サムネイル一覧ビューに表示される画像のタイトルとなる列を指定します。これが指"
 "定されていない場合は何も表示されません。"
 
-#: templates/admin/cdbt_shortcodes.php:95
+#: templates/admin/cdbt_shortcodes.php:96
 msgid "Thumbnail Block Size"
 msgstr "サムネイルのサイズ"
 
-#: templates/admin/cdbt_shortcodes.php:95
+#: templates/admin/cdbt_shortcodes.php:96
 msgid ""
 "Specifies a width of the thumbnail image, also the default size of thumbnail "
 "will be square equal to this width."
@@ -2955,50 +3042,50 @@ msgstr ""
 "サムネイル画像の幅を指定します。なお、サムネイルのデフォルト・サイズは、この"
 "幅を一辺とする正方形になります。"
 
-#: templates/admin/cdbt_shortcodes.php:96
+#: templates/admin/cdbt_shortcodes.php:97
 msgid "Adding Ajax Support"
 msgstr "Ajax対応"
 
-#: templates/admin/cdbt_shortcodes.php:96
+#: templates/admin/cdbt_shortcodes.php:97
 msgid "To Use the Ajax for loading the table data if checked."
 msgstr "有効の場合、テーブルのデータをロードする際にAjaxを使用します。"
 
-#: templates/admin/cdbt_shortcodes.php:96
+#: templates/admin/cdbt_shortcodes.php:97
 msgid ""
 "If activated, you can improve performance when dealing with large tables of "
-"data size. (Not Implemented yet)"
+"data size."
 msgstr ""
 "有効化することで、データサイズの大きなテーブルを取り扱う場合にパフォーマンス"
-"を向上させることができます。（未実装）"
+"を向上させることができます。"
 
-#: templates/admin/cdbt_shortcodes.php:101
+#: templates/admin/cdbt_shortcodes.php:102
 msgid ""
 "You can specify as like description that will be displayed in the shortcode "
 "lists screen."
 msgstr "ショートコード一覧画面に表示される説明などを指定することができます。"
 
-#: templates/admin/cdbt_shortcodes.php:104
+#: templates/admin/cdbt_shortcodes.php:105
 msgid "Generated Shortcode"
 msgstr "生成ショートコード"
 
-#: templates/admin/cdbt_shortcodes.php:104
+#: templates/admin/cdbt_shortcodes.php:105
 msgid "No generated shortcode yet."
 msgstr "まだ生成されたショートコードはありません。"
 
-#: templates/admin/cdbt_shortcodes.php:105
+#: templates/admin/cdbt_shortcodes.php:106
 msgid "Alias Shortcode"
 msgstr "ショートコードエイリアス"
 
-#: templates/admin/cdbt_shortcodes.php:105
+#: templates/admin/cdbt_shortcodes.php:106
 msgid "No alias shortcode yet."
 msgstr "まだエイリアス・ショートコードはありません。"
 
-#: templates/admin/cdbt_shortcodes.php:105
+#: templates/admin/cdbt_shortcodes.php:106
 msgid ""
 "When you click the code field you can copy the contents to the clipboard."
 msgstr "コード欄をクリックすることで、内容をクリップボードにコピーできます。"
 
-#: templates/admin/cdbt_shortcodes.php:126
+#: templates/admin/cdbt_shortcodes.php:127
 msgid ""
 "Those shortcode lists are managed in this plugin now. If you will create a "
 "newly shortcode, you can use very conveniently by registering to this plugin."
@@ -3007,7 +3094,7 @@ msgstr ""
 "が新たにショートを作成する際、このプラグインに登録することで非常に便利に使用"
 "することができます。"
 
-#: templates/admin/cdbt_shortcodes.php:224
+#: templates/admin/cdbt_shortcodes.php:226
 msgid ""
 "In this section you can create a new custom shortcode. Please enter the "
 "following your necessary items."
@@ -3015,26 +3102,26 @@ msgstr ""
 "このセクションでは、新しいカスタムショートコードを作成することができます。以"
 "下の必要な項目を入力してください。"
 
-#: templates/admin/cdbt_shortcodes.php:244
-#: templates/admin/cdbt_shortcodes.php:397
+#: templates/admin/cdbt_shortcodes.php:246
+#: templates/admin/cdbt_shortcodes.php:402
 msgid "Advanced Shortcode Settings"
 msgstr "ショートコード詳細設定"
 
-#: templates/admin/cdbt_shortcodes.php:274
-#: templates/admin/cdbt_shortcodes.php:427
+#: templates/admin/cdbt_shortcodes.php:276
+#: templates/admin/cdbt_shortcodes.php:432
 msgid "Confirm the Generated Shortcode"
 msgstr "生成ショートコードの確認"
 
-#: templates/admin/cdbt_shortcodes.php:282
+#: templates/admin/cdbt_shortcodes.php:284
 msgid "Save Shortcode"
 msgstr "ショートコードを保存"
 
-#: templates/admin/cdbt_shortcodes.php:283
-#: templates/admin/cdbt_shortcodes.php:436
+#: templates/admin/cdbt_shortcodes.php:285
+#: templates/admin/cdbt_shortcodes.php:441
 msgid "Preview Shortcode"
 msgstr "ショートコードプレビュー"
 
-#: templates/admin/cdbt_shortcodes.php:308
+#: templates/admin/cdbt_shortcodes.php:310
 #, php-format
 msgid ""
 "Please choose which a custom shortcode you want to edit from %sthe shortcode "
@@ -3043,13 +3130,13 @@ msgstr ""
 "編集したいカスタムショートコードを%sショートコード一覧%sから選択してくださ"
 "い。"
 
-#: templates/admin/cdbt_shortcodes.php:311
+#: templates/admin/cdbt_shortcodes.php:313
 msgid ""
 "The custom shortcode cannot edit other than the registrant or privilege "
 "administrator."
 msgstr "カスタムショートコードは、登録者または特権管理者以外は編集できません。"
 
-#: templates/admin/cdbt_shortcodes.php:377
+#: templates/admin/cdbt_shortcodes.php:382
 msgid ""
 "In this section you can edit an existing custom shortcode. Please modify the "
 "following your necessary items."
@@ -3057,7 +3144,7 @@ msgstr ""
 "このセクションでは、既存のカスタムショートコードを編集することができます。以"
 "下の必要な項目を入力してください。"
 
-#: templates/admin/cdbt_shortcodes.php:435
+#: templates/admin/cdbt_shortcodes.php:440
 msgid "Update Shortcode"
 msgstr "ショートコードを更新"
 
@@ -3991,7 +4078,7 @@ msgstr "データ削除"
 
 #: templates/components/cdbt_repeater.php:273
 #: templates/components/cdbt_table.ajax.php:898
-#: templates/components/cdbt_table.php:1080
+#: templates/components/cdbt_table.php:1082
 #, php-format
 msgid "%1$s - %2$s of %3$s items"
 msgstr "%3$s 件中 %1$s ～ %2$s を表示"
@@ -4006,13 +4093,13 @@ msgstr "前ページ"
 
 #: templates/components/cdbt_repeater.php:304
 #: templates/components/cdbt_table.ajax.php:901
-#: templates/components/cdbt_table.php:1083
+#: templates/components/cdbt_table.php:1085
 msgid "Page"
 msgstr "ページ"
 
 #: templates/components/cdbt_repeater.php:318
 #: templates/components/cdbt_table.ajax.php:905
-#: templates/components/cdbt_table.php:1087
+#: templates/components/cdbt_table.php:1089
 #, php-format
 msgid "of %1$s"
 msgstr " / %1$s"
@@ -4027,8 +4114,8 @@ msgstr "次ページ"
 #: templates/components/cdbt_table.ajax.php:1277
 #: templates/components/cdbt_table.bak.php:519
 #: templates/components/cdbt_table.bak.php:1002
-#: templates/components/cdbt_table.php:551
-#: templates/components/cdbt_table.php:1261
+#: templates/components/cdbt_table.php:553
+#: templates/components/cdbt_table.php:1262
 msgid "No result."
 msgstr "見つかりませんでした"
 
@@ -4153,3 +4240,10 @@ msgstr "終了"
 #: templates/components/cdbt_wizard.php:143
 msgid "Next"
 msgstr "次へ"
+
+#~ msgid ""
+#~ "If activated, you can improve performance when dealing with large tables "
+#~ "of data size. (Not Implemented yet)"
+#~ msgstr ""
+#~ "有効化することで、データサイズの大きなテーブルを取り扱う場合にパフォーマン"
+#~ "スを向上させることができます。（未実装）"

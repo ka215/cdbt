@@ -151,7 +151,7 @@ if ( ! isset( $this->component_options['columns'] ) || empty( $this->component_o
     } else
     if ( isset( $_col_atts['dataType'] ) && strpos( $_col_atts['dataType'], 'text' ) !== false ) {
       if ( $_col_atts['isTruncate'] && $_col_atts['truncateStrings'] > 0 ) {
-        $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .' truncation" readonly><% "'. $_col_atts['property'] .'" %></textarea>';
+        $_data_wrapper = '<textarea class="data-'. $_col_atts['dataType'] .' truncation" data-truncate-length="'. $_col_atts['truncateStrings'] .'" readonly><% "'. $_col_atts['property'] .'" %></textarea>';
       } else {
         $_data_wrapper = '<span class="data-'. $_col_atts['dataType'] .'"><% "'. $_col_atts['property'] .'" %></span>';
       }
@@ -442,7 +442,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $enable_editor ) : ?>
     $(document).on('click', '.cdbt-table-editor[for="<?php echo $table_id; ?>"] button#table-editor-edit, .cdbt-table-editor[for="<?php echo $table_id; ?>"] button#table-editor-delete', function(e){ _self.cacheOpt(e,$(this)); }); // cache
 <?php endif; ?>
-	$(window).on('resize', function(e){ _self.render(); });
+    $(window).on('resize', function(e){ _self.render(); });
     
   }, 
   deepCopy: function(object) {
@@ -451,8 +451,10 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 <?php if ( $ajax_load ) : ?>
   render: function(now_data) {
     var options = this.options;
-    if (typeof now_data !== 'undefined') {
+    if (typeof now_data === 'object') {
       this.items = now_data;
+    } else if ( typeof now_data === 'string' ) {
+      var method = now_data;
     }
     var data = this.deepCopy(this.items);
 <?php else : ?>
@@ -507,7 +509,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
 	        customMarkup = $('<div/>').html(helpers.item).text();
             break;
         }
-        rowData[column] = typeof customMarkup === 'object' ? customMarkup.get(0).outerHTML : customMarkup;
+        rowData[column] = typeof customMarkup === 'object' ? customMarkup.get(0).outerHTML : strip_slashes( customMarkup );
       });
       
       var rowMarkup = _.reduce(options.templateRow.match(/<%+\s(.|\s)*?\s+%>/gi),function(tmpl,placeholder){
@@ -705,7 +707,7 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
     
     // customAfterRenderer
 <?php if ( $ajax_load ) : ?>
-    this.afterRender('');
+    this.afterRender(method);
 <?php else : ?>
     this.afterRender(method);
 <?php endif; ?>
@@ -1166,18 +1168,17 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       
       $('#'+options.tableId+' tbody>tr>td>textarea.truncation').each(function(){
         var origin_str = $(this).val();
-        var _tmp = $('<div/>').html($(this).val());
-        var truncated_str = _tmp.text();
-        var collapse_link = _tmp.find('.collapse-col-data');
-        if (collapse_link.size()) {
-          var full_str = collapse_link.data('raw');
-          collapse_link.addClass('pull-right').css({position:'absolute',right:'8px',bottom:'8px'});
-          if (method === 'disabled') {
-            collapse_link.addClass('disabled');
+        var raw_text = $('<div/>').html( strip_tags( _.unescape( origin_str ) ) ).text();
+        var truncate_length = Number( $(this).data('truncateLength') );
+        if ( mb_strlen( raw_text ) > truncate_length ) {
+          var truncate_str = mb_substr( raw_text, 0, truncate_length - 1 );
+          $(this).val( truncate_str + ' ...' ).css({height: $(this)[0].scrollHeight+'px'});
+          var esc_str = raw_text.replace(/\"/mg, '&quot;');
+          var collapse_link = '<a href="javascript:;" class="btn btn-default btn-sm collapse-col-data pull-right" style="position:absolute;right:8px;bottom:8px;" data-raw="'+ esc_str +'"><i class="fa fa-ellipsis-h" aria-hidden="true"></i> <i class="fa fa-level-up" aria-hidden="true"></i></a>';
+          $(this).parent().append(collapse_link);
+          if ( method === 'disabled' ) {
+            $(this).next('.collapse-col-data').addClass('disabled');
           }
-          $(this).val(truncated_str).html(truncated_str).parent().append(collapse_link);
-          $(this).css({height: $(this)[0].scrollHeight+'px'});
-          $(this).val(full_str).html(full_str);
         }
       });
     });
@@ -1321,8 +1322,8 @@ DynamicTables['<?php echo $table_id; ?>'].prototype = {
       cache: false,
     };
   	$('#<?php echo $table_id; ?>').animate({opacity: .5}, 150);
-    var container_width = $('.cdbt-table-wrapper[for="<?php echo $table_id; ?>"]').outerWidth();
-    $('.panel-body[for="<?php echo $table_id; ?>"]').css({position:'absolute', width:(container_width-2)+'px', top:'50%', zIndex:999 }).fadeIn(300);
+    var container_size = { w: $('.cdbt-table-wrapper[for="<?php echo $table_id; ?>"]').outerWidth(), h: $('.cdbt-table-wrapper[for="<?php echo $table_id; ?>"]').outerHeight() };
+    $('.panel-body[for="<?php echo $table_id; ?>"]').css({position:'absolute', width:(container_size.w-2)+'px', top:(container_size.h/2-$.em2pxl(3))+'px', zIndex:999 }).fadeIn(300);
     $.ajax( ajax_params ).done( function( data, stat, xhr ) {
 //console.log({ done: stat, data: data, xhr: xhr });
       var _totalItems = data.pop();

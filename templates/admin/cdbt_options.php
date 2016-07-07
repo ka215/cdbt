@@ -387,15 +387,7 @@ $fields_define = [];
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
 
 <?php
-/*
-  $all_addons = [ 
-    'CustomReview' => [ 'label' => __( 'Custom Review', CDBT ), 'basename' => 'custom-review', 'description' => 'This add-on has been activated now.', 'version' => '0.9.0', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '0' ], 
-    'DummyAddon1' => [ 'label' => __( 'Addon Name 1', CDBT ), 'basename' => 'dummy-addon-1', 'description' => 'This add-on has been installed now, <br>but it does not activate yet.', 'version' => '1.0.0', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '5.00' ], 
-    'DummyAddon2' => [ 'label' => __( 'Addon Name 2', CDBT ), 'basename' => 'dummy-addon-2', 'description' => 'You don&#39;t have this add-on yet.', 'version' => '1.0.2', 'author' => 'ka2', 'author_url' => 'https://ka2.org/', 'amount' => '9.99' ], 
-  ];
-*/
-  $develop = true;
-  $official_site = $develop ? 'http://dev.ka2.org' : 'https://ka2.org';
+  $official_site = 'https://ka2.org';
   $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons/' ) );
   $response_code = wp_remote_retrieve_response_code( $response );
   if ( $response_code == 200 ) {
@@ -419,8 +411,8 @@ $fields_define = [];
       <div class="caption">
         <h3 class="addon-title"><?= $_meta->label ?></h3>
         <p class="addon-description"><?= $_meta->description ?></p>
-        <p class="addon-version"><label>Latest Ver.</label> <?= $_meta->version ?></p>
-        <p class="addon-author"><label>Produced by</label> <a href="<?= $_meta->author_url ?>"><?= $_meta->author ?></a></p>
+        <p class="addon-version"><label><?php _e('Latest Ver.', CDBT) ?></label> <?= $_meta->version ?></p>
+        <p class="addon-author"><label><?php _e('Produced by', CDBT) ?></label> <a href="<?= $_meta->author_url ?>"><?= $_meta->author ?></a></p>
         <div class="addon-footer"><div class="addon-btn"><?= $_btn ?></div><div class="addon-amount"><?= intval( $_meta->amount ) == 0 ? __('FREE', CDBT) : '$ ' . $_meta->amount ?></div></div>
       </div>
     </div></li>

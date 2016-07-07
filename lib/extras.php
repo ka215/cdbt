@@ -71,7 +71,7 @@ trait CdbtExtras {
       'apikey_generator' => 'try-yet', 
       'apikey_requests' => 'try-yet', 
       'allow_rendering_shortcodes' => 'done', 
-      'ajax_load' => 'unreleased', 
+      'ajax_load' => 'new', 
       'include_assets' => 'done', 
       'prevent_duplicate_sending' => 'done', 
       'plugin_menu_position' => 'done', 
@@ -86,10 +86,10 @@ trait CdbtExtras {
       'narrow_operator' => 'try-yet', 
       'dynamic_table_layout' => 'try-yet', 
       'json_support' => 'try-yet', 
-      'draggable_table' => 'new', 
-      'footer_interface' => 'new', 
-      'clickable_cols' => 'new', 
-      'truncate_cols' => 'new', 
+      'draggable_table' => 'try-yet', 
+      'footer_interface' => 'try-yet', 
+      'clickable_cols' => 'try-yet', 
+      'truncate_cols' => 'try-yet', 
     ];
     if ( array_key_exists( $feature_name, $new_features ) ) {
       if ( 'try-yet' === $new_features[$feature_name] ) {

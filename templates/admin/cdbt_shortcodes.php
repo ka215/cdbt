@@ -4,7 +4,8 @@
  * URL: `/wp-admin/admin.php?page=cdbt_shortcodes`
  *
  * @since 2.0.0
- * @since 2.1.31 Emhanced
+ * @since 2.1.31 Enhanced
+ * @since 2.1.33 Updated
  *
  */
 
@@ -83,8 +84,8 @@ $fields_define = [
   'sortOrder' => [ 'elementName'=>'sort_order', 'elementId'=>'sort_order', 'elementLabel'=>__('Initial Sort Order', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'created:desc', 'placeholder'=>'updated:desc,ID:asc,...', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies in the pair of column name and the ascending(asc) or descending(desc) order, for the display order of the initial data. If there are multiple condition, please use the comma-delimited. e.g. "updated:desc,ID:asc,..."', CDBT) ], 
   'limitItems' => [ 'elementName'=>'limit_items', 'elementId'=>'limit_items', 'elementLabel'=>__('Max Rows Per Page', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>'', 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('If this attribute is specified, it overrides the "Maximum display data per page" of the table.', CDBT) ], 
   'truncateStr' => [ 'elementName'=>'truncate_strings', 'elementId'=>'truncate_strings', 'elementLabel'=>__('Truncates String', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>40, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Truncates the display data if the strings type data is longer than the specified characters (not bytes). If value is zero it does not truncate.', CDBT) ], 
-  'truncateCols' => [ 'elementName'=>'truncate_cols', 'elementId'=>'truncate_cols', 'elementLabel'=>__('Truncate Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to specify the columns truncating the strings. If nothing is specified, it will be performed the strings truncation to all string type columns. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'new' ] ], 
-  'clickableCols' => [ 'elementName'=>'clickable_cols', 'elementId'=>'clickable_cols', 'elementLabel'=>__('Clickable Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to be able to click the column value. Also in those columns, it should be stored the string as like the url. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'new' ] ], 
+  'truncateCols' => [ 'elementName'=>'truncate_cols', 'elementId'=>'truncate_cols', 'elementLabel'=>__('Truncate Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to specify the columns truncating the strings. If nothing is specified, it will be performed the strings truncation to all string type columns. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'under-test' ] ], 
+  'clickableCols' => [ 'elementName'=>'clickable_cols', 'elementId'=>'clickable_cols', 'elementLabel'=>__('Clickable Columns', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'placeholder'=>'column1,column2,column3,...', 'addWrapClass' => 'switching-item on-v on-e', 'helperText'=>__('Specifies the comma-delimited column names if you want to be able to click the column value. Also in those columns, it should be stored the string as like the url. <wbr/>e.g. "column1,column2,column3,..."', CDBT), 'elementExtras'=>[ 'status'=>'under-test' ] ], 
   'imageRender' => [ 'elementName'=>'image_render', 'elementId'=>'image_render', 'elementLabel'=>__('Thumbnail Image Class', CDBT), 'idPrefix'=>'', 'elementType'=>'combobox', 'fieldSize'=>3, 'defaultValue'=>'responsive', 'selectableList'=>['rounded', 'circle', 'thumbnail', 'responsive'], 'addWrapClass'=>'switching-item on-v on-e for-rpt', 'helperText'=>__('Specifies a CSS class name for styling the thumbnail images. This CSS class will be added to img tag of thumbnail image. It will enable only if renders the repeater layout.', CDBT) ], 
   'submitLabel' => [ 'elementName'=>'submit_button_label', 'elementId'=>'submit_button_label', 'elementLabel'=>__('Labeled Submit Button', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the label name of button for submitting in the entry form.', CDBT) ], 
   'redirectUrl' => [ 'elementName'=>'redirect_url', 'elementId'=>'redirect_url', 'elementLabel'=>__('Redirect URL', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>9, 'addWrapClass' => 'switching-item on-i', 'helperText'=>__('Specifies the url to redirect after the time of insertion and the update of the data. If not specified, self page is reloaded.', CDBT) ], 
@@ -93,7 +94,7 @@ $fields_define = [
   'thumbCol' => [ 'elementName'=>'thumbnail_column', 'elementId'=>'thumbnail_column', 'elementLabel'=>__('Thumbnail Image Column', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a column as the thumbnail image. In this column it should be stored the image binary or a URL of image.', CDBT) ], 
   'thumbTitle' => [ 'elementName'=>'thumbnail_title_column', 'elementId'=>'thumbnail_title_column', 'elementLabel'=>__('Thumbnail Title column', CDBT), 'idPrefix'=>'', 'elementType'=>'text', 'defaultValue'=>'', 'fieldSize'=>4, 'addWrapClass' => 'switching-item on-v', 'helperText'=>__('Specifies a column as displayed title on the thumbnail list view. it displays nothing if this is not fill.', CDBT) ], 
   'thumbWidth' => [ 'elementName'=>'thumbnail_width', 'elementId'=>'thumbnail_width', 'elementLabel'=>__('Thumbnail Block Size', CDBT), 'idPrefix'=>'', 'elementType'=>'spinbox', 'defaultValue'=>100, 'fieldSize'=>3, 'addWrapClass' => 'switching-item on-e on-v', 'helperText'=>__('Specifies a width of the thumbnail image, also the default size of thumbnail will be square equal to this width.', CDBT) ], 
-  'ajaxLoad' => [ 'elementName'=>'ajax_load', 'elementId'=>'ajax_load', 'elementLabel'=>__('Adding Ajax Support', CDBT), 'idPrefix'=>'', 'elementType'=>'checkbox', 'defaultValue'=>'', 'selectableList'=>[ 'ajax_load'=>__('To Use the Ajax for loading the table data if checked.', CDBT) ], 'addWrapClass'=>'switching-item on-e on-v', 'helperText'=>__('If activated, you can improve performance when dealing with large tables of data size. (Not Implemented yet)', CDBT), 'elementExtras'=>[ 'child-class'=>'ajax_load:disabled', 'disabled'=>'disabled', 'status'=>'futrue' ] ], 
+  'ajaxLoad' => [ 'elementName'=>'ajax_load', 'elementId'=>'ajax_load', 'elementLabel'=>__('Adding Ajax Support', CDBT), 'idPrefix'=>'', 'elementType'=>'checkbox', 'defaultValue'=>'ajax_load', 'selectableList'=>[ 'ajax_load'=>__('To Use the Ajax for loading the table data if checked.', CDBT) ], 'addWrapClass'=>'switching-item on-e on-v', 'helperText'=>__('If activated, you can improve performance when dealing with large tables of data size.', CDBT), 'elementExtras'=>[ 'status'=>'new' ] ], 
   'actionUrl' => [ 'elementName'=>'action_url', 'elementId'=>'action_url', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>'', 'noWrap'=>true ], 
   'formAction' => [ 'elementName'=>'form_action', 'elementId'=>'form_action', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>'entry_data', 'noWrap'=>true ], 
   'displaySubmit' => [ 'elementName'=>'display_submit', 'elementId'=>'display_submit', 'idPrefix'=>'', 'elementType'=>'hidden', 'defaultValue'=>'1', 'noWrap'=>true ], 
@@ -171,6 +172,7 @@ $fields_define = [
       'enable_sort' => true, 
       'display_index_row' => true, 
       'enable_repeater' => true, 
+      'ajax_load' => true, 
     ];
   }
   
@@ -207,7 +209,7 @@ $fields_define = [
     if ( 'formAction' === $__key ) {
       $__val['defaultValue'] = isset( $this_tab_vars['form_action'] ) ? $this_tab_vars['form_action'] : 'entry_data';
     } else
-    if ( 'formAction' === $__key ) {
+    if ( 'whereClause' === $__key ) {
       $__val['defaultValue'] = isset( $this_tab_vars['where_clause'] ) ? $this_tab_vars['where_clause'] : '';
     } else
     if ( 'csid' === $__key ) {
@@ -360,8 +362,11 @@ $fields_define = [
       if ( 'formAction' === $__key ) {
         $__val['defaultValue'] = isset( $this_tab_vars['form_action'] ) ? $this_tab_vars['form_action'] : 'entry_data';
       } else
-      if ( 'formAction' === $__key ) {
+      if ( 'whereClause' === $__key ) {
         $__val['defaultValue'] = isset( $this_tab_vars['where_clause'] ) ? $this_tab_vars['where_clause'] : '';
+      } else
+      if ( 'ajaxLoad' === $__key ) {
+        $__val['defaultValue'] = isset( $this_tab_vars['ajax_load'] ) && $this_tab_vars['ajax_load'] ? key( $__val['selectableList'] ) : '';
       } else
       if ( 'csid' === $__key ) {
         $__val['defaultValue'] = $current_csid;

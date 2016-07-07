@@ -1199,7 +1199,15 @@ var strip_tags = function( str, allowed ) {
   });
 };
 var strip_slashes = function( str ) {
-  return str.replace(/\\(.)/mg, "$1");
+  //return str.replace(/\\(.)/mg, "$1");
+  return (str + '').replace(/\\(.?)/g, function (s, n1) {
+    switch (n1) {
+      case '\\': return '\\';
+      case '0': return '\u0000';
+      case '': return '';
+      default: return n1;
+    }
+  });
 };
 var cdbtCustomColumnFilter = function( value, truncate ){
   truncate = truncate || 100;
