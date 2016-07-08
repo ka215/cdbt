@@ -442,6 +442,82 @@ class CdbtDB extends CdbtConfig {
   
   
   /**
+   * Get table size
+   *
+   * @since 2.1.33
+   *
+   * @param string $table_name [require]
+   * @param unit $unit [optional] Default is "KB"; or "MB" or "GB"
+   * @return int $size
+   */
+  public function get_table_size( $table_name=null, $unit='KB' ) {
+    static $message = '';
+    
+    if ( empty( $table_name ) ) 
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
+    
+    if ( ! $this->check_table_exists( $table_name ) ) 
+      $message = __('No specified table.', CDBT);
+    
+    $unit = in_array( strtoupper( $unit ), [ 'KB', 'MB', 'GB' ] ) ? strtoupper( $unit ) : 'KB';
+    $_per_unit = 'KB' === $unit ? 1024 : ('MB' === $unit ? 1024 * 1024 : 1024 * 1024 * 1024);
+    $result = $this->array_flatten( $this->wpdb->get_results( $this->wpdb->prepare( "SELECT floor( ( data_length + index_length ) / %d ) AS full_size FROM information_schema.TABLES WHERE `table_name` = '%s'", $_per_unit, esc_sql( $table_name ) ), ARRAY_A ) );
+    if ( ! is_array($result) || empty( $result ) || ! $result ) 
+      $message = sprintf( __('Could not get the "%s" table size', CDBT), $table_name );
+    
+    if ( ! empty( $message ) ) {
+      $this->logger( $message );
+      return false;
+    }
+    
+    return intval( $result['full_size'] );
+  }
+  
+  
+  /**
+   * Get table rows
+   *
+   * @since 2.1.33
+   *
+   * @param string $table_name [require]
+   * @return int $rows
+   */
+  public function get_table_rows( $table_name=null ) {
+    static $message = '';
+    
+    if ( empty( $table_name ) ) 
+      $message = sprintf( $this->common_error_messages[0], __FUNCTION__ );
+    
+    if ( ! $this->check_table_exists( $table_name ) ) 
+      $message = __('No specified table.', CDBT);
+    
+    if ( 'myisam' === strtolower( $this->get_table_status( $table_name, 'Engine' ) ) ) {
+      return intval( $this->get_table_status( $table_name, 'Rows' ) );
+    } else {
+      $_schema = $this->get_table_schema( $table_name );
+      $_count_col = $_first_col = null;
+      $_i = 0;
+      foreach ( $_schema as $_col => $_val ) {
+      	if ( $_i == 0 ) 
+      	  $_first_col = $_col;
+        if ( $_val['primary_key'] ) {
+          $_count_col = $_col;
+          break;
+        }
+        $_i++;
+      }
+      if ( empty( $_count_col ) ) {
+        $_count_col = $_first_col;
+      }
+      $sql = sprintf( 'SELECT COUNT(`%s`) AS rows FROM `%s`', $_count_col, $table_name );
+      $result = $this->run_query( $sql, 'PDO' );
+      return intval( $result['rows'] );
+    }
+    
+  }
+  
+  
+  /**
    * Truncate all data in table for emptying
    *
    * @since 1.0.0

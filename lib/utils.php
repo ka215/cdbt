@@ -250,6 +250,7 @@ class CdbtUtility {
    * This process download the file when exporting table data.
    *
    * @since 2.0.0
+   * @since 2.1.33 Added action hooks
    *
    * @param array $data_sources [require]
    * @return boolean
@@ -264,8 +265,28 @@ class CdbtUtility {
       $output_encoding = mb_internal_encoding();
     
     $file_name = sprintf( '%s.%s', $data_sources['export_table'], $data_sources['export_filetype'] );
-    if ( 'sql' !== $data_sources['export_filetype'] ) 
-      $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
+    if ( 'sql' !== $data_sources['export_filetype'] ) {
+      $current_memory = floor( memory_get_usage() / 1024 );
+      $table_size = $this->get_table_size( $data_sources['export_table'] );
+      $divided = ceil( $table_size / $current_memory );
+      $table_rows = $this->get_table_rows( $data_sources['export_table'] );
+      // Action hook of just before running the sql to export table
+      // 
+      // @since 2.1.33
+      do_action( 'cdbt_before_export_table', $data_sources );
+      if ( $divided > 1 ) {
+        $raw_data = [];
+        $_limit = ceil( $table_rows / $divided );
+        for ( $_i = 0; $_i < $divided; $_i++ ) {
+          $_offset = $_limit * $_i;
+          $raw_data = array_merge( $raw_data, $this->get_data( $data_sources['export_table'], $data_sources['export_columns'], null, 'and', null, $_limit, $_offset ) );
+        }
+        // It maybe should output to temporary file from divide data.
+        // There is not performed yet.
+      } else {
+        $raw_data = $this->get_data( $data_sources['export_table'], $data_sources['export_columns'] );
+      }
+    }
     
     $download_ready = true;
     switch ( $data_sources['export_filetype'] ) {
@@ -320,6 +341,10 @@ class CdbtUtility {
         
         break;
     }
+    // Action hook of after exporting table data
+    // 
+    // @since 2.1.33
+    do_action( 'cdbt_after_export_table', $download_ready );
     
     if ( $download_ready ) {
       try {
@@ -345,6 +370,10 @@ class CdbtUtility {
       $download_result = false;
       $message = __('Failed to export owing not to generate the download file.', CDBT);
     }
+    // Action hook of finally process of exporting as after download
+    // 
+    // @since 2.1.33
+    do_action( 'cdbt_final_export_table', $download_ready );
     
     $this->logger( $message );
     $this->download_result = $download_result;

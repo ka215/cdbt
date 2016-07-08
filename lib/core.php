@@ -158,6 +158,7 @@ class CdbtCore extends CdbtUtility {
    * Shutdown all processes
    *
    * @since 2.0.4
+   * @since 2.1.33 Updated
    */
   protected function cdbt_shutdown() {
     // Finish buffering
@@ -166,6 +167,15 @@ class CdbtCore extends CdbtUtility {
     
     if ( $buffer ) 
       echo $buffer;
+    
+    list( $max ) = sscanf( ini_get( 'memory_limit' ), '%dM' );
+    $max = intval( $max );
+    $peak = intval( memory_get_peak_usage( true ) / 1024 / 1024 );
+    $used = $max !== 0 ? round( $peak / $max * 100, 2 ) : '--';
+    if ( $used > 85 ) {
+      $message = sprintf( __('Memory peak usage warning: %s %% used. (max: %dM, now: %dM)', CDBT), $used, $max, $peak );
+      $this->logger( $message );
+    }
     
   }
   

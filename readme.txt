@@ -72,10 +72,11 @@ There is no particular restriction on the amount of data that is stored in a tab
 * Added new feature of ajax loading on the shortcode.
 * Added a new filter named "cdbt_shortcode_datetime_format" for customizing the display date time format on the shortcode.
 * Added the platform for using the add-ons to extend plugin.
-* Enhanced the data narrowing on the shortcode (supported "IN" and "BETWEEN" queries). [More details can be found here](https://ka2.org/cdbt/v2/shortcodes/).
+* Enhanced the data narrowing on the shortcode (supported "IN" and "BETWEEN" queries). [More details can be found here](http://demo.ka2.org/sample-shortcode-for-using-the-enhanced-narrowing-condition/).
 * Improved the UI and a bug about the related the "created" as an auto insertion column.
 * Fixed a bug that was not working properly to truncate string that contains the quotation.
 * Were disabled "clipboard.js" on the Safari because unsupported.
+* Others, added newly 2 methods, 3 action hooks and improved already existing some methods.
 
 = 2.1.32 =
 * Changed the string truncation processing of table data in the management screen, from current fixed 100 characters to newly 40 characters as the initial value.

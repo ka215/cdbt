@@ -63,6 +63,7 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
     __('Revised English in the management screen', CDBT), 
     __('Added the ability to copy the specific string like shortcode, referenceable SQL with one click to the clipboard', CDBT), 
     __('Changed the plugin&#39;s version notation specifications to the "(Major version number).(Minor version number).(Cumulative version number)".', CDBT), 
+    __('Supported the loading data via AJAX for handling large size table', CDBT), 
     //__('Added a table backup function (a trial version)', CDBT), 
   ];
   $step2_content .= '<br><ol><li>'. implode( '</li><li>', $_tmp_list ) .'</li></ol><br>' .$_p_fin;
