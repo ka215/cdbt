@@ -325,7 +325,13 @@ trait CdbtEdit {
     $conditions = apply_filters( 'cdbt_shortcode_query_conditions', $conditions, $narrow_operator, $shortcode_name, $table );
     
     // Added for loading data via Ajax since 2.1.32
-    $_limit_clause = $ajax_load ? intval( $limit_items ) : null;
+    // Fixed a bug at v2.1.34
+    if ( $ajax_load ) {
+      $_limit_clause = intval( $limit_items );
+      $_limit_clause = empty( $_limit_clause ) ? intval( $table_option['show_max_records'] ) : $_limit_clause;
+    } else {
+      $_limit_clause = null;
+    }
     if ( 'get' === $query_type ) {
       $datasource = $this->get_data( $table, '`'.implode( '`,`', $output_columns ).'`', $conditions, $narrow_operator, $orders, $_limit_clause, 'ARRAY_A' );
     } else {
@@ -666,6 +672,7 @@ trait CdbtEdit {
     // @since 2.0.0
     $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
     
+    /* old render
     if ( is_admin() ) {
       if (isset($title)) 
         echo $title;
@@ -683,7 +690,17 @@ trait CdbtEdit {
       
       return $render_content;
     }
+    */
+    // Buffering @since 2.1.34
+    ob_start();
+    if ( isset( $title ) ) 
+      echo $title;
     
+    echo $this->component_render( $component_name, $component_options );
+    $render_content = ob_get_contents();
+    ob_clean();
+    
+    return $render_content;
   }
   
 }

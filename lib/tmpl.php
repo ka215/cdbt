@@ -74,6 +74,7 @@ trait DynamicTemplate {
    * 'noWrap' => 			@value bool   [optional] default is false (enable only if an element is hidden field)
    * 'labelSize' => 		@value int    [optional] default is 2 (actually class is "col-sm-2")
    * 'fieldSize' => 		@value int    [optional] default is 9 (actually class is "col-sm-9")
+   * 'appendContent' => 	@value string [optional] 
    * 'helperText' => 		@value string [optional] Helper text is displayed at the bottom of the input form
    * 'elementExtras' => 	@value array  [optional] Freely addition attributes for using when generating content in input form; As follow is: 
    *   [
@@ -121,6 +122,7 @@ trait DynamicTemplate {
     $placeholder = empty( $field_option['placeholder'] ) ? sprintf( __('Please enter the %s', CDBT), strtolower( $field_label ) ) : esc_attr( $field_option['placeholder'] );
     $wrapper_classes = isset( $field_option['addWrapClass'] ) && ! empty( $field_option['addWrapClass'] ) ? trim( $field_option['addWrapClass'] ) : '';
     $add_classes = isset( $field_option['addClass'] ) && ! empty( $field_option['addClass'] ) ? trim( $field_option['addClass'] ) : '';
+    $append_content = isset( $field_option['appendContent'] ) && ! empty( $field_option['appendContent'] ) ? trim( $field_option['appendContent'] ) : '';
     $input_attributes = [];
     if ( ! empty( $field_option['elementExtras'] ) ) {
       foreach( $field_option['elementExtras'] as $attr_name => $attr_value ) {
@@ -145,6 +147,7 @@ trait DynamicTemplate {
       <div class="col-sm-<?php echo $field_size; ?>">
         <input id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]" type="<?php echo esc_attr( $field_option['elementType'] ); ?>" value="<?php echo esc_attr( $field_option['defaultValue'] ); ?>" class="form-control <?php echo esc_attr( $add_classes ); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ( $is_required ) { echo ' required'; } ?>>
       </div>
+      <?php echo $append_content; ?>
     <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?>
       <div class="col-sm-<?php echo $max_field_size; ?> col-sm-offset-<?php echo $label_size; ?>">
         <p class="help-block"><?php echo $field_option['helperText']; ?></p>
@@ -166,6 +169,7 @@ trait DynamicTemplate {
           </div>
         </div>
       </div>
+      <?php echo $append_content; ?>
     <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?>
       <div class="col-sm-<?php echo $max_field_size; ?> col-sm-offset-<?php echo $label_size; ?>">
         <p class="help-block"><?php echo $field_option['helperText']; ?></p>
@@ -181,6 +185,7 @@ trait DynamicTemplate {
       <div class="col-sm-<?php echo $field_size; ?>">
         <textarea id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>]" class="form-control <?php echo esc_attr( $add_classes ); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $field_option['defaultValue']; ?></textarea>
       </div>
+      <?php echo $append_content; ?>
     <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?>
       <div class="col-sm-<?php echo $max_field_size; ?> col-sm-offset-<?php echo $label_size; ?>">
         <p class="help-block"><?php echo $field_option['helperText']; ?></p>
@@ -207,6 +212,7 @@ trait DynamicTemplate {
             </ul>
           </div>
         </div>
+        <?php echo $append_content; ?>
       <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?> -->
@@ -230,6 +236,7 @@ trait DynamicTemplate {
           </ul>
           <input class="hidden hidden-field" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($field_option['elementName']); ?>]" readonly="readonly" aria-hidden="true" type="text"/>
         </div>
+        <?php echo $append_content; ?>
       <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?> -->
@@ -262,6 +269,7 @@ trait DynamicTemplate {
         </label>
         <?php endif; ?>
       <?php endforeach; ?>
+      <?php echo $append_content; ?>
       <?php if ( $is_multiple ) : ?><input type="hidden" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($field_option['elementName']); ?>][checked]" value="0"><?php endif; ?>
       <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
@@ -295,6 +303,7 @@ trait DynamicTemplate {
         </label>
         <?php endif; ?>
       <?php endforeach; ?>
+      <?php echo $append_content; ?>
       <?php if ( isset( $field_option['helperText'] ) && ! empty( $field_option['helperText'] ) ) : ?><p class="help-block"><?php echo $field_option['helperText']; ?></p><?php endif; ?>
       </div>
     </div><!-- /#<?php echo esc_attr( $field_id ); ?>> -->
@@ -313,6 +322,7 @@ trait DynamicTemplate {
             <span class="checkbox-label"><?php if (isset($field_option['helperText']) && !empty($field_option['helperText'])) : ?><?php echo esc_html($field_option['helperText']); ?><?php else : ?><?php echo $field_option['elementLabel']; ?><?php endif; ?></span>
           </label>
         </div>
+        <?php echo $append_content; ?>
       </div>
     </div><!-- /entry-data-<?php echo esc_attr($field_option['elementName']); ?> -->
 <?php
@@ -342,6 +352,7 @@ trait DynamicTemplate {
         <input class="<?php echo esc_attr($field_option['addClass']); ?>" type="file" id="entry-data-<?php echo esc_attr($field_option['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($field_option['elementName']); ?>]"<?php if ($is_required) : ?> required<?php endif; ?>>
         <?php if ($is_fileupsize) : ?><p class="help-block"><?php printf(__('Notice: Maximum upload file size is %s.', CDBT), '<strong>'. $field_option['elementExtras']['maxlength'] .'</strong>'); ?></p><?php endif; ?>
       </div>
+      <?php echo $append_content; ?>
       <div class="col-sm-offset-2 col-sm-9">
       <?php echo $add_field; ?>
       </div>
@@ -506,6 +517,7 @@ trait DynamicTemplate {
           </div><!-- /second-combobox -->
         </div>
       </div>
+      <?php echo $append_content; ?>
       <input type="hidden" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr( $field_option['elementName'] ); ?>][prev_date]" value="<?php echo esc_attr( $field_option['defaultValue'] ); ?>">
     </div><!-- /entry-data-<?php echo esc_attr($field_option['elementName']); ?> -->
 <?php

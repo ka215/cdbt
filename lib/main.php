@@ -497,12 +497,12 @@ final class CdbtFrontend extends CdbtDB {
    * @since 2.0.0
    */
   public function action_controller() {
-    if (empty( $_POST )) {
+    if ( empty( $_POST ) ) {
       $this->destroy_session();
       return;
     }
     
-    if (wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] )) {
+    if ( isset( $_POST['_wpnonce'] ) && isset( $_POST['table'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'cdbt_entry_data-' . $_POST['table'] ) ) {
       $worker_method = sprintf('do_%s', $_POST['action']);
       if ( method_exists( $this, $worker_method ) ) {
         $_session_key = str_replace('_', '-', $worker_method .'-'. $_POST['table']);

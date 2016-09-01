@@ -159,14 +159,16 @@ class CdbtCore extends CdbtUtility {
    *
    * @since 2.0.4
    * @since 2.1.33 Updated
+   * @since 2.1.34 Updated to public method
    */
-  protected function cdbt_shutdown() {
-    // Finish buffering
-    $buffer = ob_get_contents();
-    ob_get_clean();
+  public function cdbt_shutdown() {
     
-    if ( $buffer ) 
-      echo $buffer;
+    if ( ob_get_length() !== false ) {
+      $buffer = ob_get_contents();
+      
+      // Finish buffering
+      ob_end_clean();
+    }
     
     list( $max ) = sscanf( ini_get( 'memory_limit' ), '%dM' );
     $max = intval( $max );
@@ -176,6 +178,9 @@ class CdbtCore extends CdbtUtility {
       $message = sprintf( __('Memory peak usage warning: %s %% used. (max: %dM, now: %dM)', CDBT), $used, $max, $peak );
       $this->logger( $message );
     }
+    
+    if ( isset( $buffer ) && ! empty( $buffer ) ) 
+      echo $buffer;
     
   }
   
@@ -237,7 +242,7 @@ class CdbtCore extends CdbtUtility {
     ob_start();
     check_admin_referer( "activate-plugin_{$plugin}" );
     $buffer = ob_get_contents();
-    ob_end_clean();
+    ob_clean();
     if ( ! wp_validate_boolean( $buffer ) ) 
       $this->logger( $buffer );
     

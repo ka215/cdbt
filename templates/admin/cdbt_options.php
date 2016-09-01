@@ -387,7 +387,8 @@ $fields_define = [];
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
 
 <?php
-  $official_site = 'https://ka2.org';
+  //$official_site = 'https://ka2.org';
+  $official_site = 'http://dev.ka2.org';
   $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons/' ) );
   $response_code = wp_remote_retrieve_response_code( $response );
   if ( $response_code == 200 ) {

@@ -53,8 +53,7 @@ trait CdbtEntry {
     if (false !== $table_option) {
       $table_type = $table_option['table_type'];
     } else {
-      if (in_array($table, $this->core_tables)) 
-        $table_type = 'wp_core';
+      $table_type = in_array( $table, $this->core_tables ) ? 'wp_core' : null;
     }
     $content = '';
     
@@ -78,6 +77,8 @@ trait CdbtEntry {
     if ('wp_core' === $table_type) {
       // If WordPress core tables
       $result_permit = $this->is_permit_user( 'administrator' );
+    } else {
+      $result_permit = false;
     }
     
     // Filter the viewing rights check result of the shortcode
@@ -314,6 +315,7 @@ trait CdbtEntry {
     // @since 2.0.0
     $component_options = apply_filters( 'cdbt_shortcode_custom_component_options', $component_options, $shortcode_name, $table );
     
+    /* old render
     if ( is_admin() ) {
       return $this->component_render('forms', $component_options);
     } else {
@@ -327,6 +329,14 @@ trait CdbtEntry {
       
       return $render_content;
     }
+    */
+    // Buffering @since 2.1.34
+    ob_start();
+    echo $this->component_render( 'forms', $component_options );
+    $render_content = ob_get_contents();
+    ob_clean();
+    
+    return $render_content;
     
   }
   

@@ -264,7 +264,7 @@ search, datetime, date, month, week, time, color
 ?>
     <div class="form-group">
       <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
-      <div class="col-sm-9">
+      <div class="<?php echo $element_size; ?>">
         <textarea id="entry-data-<?php echo esc_attr($element['elementName']); ?>" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" class="form-control <?php echo esc_attr($element['addClass']); ?>" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>><?php echo $element['defaultValue']; ?></textarea>
       </div>
       <?php if (isset($element['helperText']) && !empty($element['helperText'])) : ?><p class="help-block col-sm-offset-2"><?php echo esc_html($element['helperText']); ?></p><?php endif; ?>
@@ -274,15 +274,18 @@ search, datetime, date, month, week, time, color
       case 'combobox': 
 ?>
     <div class="form-group">
-      <div class="input-group input-append dropdown combobox" data-initialize="combobox">
-        <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" id="entry-data-<?php echo esc_attr($element['elementName']); ?>" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control text-center" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
-        <div class="input-group-btn">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-          <ul class="dropdown-menu dropdown-menu-right">
-          <?php foreach ($selectable_list as $list_label => $list_value) : ?>
-            <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo esc_html($list_label); ?></a></li>
-          <?php endforeach; ?>
-          </ul>
+      <label for="entry-data-<?php echo esc_attr($element['elementName']); ?>" class="col-sm-2 control-label"><?php echo $element['elementLabel']; ?><?php if ( $is_required ){ echo $label_required; } ?></label>
+      <div class="<?php echo $element_size; ?>">
+        <div class="input-group input-append dropdown combobox" data-initialize="combobox">
+          <input type="text" name="<?php echo $this->domain_name; ?>[<?php echo esc_attr($element['elementName']); ?>]" id="entry-data-<?php echo esc_attr($element['elementName']); ?>" value="<?php echo esc_attr($element['defaultValue']); ?>" class="form-control text-center" placeholder="<?php echo $placeholder; ?>" <?php echo $add_attributes; ?><?php if ($is_required) { echo ' required'; } ?>>
+          <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right">
+            <?php foreach ($selectable_list as $list_label => $list_value) : ?>
+              <li data-value="<?php echo esc_attr($list_value); ?>"<?php if ($element['defaultValue'] === $list_value) : ?> data-selected="true"<?php endif; ?>><a href="#"><?php echo esc_html($list_label); ?></a></li>
+            <?php endforeach; ?>
+            </ul>
+          </div>
         </div>
       </div>
     </div><!-- /entry-data-<?php echo esc_attr($element['elementName']); ?> -->

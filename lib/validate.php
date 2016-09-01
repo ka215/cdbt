@@ -83,14 +83,20 @@ class CommonValidator
 
         if (CommonValidator::checkString($arg) && CommonValidator::checkLength($arg,1)
         || CommonValidator::checkRange($arg,1) && CommonValidator::checkString($format)) {
-            $date = new \DateTime($arg);
-            if($date && $arg == $date->format($format)){
-                return true;
-            } else {
-                return false;
-            }
-        } else {
+          try {
+          	new \DateTime( $arg );
+          } catch ( \Exception $e ) {
+            // var_dump( \DateTimeImmutable::getLastErrors() );
             return false;
+          }
+          $date = new \DateTime( $arg );
+          if( $date && $arg == $date->format( $format ) ){
+              return true;
+          } else {
+              return false;
+          }
+        } else {
+          return false;
         }
     }
 

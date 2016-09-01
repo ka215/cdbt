@@ -288,6 +288,10 @@ final class CdbtAdmin extends CdbtDB {
    */
   public function admin_menus() {
     $operating_capability = apply_filters( 'cdbt_operating_capability', $this->maximum_capability );
+    // Filters the slug of top level menu on this plugin (for add-on extension)
+    //
+    // @since 2.1.34
+    $cdbt_top_level_menu = apply_filters( 'cdbt_top_level_menu', 'cdbt_management_console' );
     
     $menus = [];
     if ( array_key_exists( 'plugin_menu_position', $this->options ) ) {
@@ -300,14 +304,14 @@ final class CdbtAdmin extends CdbtDB {
       __('CDBT Management Console', $this->domain_name), 
       __('CDBT', $this->domain_name), 
       $operating_capability, 
-      'cdbt_management_console', 
+      $cdbt_top_level_menu, 
       array($this, 'admin_page_render'), 
       'dashicons-admin-generic', 
       $this->admin_menu_position( $_menu_position )
     );
     
     $menus[] = add_submenu_page( 
-      'cdbt_management_console', 
+      $cdbt_top_level_menu, 
       __('CDBT Tables Management', $this->domain_name), 
       __('Tables', $this->domain_name), 
       $operating_capability, 
@@ -316,7 +320,7 @@ final class CdbtAdmin extends CdbtDB {
     );
     
     $menus[] = add_submenu_page( 
-      'cdbt_management_console', 
+      $cdbt_top_level_menu, 
       __('CDBT Shortcodes Management', $this->domain_name), 
       __('Shortcodes', $this->domain_name), 
       $operating_capability, 
@@ -325,7 +329,7 @@ final class CdbtAdmin extends CdbtDB {
     );
     
     $menus[] = add_submenu_page( 
-      'cdbt_management_console', 
+      $cdbt_top_level_menu, 
       __('CDBT WEB APIs Management', $this->domain_name), 
       __('Web APIs', $this->domain_name), 
       $operating_capability, 
@@ -334,7 +338,7 @@ final class CdbtAdmin extends CdbtDB {
     );
     
     $menus[] = add_submenu_page( 
-      'cdbt_management_console', 
+      $cdbt_top_level_menu, 
       __('CDBT Plugin Options', $this->domain_name), 
       __('Plugin Options', $this->domain_name), 
       $operating_capability, 
@@ -344,6 +348,11 @@ final class CdbtAdmin extends CdbtDB {
     
     // Parsed QUERY_STRING is stored $this->query
     wp_parse_str( $_SERVER['QUERY_STRING'], $this->query );
+    
+    // Filter to extend the plugin option menus
+    //
+    // @since 2.1.34
+    $menus = apply_filters( 'cdbt_admin_menus', $menus, $cdbt_top_level_menu, $this->query );
     
     foreach ($menus as $menu) {
       add_action( 'admin_enqueue_scripts', array($this, 'admin_assets'), 99 ); // Note: priority = 99 is after the multibyte-patch plugin.
@@ -708,11 +717,12 @@ final class CdbtAdmin extends CdbtDB {
         $_SESSION = array_map( 'stripslashes_deep', $_POST );
         $this->update_session( $worker_method );
         $this->$worker_method();
-      } elseif ( isset( $_POST[$this->domain_name]['for_addon'] ) && array_key_exists( $_POST[$this->domain_name]['for_addon'], $this->extend ) ) {
-        if ( is_object( $this->addons[$_POST[$this->domain_name]['for_addon']] ) && method_exists( $this->addons[$_POST[$this->domain_name]['for_addon']], $worker_method ) ) {
+      } elseif ( isset( $_POST[$this->domain_name]['for_addon'] ) && in_array( stripslashes( $_POST[$this->domain_name]['for_addon'] ), $this->extend ) ) {
+        $_classname = array_search( stripslashes( $_POST[$this->domain_name]['for_addon'] ), $this->extend );
+        if ( is_object( $this->addons[$_classname] ) && method_exists( $this->addons[$_classname], $worker_method ) ) {
           $_SESSION = array_map( 'stripslashes_deep', $_POST );
           $this->update_session( $worker_method );
-          $this->addons[$_POST[$this->domain_name]['for_addon']]->$worker_method();
+          $this->addons[$_classname]->$worker_method();
         } else {
           // invalid access (No method in add-on)
           $this->destroy_session( $worker_method );
@@ -1772,7 +1782,7 @@ final class CdbtAdmin extends CdbtDB {
     }
     
     // sanitaize checkbox values
-    $checkbox_options = [ 'bootstrap_style', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'draggable', 'ajax_load', 'display_submit' ];
+    $checkbox_options = [ 'bootstrap_style', 'enable_repeater', 'display_list_num', 'display_search', 'display_title', 'enable_sort', 'display_filter', 'display_view', 'draggable', 'ajax_load', 'display_submit' ];
     foreach ( $checkbox_options as $option_name ) {
       $post_data[$option_name] = array_key_exists( $option_name, $post_data ) ? $this->strtobool( $post_data[$option_name] ) : false;
     }
@@ -2119,7 +2129,7 @@ final class CdbtAdmin extends CdbtDB {
           ob_start();
           $this->component_render('table_creator', $conponent_options); // by trait `DynamicTemplate`
           $_component = ob_get_contents();
-          ob_end_clean();
+          ob_clean();
           $args['modalTitle'] = __('Table Creator', CDBT);
           $args['modalBody'] = '<p class="text-info">' . __('In the "table creator" you can intuitively create the columns configuration of table. It will be cached the settings after you click of "Apply SQL". Then it is never lost even if you close this modal window.', CDBT) . '</p>' . $_component;
           $args['modalFooter'] = [ sprintf('<button type="button" id="reset_sql" class="btn btn-default">%s</button>', __('Reset', CDBT)), sprintf('<button type="button" id="apply_sql" class="btn btn-primary">%s</button>', __('Apply SQL', CDBT)) ];

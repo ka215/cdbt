@@ -294,7 +294,7 @@ EOH;
       ob_start();
       $this->during_trial( 'reference_columns' );
       $_state = ob_get_contents();
-      ob_end_clean();
+      ob_clean();
       $render_html = sprintf( $render_tmpl, $_label, $_state, implode( "\n", $thead_th ), implode( "\n", $tbody ), count( $columns_schema_index ) + 2 );
     }
     wp_die( $render_html );
@@ -536,7 +536,10 @@ EOH;
           }
         }
         $full_custom_sql = $custom_sql . implode( ' ', $_append_sql );
-        // $this->logger( $full_custom_sql ); // debug
+        // Filter of sql statement when get data via ajax.
+        //
+        // @since 2.1.34
+        $full_custom_sql = apply_filters( 'cdbt_ajax_get_data_sql', $full_custom_sql, $custom_sql, $_append_sql, $table );
         $datasource = $this->wpdb->get_results( $full_custom_sql );
       }
       $response = array_merge( $datasource, [ $_total_items ] );

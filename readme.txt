@@ -3,8 +3,8 @@ Contributors: ka2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=2YZY4HWYSWEWG&lc=en_US&currency_code=USD&item_name=
 Tags: custom database tables, MySQL, database, table, create, delete, select, insert, update, truncate, drop, alter table, import, export, CSV
 Requires at least: 4.0
-Tested up to: 4.5.2
-Stable tag: 2.1.33
+Tested up to: 4.6.0
+Stable tag: 2.1.34beta
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,28 @@ You need a table that is managed by the plug-in is an "ID" is the primary key. T
 = Can put table that have 100,000 or more rows? =
 
 There is no particular restriction on the amount of data that is stored in a table. Processing performance on a table with a large number of rows will depend on the structure such as a table or database server.
+However, you should enable the "Ajax Loading" in the shortcode's options if you want to handle the table that has a large amount of data by the shortcodes.
+
+= What should we do when there is not displayed the data via shortcode? =
+
+In most cases, that's cause of the jQuery file conflict. Therefore please try to do procedures as follows:
+
+1. Go to the "General Settings" tab on the "CDBT Plugin Options" screen.
+2. Uncheck the checkbox of "jQuery" in the "Front-end Screen" column at the "Loading Resources" item of the "Advanced Plugin Settings".
+3. Click the "Save Changes" button.
+
+Note: you should change in the "Administration Screen" column at above step 2 If the same trouble is occurred in the tables management screen.
+
+= How do we use the shortcode at the outer the post content? =
+
+The shortcodes of this plugin basically work within the post content. If you want to work the shortcodes outside of the post content (as direct built-in template, or in the widget), you should insert code below. 
+
+```
+if ( ! is_admin() ) {
+  global $cdbt;
+  add_action( 'init', array( $cdbt, 'cdbt_pre_shortcode_render' ), 10, 2 );
+}
+```
 
 
 
@@ -67,6 +89,9 @@ There is no particular restriction on the amount of data that is stored in a tab
 9. The legacy version of the plugin is possible to get from [here](https://downloads.wordpress.org/plugin/custom-database-tables.1.1.15.zip).
 
 == Changelog ==
+
+= 2.1.34 =
+* 
 
 = 2.1.33 =
 * Added new feature of ajax loading on the shortcode.
