@@ -24,6 +24,7 @@ class CdbtCore extends CdbtUtility {
    * @var obj Append to this plugin as addon
    */
   public $extend = array();
+  public $addons = array();
   
   /**
    * @var array Overloads get_option()
@@ -163,11 +164,13 @@ class CdbtCore extends CdbtUtility {
    */
   public function cdbt_shutdown() {
     
-    if ( ob_get_length() !== false ) {
+    $enable_zlib = ini_get( "zlib.output_compression" );
+    
+    if ( ! $enable_zlib && ob_get_length() !== false ) {
       $buffer = ob_get_contents();
       
       // Finish buffering
-      ob_end_clean();
+      ob_end_flush();
     }
     
     list( $max ) = sscanf( ini_get( 'memory_limit' ), '%dM' );

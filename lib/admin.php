@@ -201,7 +201,7 @@ final class CdbtAdmin extends CdbtDB {
       $this->validate = $validator_class::instance();
     
     if ( ! empty( $this->options['activated_addons'] ) ) {
-      $this->addons = [];
+      //$this->addons = [];
       foreach ( $this->options['activated_addons'] as $addon_name => $addon_path ) {
         if ( class_exists( $addon_path ) ) 
           $this->addons[$addon_name] = new $addon_path();

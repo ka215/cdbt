@@ -906,12 +906,13 @@ $label_required = '<span class="label label-required">'. __('Required', CDBT) .'
 <?php 
   if ( ! empty( $target_table ) ) {
     $table_status = $this->get_table_status( $target_table );
+    if ( ! $table_status ) 
+      $table_status = [];
+    
     $columns_schema = $this->get_table_schema( $target_table );
     $columns_schema_index = is_array( $columns_schema ) ? array_keys( reset( $columns_schema ) ) : [];
     $row_index_number = 1;
-    
     if ( empty( $columns_schema_index ) ) {
-      $table_status = [];
       $columns_schema = [];
       $current_action = '';
     }

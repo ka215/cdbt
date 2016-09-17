@@ -119,28 +119,32 @@ trait CdbtExtras {
    * Create datasource of table list for repeater of fuelux
    *
    * @since 2.0.0
+   * @since 2.1.34 Updated
    *
    * @param array $data Array of table name
    * @return array $datasource Array for repeater of fuelux
    */
   public function create_tablelist_datasorce( $data ) {
     $datasource = [];
-    if (is_array($data)) {
-      $is_assoc = $this->is_assoc($data);
-      if ($is_assoc) {
-        asort($data);
+    if ( is_array( $data ) ) {
+      $is_assoc = $this->is_assoc( $data );
+      if ( $is_assoc ) {
+        asort( $data );
       } else {
-        sort($data);
+        sort( $data );
       }
       
       $index = 0;
-      foreach ($data as $key => $value) {
+      foreach ( $data as $key => $value ) {
+        if ( empty( $value ) ) 
+          continue;
         // Fiter table name
+        //
         // @since 2.0.10
         $value = apply_filters( 'cdbt_lower_case_table_name', $value );
         $current_data = $this->array_flatten( $this->get_data( $value, 'count(*)', 'ARRAY_N' ) );
-        $table_info = $this->get_table_option($value);
-        if (!$table_info) {
+        $table_info = $this->get_table_option( $value );
+        if ( ! $table_info) {
         	$table_info = $this->get_table_status( $value );
         	$table_info['primary_key'] = [];
         	foreach ($this->get_table_schema( $value ) as $column => $scheme) {
@@ -148,23 +152,26 @@ trait CdbtExtras {
         	    $table_info['primary_key'][] = $column;
         	}
         } else {
-          $table_info = array_merge( $table_info, $this->get_table_status( $value ) );
+          $current_status = $this->get_table_status( $value );
+          if ( $current_status && ! empty( $current_status ) ) {
+            $table_info = array_merge( $table_info, $this->get_table_status( $value ) );
+          }
         }
         $datasource[$index] = [
           'cdbt_index_id' => $is_assoc ? ($index + 1) : $key, 
           'table_name' => $value, 
-          'logical_name' => !empty($table_info['table_comment']) ? $table_info['table_comment'] : ($is_assoc ? $key : $value), 
+          'logical_name' => ! empty( $table_info['table_comment'] ) ? $table_info['table_comment'] : ( $is_assoc ? $key : $value ), 
           'records' => $current_data[0], 
-          'primary_key' => !empty($table_info['primary_key']) ? implode(', ', $table_info['primary_key']) : '-', 
+          'primary_key' => !empty( $table_info['primary_key'] ) ? implode( ', ', $table_info['primary_key'] ) : '-', 
           'charset' => $this->get_table_charset( $value ), // isset($table_info['table_charset']) ? $table_info['table_charset'] : $this->db_default_charset, 
-          'collation' => isset($table_info['table_collation']) ? $table_info['table_collation'] : $table_info['Collation'], 
-          'engine' => isset($table_info['db_engine']) ? $table_info['db_engine'] : $table_info['Engine'], 
-          'per_records' => isset($table_info['show_max_records']) ? $table_info['show_max_records'] : $this->options['default_per_records'], 
-          'avg_row_length' => $table_info['Avg_row_length'], 
-          'data_lenght' => $table_info['Data_length'], 
-          'create_time' => $table_info['Create_time'], 
-          'operate_table_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_table' ]))) ), 
-          'operate_data_url' => './' . basename( esc_url(admin_url(add_query_arg([ 'tab'=>'operate_data' ]))) ), 
+          'collation' => isset( $table_info['table_collation'] ) ? $table_info['table_collation'] : ( isset( $table_info['Collation'] ) ? $table_info['Collation'] : '' ), 
+          'engine' => isset( $table_info['db_engine'] ) ? $table_info['db_engine'] : ( isset( $table_info['Engine'] ) ? $table_info['Engine'] : '' ), 
+          'per_records' => isset( $table_info['show_max_records'] ) ? $table_info['show_max_records'] : $this->options['default_per_records'], 
+          'avg_row_length' => isset( $table_info['Avg_row_length'] ) ? $table_info['Avg_row_length'] : '', 
+          'data_lenght' => isset( $table_info['Data_length'] ) ? $table_info['Data_length'] : '', 
+          'create_time' => isset( $table_info['Create_time'] ) ? $table_info['Create_time'] : '', 
+          'operate_table_url' => './' . basename( esc_url( admin_url( add_query_arg([ 'tab'=>'operate_table' ] ) ) ) ), 
+          'operate_data_url' => './' . basename( esc_url( admin_url( add_query_arg([ 'tab'=>'operate_data' ] ) ) ) ), 
           'thumbnail_src' => $this->plugin_url . $this->plugin_assets_dir . '/images/database-table.png', // optional
           'thumbnail_title' => $value, // optional
           'thumbnail_bgcolor' => 'transparent', // optional
