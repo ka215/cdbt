@@ -297,8 +297,12 @@ trait CdbtEntry {
       'fileUpload' => isset($is_file_upload) ? $is_file_upload : false, 
       'formElements' => $elements_options, 
     ];
-    if (!empty($action_url)) 
+    if (!empty($action_url)) {
+      // To convert relative uri since 2.1.34
+      $home_url = trailingslashit( get_home_url( '/' ) );
+      $action_url = str_replace( $home_url, '/', $action_url );
       $component_options['actionUrl'] = $action_url;
+    }
     if (!empty($form_action)) 
       $component_options['formAction'] = $form_action;
     if (!$display_submit) 

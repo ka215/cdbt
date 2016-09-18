@@ -383,12 +383,13 @@ $fields_define = [];
     <form method="post" action="<?php echo esc_url(add_query_arg([ 'page' => $this->query['page'] ])); ?>" id="cdbt-addons" class="form-horizontal">
       <input type="hidden" name="page" value="<?php echo $this->query['page']; ?>">
       <input type="hidden" name="active_tab" value="<?php echo $current_tab; ?>">
-      <input type="hidden" name="<?php echo $this->domain_name; ?>[addon_class]" value="CustomReview">
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[addon_class]" id="cdbt-addon-classname" value="">
+      <input type="hidden" name="<?php echo $this->domain_name; ?>[dist_uri]" id="cdbt-addon-disturi" value="">
       <?php wp_nonce_field( 'cdbt_management_console-' . $this->query['page'] ); ?>
 
 <?php
   $official_site = 'https://ka2.org';
-  $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons/' ) );
+  $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons-trial/' ) );
   $response_code = wp_remote_retrieve_response_code( $response );
   if ( $response_code == 200 ) {
     $all_addons = json_decode( wp_remote_retrieve_body( $response ) );
@@ -399,12 +400,26 @@ $fields_define = [];
   <ul class="list-inline addons-list">
   <?php foreach( $all_addons as $_addon => $_meta ) : 
     if ( is_array( $this->extend ) && array_key_exists( $_addon, $this->extend ) ) {
-      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="deactivate" class="btn btn-default pull-left">'. __('Deactivate', CDBT) .'</button>';
+      $action_name = 'deactivate';
+      $btn_class = 'default';
+      $btn_label = __('Deactivate', CDBT);
     } elseif ( in_array( $_meta->basename, $this->installed_addons ) ) {
-      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="activate" class="btn btn-primary pull-left">'. __('Activate', CDBT) .'</button>';
+      $action_name = 'activate';
+      $btn_class = 'primary';
+      $btn_label = __('Activate', CDBT);
     } else {
-      $_btn = '<button type="submit" form="cdbt-addons" name="action" value="install" class="btn btn-default pull-left">'. __('Install', CDBT) .'</button>';
+      $action_name = 'install';
+      $btn_class = 'default';
+      $btn_label = __('Install', CDBT);
     }
+    $_btn = sprintf( 
+      '<button type="submit" form="cdbt-addons" name="action" value="%s" class="btn btn-%s pull-left" data-class-name="%s" data-dist-uri="%s">%s</button>', 
+      $action_name, 
+      $btn_class, 
+      $_meta->classname, 
+      $_meta->distribution_url, 
+      $btn_label 
+    );
   ?>
     <li><div class="thumbnail">
       <img src="<?= $this->plugin_url . $this->plugin_assets_dir ?>/images/cdbt-noimage_reversal.png" alt="<?= $_meta->label ?>">
@@ -421,7 +436,8 @@ $fields_define = [];
 <?php
     }
   } else {
-    $api_response = json_decode( wp_remote_retrieve_body( $response ) );
+    //$api_response = json_decode( wp_remote_retrieve_body( $response ) );
+var_dump( wp_remote_retrieve_body( $response ) );
     printf( '<div class="addon-message error">%s (%d)</p>', $api_response->message, $api_response->data->status );
   }
 ?>

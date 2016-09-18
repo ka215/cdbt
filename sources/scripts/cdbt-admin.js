@@ -2261,6 +2261,21 @@ $(document).ready(function() {
     
   }
   
+  /**
+   * Helper UI scripts for addons section
+   */
+  if ('cdbt_options' === $.QueryString.page && 'addons' === $.QueryString.tab) {
+    
+    $('.addon-btn').find('button').on('click', function(e){
+      //e.preventDefault();
+      var parent_form = $(this).parents('#cdbt-addons');
+      parent_form.find('#cdbt-addon-classname').val( $(this).data('className') );
+      parent_form.find('#cdbt-addon-disturi').val( $(this).data('distUri') );
+      //parent_form.submit();
+    });
+    
+  }
+  
   
   /**
    * Helper UI scripts for custom column renderer

@@ -1016,21 +1016,32 @@ final class CdbtAdmin extends CdbtDB {
    * Page: cdbt_options | Tab: addons
    *
    * @since 2.1.33
+   * @since 2.1.34 Updated
    */
   public function do_cdbt_options_addons() {
     static $message = '';
     
     // Access authentication process to the page
     $message = $this->access_page_authentication( [ 'install', 'activate', 'deactivate' ] );
-    if (!empty($message)) {
+    if ( ! empty( $message ) ) {
       $this->register_admin_notices( CDBT . '-error', $message, 3, true );
       return;
     }
     
     $submit_options = array_map( 'stripslashes_deep', $_POST[$this->domain_name] );
     
+    $note_type = '-notice';
     if ( 'install' === $_POST['action'] ) {
       // download addon
+      if ( file_exists( $submit_options['dist_uri'] ) ) {
+        
+//var_dump( $submit_options );
+        $message = __( 'This add-on installed correctly. Please activate for using this add-on.', CDBT );
+        
+      } else {
+        $message = __( 'Specified add-on does not exist.', CDBT );
+        $note_type = '-error';
+      }
     } else {
       if ( class_exists( __NAMESPACE__ .'\\Addons\\'. $submit_options['addon_class'] ) ) {
         $addon_class_path = __NAMESPACE__ .'\\Addons\\'. $submit_options['addon_class'];
@@ -1043,13 +1054,22 @@ final class CdbtAdmin extends CdbtDB {
             unset( $this->extend[$submit_options['addon_class']] );
         }
         $this->options['activated_addons'] = $this->extend;
-        $this->update_options( $this->options );
+        if ( $this->update_options( $this->options ) ) {
+          if ( 'activate' === $_POST['action']  ) {
+            $message = __( 'This add-on has been activated correctly now.', CDBT );
+          } else
+          if ( 'deactivate' === $_POST['action'] ) {
+            $message = __( 'This add-on has been deactivated correctly.', CDBT );
+          }
+        }
       } else {
         // not installed crrectly
+        $message = __( 'This add-on has not install correctly. Please try to install once more.', CDBT );
+        $note_type = '-error';
       }
     }
     
-    $this->register_admin_notices( CDBT . '-notice', __('done.', CDBT), 3, true );
+    $this->register_admin_notices( CDBT . $note_type, $message, 3, true );
   }
 
 
