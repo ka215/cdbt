@@ -389,7 +389,7 @@ $fields_define = [];
 
 <?php
   $official_site = 'https://ka2.org';
-  $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons-trial/' ) );
+  $response = wp_remote_get( esc_url_raw( $official_site . '/wp-json/cdbt/v2.1/addons/' ) );
   $response_code = wp_remote_retrieve_response_code( $response );
   if ( $response_code == 200 ) {
     $all_addons = json_decode( wp_remote_retrieve_body( $response ) );
@@ -437,7 +437,7 @@ $fields_define = [];
     }
   } else {
     //$api_response = json_decode( wp_remote_retrieve_body( $response ) );
-var_dump( wp_remote_retrieve_body( $response ) );
+//var_dump( wp_remote_retrieve_body( $response ) );
     printf( '<div class="addon-message error">%s (%d)</p>', $api_response->message, $api_response->data->status );
   }
 ?>

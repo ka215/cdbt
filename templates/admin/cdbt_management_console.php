@@ -162,34 +162,42 @@ $latest_changelog = $plugin_changelogs[$plugin_information['latest_version']];
       <p><?php printf( __('Custom DataBase Tables is provided an extensive %sdocumentations%s. It includes Frequently Asked Questions for you to use in plugins and themes, as well as documentation for further details about how to use for programmers.', CDBT), '<a href="https://ka2.org/cdbt/" target="_blank" alt="CDBT Documentations">', '</a>' ); ?>
       <?php printf( __('If you wonder how you can help the project, just %sread this%s.', CDBT), '<a href="https://ka2.org/cdbt/toc/" target="_blank" alt="CDBT Tutorial">', '</a>' ); ?></p>
       <p><?php printf( __('You will also find useful information in the %ssupport forum%s. However don&apos;t forget to make a search before posting a new topic.', CDBT), '<a href="https://wordpress.org/support/plugin/custom-database-tables" target="_blank" alt="CDBT Support Forum">', '</a>' ); ?></p>
-      <p><?php esc_html_e( 'Finally if you like this plugin or if it helps your business, please examine donations to the author.', CDBT ); ?></p>
+      <p><?php esc_html_e( 'Finally, if you like this plugin or help your business, please consider donation for continuous development.', CDBT ); ?></p>
       <div class="clearfix" style="margin-bottom: 1em;"></div>
       <ul class="list-inline donate-links">
-        <li class="donate-paypal"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-          <input type="hidden" name="cmd" value="_donations">
-          <input type="hidden" name="business" value="2YZY4HWYSWEWG">
-          <input type="hidden" name="lc" value="en_US">
+        <li class="donate-paypal"><form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <div class="pull-left">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="RJZRBH7MFWQCA">
+          <input type="hidden" name="on0" value="Donations">
+          <select name="os0">
+            <option value="USD-10">$10.00</option>
+            <option value="USD-20">$20.00</option>
+            <option value="USD-30">$30.00</option>
+            <option value="USD-40">$40.00</option>
+            <option value="USD-50">$50.00</option>
+            <option value="USD-60">$60.00</option>
+            <option value="USD-70">$70.00</option>
+            <option value="USD-80">$80.00</option>
+            <option value="USD-90">$90.00</option>
+          </select></div>
+          <div class="pull-right">
           <input type="hidden" name="currency_code" value="USD">
-          <input type="hidden" name="item_name" value="Donation to Custom DataBase Tables">
-          <input type="hidden" name="amount" value="">
-          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - <?php _e( 'The safer, easier way to pay online!', CDBT ); ?>">
-          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"><?php /* ja_JP */ ?>
+          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+          <img alt="" border="0" src="https://www.paypalobjects.com/ja_JP/i/scr/pixel.gif" width="1" height="1"></div>
         </form></li>
-        <li class="donate-amazon">
-<?php if ( 'ja' === get_locale() ) {
-  $_amazon_url = 'https://www.amazon.co.jp/gp/product/B004N3APGO/ref=gc_lpt3_ttl_eml';
-  $_image_url = 'https://images-na.ssl-images-amazon.com/images/G/09/x-locale/gift-cards/a_com_gift_card_logo_170x54._CB369921052_.png';
-} else {
-  $_amazon_url = 'https://www.amazon.com/gp/product/B0145WHYKC/ref=s9_acss_bw_cg_gclptcg_2a1?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-1&pf_rd_r=1JB8EFNZJZGXQY5N8EK3&pf_rd_t=101&pf_rd_p=2440297402&pf_rd_i=2238192011';
-  $_image_url = 'https://images-na.ssl-images-amazon.com/images/G/01/x-locale/gift-cards/a_com_gift_card_logo_170x54._CB356759947_.png';
-} ?>
-          <a href="<?php echo $_amazon_url; ?>" target="_blank" rel="nofollow">
-            <img src="<?php echo $_image_url; ?>" border="0" alt="<?php _e('Amazon Gift Card', CDBT); ?>">
+      <?php /* if ( 'ja' === get_locale() ) : */ ?>
+        <li class="donate-spike">
+          <a href="https://spike.cc/shop/ka215" target="_blank" rel="nofollow" style="padding: 8px;">
+            <img src="<?php printf( '%s/%s/%s', $this->plugin_url, $this->plugin_assets_dir, 'images/spike-logo-90x36.png' ); ?>" border="0" alt="SPIKE">
           </a>
+          <p class="help-block">(<?php _e( 'Notice: The payment currency by SPIKE is Japanese Yen only', CDBT ); ?>)</p>
         </li>
+      <?php /* endif; */ ?>
       </ul>
       <div class="clearfix" style="margin-bottom: 1em;"></div>
-      <p class="help-block"><?php printf( __('If you use Amazon.com Gift Cards (E-mail Delivery), please enter "%s" to an email address of recipient.', CDBT), '<em class="text-info">'. $this->support_email .'</em>' ); ?></p>
+        <p><?php printf( __( 'If you want to pay by other currency, please use from %sdonation page%s of the official site.', CDBT ), '<a href="https://ka2.org/donation/cdbt/">', '</a>' ); ?><br>
+        <?php printf( __('Also, I don&#39;t care how to send mail to "%s" for support email if you have other request and question.', CDBT), '<em class="text-info">'. $this->support_email .'</em>' ); ?></p>
     </div><!-- /.panel-body -->
   </div><!-- /.panel -->
   </div>

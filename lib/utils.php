@@ -639,7 +639,7 @@ class CdbtUtility {
    *
    * @since 2.0.0
    *
-   * @param string $string [require]
+   * @param string $string [required]
    * @return boolean
    */
   public function strtobool( $string=null ) {
@@ -676,20 +676,20 @@ class CdbtUtility {
    *
    * @since 2.0.0
    *
-   * @param array $data This argument should be expected an array
-   * @param boolean $multidimensional True if a multidimensional array is inclusion into associative array, the default value is false
+   * @param array $data [required] This argument have to expect an array
+   * @param bool $multidimensional [optional] True if want to contain a multidimensional array to associative array, the default value is false
    * @return boolean
    */
   public function is_assoc( $data, $multidimensional=false ) {
-    if (!is_array($data) || empty($data)) 
+    if ( ! is_array( $data ) || empty( $data ) ) 
       return false;
     
     $has_array = false;
-    foreach ($data as $key => $value) {
-      if (is_array($value)) 
+    foreach ( $data as $key => $value ) {
+      if ( is_array( $value ) ) 
         $has_array = true;
       
-      if (!is_int($key)) 
+      if ( ! is_int( $key ) ) 
         return true;
     }
     

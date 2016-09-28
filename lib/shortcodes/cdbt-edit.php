@@ -177,7 +177,22 @@ trait CdbtEdit {
     }
     $hash_atts = [ 'narrow_keyword', 'sort_order', 'filters' ];
     foreach ($hash_atts as $attribute_name) {
-      ${$attribute_name} = $this->strtohash( rawurldecode( ${$attribute_name} ) );
+      // @since 2.1.34 Updated
+   	  $_tmp_str = rawurldecode( ${$attribute_name} );
+      if ( 'filters' === $attribute_name ) {
+        $_tmp_ary = explode( ',', $_tmp_str );
+        if ( ! empty( $_tmp_ary ) && strpos( $_tmp_ary[0], ':' ) ) {
+          ${$attribute_name} = $this->strtohash( $_tmp_str );
+          foreach ( $filters as $_k => $_v ) {
+            unset( $filters[$_k] );
+            $filters[mb_encode_numericentity( $_k, array( 0x0, 0x10ffff, 0, 0xffffff ), 'UTF-8' )] = $_v;
+          }
+        } else {
+          ${$attribute_name} = $this->strtoarray( $_tmp_str );
+        }
+      } else {
+        ${$attribute_name} = $this->strtohash( $_tmp_str );
+      }
     }
     $add_classes = [];
     if ( ! empty( $add_class ) ) {
@@ -312,7 +327,9 @@ trait CdbtEdit {
     if ( ! in_array( $filter_column, $all_columns ) ) {
       $filter_column = '';
     }
-    $filters = $this->strtohash( $filters );
+    if ( ! is_array( $filters ) ) {
+      $filters = $this->strtohash( $filters );
+    }
     
     if ( 'repeater' === $component_name && ! $display_index_row ) {
       $add_classes[] = 'hidden-index-row';

@@ -493,6 +493,10 @@ nav#operation-navbar {
   }
   
   .donate-links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
     
     li {
       display: table-cell;
