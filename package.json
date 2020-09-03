@@ -65,7 +65,7 @@
     "lazypipe": "^1.0.1",
     "merge-stream": "^1.0.0",
     "minimist": "^1.2.0",
-    "node-sass": "^3.4.2",
+    "node-sass": "^4.14.1",
     "pleeease": "^4.0.4",
     "run-sequence": "^1.1.5",
     "traverse": "^0.6.6",
